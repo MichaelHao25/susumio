@@ -1,0 +1,90 @@
+import { Context, extend, ResponseError } from 'umi-request';
+import { history } from 'umi';
+import { Loading, Notify } from 'notiflix';
+
+Notify.init({
+  position: 'center-center',
+  cssAnimationStyle: 'from-bottom',
+  // timeout: 1000 * 60,
+});
+const errorHandler = function (error: ResponseError) {
+  // 请求已发送但服务端返回状态码非 2xx 的响应
+  const {
+    data: { message = undefined } = {},
+    data = {},
+    request: {
+      options: { url, method },
+    },
+    message: jsErroeMessage,
+  } = error;
+  // 如果有message的话就展示他没有的话就展示response
+  console.log('method:', method, 'url:', url);
+  // 如果有报错信息的话就显示报错信息
+  if (message) {
+    Notify.failure(message);
+    console.log('res:', data);
+    if (data.code === 401) {
+      history.push('/login');
+    }
+  } else {
+    // 请求初始化时出错或者异常响应返回的异常
+    if (jsErroeMessage) {
+      Notify.failure(error.message);
+      console.log('res:', error.message);
+    } else {
+      // 如果没有报错信息代码初始化也没出错的话就打印响应结果
+      Notify.failure(JSON.stringify(data));
+      console.log('res:', data);
+    }
+  }
+  stack.shift();
+  if (stack.length === 0) {
+    Loading.remove();
+  }
+  // todo全局需要处理，如果报错的话就返回 undefined;
+  // console.log(error);
+
+  return undefined;
+};
+const stack: number[] = [];
+export const request = extend({
+  // prefix: 'https://f26a70c7-44b4-4d49-9e65-2fd7e41553cf.mock.pstmn.io/api',
+  prefix: 'https://www.177pinche.com/index.php',
+  timeout: 10000,
+  headers: {
+    // 'X-Requested-With': 'XMLHttpRequest',
+    // lang: 'zh_CN',
+    // 'x-mock-match-request-body': 'true',
+    'content-type': 'application/json;charset=UTF-8',
+    'client-type': 'app',
+    auth: 'Basic_Ivj6eZRxMTx2yiyunZvnG8R67',
+  },
+  errorHandler,
+});
+request.use(async (ctx: Context, next: () => void) => {
+  // 检查是否可以携带token，如果有的话就添加token
+  const token: string | null = window.localStorage.getItem('token');
+  if (token) {
+    // @ts-ignore
+    ctx.req.options.headers.token = token;
+  }
+  // 中间件处理loading状态
+  // Loading.circle('loading...');
+  if (stack.length === 0) {
+    Loading.pulse();
+  }
+  stack.push(Math.random());
+  await next();
+  const {
+    req: {
+      options: { url, method },
+    },
+    res,
+  } = ctx;
+  console.log('method:', method, 'url:', url);
+  console.log('res:', res);
+  stack.shift();
+  if (stack.length === 0) {
+    Loading.remove();
+  }
+});

@@ -20,9 +20,15 @@
     ]
   },
   "dependencies": {
-    "@ant-design/pro-layout": "^6.5.0",
+    "@better-scroll/core": "^2.4.2",
+    "@better-scroll/pull-down": "^2.4.2",
+    "@better-scroll/pull-up": "^2.4.2",
+    "lottie-web": "^5.7.13",
+    "minirefresh": "^2.0.2",
+    "notiflix": "^3.0.1",
     "react": "17.x",
     "react-dom": "17.x",
+    "swiper": "^6.8.3",
     "umi": "^3.5.17"
   },
   "devDependencies": {
