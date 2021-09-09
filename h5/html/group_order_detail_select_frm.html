@@ -1,0 +1,111 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        .aui-col-xs-4 {
+            text-align: center;
+        }
+
+        .aui-col-xs-4 img {
+            margin: auto;
+            width: 30%;
+        }
+
+        .aui-col-xs-4 span {
+            font-size: 0.6rem
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+
+    <div id="app">
+        <header class="aui-bar aui-bar-nav aui-bar-light" style="background-image:none;">
+            <a class="aui-pull-left aui-btn" style="color: #333 !important;"></a>
+            <div class="aui-title"></div>
+            <a class="aui-pull-right aui-btn" tapmode @click="close()">
+                <span class="aui-iconfont aui-icon-close"></span>
+            </a>
+        </header>
+        <!-- 中间页 -->
+        <!-- 中间页 -->
+        <div class="aui-content aui-row aui-margin-t-10">
+            <div class="aui-col-xs-4 " tapmode @click="WXShare('session')">
+                <img src="../image/weixinhaoyou.png" alt="">
+                <span>Micro carta amigo</span>
+            </div>
+            <div class="aui-col-xs-4" tapmode @click="WXShare('timeline')">
+                <img src="../image/weixinquan.png" alt="">
+                <span>Círculo de amigos</span>
+            </div>
+            <div class="aui-col-xs-4" tapmode @click="copyUrl">
+                <img src="../image/lianjie.png" alt="">
+                <span>Copiar enlace</span>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/qrcode.min.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+
+    apiready = function() {
+        $util.fixPage();
+        api.parseTapmode();
+        var app = new Vue({
+            el: '#app',
+            data: {
+
+            },
+            methods: {
+                close: function() {
+                    api.sendEvent({
+                        name: 'closeGb',
+                        extra: {}
+                    });
+                    api.closeFrame();
+
+                },
+
+                WXShare: function(info) {
+                    api.sendEvent({
+                        name: 'wxShare',
+                        extra: {
+                            key: info,
+                        }
+                    });
+                    api.closeFrame();
+                },
+                copyUrl: function(){
+                    api.sendEvent({
+                        name: 'copyUrl',
+                    });
+                }
+            },
+            mounted: function() {
+
+            }
+        })
+    };
+</script>
+
+</html>

@@ -1,0 +1,713 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/ali_icon_wancll/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+    <style media="screen">
+        #top {
+            background-size: 100% 100%;
+            height: 10.25rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 100%;
+        }
+
+        #top #avatar {
+            width: 18%;
+            margin-left: 10%;
+            margin-top: -1.5rem;
+        }
+
+        #top #setting {
+            position: absolute;
+            top: .5rem;
+            right: .8rem;
+            font-size: 1.3rem;
+        }
+
+        #top .level {
+            background: #fff;
+            border-radius: .2rem;
+            padding: 0 0.3rem;
+            color: #3fa0f9;
+        }
+
+        .warper {
+            margin: 0 0.4rem;
+            height: 4.5rem;
+            background-color: #f4f4f4;
+            position: relative;
+        }
+
+        .order {
+            background-color: #fff;
+            padding: 0 0.5rem;
+            border-radius: 0.2rem;
+            overflow: hidden;
+            height: 6.75rem;
+            position: absolute;
+            top: -2.8rem;
+            left: 0;
+        }
+
+        .wallet {
+            background-color: #fff;
+            border-radius: 0.2rem;
+            height: 5rem;
+            margin: 0 0.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .wallet .wallet-wancll {
+            margin-left: 1.5rem;
+        }
+
+        .wallet .goOpen {
+            width: 3.25rem;
+            height: 3.25rem;
+            border-radius: 50%;
+            background-color: #3fa0f9;
+            color: #fff;
+            line-height: 3.25rem;
+            text-align: center;
+            margin-right: 1.5rem
+        }
+
+        .wallet1 {
+            background-color: #fff;
+            border-radius: 0.2rem;
+            height: 5rem;
+            margin: 0 0.4rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-direction: column;
+        }
+
+        .wallet1 .wallet-into {
+            display: flex;
+            height: 2.5rem;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .wallet1 .wallet-price {
+            display: flex;
+            height: 2.5rem;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .recharge,
+        .returnMoney {
+            width: 4rem;
+            height: 1.4rem;
+            text-align: center;
+            line-height: 1.4rem;
+            color: #fff;
+            border-radius: 0.5rem;
+        }
+
+        .recharge {
+            background-color: #3fa0f9;
+            margin-right: -2.5rem;
+        }
+
+        .returnMoney {
+            background-color: #000000;
+        }
+
+        .common_block {
+            background-color: #fff;
+            border-radius: 0.2rem;
+            margin: 0.5rem 0.4rem 0.5rem 0.4rem;
+        }
+
+        .common_block .title {
+            height: 2.4rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 0.025rem solid #eee;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+            <div id="app" style="background-color:#f4f4f4;">
+                <section class="aui-content aui-bg-white" id="header">
+                    <div id="top" :style="{ 'background': 'url(' + bgHeader + ') no-repeat center center'}">
+                        <img :src="user.avatar" class="aui-img-round" id="avatar">
+                        <div class="aui-text-white aui-margin-l-15" style="margin-top: -1.5rem">
+                            <div style="display: flex;align-items: center" class="aui-margin-b-5">
+                                <div v-text="user.nick_name|| 'Usuario anónimo'"
+                                     class="aui-font-size-18 aui-margin-r-10"></div>
+                                <div class="level aui-font-size-12" v-text="level">
+                                </div>
+                            </div>
+                            <div class="aui-font-size-12">
+                                <i class="aui-iconfont aui-icon-mobile aui-font-size-12"></i>
+                                <span v-text="user.mobile"></span>
+                            </div>
+                            <div class="aui-margin-t-5">
+                                <span onclick="$util.openWindow('level_win')">
+                                    <span class="aui-font-size-12">Integral:
+                                        <span v-text="score"></span>
+                                    </span>
+                                    <i class="aui-iconfont aui-icon-right aui-font-size-10"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <i class="iconfont icon-shezhishedingpeizhichilun aui-text-white" id="setting"
+                           onclick="$util.openWindow('setting_win')"></i>
+                    </div>
+                </section>
+                <div class="warper">
+                    <div class="order">
+                        <div style="border-bottom: 0.025rem solid #eee;height: 2.4rem;line-height: 2.4rem">
+                            <ul class="aui-list" style="background-image:none">
+                                <li class="aui-list-item" onclick="$util.openWindow('order_list_win', {status: 0})">
+                                    <div class="aui-list-item-inner aui-list-item-arrow">
+                                        <div class="aui-list-item-title">Mi pedido</div>
+                                        <div class="aui-list-item-right">
+                                            <div style="font-size:0.7rem;">Total</div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <section class="aui-grid aui-margin-b-10">
+                            <div class="aui-row">
+                                <div class="aui-col-5" tapmode
+                                     onclick="$util.openWindow('order_list_win', {status: 1})">
+                                    <i class="aui-iconfont iconfont icon-daifukuan" style="font-size:1.4rem;"></i>
+                                    <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Pagará</div>
+                                    <div class="aui-badge" v-text="orderCount.wait_pay_num"
+                                         v-if="orderCount.wait_pay_num"></div>
+                                </div>
+                                <div class="aui-col-5" tapmode
+                                     onclick="$util.openWindow('order_list_win', {status: 2})">
+                                    <i class="aui-iconfont iconfont icon-daifahuo" style="font-size:1.4rem;"></i>
+                                    <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Despachará</div>
+                                    <div class="aui-badge" v-text="orderCount.wait_ship_num"
+                                         v-if="orderCount.wait_ship_num"></div>
+                                </div>
+                                <div class="aui-col-5" tapmode
+                                     onclick="$util.openWindow('order_list_win', {status: 3})">
+                                    <i class="aui-iconfont iconfont icon-yifahuo" style="font-size:1.4rem;"></i>
+                                    <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Recibirá</div>
+                                    <div class="aui-badge" v-text="orderCount.wait_finish_num"
+                                         v-if="orderCount.wait_finish_num"></div>
+                                </div>
+                                <div class="aui-col-5" tapmode
+                                     onclick="$util.openWindow('order_list_win', {status: 4})">
+                                    <i class="aui-iconfont iconfont icon-daipingjia" style="font-size:1.4rem;"></i>
+                                    <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Comentará</div>
+                                    <div class="aui-badge" v-text="orderCount.wait_comment_num"
+                                         v-if="orderCount.wait_comment_num"></div>
+                                </div>
+                                <div class="aui-col-5" tapmode onclick="$util.openWindow('order_refund_list_win')">
+                                    <i class="aui-iconfont iconfont icon-shouhou" style="font-size:1.4rem;"></i>
+                                    <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Posventa</div>
+                                    <div class="aui-badge" v-text="orderCount.return_goods_num"
+                                         v-if="orderCount.return_goods_num"></div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div v-cloak class="wallet1" v-if="isCloseWallet">
+                    <div class="wallet-into">
+                        <div class="aui-font-weight aui-margin-l-15">Mi cartera</div>
+                        <div class="aui-margin-r-15" onclick="$util.openWindow('wallet_frm')">
+                            <p>Entrar a mi cartera<i class="aui-iconfont aui-icon-right"></i></p>
+                        </div>
+                    </div>
+                    <div class="wallet-price">
+                        <div style="display: flex;align-items: center;width: 50%;" class="aui-margin-l-15">
+                            <p>Saldo:</p>
+                            <div class="aui-font-size-20 aui-font-weight" style="color:#f03b3b;margin-top: -0.2rem"
+                                 v-text="'$'+money"></div>
+                        </div>
+                        <div class="recharge" onclick="$util.openWindow('recharge_win')">Recargar</div>
+                        <div class="recharge aui-margin-r-5" onclick="$util.openWindow('withdraw_win')"
+                             style="margin-left: 3rem;width:7rem;">Sacar dinero</div>
+                    </div>
+                </div>
+                <div v-cloak class="wallet" v-if="!isCloseWallet">
+                    <div class="wallet-wancll aui-font-weight aui-font-size-18">Billetera</div>
+                    <div class="goOpen" @click="openWallet">Activar</div>
+                </div>
+
+                <div class="common_block">
+                    <div class="title aui-font-weight aui-margin-l-15 aui-margin-r-15">Administración</div>
+                    <section class="aui-grid" style="margin-top: 0.5rem">
+                        <div class="aui-row">
+                            <div class="aui-col-xs-3" onclick="$util.openWindow('cart_list_win')">
+                                <i class="aui-iconfont iconfont icon-gouwuche2"
+                                   style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Carro</div>
+                            </div>
+                            <div class="aui-col-xs-3" onclick="$util.openWindow('collection_list_win')">
+                                <i class="aui-iconfont iconfont icon-star" style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Mi favorito</div>
+                            </div>
+                            <div class="aui-col-xs-3" onclick="$util.openWindow('address_list_win')">
+                                <i class="aui-iconfont iconfont icon-dizhi-01"
+                                   style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Mi dirección</div>
+                            </div>
+                            <div class="aui-col-xs-3" onclick="$util.openWindow('comment_list_win')">
+                                <i class="aui-iconfont iconfont icon-dingdan1"
+                                   style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Mi comentario</div>
+                            </div>
+                            <div class="aui-col-xs-3" onclick="$util.openWindow('coupon_list_win')">
+                                <i class="aui-iconfont iconfont icon-youhuiquan"
+                                   style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Mi cupón</div>
+                            </div>
+                            <div class="aui-col-xs-3" onclick="$util.openWindow('trace_list_win')">
+                                <i class="aui-iconfont iconfont icon-zuji1"
+                                   style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Mis huellas</div>
+                            </div>
+                            <div class="aui-col-xs-3" onclick="$util.openWindow('mess_list_win')">
+                                <i class="aui-iconfont iconfont icon-custom-service"
+                                   style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Servicios</div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="common_block">
+                    <div class="title aui-font-weight aui-margin-l-15 aui-margin-r-15">Integral/Grupal</div>
+                    <section class="aui-grid" style="margin-top: 0.5rem">
+                        <div class="aui-row">
+                            <div class="aui-col-xs-3" onclick="$util.openWindow('score_shop_win')">
+                                <i class="aui-iconfont iconfont icon-jifenshangcheng"
+                                   style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Integral</div>
+                            </div>
+                            <div class="aui-col-xs-3" onclick="$util.openWindow('group_shop_win')">
+                                <i class="aui-iconfont iconfont icon-tuandui"
+                                   style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Grupal</div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="common_block">
+                    <div class="title aui-font-weight aui-margin-l-15 aui-margin-r-15">Distribución</div>
+                    <section class="aui-grid" style="margin-top: 0.5rem;margin-bottom: 0.8rem">
+                        <div class="aui-row">
+                            <div class="aui-col-xs-3" tapmode @click="gotoDistributionHome" v-if="is_open_drp">
+                                <i class="aui-iconfont iconfont icon-daifahuo"
+                                   style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Centro de distribución
+                                </div>
+                            </div>
+                            <!-- <div class="aui-col-xs-3" tapmode @click="gotoBonusHome" v-if="is_open_bonus">
+                        <i class="aui-iconfont iconfont icon-shouhou" style="font-size:1.4rem;color: #434343;"></i>
+                        <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Centro de distribución</div>
+                    </div>
+                    <div class="aui-col-xs-3" onclick="$util.openWindow('my_receive_account_win')" v-if="is_open_bonus || is_open_drp">
+                        <i class="aui-iconfont iconfont icon-qianbao1" style="font-size:1.4rem;color: #434343;"></i>
+                        <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Cuenta bancaria</div>
+                    </div>-->
+                            <div class="aui-col-xs-3" onclick="$util.openWindow('my_qrcode_win')"
+                                 v-if="(user.is_bonus || user.is_distributor) && (is_open_drp || is_open_bonus)">
+                                <i class="aui-iconfont iconfont icon-qr-code"
+                                   style="font-size:1.4rem;color: #434343;"></i>
+                                <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Invitación a código
+                                    binario</div>
+                            </div>
+                            <!-- <div class="aui-col-xs-3" onclick="eventA()" >
+                        <i class="aui-iconfont iconfont icon-qr-code" style="font-size:1.4rem;color: #434343;"></i>
+                        <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">闪退监控</div>
+                    </div> -->
+                        </div>
+                    </section>
+                </div>
+                <div class="mask" v-if="maskShow" v-cloak>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script type='text/javascript'
+        src='https://webchat.7moor.com/javascripts/7moorInit.js?accessId=6df22850-6fae-11e9-b30d-578324fce01a&autoShow=false&language=EN'
+        async='async'>
+        </script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var avatarDom = document.getElementById('avatar');
+    avatarDom.style.cssText += 'height:' + avatarDom.offsetWidth + 'px;';
+    apiready = function () {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                user: $util.user,
+                orderCount: {
+                    wait_comment_num: 0,
+                    wait_finish_num: 0,
+                    wait_pay_num: 0,
+                    wait_ship_num: 0
+                },
+                level: '',
+                score: '',
+                is_open_bonus: false,
+                is_open_drp: false,
+                systemParams: {},
+                isCloseWallet: api.pageParam.isCloseWallet || false,
+                money: '',
+                bgHeader: '',
+                maskShow: false,
+            },
+            methods: {
+                call() {
+                    $util.openWindow('user_messsage_detail_frm', {
+                        // id: 'user#' + item.id,
+                    })
+                    // api.call({
+                    //     type: 'tel_prompt',
+                    //     number: this.systemParams.customer_telephone
+                    // });
+                },
+                getParams: function () {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_systems/Params/getParams',
+                        data: {
+                            type: "basic",
+                        }
+                    }).then(function (resp) {
+                        that.systemParams = resp.data
+                    }).catch(function (err) { })
+                    $util.ajax({
+                        url: 'api_systems/Params/getParams',
+                        data: {
+                            type: "user_bg",
+                        }
+                    }).then(function (resp) {
+                        that.bgHeader = resp.data.score_desc_head_img;
+                    }).catch(function (err) { })
+                },
+                gotoBonusHome: function () {
+                    // 查询是否已经成为分销商
+                    $util.ajax({
+                        url: 'api_query/bonus/bonus_info',
+                        isLoading: true,
+                    }).then(function (infoResp) {
+                        $util.ajax({
+                            url: 'api_bonus/rules/become_bonus_info',
+                            isLoading: true,
+                        }).then(function (becomeInfoResp) {
+                            // 如果不是分红商
+                            if (!infoResp.data.is_bonus) {
+                                var value = becomeInfoResp.data.become_bonus_condition;
+                                if (value == 'apply') {
+                                    // 跳转到申请页面
+                                    $util.ajax({
+                                        url: 'api_bonus/user_apply_bonus/read',
+                                        isLoading: true,
+                                    }).then(function (applyResp) {
+                                        if (!applyResp.data.status) {
+                                            $util.openWindow('distribution_and_bonus_apply_win', {
+                                                type: 'bonus'
+                                            });
+                                        } else if (applyResp.data.status == 1) {
+                                            $util.toast('Está esperando la autorización');
+                                        } else if (applyResp.data.status == 2) {
+                                            $util.toast('El examen no ha sido aprobado');
+                                            setTimeout(function () {
+                                                $util.openWindow('distribution_and_bonus_apply_win', {
+                                                    type: 'bonus'
+                                                });
+                                            }, 800);
+                                        }
+                                    }).catch(function (err) { });
+                                } else if (value == 'order_num') {
+                                    $util.toast('Para llegar a ser un distribuidor' + becomeInfoResp.data.become_bonus_value + 'Pedido M')
+                                } else if (value == 'order_money') {
+                                    $util.toast('Para llegar a ser un distribuidor' + becomeInfoResp.data.become_bonus_value);
+                                } else if (value == 'goods') {
+                                    $util.toast('Ser un distribuidor requiere comprar productos');
+                                    setTimeout(function () {
+                                        $util.openWindow('goods_list_model_win', {
+                                            bonus: 1
+                                        })
+                                    }, 800);
+                                }
+                            } else {
+                                if (becomeInfoResp.data.is_need_complete_user_info) {
+                                    // 查询用户是否完善个人信息
+                                    $util.ajax({
+                                        url: 'api_users/users/complete_user_info',
+                                        isLoading: true,
+                                    }).then(function (completeResp) {
+                                        if (completeResp.data.is_complete) {
+                                            $util.openWindow('bonus_home_win');
+                                        } else {
+                                            $util.openWindow('complete_user_info_win');
+                                        }
+                                    }).catch(function (err) { })
+                                } else {
+                                    $util.openWindow('bonus_home_win')
+                                }
+                            }
+                        }).catch(function (err) { });
+                    }).catch(function (err) { });
+                },
+                // 去分销中心
+                gotoDistributionHome: function () {
+                    // 查询是否已经成为分销商
+                    $util.ajax({
+                        url: 'api_query/drp/distributor_info',
+                        isLoading: true,
+                    }).then(function (infoResp) {
+                        $util.ajax({
+                            url: 'api_drp/rules/become_distributor_info',
+                            isLoading: true,
+                        }).then(function (becomeInfoResp) {
+                            // 如果不是分销商
+                            if (!infoResp.data.is_distributor) {
+                                var value = becomeInfoResp.data.become_distributor_condition;
+                                if (value == 'apply') {
+                                    // 跳转到申请页面
+                                    $util.ajax({
+                                        url: 'api_drp/user_apply_distributor/read',
+                                        isLoading: true,
+                                    }).then(function (applyResp) {
+                                        if (!applyResp.data.status) {
+                                            $util.openWindow('distribution_and_bonus_apply_win', {
+                                                type: 'distribution'
+                                            });
+                                        } else if (applyResp.data.status == 1) {
+                                            $util.toast('Está esperando la autorización');
+                                        } else if (applyResp.data.status == 2) {
+                                            $util.toast('El examen no ha sido aprobado');
+                                            setTimeout(function () {
+                                                $util.openWindow('distribution_and_bonus_apply_win', {
+                                                    type: 'distribution'
+                                                });
+                                            }, 800);
+                                        }
+                                    }).catch(function (err) { })
+                                } else if (value == 'order_num') {
+                                    $util.toast('Para ser un distribuidor' + becomeInfoResp.data.become_distributor_value + 'Pedido M')
+                                } else if (value == 'order_money') {
+                                    $util.toast('Para ser un distribuidor,el pedido debe llegar a' + becomeInfoResp.data.become_distributor_value);
+                                } else if (value == 'goods') {
+                                    $util.toast('Ser distribuidor requiere comprar mercancías');
+                                    setTimeout(function () {
+                                        $util.openWindow('goods_list_model_win', {
+                                            distribution: 1
+                                        })
+                                    }, 800);
+                                }
+                            } else {
+                                if (becomeInfoResp.data.is_need_complete_user_info) {
+                                    // 查询用户是否完善个人信息
+                                    $util.ajax({
+                                        url: 'api_users/users/complete_user_info',
+                                        isLoading: true,
+                                    }).then(function (completeResp) {
+                                        if (completeResp.data.is_complete) {
+                                            $util.openWindow('distribution_home_win');
+                                        } else {
+                                            $util.openWindow('complete_user_info_win');
+                                        }
+                                    }).catch(function (err) { })
+                                } else {
+                                    $util.openWindow('distribution_home_win')
+                                }
+                            }
+                        }).catch(function (err) { })
+                    }).catch(function (err) { });
+                },
+                // 查询认证状态
+                authentication: function () {
+                    $util.ajax({
+                        url: 'api_query/users/auth',
+                        isLoading: true,
+                    }).then(function (resp) {
+                        var status = resp.data.status;
+                        if (status == 0 || status == 2) {
+                            $util.openWindow('idcard_auth_win', {
+                                status: status,
+                                id: resp.data.id
+                            });
+                        } else if (status == 1 || status == 3) {
+                            $util.openWindow('idcard_info_win');
+                        }
+                    }).catch(function (err) { })
+                },
+                // 加载订单数量
+                loadOrderCount: function () {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_query/orders/count'
+                    }).then(function (resp) {
+                        that.orderCount = resp.data;
+                    }).catch(function (err) { });
+                },
+                // 加载用户信息
+                loadUserInfo: function () {
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_users/users/read',
+                        data: {
+                            id: $util.user.id
+                        }
+                    }).then(function (resp) {
+                        resp.data.avatar = resp.data.avatar ? resp.data.avatar : '../image/avatar.png';
+                        that.user = resp.data;
+                        $api.setStorage('user', resp.data);
+                        api.sendEvent({
+                            name: 'updateUser',
+                        });
+                    }).catch(function (err) { })
+                    $util.ajax({
+                        url: 'api_query/users/asset',
+                    }).then(function (resp) {
+                        that.level = resp.data.level;
+                        that.score = resp.data.score;
+                        that.money = resp.data.money;
+                    }).catch(function (err) { })
+                },
+                getDrpDbStatus: function () {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_query/systems/info'
+                    }).then(function (resp) {
+                        that.is_open_bonus = resp.data.is_open_bonus;
+                        that.is_open_drp = resp.data.is_open_drp;
+                    }).catch(function (err) { })
+                },
+                openWallet: function () {
+                    var that = this
+                    that.maskShow = true;
+                    api.openFrame({
+                        name: 'openWallet_frm',
+                        url: './openWallet_frm.html',
+                        rect: {
+                            x: (api.winWidth - 285) / 2,
+                            y: (api.winHeight - 270) / 2,
+                            w: 285,
+                            h: 270,
+                        },
+                        pageParam: {
+
+                        },
+                        animation: {
+                            type: "movein", //动画类型（详见动画类型常量）
+                            subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                            duration: 300
+                        },
+                        bounces: false,
+                        bgColor: '#fff',
+                        vScrollBarEnabled: false,
+                        hScrollBarEnabled: false
+                    });
+                },
+                getIsCloseWallet: function () {
+                    var that = this
+                    // 查询是否设置了支付密码
+                    $util.ajax({
+                        url: 'api_query/users/is_set_pay_password'
+                    }).then(function (resp) {
+                        if (resp.data.is_set_pay_password === 1) {
+                            that.isCloseWallet = true;
+                        } else {
+                            that.isCloseWallet = false;
+                        }
+                    })
+                }
+            },
+            mounted: function () {
+                this.loadOrderCount()
+                this.loadUserInfo()
+                this.getDrpDbStatus()
+                this.getParams()
+                this.getIsCloseWallet()
+            }
+        });
+        // 更新用户监听
+        api.addEventListener({
+            name: 'updateUser'
+        }, function (ret, err) {
+            app.user = $api.getStorage('user');
+        });
+        api.addEventListener({
+            name: 'updateOrder'
+        }, function (ret, err) {
+            app.loadOrderCount();
+        });
+        api.addEventListener({
+            name: 'maskShow'
+        }, function (ret, err) {
+            app.maskShow = ret.value.maskShow;
+        });
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function (ret, err) {
+            app.loadOrderCount();
+            app.loadUserInfo();
+            app.getDrpDbStatus();
+            app.getParams();
+            app.getIsCloseWallet();
+        }); api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function (ret, err) {
+            app.loadOrderCount();
+            app.loadUserInfo();
+            app.getDrpDbStatus();
+            app.getParams();
+            app.getIsCloseWallet();
+        });
+
+
+    };
+</script>
+
+</html>

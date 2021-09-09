@@ -1,0 +1,113 @@
+<!-- 模型win -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="app">
+        <!-- 头部 -->
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header">
+            <a class="aui-pull-left aui-btn" onclick="api.closeWin();">
+                <span class="aui-iconfont aui-icon-left"></span>
+            </a>
+            <div class="aui-title" style="left:1.5rem; right: 0rem;">
+                <div class="aui-searchbar aui-bg-white" id="search">
+                    <div class="aui-searchbar-input aui-border-radius aui-bg-default">
+                        <i class="aui-iconfont aui-icon-search"></i>
+                        <input type="text" placeholder="Buscar productos" id="search-input" onkeyup="searchKeyup(event)">
+                        <div class="aui-searchbar-clear-btn">
+                            <i class="aui-iconfont aui-icon-close"></i>
+                        </div>
+                    </div>
+                    <div class="aui-searchbar-btn" tapmode>Cancelar</div>
+                </div>
+            </div>
+        </header>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+
+    function doSpeechRecognizer() {
+        api.execScript({
+            frameName: 'search_page_frm',
+            script: 'doSpeechRecognizer();'
+        });
+    }
+    apiready = function() {
+        $util.fixPage();
+        $util.openFrame('search_page_frm', api.pageParam);
+    };
+
+    function searchKeyup(event) {
+        if (event.keyCode == 13) {
+            var keywords = searchBarInput.value;
+            if (keywords.length) {
+                searchBarInput.blur();
+                $util.openWindow('goods_list_model_win', {
+                    keyword: keywords
+                })
+            } else {
+                this.style.marginRight = "-" + this.offsetWidth + "px";
+                searchBarInput.value = '';
+                searchBarInput.blur();
+            }
+        }
+    }
+
+    var searchBar = document.querySelector(".aui-searchbar");
+    var searchBarInput = document.querySelector(".aui-searchbar input");
+    var searchBarBtn = document.querySelector(".aui-searchbar .aui-searchbar-btn");
+    var searchBarClearBtn = document.querySelector(".aui-searchbar .aui-searchbar-clear-btn");
+    if (searchBar) {
+        searchBarInput.onclick = function() {
+            searchBarBtn.style.marginRight = 0;
+        }
+        searchBarInput.oninput = function() {
+            if (this.value.length) {
+                searchBarClearBtn.style.display = 'block';
+                searchBarBtn.classList.add("aui-text-default");
+                searchBarBtn.textContent = "Búsqueda";
+            } else {
+                searchBarClearBtn.style.display = 'none';
+                searchBarBtn.classList.remove("aui-text-info");
+                searchBarBtn.textContent = "Cancelar";
+            }
+        }
+    }
+    searchBarClearBtn.onclick = function() {
+        this.style.display = 'none';
+        searchBarInput.value = '';
+        searchBarBtn.classList.remove("aui-text-info");
+        searchBarBtn.textContent = "Cancelar";
+    }
+    searchBarBtn.onclick = function() {
+        var keywords = searchBarInput.value;
+        if (keywords.length) {
+            searchBarInput.blur();
+            $util.openWindow('goods_list_model_win', {
+                keyword: keywords
+            })
+        } else {
+            this.style.marginRight = "-" + this.offsetWidth + "px";
+            searchBarInput.value = '';
+            searchBarInput.blur();
+        }
+    }
+</script>
+
+</html>

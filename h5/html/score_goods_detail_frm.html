@@ -1,0 +1,266 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" href="../css/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="../css/assets/owl.theme.default.min.css">
+    <style media="screen">
+        .owl-theme .owl-nav.disabled+.owl-dots {
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+        }
+
+        .owl-theme .owl-dots .owl-dot span {
+            width: 6px;
+            height: 6px;
+        }
+
+        #detail img {
+            max-width: 100%;
+        }
+
+        .returni {
+            position: absolute;
+            z-index: 100;
+            left: .5rem;
+            top: 1.5rem;
+            color: #333;
+            font-weight: 400;
+            font-size: .9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 返回按钮 -->
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header" style="background-color:#fff!important;">
+          <a class="aui-pull-left aui-btn" onclick="api.closeWin()">
+            <span class="aui-iconfont aui-icon-left" style="color:#333!important;"></span>
+          </a>
+          <div class="aui-title" v-text="title" style="color:#333!important;"></div>
+        </header>
+
+        <!-- 轮播 -->
+        <div class="owl-carousel owl-theme" id="owl-carousel1">
+            <div class="item" v-for="(img,key) in goods.imgs" :key="key">
+                <a href="javascript:void(0)">
+                    <img :src="img" />
+                </a>
+            </div>
+        </div>
+        <!-- 商品信息 -->
+        <div class="aui-content aui-padded-10 aui-bg-white">
+            <h1 class="aui-text-price">
+       <span v-text="goods.score_price"></span>
+       <span class="aui-font-size-14">Puntos</span>
+       <span v-if="goods.money > 0" class="aui-font-size-14"> + </span>
+       <span v-if="goods.money > 0" v-text="goods.money"></span>
+       <span v-if="goods.money > 0" class="aui-font-size-14">$</span>
+       </h1>
+            <h3 v-text="goods.name" class="aui-padded-t-5"></h3>
+            <p class="aui-font-size-12 aui-padded-t-5" v-text="goods.intro"></p>
+        </div>
+        <!-- 选项卡切换 -->
+        <div class="aui-tab" id="tab">
+            <div class="aui-tab-item aui-pull-left aui-margin-l-15" :class="{'aui-active': firstTabActive}" @click="changeTab(true)" style="text-align: center;border-bottom:0">Detalles</div>
+        </div>
+
+        <!-- 详情 -->
+        <div class="aui-padded-5" id="detail" v-html="goods.desc" v-show="firstTabActive"></div>
+        <div style="margin-bottom:2.8rem;"></div>
+
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../script/owl.carousel.min.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var page = 1
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                title:'Detalles del producto integral',
+                goods: {
+                    goods_info: {
+                        spec_info: [],
+                        attr_info: [],
+                        imgs: [],
+                        tags: [],
+                        stock: 0,
+                        sell_num: 0,
+                    },
+                    spec_group_info: [], //动态规格组合表
+                },
+                // 选择的规格组合项
+                select_spec_group_info: {},
+                // 选项卡
+                firstTabActive: true,
+                // 商品评论
+                list: [],
+                haveNoData: false,
+                page: 1,
+            },
+            methods: {
+                //切换tab
+                changeTab: function(flag) {
+                    this.firstTabActive = flag;
+                },
+                //点击购买
+                buy: function() {
+                    var that = this
+                    $util.openWindow('score_order_confirm_win', {
+                        scoreGoodsList: [{
+                            goods: this.goods,
+                            num: 1
+                        }]
+                    })
+                },
+                // 选择规格
+                selectSpec: function(type) {
+                    var that = this
+                    api.openFrame({
+                        name: 'score_goods_spec_info_select_frm',
+                        url: './score_goods_spec_info_select_frm.html',
+                        rect: {
+                            x: 0,
+                            y: api.winHeight / 4,
+                            w: api.winWidth,
+                            h: api.winHeight / 4 * 3,
+                            marginBottom: 0,
+                        },
+                        pageParam: {
+                            goods: this.goods.goods_info,
+                            select_spec_group_info: this.select_spec_group_info,
+                            spec_group_info: this.goods.spec_group_info,
+                            type: type, //选择规格之后的操作
+                        },
+                        animation: {
+                            type: "movein", //动画类型（详见动画类型常量）
+                            subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                            duration: 300
+                        },
+                        bounces: false,
+                        bgColor: 'rgba(0,0,0,0)',
+                        vScrollBarEnabled: false,
+                        hScrollBarEnabled: false
+                    });
+                },
+                // 查看属性
+                viewAttr: function() {
+                    api.openFrame({
+                        name: 'goods_attr_info_view_frm',
+                        url: './goods_attr_info_view_frm.html',
+                        rect: {
+                            x: 0,
+                            y: api.winHeight / 3,
+                            w: api.winWidth,
+                            h: api.winHeight / 3 * 2,
+                            marginBottom: 0,
+                        },
+                        pageParam: {
+                            goods: this.goods.goods_info,
+                        },
+                        animation: {
+                            type: "movein", //动画类型（详见动画类型常量）
+                            subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                            duration: 300
+                        },
+                        bounces: false,
+                        bgColor: 'rgba(0,0,0,0)',
+                        vScrollBarEnabled: false,
+                        hScrollBarEnabled: false
+                    });
+                },
+                getData: function() {
+                    var that = this;
+
+                    $util.ajax({
+                        url: 'api_query/goods/comments',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                        data: {
+                            goods_id: api.pageParam.goodsId
+                        }
+                    }).then(function(resp) {
+
+                        that.list = that.list.concat(resp.data).unique();
+                        that.haveNoData = !Boolean(that.list.length)
+                    }).catch(function(err) {})
+                    page++;
+                },
+                getGoods: function() {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_score_shop/score_goods/read',
+                        data: {
+                            id: api.pageParam.id
+                        }
+                    }).then(function(resp) {
+                        resp.data.goods_info = resp.data.goods_info || {
+                            spec_info: [],
+                            attr_info: [],
+                            imgs: [],
+                            tags: [],
+                            stock: 0,
+                            sell_num: 0,
+                        };
+                        that.goods = resp.data;
+                        setTimeout(function() {
+                            $('#owl-carousel1').owlCarousel({
+                                loop: false,
+                                nav: false,
+                                autoplay: true,
+                                autoplayTimeout: 4000,
+                                items: 1
+                            });
+                        }, 50);
+                    }).catch(function(err) {})
+                }
+            },
+            mounted: function() {
+                this.getGoods()
+            }
+        });
+        // 监听选择规格事件
+        api.addEventListener({
+            name: 'updateGoodsSpecInfo'
+        }, function(ret, err) {
+            if (ret) {
+                app.goods.goods_info = ret.value.goods;
+                app.select_spec_group_info = ret.value.select_spec_group_info;
+                if (ret.value.type == 'buy') {
+                    app.buy();
+                }
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+    };
+</script>
+
+</html>

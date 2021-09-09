@@ -1,0 +1,225 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-07 18:40:54
+ * @FilePath: /A6001888506312/html/bonus_home_win.html
+-->
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-06 22:52:25
+ * @FilePath: /A6001888506312/html/bonus_home_win.html
+-->
+<!-- 模型win -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        body {
+            background-color: #fff;
+        }
+
+        .distribution-bg {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: -1;
+        }
+
+        #avatar {
+            margin: 1.5rem auto 1rem auto;
+            width: 18%;
+        }
+
+        .distribution-button {
+            height: 1.3rem;
+            line-height: 1.3rem;
+            border-radius: 1.3rem;
+            text-align: center;
+            background-color: #358cff;
+            width: 45%;
+            color: #fff;
+            display: inline-block;
+            margin-top: .3rem;
+        }
+
+        .distribution-button:active {
+            background-color: #207bf1
+        }
+
+        .returni {
+            position: absolute;
+            z-index: 100;
+            left: .5rem;
+            top: 1.3rem;
+            color: #333;
+            font-weight: 400;
+            font-size: .9rem;
+        }
+
+        .aui-clearfix:after {
+            display: table;
+            content: "";
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 头部 -->
+        <div style="position: relative;">
+            <!-- 返回按钮 -->
+            <i class="aui-iconfont aui-icon-left returni" style="color: #fff!important;" tapmode
+               onclick="api.closeWin()"></i>
+            <img :src="distribution_bg" class="distribution-bg">
+            <!-- 中间页 -->
+            <div class="aui-content aui-text-center aui-text-white">
+                <img :src="user.avatar" class="aui-img-round" id="avatar">
+                <div v-text="user.nick_name || 'Usuario anónimo'"></div>
+                <div class="aui-font-size-14" v-text="bonus_info.level_name"></div>
+                <div class="aui-font-size-14" v-if="bonus_info.region_bonus_info" v-text="bonus_info.region_bonus_info">
+                </div>
+                <div class="aui-font-size-12" v-text="bonus_info.become_bonus_time"></div>
+                <!-- 操作 -->
+                <div class="aui-bg-white aui-margin-15 aui-text-default aui-clearfix aui-padded-10"
+                     style="border-radius: .3rem;box-shadow: 0 5px 10px 0 #f3fbff;">
+                    <div class="aui-col-xs-6 aui-border-r">
+                        <div class="aui-font-size-20" v-text="bonus_info.total_money || 0"></div>
+                        <div class="aui-font-size-14 aui-text-pray">Comisión acumulada</div>
+                        <div class="distribution-button" tapmode onclick="$util.openWindow('bonus_wallet_win')"> Entrada
+                        </div>
+                    </div>
+                    <div class="aui-col-xs-6">
+                        <div class="aui-font-size-20" v-text="bonus_info.can_drawcash_money"></div>
+                        <div class="aui-font-size-14 aui-text-pray">Comisión de compensación</div>
+                        <div class="distribution-button" tapmode onclick="$util.openWindow('bonus_withdraw_apply_win')">
+                            Sacar dinero</div>
+                    </div>
+                </div>
+                <!-- 面板 -->
+                <section class="aui-grid" style="margin-bottom: 2.7rem;">
+                    <div class="aui-row">
+                        <div class="aui-col-xs-4" tapmode onclick="$util.openWindow('bonus_wallet_win')">
+                            <i class="aui-iconfont iconfont icon-qianbao1" style="font-size:1.4rem;color: #fe9341;"></i>
+                            <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Comisión de dividendos
+                            </div>
+                            <span class=" aui-font-size-10 aui-text-pray"
+                                  v-text="bonus_info.total_money || 0 + 'Dólar'"></span>
+                        </div>
+                        <div class="aui-col-xs-4" tapmode onclick="$util.openWindow('bonus_orders_win')">
+                            <i class="aui-iconfont iconfont icon-chengjiaodingdan"
+                               style="font-size:1.4rem; color: #fe9341;"></i>
+                            <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Pedido de dividendo</div>
+                            <span class=" aui-font-size-10 aui-text-pray" v-text="bonus_info.order_num + 'Uno'"></span>
+                        </div>
+                        <div class="aui-col-xs-4" tapmode onclick="$util.openWindow('bonus_detail_win')">
+                            <i class="aui-iconfont iconfont icon-icon_gongzimingxi"
+                               style="font-size:1.4rem;color: #fe9341;"></i>
+                            <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Desglose de Comisiones
+                            </div>
+                            <span class=" aui-font-size-10 aui-text-pray" style="color: transparent!important;">Desglose
+                                de Comisiones</span>
+                        </div>
+                        <div class="aui-col-xs-4" tapmode onclick="$util.openWindow('bonus_custs_win')">
+                            <i class="aui-iconfont iconfont icon-huiyuan1" style="font-size:1.4rem;color: #257fd6;"></i>
+                            <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Mi cliente</div>
+                            <span class=" aui-font-size-10 aui-text-pray"
+                                  v-text="bonus_info.child_user_num + 'Uno'"></span>
+                        </div>
+                        <div class="aui-col-xs-4" tapmode onclick="$util.openWindow('bonus_team_win')">
+                            <i class="aui-iconfont iconfont icon-tubiao-" style="font-size:1.4rem;color: #257fd6;"></i>
+                            <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Mi equipo</div>
+                            <span class=" aui-font-size-10 aui-text-pray"
+                                  v-text="bonus_info.team_user_num + 'Uno'"></span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var avatarDom = document.getElementById('avatar');
+    avatarDom.style.cssText += 'height:' + avatarDom.offsetWidth + 'px;';
+    apiready = function () {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                user: $api.getStorage('user'),
+                bonus_info: {
+                    can_drawcash_money: '',
+                    child_user_num: '',
+                    bonus_money: '',
+                    level_name: '',
+                    order_num: '',
+                    team_user_num: '',
+                    total_money: ''
+                },
+                distribution_bg: ''
+            },
+            methods: {
+                getData: function () {
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_query/bonus/bonus_info',
+                        isLoading: true,
+                    }).then(function (resp) {
+                        resp.data.can_drawcash_money = Number(resp.data.can_drawcash_money).toFixed(2);
+                        resp.data.bonus_money = Number(resp.data.bonus_money).toFixed(2);
+                        resp.data.total_money = Number(resp.data.total_money).toFixed(2);
+                        that.bonus_info = resp.data;
+                    }).catch(function (err) { })
+                },
+                getParams: function () {
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_systems/params/getParams',
+                        data: {
+                            type: 'user_bg'
+                        }
+                    }).then(function (resp) {
+                        that.distribution_bg = resp.data.distribution_centre_head_img;
+                    }).catch(function (err) { })
+                }
+            },
+            mounted: function () {
+                this.getParams()
+                this.getData()
+            }
+        });
+        api.setRefreshHeaderInfo({
+            bgColor: '#fff',
+        }, function (ret, err) {
+            app.getData()
+        });
+        api.addEventListener({
+            name: 'setRefreshHeaderInfo'
+        }, function (ret, err) {
+            app.getData()
+        });
+    };
+</script>
+
+</html>

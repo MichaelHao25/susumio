@@ -1,0 +1,21 @@
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot?t=1553489298465'); /* IE9 */
+  src: url('iconfont.eot?t=1553489298465#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAARYAAsAAAAACIgAAAQJAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCCcAqFFIQMATYCJAMICwYABCAFhG0HLxsxByMRdnMwApH9IyE7abwhETmyhG5/jRuktkKniTf99F365mbDTdOAchVJXyV0PPB/7+4bf+NPx7LCvA2WYEDRPB5IpAkH3tZ0He6NimZ0yZ5vPct25ld3GtZ5nEYpLA4h8Yl7p78lPh9QjnMu6gKMAwpwL+qiRNIBEpgH0jB25UVcBghgNKIAHa0cPIBeZsxCALrERocCfUor1xQitaAs2ZghvIFGHWspZwHgkP959Ae1QA8oigTGQpcoywgweQ7P4Ru1RICrh+rxzADAtgEMKAAgQOdSqxPgMKoAaxUrYVbfmAWeo1Jd7mp/eACBSjCkTJAmwD0nns0/VSkFv04AJHATwLdeqQBkMhYGZkbzVk9OdgaG7BbOUjRyRnlu8PRJhXbeHu+usZaO6eHWTs/CJ9jinxrcPLk/4N7W1tLc3szV2ubZefzkNG+LZMsa9xh/l0czV2kbdxtnSbOXF9fqVZnh7f5rgj3X5tfXtxXa+3k7LtmSp24ocyPuts7RZg60fVXrdNDZx9+1JT22p9x3XahzMCam/s01SU7PjWsq81d1UDNHcwdnCzds3VC/8Q1r4Vy5IT50XauVa3Sdp72bp/+aZqlXVxd32xhZz9nifUage1qqjqt11nPkwo3F02evLni3dHSPt3b2TeWzirAAtCkC/ugkst0X0NC0K1F0o8UGZrSuh8xMAawWnzN6dIpwWHj4rIgyDayysAqUOS1rOyiPHJK8in8MI6esWa+F4pjw66mU2FNRU7Eqghb4Yp9Q1wGzw8tMlhkCG9fFbutNZWI29CjRcFQTId0yqW9WwHmSLVhhCJEoPWXgkHCD/TuT1+3eVU1RBwa+QSvV8ej3HE5ldy2chUB9oFd67OtkEHLwpwpbCKaGjR3rP6xvZcsiYSsQZpiEP7n0lxceAqwvNFenRZKEyLNAVok/LFjFL90pOenJ7ySUHuGUKdvlq9q+Nkmzp4MJAABQc3EjLvzn37Eq/vFMcdDgGz1JAAC4+S06it3UXALa2QHo34we+cO8ll2EKjB0lCzzSpMUP+SbEzOaAUAFw8nmfl87J4jNSM15EBSVIbDagkTQVqDRWYNWbQNGS9bbSb00wEJmAHDQxgsAYfEGBbM9YCw+JIL2Aw0uf9BiCT4YeQX2A0lSwQhzwoqxhfoJpplGaRlYBIUHVNe+oqTAp1+QVhOAOIiyiRxHpDGWrDeVMEuQNA2Qgeuw7yeYabLYcKCZ5zQMZdmDgmYaHMEcQRWGWqD2BIzGZCTd/kzk3n+AlKtehWo6KpwXiKzM8CAWiFqQcunYquNa7lndKAnGJCCRyQBkwIx6MzoBc/k4CzVYQPcIz1Ih6iXbSoP55cPTHcBxBEPlBXMEBprr1ZrYcQAAAAA=') format('woff2'),
+  url('iconfont.woff?t=1553489298465') format('woff'),
+  url('iconfont.ttf?t=1553489298465') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('iconfont.svg?t=1553489298465#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-zuji1:before {
+  content: "\e600";
+}
+

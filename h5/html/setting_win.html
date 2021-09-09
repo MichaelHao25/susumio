@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header" style="background-image:none;">
+            <a class="aui-pull-left aui-btn" tapmode onclick="api.closeWin();">
+                <span class="aui-iconfont aui-icon-left"></span>
+            </a>
+            <div class="aui-title">Configuración</div>
+            <a class="aui-pull-right aui-btn" tapmode @click.stop="saveClip" v-if="isEdit">
+                <span class="aui-iconfont">Guardar</span>
+            </a>
+        </header>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        //  api.openFrameGroup({url:'./setting_frm.html',bounces:false })
+        //  $util.openFrame('setting_frm')
+          api.openFrame({
+              name: 'setting_frm',
+              url: './setting_frm.html',
+              rect: {
+                  x: 0,
+                  y: $util.headerH,
+                  w: api.winWidth,
+                  h: api.winHeight - $util.headerH
+              },
+              bounces: false,
+              bgColor: 'rgba(0,0,0,0)',
+              vScrollBarEnabled: false,
+              hScrollBarEnabled: false
+          });
+
+        app = new Vue({
+            el: '#header',
+            data: {
+                isEdit: false,
+            },
+            methods: {
+                saveClip: function(){
+                    api.sendEvent({
+                        name: 'saveClip',
+                    });
+                }
+            }
+        })
+        api.addEventListener({
+            name: 'changeIsEdit'
+        }, function(ret, err){
+            app.isEdit = ret.value.isEdit || false
+        });
+    };
+</script>
+
+</html>

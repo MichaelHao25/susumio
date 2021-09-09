@@ -1,0 +1,306 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-06 21:57:36
+ * @FilePath: /A6001888506312/html/group_shop_frm.html
+-->
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+    <style media="screen">
+        .go-collage {
+            background: red;
+            color: #fff;
+            padding: 0.2rem 0.3rem;
+            border-radius: 10%;
+        }
+
+        #top {
+            background-size: 100% 100%;
+            height: 7rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        #top #avatar {
+            width: 18%;
+            margin-left: 10%;
+        }
+
+        #top #setting {
+            position: absolute;
+            top: 1rem;
+            right: .8rem;
+            font-size: .75rem;
+        }
+
+        #top .level {
+            background: #58abf1;
+            border-radius: .2rem;
+            padding: 0px .3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <div class="aui-content">
+            <section class="aui-content aui-bg-white">
+                <div class="aui-margin-5" id="top" :style="{ 'background': 'url(' + bgHeader + ') no-repeat center center'}">
+                    <img :src="user.avatar" class="aui-img-round" id="avatar">
+                    <div class="aui-text-white aui-margin-l-15">
+                        <div v-text="user.nick_name || 'Usuario anónimo'" class="aui-font-size-18"></div>
+                        <div class="aui-font-size-12">
+                            <i class="aui-iconfont aui-icon-mobile aui-font-size-12"></i>
+                            <span v-text="user.mobile"></span>
+                        </div>
+                        <div class="aui-margin-t-5">
+                            <span class="level">
+                                <span class="aui-font-size-12" v-text="'Billetera: ' + '$'+  money"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="aui-content aui-margin-t-10">
+                <ul class="aui-list aui-list-in">
+                    <li class="aui-list-item" tapmode onclick="$util.openWindow('group_order_list_win', {status: 0})">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-title">Pedido</div>
+                            <div class="aui-list-item-right">
+                                <div style="font-size:0.7rem;">Todos los pedidos</div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <section class="aui-grid aui-margin-b-10">
+                <div class="aui-row">
+                    <div class="aui-col-xs-3" tapmode onclick="$util.openWindow('group_order_list_win', {status: 1})">
+                        <i class="aui-iconfont iconfont icon-daifukuan" style="font-size:1.4rem;"></i>
+                        <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Pagará</div>
+                        <div class="aui-badge" v-text="orderCount.wait_pay_num" v-if="orderCount.wait_pay_num"></div>
+                    </div>
+                    <div class="aui-col-xs-3" tapmode onclick="$util.openWindow('group_order_list_win', {status: 2})">
+                        <i class="aui-iconfont iconfont icon-tuandui" style="font-size:1.4rem;"></i>
+                        <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Formar grupo</div>
+                        <div class="aui-badge" v-text="orderCount.wait_team_num" v-if="orderCount.wait_team_num"></div>
+                    </div>
+                    <div class="aui-col-xs-3" tapmode onclick="$util.openWindow('group_order_list_win', {status: 3})">
+                        <i class="aui-iconfont iconfont icon-daifahuo" style="font-size:1.4rem;"></i>
+                        <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Enviará</div>
+                        <div class="aui-badge" v-text="orderCount.wait_ship_num" v-if="orderCount.wait_ship_num"></div>
+                    </div>
+                    <div class="aui-col-xs-3" tapmode onclick="$util.openWindow('group_order_list_win', {status: 4})">
+                        <i class="aui-iconfont iconfont icon-yifahuo" style="font-size:1.4rem;"></i>
+                        <div class="aui-bar-tab-label aui-font-size-12 aui-text-default">Entregará</div>
+                        <div class="aui-badge" v-text="orderCount.wait_finish_num" v-if="orderCount.wait_finish_num"></div>
+                    </div>
+                </div>
+            </section>
+            <!-- 中间页 -->
+            <div v-if="haveNoData" class="aui-col-xs-12 aui-text-center" style="margin-top:30%;">
+                <img src="../image/no_content.png" style="width:18%;margin:0 auto;">
+                <h5 style="margin-top:1rem;" class="aui-font-size-14">Oh. Aquí no hay nada.</h5>
+            </div>
+            <div v-else class="aui-content">
+                <div class="aui-padded-5 aui-bg-white aui-margin-t-10">
+                    <div class=" aui-padded-l-5 aui-padded-r-5 aui-bg-white">
+                        <!-- 商品列表 -->
+                        <ul class="aui-list aui-media-list" style="background-image:none;">
+                            <li class="aui-list-item aui-margin-b-5 aui-bg-white" style="background-image:none;border-bottom:1px solid #eee" v-for="(goods,goodsKey) in list" :key="goodsKey">
+                                <div class="aui-media-list-item-inner">
+                                    <!-- 商品缩略图 -->
+                                    <div class="aui-list-item-media">
+                                        <img :src="goods.goods_info && goods.goods_info.thum" />
+                                    </div>
+                                    <div class="aui-list-item-inner">
+                                        <!-- 商品名称 -->
+                                        <div class="aui-list-item-text">
+                                            <div class="aui-list-item-title aui-ellipsis-2 aui-font-size-14" v-text="goods.goods_info && goods.goods_info.name">
+                                            </div>
+                                        </div>
+                                        <!-- 商品金额 -->
+                                        <div class="aui-list-item-text aui-text-pray aui-margin-t-5">
+                                            <div class="aui-list-item-title aui-font-size-12 aui-text-pray" style="width:70%;height:2.5rem">
+                                                <span>Precio de compra:
+                                                    <span style="text-decoration:line-through" v-text="'$' + (goods.goods_info && goods.goods_info.sell_price)"></span>
+                                                </span>
+                                                <br/>
+                                                <span style="color:red">$
+                                                    <span style="font-size:1rem" v-text="goods.money"></span>
+                                                </span>
+                                            </div>
+                                            <div class="aui-list-item-righ" @click="goGoodsDetail(goods)">
+                                                <span class="go-collage">Formar</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var page = 1
+    var avatarDom = document.getElementById('avatar');
+    avatarDom.style.cssText += 'height:' + avatarDom.offsetWidth + 'px;';
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                user: $api.getStorage('user'),
+                money: '',
+                haveNoData: false,
+                list: [],
+                orderCount: {
+                    wait_comment_num: 0,
+                    wait_finish_num: 0,
+                    wait_pay_num: 0,
+                    wait_ship_num: 0
+                },
+                group_shop_type: 1, // 1为系统拼团，2为会员拼团
+                bgHeader:'',
+            },
+            methods: {
+                getData: function() {
+                    var that = this;
+
+                    if (that.group_shop_type == 1) {
+                        // 系统拼团
+                        $util.ajax({
+                            url: 'api_group_buy/group_buy_system_goods/lists',
+                            headers: {
+                                'page-num': page,
+                                'page-limit': 10
+                            },
+                            isLoading: true,
+                        }).then(function(resp) {
+
+                            that.list = that.list.concat(resp.data).unique();
+                            that.haveNoData = !Boolean(that.list.length)
+                        }).catch(function(err){})
+                    } else if (that.group_shop_type == 2) {
+                        // 会员拼团
+
+                        $util.ajax({
+                            url: 'api_group_buy/group_buy_user_goods/lists',
+                            headers: {
+                                'page-num': page,
+                                'page-limit': 10
+                            },
+                            isLoading: true,
+                        }).then(function(resp) {
+
+                            that.list = that.list.concat(resp.data).unique();
+                            that.haveNoData = !Boolean(that.list.length)
+                        }).catch(function(err){})
+                    }
+                    page++;
+                },
+                goGoodsDetail: function(goods) {
+                    $util.openWindow('group_goods_detail_win', {
+                        goodsId: goods.goods_id,
+                        id: goods.id
+                    })
+                },
+                getAssetInfo: function() {
+
+                    var that = this;
+                    // 用户资产信息
+                    $util.ajax({
+                        url: 'api_query/users/asset'
+                    }).then(function(resp){
+                        that.money = resp.data.money;
+                    }).catch(function(err){})
+                },
+                getOrderCount: function(){
+                    var that = this
+                    $util.ajax({
+                        url: 'api_query/orders/group_shop_count'
+                    }).then(function(resp){
+                        that.orderCount = resp.data;
+                    }).catch(function(err){})
+                },
+                queryGroOtroshopType: function(){
+                    var that = this
+                    $util.ajax({
+                        url: 'api_group_buy/rules/index'
+                    }).then(function(resp){
+                        that.group_shop_type = resp.data.type;
+                        that.getData()
+                    }).catch(function(err){})
+                },
+                getParams:function(){
+                  var that = this
+                  $util.ajax({
+                      url: 'api_systems/params/getParams',
+                      data:{
+                        type: 'user_bg'
+                      }
+                  }).then(function(resp){
+                      that.bgHeader = resp.data.group_shop_head_img;
+                  }).catch(function(err){})
+                }
+            },
+            mounted: function() {
+                this.getParams();
+                this.getAssetInfo();
+                this.getOrderCount();
+                this.queryGroOtroshopType()
+            }
+        });
+        api.setRefreshHeaderInfo({
+            bgColor: '#fff',
+        }, function(ret, err){
+            app.list = []
+            page = 1
+            app.queryGroOtroshopType()
+            app.getOrderCount()
+            app.getAssetInfo()
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err){
+            app.list = []
+            page = 1
+            app.queryGroOtroshopType()
+            app.getOrderCount()
+            app.getAssetInfo()
+        });
+        api.addEventListener({
+            name: 'scrolltobottom'
+        }, function(ret, err){
+            app.queryGroOtroshopType()
+        });
+    };
+</script>
+
+</html>

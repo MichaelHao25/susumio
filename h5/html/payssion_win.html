@@ -1,0 +1,60 @@
+<!-- 模型win -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header" style="background-image:none;">
+          <a class="aui-pull-left aui-btn" tapmode onclick="api.sendEvent({name: 'updateOrder',});$util.openWindow('order_list_win');">
+              <span class="aui-iconfont aui-icon-left"></span>
+          </a>
+          <div class="aui-title">{{pm_id}}</div>
+        </header>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script><script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                pm_id: api.pageParam.pm_id,
+            }
+        });
+        api.openFrame({
+                     name: 'payssion_frm',
+                     url: api.pageParam.paylink,
+                     scrollEnabled: true,
+                     rect: {
+                         x: 0,
+                         y: $util.headerH,
+                         w: 'auto',
+                         h: 'auto'
+                     },
+             });
+        api.addEventListener({
+            name:'viewdisappear'
+        }, function(ret, err){
+           api.closeWin();
+        });
+    };
+
+</script>
+
+</html>

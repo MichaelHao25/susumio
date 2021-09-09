@@ -1,0 +1,513 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-08 20:24:39
+ * @FilePath: /A6001888506312/html/mess_detail_frm.html
+-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/ali_icon_wancll/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/ali_icon_fu/iconfont.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="../ali_icon/ali_icon_zwh/iconfont.css" /> -->
+    <!-- <link rel="stylesheet" type="text/css" href="../css/style.css" /> -->
+    <link rel="stylesheet" href="../css/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="../css/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="../css/iconfont.css" />
+    <style>
+        #send {
+            position: fixed;
+            top: auto;
+            bottom: 0;
+        }
+
+        .top-chat {
+            overflow: hidden;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .aui-chat-translates {
+            position: relative;
+        }
+
+        .aui-content-mess {
+            display: flex;
+        }
+
+        .aui-chat-content {
+            box-sizing: border-box;
+            display: flex;
+        }
+
+        .aui-chat-inner {
+            width: 70%;
+        }
+
+        .aui-chat-content {
+            max-height: 14rem;
+        }
+    </style>
+</head>
+
+<body style="background-color:#f4f4f4;">
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+            <div id="app">
+                <section id="chatarea" class="aui-chat top-chat">
+                    <div v-for="(item,index) in lists" :key="index">
+                        <div class="aui-chat-header" v-if="showTime(item,index)">
+                            {{item.date}}
+                        </div>
+                        <div :class="['aui-chat-item', item.id==user.id ? 'aui-chat-right':'aui-chat-left']">
+                            <div class="aui-chat-media">
+                                <img :src="item.avatar" />
+                            </div>
+                            <div class="aui-chat-inner">
+                                <div class="aui-chat-name" v-text="item.name"></div>
+                                <div class="aui-content-mess" v-if="item.id!=user.id">
+                                    <div class="aui-chat-content">
+                                        <div class="aui-chat-arrow"></div>
+                                        <span v-html="item.content" v-if="item.message_type=='text'"
+                                              @touchstart="messageDelete(item.msg_id)"></span>
+                                        <img :src="item.content" v-if="item.message_type=='image'" @click="viewImg" />
+                                    </div>
+                                    <div class="aui-chat-translates aui-margin-l-15 aui-margin-t-5"
+                                         style="background:rgba(0,0,0,0)">
+                                        <i v-if="item.message_type=='text'  && customerServiceBey==1 && translates[index].translate==''"
+                                           @click="gettranslatechinese(index)" class="iconfont icon-fanyi"></i>
+                                        <i v-if="item.message_type=='text' && customerServiceBey==0 && translates[index].translate==''"
+                                           @click="gettranslatespanish(index)" class="iconfont icon-fanyi"></i>
+                                    </div>
+                                    <div class="aui-chat-content"
+                                         v-if="item.message_type=='text' && translates[index].translate!=''">
+                                        <span v-html="translates[index].translate"></span>
+                                    </div>
+                                </div>
+
+                                <div class="aui-chat-content" v-else>
+                                    <div class="aui-chat-arrow"></div>
+                                    <span v-html="item.content" v-if="item.message_type=='text'"
+                                          @touchstart="messageDelete(item.msg_id)"></span>
+                                    <img :src="item.content" v-if="item.message_type=='image'" @click="viewImg" />
+                                </div>
+                                <!-- <div class="aui-chat-status aui-chat-status-refresh">
+                            <i class="aui-iconfont aui-icon-correct aui-text-success"></i>
+                            <i class="aui-iconfont aui-icon-info aui-text-danger"> </i>
+                        </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <a id="msg_end" name="new" href="#new"> </a>
+                <div class="aui-searchbar" id="send">
+                    <div style="margin-left: 10px;font-size: 18px" @click="sendPicture(0)">
+                        <i class="aui-iconfont aui-icon-image"></i>
+                    </div>
+                    <div class="aui-searchbar-input aui-border-radius">
+                        <form action="javascript:sendMsg();">
+                            <input id="search-input" ref="gain" type="search" @focus='focus()' @blur='blur()'
+                                   @click="getfcous()"></input>
+                        </form>
+                    </div>
+                    <div class="aui-searchbar-cancel" style="margin-right: 10px;" @click="sendMsg()">
+                        send
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../script/owl.carousel.min.js"></script>
+<!-- <script type="text/javascript" src="../script/layer-v3.1.1/layer/layer.js"></script> -->
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        FastClick.attach(document.body);
+        // Height: 键盘没有弹出时window.innerHeight
+        if (Height == window.innerHeight) {
+            $(this.scrollWrapper).css('height', window.innerHeight + 'px')
+        }
+    }, false);
+
+    var socket;
+    var sourcePath = 'widget://res/img/emotion';
+    var emotionData = "";
+    var msgData = {
+        typ: 'message',
+        id: $util.user.id,
+        name: $util.user.nick_name,
+        avatar: $util.user.avatar,
+        content: '',
+        message_type: 'text',
+        to_id: '',
+    };
+    var ele;
+    var app = {}
+    apiready = function () {
+        $util.fixPage();
+        msgData.to_id = api.pageParam.userId;
+        //msgData.to_id=3;
+        var photoBrowser = api.require("photoBrowser");
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: '客服',
+                user: $util.user,
+                lists: [],
+                translates: [],
+                customerServiceBey: 0,
+                inputIsNotInView: false,
+            },
+            computed: {
+
+            },
+            methods: {
+                imagelook: function (img) {
+
+                },
+                messageDelete: function (id) {
+                    var that = app
+                    api.actionSheet({
+                        title: 'Elige',
+                        cancelTitle: 'Cancelar',
+                        buttons: ['Retransmitir mensaje']
+                    }, function (ret, err) {
+                        if (id) {
+                            $util.ajax({
+                                url: 'api_query/users/message_delect',
+                                data: {
+                                    message_id: id,
+                                },
+                            }).then(function (resp) {
+                                $util.ajax({
+                                    url: 'api_query/users/message_read',
+                                    data: {
+                                        message_id: api.pageParam.userId,
+                                    }
+                                }).then(function (resp) {
+                                    that.lists = resp.data
+                                }).catch(function (err) { })
+                            }).catch(function (err) { })
+                        } else {
+                            $util.toast("Regrese a la página de la lista y luego la retire.");
+                        }
+                    })
+                },
+                showTime(item, index) {
+                    if (index == 0)
+                        return true;
+                    return item.timeline - this.lists[index].timeline > 300;
+                },
+                notInView: function () {
+                    // getBoundingClientRect 是获取定位的，很怪异, (iphone 6s 10.0 bate版表现特殊)
+                    // top: 元素顶部到窗口（可是区域）顶部
+                    // bottom: 元素底部到窗口顶部
+                    // left: 元素左侧到窗口左侧
+                    // right: 元素右侧到窗口左侧
+                    // width/height 元素宽高
+
+                    return false
+                },
+                focus: function () {
+                    // 输入框获取焦点, 键盘完全弹出再调整输入框位置(因ios键盘弹出不会触发resize事件, 故延时600ms)
+                    // 选择setInterval轮询几次更好
+                    // 挂载this上, 或者声明一个全局变量, 用于在失去焦点时, 要不要执行调整代码(非第三方不调整)
+                    this.inputIsNotInView = this.notInView()
+
+                    if (this.inputIsNotInView) {
+                        // Width, Height: 分别是键盘没有弹出时window.innerWidth和window.innerHeight
+                        // 88: 是第三方输入法比原生输入法多的那个tool bar(输入时显示带选项) 的高度, 做的不是太绝, 高度是统一的
+                        // ios第三方输入法的tool bar 甚至 键盘也被当作可视区域了(包含在键盘弹出时的window.innerHeight)
+                        if (Width != 750) {
+                            let bottomAdjust = (Height - window.innerHeight - 88) + 'px'
+                            $(this.inputBoxContainer).css('bottom', bottomAdjust)
+                        }
+                        else {
+                            // 'iphone 6 6s, 需要额外减去键盘高度432(见下图), 还算有良心, 高度和原生保持一致')
+                            let bottomAdjust = (Height - window.innerHeight - 88 - 432) + 'px'
+                            $(this.inputBoxContainer).css('bottom', bottomAdjust)
+                        }
+                    }
+                },
+                blur: function () {
+                    // 失去焦点, 键盘开始收起, 隐藏inputBox; 等键盘完全收起, 再显示inputBox, 设置在底部, 避免闪跳
+                    if (this.inputIsNotInView) {
+                        // display和opacity + bottom 会有闪跳
+                        $(this.inputBoxContainer).css({ 'opacity': 0, bottom: 0 })
+
+                        $(this.inputBoxContainer).css('opacity', 1)
+
+                    }
+                },
+                getfcous: function () {
+                    this.$nextTick(() => {
+                        this.$refs.gain.focus()
+                    })
+                },
+                sendMsg() {
+                    msgData.type = 'message';
+                    msgData.message_type = 'text';
+                    msgData.content = $('#search-input').val();
+                    if ($('#search-input').val() == '') {
+                        return;
+                    }
+                    app.lists.push(deepCopy(msgData));
+                    socket.send(JSON.stringify(msgData));
+                    $util.ajax({
+                        url: 'api_query/users/send_jpush',
+                        data: msgData,
+                    }).then(function (resp) {
+
+                    }).catch(function (err) { })
+                    $('#search-input').val('');
+                    app.translates.push({ translate: "" });
+                    ele.click();
+                    //发送消息触发消息列表
+                    api.sendEvent({
+                        name: 'refreshmess',
+                    });
+                    setTimeout(function () {
+                        window.scrollTo(0, document.body.scrollHeight);
+                    }, 400)
+                },
+                sendPicture(index) {
+                    api.getPicture({
+                        sourceType: index == 0 ? 'library' : 'camera',
+                        encodingType: 'jpg',
+                        mediaValue: 'pic',
+                        destinationType: 'url',
+                        allowEdit: true,
+                        quality: 50,
+                        saveToPhotoAlbum: false
+                    }, function (ret, err) {
+                        if (ret) {
+                            if (!ret.data) {
+                                return
+                            }
+                            var imageUrl = ret.data;
+                            var that = this;
+                            $util.ajax({
+                                url: 'api_systems/helper/upload_file',
+                                data: {
+                                    file: imageUrl
+                                },
+                                values: {
+                                    save_path: '/public/upload/user_images/',
+                                    is_rename: 1
+                                },
+                                type: 'files',
+                            }).then(function (resp) {
+                                console.log(JSON.stringify(resp))
+                                msgData.type = 'message';
+                                msgData.message_type = 'image';
+                                msgData.content = resp.data.host_file_path
+                                app.lists.push(deepCopy(msgData))
+                                socket.send(JSON.stringify(msgData));
+                                ele.click();
+                                //发送图片刷新
+                                api.sendEvent({
+                                    name: 'refreshmess',
+                                });
+                            }).catch(function (err) { })
+                        } else {
+                            //alert(JSON.stringify(err));
+                        }
+                    });
+                },
+                viewImg(event) {
+                    photoBrowser.open({
+                        images: [
+                            event.currentTarget.src
+                        ],
+                        placeholderImg: event.currentTarget.src,
+                        bgColor: '#000'
+                    }, function (ret, err) {
+                        if (ret) {
+                            if (ret.eventType == 'click') {
+                                photoBrowser.close()
+                            }
+                        } else {
+                        }
+                    });
+                },
+                getCustomerServiceBey: function () {
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_users/users/is_customer',
+                        isLoading: true
+                    }).then(function (resp) {
+                        that.customerServiceBey = resp.data;
+                    }).catch(err => { });
+                },
+                gettranslatechinese: function (index) {
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_users/users/translate',
+                        data: { translate: this.lists[index].content }
+                    }).then(function (resp) {
+                        that.translates[index].translate = resp.data;
+                    }).catch(err => { });
+                },
+                gettranslatespanish: function (index) {
+
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_users/users/retranslate',
+                        data: { translate: this.lists[index].content }
+                    }).then(function (resp) {
+                        that.translates[index].translate = resp.data;
+                    }).catch(err => { });
+                },
+            },
+            mounted: function () {
+                this.getCustomerServiceBey();
+                var that = this
+                $util.ajax({
+                    url: 'api_query/users/message_read',
+                    data: {
+                        message_id: api.pageParam.userId,
+                    }
+                }).then(function (resp) {
+                    that.lists = resp.data;
+                    that.lists.forEach(function (item) {
+                        that.translates.push({ translate: "" });
+                    })
+                }).catch(function (err) { })
+                console.log(JSON.stringify(this.lists));
+                ele = document.getElementById('msg_end');
+                ele.click();
+                //建立WebSocket通讯
+                socket = new WebSocket('ws://www.177pinche.com:8100');
+                //连接成功时触发
+                socket.onopen = function () {
+                    // 登录
+                    msgData.type = 'init';
+                    socket.send(JSON.stringify(msgData));
+                    console.log("websocket握手成功!");
+                };
+                // 监听收到的消息
+                socket.onmessage = function (res) {
+                    let data = JSON.parse(res.data);
+
+                    let recData = data['data']
+                    switch (data['type']) {
+                        // 登录 更新用户列表
+                        case 'init':
+                            console.log(data['id'] + "登录成功");
+                            break;
+                        // 检测聊天数据
+                        case 'message':
+                            app.lists.push(recData)
+                            app.translates.push({ translate: "" });
+                            ele.click();
+                            break;
+                        // 离线消息推送
+                        case 'logMessage':
+                            setTimeout(function () {
+                                app.lists.push(recData)
+                            }, 1000);
+                            break;
+                        // 用户退出 更新用户列表
+                        case 'logout':
+                            break;
+                        case 'ping':
+                            break;
+                    }
+                };
+                //设置默认滚动到底部
+                setTimeout(function () {
+                    window.scrollTo(0, document.body.scrollHeight);
+                }, 400)
+
+                getImgsPaths(sourcePath, function (emotion) {
+                    emotionData = emotion;
+                });
+            }
+        })
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#ff5656',
+            textColor: '#fff',
+        }, function (ret, err) {
+            var that = app
+            $util.ajax({
+                url: 'api_query/users/message_read',
+                data: {
+                    message_id: api.pageParam.userId,
+                }
+            }).then(function (resp) {
+                that.lists = resp.data
+            }).catch(function (err) { })
+        }); api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function (ret, err) {
+            var that = app
+            $util.ajax({
+                url: 'api_query/users/message_read',
+                data: {
+                    message_id: api.pageParam.userId,
+                }
+            }).then(function (resp) {
+                that.lists = resp.data
+            }).catch(function (err) { })
+        });
+    };
+    function sendMsg() {
+        msgData.type = 'message';
+        msgData.message_type = 'text';
+        msgData.content = $('#search-input').val();
+        if ($('#search-input').val() == '') {
+            return;
+        }
+        app.lists.push(deepCopy(msgData))
+        socket.send(JSON.stringify(msgData));
+        $('#search-input').val('');
+        ele.click();
+    }
+    function deepCopy(p, c) {
+        return JSON.parse(JSON.stringify(p))
+    }
+    // 表情包
+    function getImgsPaths(sourcePathOfChatBox, callback) {
+        var jsonPath = "widget://res/img/emotion/emotion.json"; //表情的JSON数组
+        api.readFile({
+            path: jsonPath
+        }, function (ret, err) {
+            if (ret.status) {
+                var emotionArray = JSON.parse(ret.data);
+                var emotion = {};
+                for (var idx in emotionArray) {
+                    var emotionItem = emotionArray[idx];
+                    var emotionText = emotionItem["text"];
+                    var emotionUrl = "../res/img/emotion/" + emotionItem["name"] + ".png";
+                    emotion[emotionText] = emotionUrl;
+                }
+                //重组emotion笑脸
+                /*把emotion对象 回调出去*/
+                if ("function" === typeof (callback)) {
+                    callback(emotion);
+                }
+            }
+        });
+    }
+    function HtmlEncode(text) {
+        text = "" + text;
+        return text.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+    }
+</script>
+
+</html>

@@ -1,0 +1,235 @@
+<!--
+ * @since: 2020-11-06 21:52:06
+ * @LastAuthor: Blue
+ * @lastTime: 2020-12-18 23:15:40
+ * @FilePath: /A6001888506312/html/login_frm.html
+-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/ali_icon_fu/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+            <div id="app">
+                <div class="area aui-text-center" style="height: 110vh;">
+                    <div
+                         style="height: 7.5rem;background-color:#fff;display: flex;justify-content: center;align-items: center">
+                        <img tapmode onclick="api.closeWin()" :src="params.wap_login_logo" style="width:60%">
+                    </div>
+                    <div class="mix">
+                        <i class="iconfont icon-shouji" style="color: #3fa0f9;font-size: 20px"></i>
+                        <input type="tel" class="input" v-model="mobile" placeholder="Número de teléfono" id="mobile">
+                    </div>
+                    <div class="mix">
+                        <i class="iconfont icon-mima" style="color: #3fa0f9;font-size: 20px"></i>
+                        <input :type="typeValue" class="input" v-model="password" placeholder="Contraseña"
+                               id="password">
+                        <i class="iconfont icon-yanjing_yincang" v-if="passwordFlag"
+                           style="color: #bbbbbb;font-size: 20px;margin-right: 0.7rem" @click="showOrHidePassword"></i>
+                        <i class="iconfont icon-yanjing_xianshi" v-if="!passwordFlag"
+                           style="color: #bbbbbb;font-size: 20px;margin-right: 0.7rem" @click="showOrHidePassword"></i>
+                    </div>
+                    <div class="other" style="justify-content: space-between;">
+                        <div tapmode onclick="$util.openWindow('message_auth_login_win')">Acceso por correo</div>
+                        <!-- <div tapmode onclick="$util.openWindow('reset_password_win', {type: 1})" style="margin-left: 1rem;">Olvidado contraseña</div> -->
+                    </div>
+                    <div class="submit1" tapmode onclick="app.doLogin()" style="background-color: #3fa0f9">Listo</div>
+                    <div class="rigster" tapmode onclick="$util.openWindow('register_win')"
+                         style="background-color: #fff">Registro</div>
+                    <div class="rigster" tapmode onclick="$util.openWindow('register_email_win')"
+                         style="background-color: #fff">Registro Email</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../ali_icon/iconfont.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var wx = {};
+    var qq = {};
+
+    var UILoading = {};
+    var app = {}
+    apiready = function () {
+        $util.fixPage();
+        UILoading = api.require("UILoading");
+        app = new Vue({
+            el: '#app',
+            data: {
+                mobile: $api.getStorage('lastLoginMobie') || '',
+                password: '',
+                params: {},
+                themeColor: '',
+                passwordFlag: true,
+                typeValue: 'password',
+            },
+            methods: {
+                doLogin: function () {
+                    if (typeof lastSubmitTime === 'undefined') {
+                        lastSubmitTime = Date.now();
+                    } else if (Date.now() - lastSubmitTime < 2000) {
+                        lastSubmitTime = Date.now()
+                        return;
+                    }
+                    $util.ajax({
+                        url: 'api_users/user_accounts/login',
+                        data: {
+                            mobile: this.mobile,
+                            password: this.password,
+                        },
+                        isLoading: true,
+                    }).then(function (resp) {
+                        $util.toast(resp.msg);
+                        resp.data.user.avatar = resp.data.user.avatar ? resp.data.user.avatar : '../image/avatar.png';
+                        $util.user = resp.data.user;
+                        $util.token = resp.data.token;
+                        $api.setStorage('user', resp.data.user);
+                        $api.setStorage('token', resp.data.token);
+                        // 判断是否贺上次登录账号一致
+                        if ($api.getStorage('lastLoginMobie') != $util.user.mobile) {
+                            $api.setStorage('touchStatus', 0);
+                        }
+                        
+                        //----
+                        var ddd = localStorage.getItem('global_shareInfo')
+                        if (ddd) {
+                            // localStorage.removeItem('global_shareInfo')
+                            ddd = JSON.parse(ddd);
+                            const address = new URL(window.location.href);
+                            address.searchParams.set('id', ddd.id)
+                            address.searchParams.set('shareCode', ddd.shareCode)
+
+                            $util.openWindow('goods_detail_win', {
+                                // 传入商品id和隐藏加入购物车按钮
+                                goodsId: ddd.id,
+                                showAddCard: true
+                                // isDiscountGoods:false,
+                            })
+                            return
+                        }
+                        //-----
+                        var goodsId = localStorage.getItem('goods_detail_win')
+                        if(goodsId){
+                            if('true'===localStorage.getItem('redirect')){
+                                localStorage.removeItem('redirect')
+                                goodsId = JSON.parse(goodsId);
+                                $util.openWindow('goods_detail_win', {
+                                    // 传入商品id和隐藏加入购物车按钮
+                                    goodsId: goodsId.goodsId,
+                                    // isDiscountGoods:false,
+                                })
+                                return
+                            }
+                        }
+
+
+                        setTimeout(function () {
+                            $util.openWindow('index_win');
+                        }, 500);
+                    }).catch(function (err) { })
+                },
+                mobileChange: function () {
+                    if (this.mobile.length >= 11) {
+                        this.mobile.substr(0, 11);
+                        document.getElementById('password').focus();
+                    }
+                },
+                // 微信登录
+                wechatLogin: function () {
+
+                },
+                // qq登录
+                qqLogin: function () {
+
+                },
+                getParams: function () {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_systems/Params/getParams',
+                        data: {
+                            type: "basic",
+                        }
+                    }).then(function (resp) {
+                        resp.data.wap_login_logo = resp.data.wap_login_logo
+                        that.params = resp.data
+                        that.themeColor = resp.data.basic_color;
+                    }).catch(function (err) { })
+                },
+                showOrHidePassword: function () {
+                    if (this.typeValue === 'password') {
+                        this.typeValue = 'text'
+                    } else {
+                        this.typeValue = 'password'
+                    }
+                    this.passwordFlag = !this.passwordFlag;
+                }
+            },
+            mounted: function () {
+                this.getParams()
+            }
+        });
+    };
+
+    function jpushListener(ret) {
+
+    }
+    // 微信通过code换取token
+    getToken = function (uiId, code) {
+
+    }
+    getUserInfo = function (openid, accessToken) {
+
+    }
+
+    // 通过第三方的type 和 openid 换取后台用户信息
+    thirdLogin = function (type, openid) {
+        $util.ajax({
+            url: 'api_query/oauth/openid',
+            data: {
+                type: type,
+                openid: openid,
+            },
+            isLoading: true,
+        }).then(function (resp) {
+            if (resp.data.user) {
+                $util.toast(resp.msg);
+                resp.data.user.avatar = resp.data.user.avatar ? resp.data.user.avatar : '../image/avatar.png';
+                $util.user = resp.data.user;
+                $util.token = resp.data.token;
+                $api.setStorage('user', resp.data.user);
+                $api.setStorage('token', resp.data.token);
+                // 判断是否贺上次登录账号一致
+                if ($api.getStorage('lastLoginMobie') != $util.user.mobile) {
+                    $api.setStorage('touchStatus', 0);
+                }
+                setTimeout(function () {
+                    $util.openWindow('home_win');
+                }, 500);
+            } else {
+                $util.openWindow('bind_mobile_win', {
+                    openid: openid,
+                    type: type
+                })
+            }
+        }).catch(function (err) { })
+    }
+</script>
+
+</html>

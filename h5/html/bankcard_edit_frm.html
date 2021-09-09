@@ -1,0 +1,187 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <div class="aui-content">
+            <div class="add-bank-header">
+                <!-- <div class="add-bank">
+                  <img src="__static__/wap/images/wancllshopidcard.png" class="backimg">
+                  <div class="aui-font-size-14 aui-text-info">点击拍照上传银行卡照片</div>
+                </div> -->
+                <div class="input aui-list aui-form-list">
+                    <div class="input-bank aui-list-item FastClick">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">Nombre del Banco</div>
+                            <div class="aui-list-item-input">
+                                <select v-model="card.bank_name">
+                                  <option value="">Nombre del Banco</option>
+                                  <option>Agricultural Bank of China</option>
+                                  <option>China Construction Bank</option>
+                                  <option>Bank of China</option>
+                                  <option>Bank of China</option>
+                                  <option>Banco Comercial</option>
+                                  <option>Banco Guangcai</option>
+                                  <option>Postal Savings Bank of China</option>
+                                  <option>Banco Industrial</option>
+                                  <option>Banco de China</option>
+                                  <option>Banco Pudeo</option>
+                                  <option>Banco de desarrollo</option>
+                                  <option>Banco Ping</option>
+                                  <option>Banco de transporte</option>
+                                  <option>Banco Huaxia</option>
+                                  <option>Banco Popular</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-bank aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">Titular de tarjeta</div>
+                            <div class="aui-list-item-input">
+                                <input type="text" placeholder="Nombre del titular,por favor." v-model="card.card_holder">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-bank aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">Tarjeta</div>
+                            <div class="aui-list-item-input">
+                                <input pattern="[0-9]*" type="text" placeholder="Introduzca el número de tarjeta" v-model="card.card_number">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                card: {
+                    bank_name: ''
+                },
+                title: 'Mi tarjeta de banco '
+            },
+            methods: {
+                submit: function() {
+                    if (typeof lastSubmitTime === 'undefined') {
+                        lastSubmitTime = Date.now();
+                    } else if (Date.now() - lastSubmitTime < 2000) {
+                        lastSubmitTime = Date.now()
+                        return;
+                    }
+                    if (!this.card.bank_name) {
+                        $util.toast('Seleccione el Banco')
+                        return;
+                    }
+                    if (!this.card.card_number) {
+                        $util.toast('Número de tarjeta bancaria');
+                        return;
+                    }
+                    if (!this.card.card_holder) {
+                        $util.toast('Nombre del portador');
+                        return;
+                    }
+                    var card_holder_reg = /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
+                    if (!card_holder_reg.test(this.card.card_holder)) {
+                        $util.toast('Nombre y apellido del titular');
+                        return;
+                    }
+                    var card_number_reg = /^\d{15,19}$/
+                    if (!card_number_reg.test(this.card.card_number)) {
+                        $util.toast('Error de tarjeta bancaria');
+                        return;
+                    }
+                    var router = api.pageParam.cardId ? 'api_users/bank_cards/update' : 'api_users/bank_cards/save';
+                    $util.ajax({
+                        url: router,
+                        data: this.card,
+                        isLoading: true,
+                    }).then(function(resp) {
+                        $util.toast(resp.msg);
+                        api.sendEvent({
+                            name: 'updateCard',
+                        });
+                        setTimeout(function() {
+                            api.closeWin();
+                        }, 500)
+                    }).catch(function(err) {})
+                },
+                // 删除银行卡
+                deleteCard: function() {
+                    var that = this
+                    api.confirm({
+                        title: 'Confirmar la retirada de la tarjeta bancaria?',
+                        buttons: ['Confirmar', 'Cancelar']
+                    }, function(ret, err) {
+                        if (ret) {
+                            if (ret.buttonIndex == 1) {
+                                $util.ajax({
+                                    url: 'api_users/bank_cards/delete',
+                                    data: {
+                                        id: api.pageParam.cardId
+                                    },
+                                    isLoading: true,
+                                }).then(function(resp) {
+                                    $util.toast(resp.msg);
+                                    api.sendEvent({
+                                        name: 'updateCard',
+                                    });
+                                    setTimeout(function() {
+                                        api.closeWin();
+                                    }, 500)
+                                }).catch(function(err) {})
+                            }
+                        } else {
+                            alert(JSON.stringify(err));
+                        }
+                    });
+                },
+                getCard: function() {
+                    var that = this
+                    if (api.pageParam.cardId) {
+                        $util.ajax({
+                            url: 'api_users/bank_cards/read',
+                            data: {
+                                id: api.pageParam.cardId
+                            },
+                        }).then(function(resp) {
+                            that.card = resp.data;
+                        })
+                    }
+                }
+            },
+            mounted: function() {
+                this.getCard()
+            }
+        });
+
+    };
+</script>
+
+</html>

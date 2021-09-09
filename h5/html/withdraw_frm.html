@@ -1,0 +1,383 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <ul class="aui-list aui-list aui-media-list aui-bg-default" style="background-image:none;">
+                <!-- 选择银行卡 -->
+                <!-- <li v-if="!bankcard.bank_name" class="aui-list-item aui-list-item-middle aui-margin-t-10 aui-margin-b-10 aui-bg-white" tapmode onclick="selectBankCard()">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-title">Tarjeta bancaria,por favor</div>
+                        </div>
+                    </div>
+                </li>
+                <li v-else class="aui-list-item aui-list-item-middle aui-margin-t-10 aui-margin-b-10 aui-bg-white" tapmode onclick="selectBankCard()">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-media" style="width: 3rem;">
+                            <i class="iconfont" :class="selectBankFontClassObj" style="font-size: 2rem;" :style="{color: selectBankStyle}"></i>
+                        </div>
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-title" v-text="bankcard.bank_name"></div>
+                            <div class="aui-list-item-text" v-text="bankcard.card_number"></div>
+                        </div>
+                    </div>
+                </li> -->
+                <!-- 提现金额 -->
+                <li class="aui-list-item aui-margin-t-10 aui-bg-white" style="background-image:none;">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            Importe
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item aui-padded-b-15 aui-bg-white" style="background-image:none;">
+                    <span>$</span>
+                    <div class="aui-list-item-input">
+                        <div class="aui-list-item-input aui-padded-b-10 aui-border-b">
+                            <input class="aui-text-center" type="text" pattern="[0-9]*" style="font-size:1.8rem;letter-spacing:.2rem;" v-model="money">
+                        </div>
+                    </div>
+                </li>
+                <!-- <span class="aui-padded-l-15 aui-font-size-12">余额:334</span> -->
+            </ul>
+            <div class="area">
+                <div class="submit" tapmode onclick="app.submit()" id="submit">Presentación</div>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var dialogBox = {};
+    var touchID = {};
+    var app = {}
+
+    function withDrawSubmit(order_no) {
+        var touchStatus = $api.getStorage('touchStatus');
+        if (touchStatus == 1) {
+            payByTouchId();
+        } else {
+            submitByPayPwd();
+        }
+    }
+
+    function selectBankCard() {
+        $util.openWindow('bankcard_list_win', {
+            selectBankCard: true
+        })
+    }
+
+    function payByTouchId() {
+        touchID.isValid(function(ret) {
+            if (ret.status) {
+                if (api.systemType == 'android') {
+                    dialogBox.alert({
+                        texts: {
+                            title: '',
+                            content: 'Compruebe sus huellas',
+                            leftBtnTitle: 'Cancelar',
+                        },
+                        styles: {
+                            bg: '#fff',
+                            w: 300,
+                            title: {
+                                marginT: 20,
+                                icon: 'widget://image/zhiwen.png',
+                                iconSize: 40,
+                                titleSize: 14,
+                                titleColor: '#000'
+                            },
+                            content: {
+                                color: '#000',
+                                size: 14
+                            },
+                            left: {
+                                marginB: 7,
+                                marginL: 90,
+                                w: 130,
+                                h: 35,
+                                corner: 2,
+                                bg: '#fff',
+                                size: 14
+                            },
+                        }
+                    }, function(ret) {
+                        if (ret.eventType == 'left') {
+                            touchID.cancelVerify();
+                            dialogBox.close({
+                                dialogName: 'alert'
+                            });
+                        }
+                    });
+                }
+                touchID.verify(function(ret) {
+                    if (ret.status) {
+                        dialogBox.close({
+                            dialogName: 'alert'
+                        });
+                        submitByTouchId();
+                    } else {
+                        if (ret.code == 0) {
+                            // api.alert({ msg: "用户选择手动输入" });
+                            submitByPayPwd();
+                        } else if (ret.code == 1) {
+                            // api.alert({ msg: "取消验证" });
+                        } else if (ret.code == 2) {
+                            // $app.toast('验证三次失败')
+                        } else if (ret.code == 3) {
+                            // api.alert({ msg: "多次验证失败请锁定手机" });
+                        } else {
+                            $app.toast('Error de autenticación')
+                        }
+                    }
+                });
+            } else {
+                var msg = [
+                    '',
+                    'Lo siento,la versión de su teléfono no es Android 6.0 o más,no se puede pagar con huellas digitales.',
+                    'Sin identificación de huellas dactilares.',
+                    'Lo siento,el hardware de su teléfono no permite la identificación de huellas.',
+                    'Lo siento,no ha activado la cerradura de la pantalla.',
+                    'Lo siento,ha añadido al menos una huella dactilar en la configuración para usar esta función'
+                ];
+                if (ret.code) {
+                    $util.toast(msg[ret.code])
+                } else {
+                    $util.toast('touchID Cerrado,por favor.')
+                }
+            }
+        });
+    }
+    // 指纹支付
+    function submitByTouchId() {
+        $util.ajax({
+            url: 'api_users/user_drawcashs/touch_id_save',
+            data: {
+                asset_type: 'money',
+                type: 'withdrawToBankCard',
+                money: app.money,
+                //bank_card_id: app.bankcard.id,
+                bank_card_id: 0,
+            }
+        }).then(function(resp){
+            $util.toast(resp.msg);
+            api.sendEvent({
+                name: 'updateWallet',
+            });
+            setTimeout(function() {
+                api.closeWin();
+            }, 500)
+        }).catch(function(err){})
+    }
+    // 支付密码支付
+    submitByPayPwd = function() {
+        $util.ajax({
+            url: 'api_query/users/is_set_pay_password'
+        }).then(function(resp) {
+            if (resp.data.is_set_pay_password == 0) {
+                $util.toast('Establezca la contraseña de pago');
+                setTimeout(function() {
+                    $util.openWindow('reset_password_win', {
+                        type: 2
+                    })
+                }, 500)
+            } else {
+                api.prompt({
+                    title: 'Introduzca el Código de transacción.',
+                    type: 'password',
+                    buttons: ['Confirmar', 'Cancelar']
+                }, function(ret, err) {
+                    if (ret.buttonIndex == 2) {
+                        $util.ajax({
+                            url: 'api_users/user_drawcashs/save',
+                            data: {
+                                asset_type: 'money',
+                                type: 'withdrawToBankCard',
+                                money: app.money,
+                                bank_card_id: app.bankcard.id,
+                                pay_password: ret.text
+                            }
+                        }).then(function(resp) {
+                            $util.toast(resp.msg);
+                            api.sendEvent({
+                                name: 'updateWallet',
+                            });
+                            setTimeout(function() {
+                                api.closeWin();
+                            }, 500)
+                        }).catch(function(err) {})
+                    }
+                });
+            }
+        }).catch(function(err) {})
+    };
+    apiready = function() {
+        $util.fixPage();
+        dialogBox = api.require("dialogBox");
+        touchID = api.require('touchID');
+
+        app = new Vue({
+            el: '#app',
+            data: {
+                money: '',
+                bankcard: {
+                    bank_name: '',
+                    id:0
+                },
+                cardNameMapping: {
+                    'Agricultural Bank of China': {
+                        color: '#018a6e',
+                        fontClass: {
+                            'icon-nongyeyinxing': true
+                        }
+                    },
+                    'China Construction Bank': {
+                        color: '#0c4290',
+                        fontClass: {
+                            'icon-jiansheyinxing': true
+                        }
+                    },
+                    'Bank of China': {
+                        color: '#b0091a',
+                        fontClass: {
+                            'icon-gongshangyinxing': true
+                        }
+                    },
+                    'Bank of China': {
+                        color: '#d90000',
+                        fontClass: {
+                            'icon-zhongguoyinxing': true
+                        }
+                    },
+                    'Banco Comercial': {
+                        color: '#cb0101',
+                        fontClass: {
+                            'icon-zhaoshangyinhangbank1193432easyiconnet': true
+                        }
+                    },
+                    'Banco Guangcai': {
+                        color: '#52047b',
+                        fontClass: {
+                            'icon-guangdayinxing': true
+                        }
+                    },
+                    'Postal Savings Bank of China': {
+                        color: '#0b6c37',
+                        fontClass: {
+                            'icon-youzhengyinxing': true
+                        }
+                    },
+                    'Banco Industrial': {
+                        color: '#143981',
+                        fontClass: {
+                            'icon-changyonglogo05': true
+                        }
+                    },
+                    'Banco de China': {
+                        color: '#d50202',
+                        fontClass: {
+                            'icon-zhongxinyinxing': true
+                        }
+                    },
+                    'Banco Pudeo': {
+                        color: '#062561',
+                        fontClass: {
+                            'icon-pufayinxing': true
+                        }
+                    },
+                    'Banco de desarrollo': {
+                        color: '#a01d1d',
+                        fontClass: {
+                            'icon-yinhangqia': true
+                        }
+                    },
+                    'Banco Ping': {
+                        color: '#f15a21',
+                        fontClass: {
+                            'icon-yinhangqia': true
+                        }
+                    },
+                    'Banco de transporte': {
+                        color: '#003267',
+                        fontClass: {
+                            'icon-jiaotongyinxing': true
+                        }
+                    },
+                    'Banco Huaxia': {
+                        color: '#d50202',
+                        fontClass: {
+                            'icon-changyonglogo17': true
+                        }
+                    },
+                    'Banco Popular': {
+                        color: '#28a1a3',
+                        fontClass: {
+                            'icon-minshengyinxing': true
+                        }
+                    },
+                },
+            },
+            computed: {
+                selectBankFontClassObj: function() {
+                    return this.cardNameMapping[this.bankcard.bank_name].fontClass
+                },
+                selectBankStyle: function() {
+                    return this.cardNameMapping[this.bankcard.bank_name].color
+                },
+            },
+            methods: {
+                submit: function() {
+                    if (typeof lastSubmitTime === 'undefined') {
+                        lastSubmitTime = Date.now();
+                    } else if (Date.now() - lastSubmitTime < 2000) {
+                        lastSubmitTime = Date.now()
+                        return;
+                    }
+                    // if (!this.bankcard.bank_name) {
+                    //     $util.toast('Tarjeta bancaria,por favor');
+                    //     return;
+                    // }
+                    if (!this.money || isNaN(this.money)) {
+                        $util.toast('Por favor,introduzca la cantidad correcta de efectivo');
+                        return;
+                    }
+                    withDrawSubmit();
+                }
+            }
+        });
+
+        api.addEventListener({
+            name: 'selectBankCard'
+        }, function(ret, err) {
+            if (ret) {
+                app.bankcard = ret.value.card
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+
+    };
+</script>
+
+</html>

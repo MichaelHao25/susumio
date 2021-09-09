@@ -1,0 +1,238 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-06 21:58:22
+ * @FilePath: /A6001888506312/html/level_frm.html
+-->
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        .aui-content {
+            width: 94%;
+            margin: auto;
+        }
+
+        .wallet-user {
+            position: relative;
+        }
+
+        .backimg {
+            width: 100%;
+        }
+
+        .wallet-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 2.5rem;
+            overflow: hidden;
+            margin: auto 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .wallet-avatar img{
+            width: : 100%;
+        }
+
+        .wallet-userinfo {
+            position: absolute;
+            left: 50%;
+            top: 1rem;
+            z-index: 1;
+            display: flex;
+            width: 95%;
+            transform: translateX(-50%);
+        }
+
+        .wallet-text {
+            color: #fff;
+        }
+
+        .growth-text {
+            color: #fff;
+        }
+
+        .growth {
+            position: absolute;
+            bottom: 1.3rem;
+            width: 95%;
+            transform: translateX(-50%);
+            left: 50%;
+        }
+
+        .growth-ul {
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #eeeeee;
+            width: 98%;
+            margin: 0.5rem auto;
+            background-color: #fff;
+        }
+
+        .growth-li {
+            display: flex;
+            border-bottom: 1px solid #eeeeee;
+            margin: 0 0.5rem;
+        }
+
+        .growth-title {
+            font-size: 0.8rem;
+            border-left: 3px solid #666;
+            color: #333;
+            font-weight: 900;
+            padding-left: 0.5rem
+        }
+
+        .growth-li-text {
+            flex: 1;
+        }
+
+        .growth-nember {
+            margin: auto;
+        }
+
+        .growth-li-detail {
+            font-size: 0.8rem;
+            margin: 0.8rem 0;
+        }
+
+        .growth-li-time {
+            color: #a4a4a4;
+            font-size: 0.6rem;
+            margin: 0.3rem 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <div class="wallet-user">
+                <img src="../image/growth.png" class="backimg">
+                <div class="wallet-userinfo">
+                    <div class="wallet-avatar">
+                        <img :src="user.avatar" alt="" class="wallet-avatar-img">
+                    </div>
+                    <div class="wallet-text">
+                        <div class="wallet-name aui-font-size-16" v-text="user.nick_name"></div>
+                        <div class="wallet-grande aui-font-size-12" v-text="level"></div>
+                    </div>
+                </div>
+                <div class="growth">
+                    <div class="growth-text aui-font-size-14">
+                        <div style="float: left;">Puntos</div>
+                        <div style="float: right;" v-text="score"></div>
+                    </div>
+                    <div class="growth-line"></div>
+                </div>
+            </div>
+            <div class="growth-list">
+                <div class="growth-title">Puntos de firme</div>
+                <ul class="growth-ul">
+                    <li class="growth-li" v-for="(score, key) in list" :key="key">
+                        <div class="growth-li-text">
+                            <div class="growth-li-detail" v-text="score.desc"></div>
+                            <div class="growth-li-time" v-text="score.update_time"></div>
+                        </div>
+                        <div class="growth-nember aui-text-info" v-text="score.symbol + score.change_num"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var page = 1;
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                level: '',
+                score: '',
+                user: $util.user,
+                list: []
+            },
+            methods: {
+                loadAseet: function() {
+                    var that = this
+                        // 加载资产
+                    $util.ajax({
+                        url: 'api_query/users/asset'
+                    }).then(function(resp) {
+                        that.level = resp.data.level;
+                        that.score = resp.data.score;
+                    }).catch(function(err) {})
+                },
+                getData: function() {
+                    var that = this;
+
+                    $util.ajax({
+                        url: 'api_users/score_logs/lists',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                    }).then(function(resp) {
+
+                        that.list = that.list.concat(resp.data).unique();
+                        that.haveNoData = !Boolean(that.list.length)
+                    }).catch(function(err) {})
+                    page++;
+                },
+            },
+            mounted: function() {
+                this.getData()
+                this.loadAseet()
+            }
+        })
+
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData();
+            app.loadAseet()
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData();
+            app.loadAseet()
+        });
+        // 底部监听
+        api.addEventListener({
+            name: 'scrolltobottom',
+        }, function(ret, err) {
+            app.getData()
+        });
+    };
+</script>
+
+</html>

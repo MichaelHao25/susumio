@@ -1,0 +1,91 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content aui-bg_white aui-text-center aui-padded-15" style="margin-bottom:2.5rem;">
+            <h3 class="aui-font-weight">Mi nombre real</h3>
+            <h4 class="aui-text-info aui-padded-t-5" v-text="authStatus[user_auth.status]"></h4>
+            <div v-text="'Nombre real: ' + user_auth.name" class="aui-margin-t-10"></div>
+            <div v-text="'Número de identificación ' + user_auth.id_card"></div>
+            <img class="aui-margin-t-10" :src="user_auth.id_card_front_img">
+            <img class="aui-margin-t-10" :src="user_auth.id_card_back_img">
+        </div>
+        <footer class="aui-bar aui-bar-tab" v-if="user_auth.status != 3" id="footer">
+            <div class="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15" tapmode @click="submit">
+                <div class="aui-btn aui-btn-block aui-btn-sm aui-btn-info">Nueva presentación</div>
+            </div>
+        </footer>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+                el: '#app',
+                data: {
+                    user_auth: {},
+                    authStatus: [
+                        'No presentado',
+                        'Auditoría en curso',
+                        'Examen no aprobado',
+                        'Aprobación del informe'
+                    ]
+                },
+                methods: {
+                    submit: function() {
+                        $util.openWindow('idcard_auth_win', {
+                            status: app.user_auth.status,
+                            id: app.user_auth.id
+                        })
+                    }
+                },
+            })
+            // 下拉刷新
+            api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            loadIdcardInfo()
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            loadIdcardInfo()
+        });
+        loadIdcardInfo();
+    };
+
+    loadIdcardInfo = function() {
+        $util.ajax({
+            url: 'api_query/users/auth'
+        }).then(function(resp) {
+            app.user_auth = resp.data;
+        }).catch(function(err) {})
+    }
+</script>
+
+</html>

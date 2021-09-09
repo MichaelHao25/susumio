@@ -1,0 +1,105 @@
+<!-- 模型win -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        .aui-bar {
+            min-height: 2.1rem !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header" style="background-image:none;background-color:#fff;">
+            <a class="aui-pull-left aui-btn" tapmode onclick="api.closeWin();">
+                <span class="aui-iconfont aui-icon-left" style="color:#000!important;"></span>
+            </a>
+            <div class="aui-title" style="color:#333;">Detalles del pedido</div>
+        </header>
+        <footer class="aui-bar aui-bar-tab" id="footer">
+            <div class="order-buttons aui-padded-b-5 ">
+                <div class="button active " @click.stop="pay() " v-if="order.status==1 ">Pago inmediato</div>
+                <div class="button " @click.stop="cancel() " v-if="order.status==1 ">Cancelar el pedido</div>
+                <div class="button " @click.stop="remind() " v-if="order.status==2 && order.group_buy_status == 3">Enviar un recordatorio</div>
+                <div class="button active " @click.stop="finish() " v-if="order.status==3 ">Confirmen la recepción</div>
+                <div class="button " @click.stop="goLogistics() " v-if="order.status==3 ">Logística</div>
+            </div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = new Vue({
+        el: '#app',
+        data: {
+            order: {
+                status: ''
+            }
+        },
+        methods: {
+            pay: function() {
+                api.execScript({
+                    frameName: 'group_order_detail_frm',
+                    script: 'app.pay();'
+                });
+            },
+            cancel: function() {
+                api.execScript({
+                    frameName: 'group_order_detail_frm',
+                    script: 'app.cancel();'
+                });
+            },
+            remind: function() {
+                api.execScript({
+                    frameName: 'group_order_detail_frm',
+                    script: 'app.remind();'
+                });
+            },
+            finish: function() {
+                api.execScript({
+                    frameName: 'group_order_detail_frm',
+                    script: 'app.finish();'
+                });
+            },
+            goLogistics: function() {
+                api.execScript({
+                    frameName: 'group_order_detail_frm',
+                    script: 'app.goLogistics();'
+                });
+            },
+
+        }
+    })
+    apiready = function() {
+        $util.fixPage();
+        $util.openFrame('group_order_detail_frm', api.pageParam);
+        // app.order = api.pageParam.order;
+
+        api.addEventListener({
+            name: 'updateOrderDetail'
+        }, function(ret, err) {
+            if (ret) {
+                app.order = ret.value.order;
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+
+    };
+</script>
+
+</html>

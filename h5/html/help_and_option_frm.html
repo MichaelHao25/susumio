@@ -1,0 +1,121 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        #message {
+            background-color: #fff;
+            width: 96%;
+            height: 6rem;
+            border: 1px solid #eee;
+            border-radius: 0.2rem;
+            margin: 0rem 2%;
+            padding: .3rem;
+            letter-spacing: .1rem;
+        }
+
+        .option {
+            background-color: #f4f4f4;
+            line-height: 2.5rem;
+            height: 2.5rem;
+            width: 100%;
+            padding-left: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <ul class="aui-list aui-list-in">
+                <li class="aui-list-item" tapmode onclick="app.changeIndex(true)">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title">Problema de función</div>
+                        <div class="aui-list-item-right">
+                            <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20 aui-text-info" v-show="selectFirst"></i>
+                            <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20" style="color: #ccc" v-show="!selectFirst"></i>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item" tapmode onclick="app.changeIndex(false)">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-title">Mejoría de función</div>
+                        <div class="aui-list-item-right">
+                            <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20 aui-text-info" v-show="!selectFirst"></i>
+                            <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20" style="color: #ccc" v-show="selectFirst"></i>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="option">Observaciones y recomendaciones</div>
+            <textarea id="message" rows="8" cols="80" v-model="message"></textarea>
+            <div class="area">
+                <div class="submit" tapmode onclick="app.submit()">Presentación</div>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: 'Ayuda y retroalimentación',
+                selectFirst: true,
+                message: ''
+            },
+            methods: {
+                changeIndex: function(flag) {
+                    this.selectFirst = flag;
+                },
+                submit: function() {
+                    if(typeof lastSubmitTime === 'undefined'){
+                        lastSubmitTime = Date.now()
+                    }else if(Date.now() - lastSubmitTime < 2000){
+                        lastSubmitTime = Date.now()
+                        return
+                    }
+                    if (!this.message) {
+                        $util.toast('Introduzca una descripción de las preguntas y observaciones.');
+                        return
+                    }
+                    $util.ajax({
+                        url: 'api_articles/feedbacks/save',
+                        data: {
+                            user_id: $util.user.id,
+                            title: this.selectFirst ? 'Anomalía funcional' : 'Mejoras funcionales',
+                            content: this.message,
+                        },
+                        isLoading: true,
+                    }).then(function(resp) {
+                        $util.toast(resp.msg);
+                        setTimeout(function() {
+                            api.closeWin();
+                        }, 500)
+                    }).catch(function(err) {})
+                }
+            }
+        })
+    };
+</script>
+
+</html>

@@ -1,0 +1,93 @@
+<!--
+* @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-12-30 23:41:09
+ * @FilePath: /A6001888506312/index.html
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"
+    />
+    <meta
+      name="format-detection"
+      content="telephone=no,email=no,date=no,address=no"
+    />
+
+    <!-- facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SUSUMIO" />
+    <meta property="og:description" content="Enjoy  the factory  price" />
+    <!-- <meta property="fb:app_id" content="description" /> -->
+
+    <meta property="og:url" content="www.susumio.com" />
+    <meta
+      property="og:image"
+      content="https://www.susumio.com/image/susumio_logo.png"
+    />
+    <!-- facebook -->
+    <link rel="stylesheet" type="text/css" href="/css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="/css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="/ali_icon/iconfont.css" />
+    <title></title>
+    <script>
+    //   debugger;
+    //   var version = localStorage.getItem("flag_version");
+    //   var target_version = "0.1.3";
+    //   if (version === target_version) {
+    //     localStorage.clear();
+    //     localStorage.setItem("flag_version", target_version);
+    //     window.location.reload();
+    //   }
+      // http://192.168.123.112:8080/A6001888506312/web_adapter/adapter.html?goodsId=925&id=925&shareCode=OTI1OjUzMTQ%3D
+      let url = new URL(location.href);
+      if (url.searchParams.get("id")) {
+        localStorage.setItem(
+          "global_shareInfo",
+          JSON.stringify({
+            id: url.searchParams.get("id"),
+            shareCode: url.searchParams.get("shareCode"),
+          })
+        );
+      }
+    //   url.search = "";
+      history.pushState({ url: url.toString() }, "", url.toString());
+    </script>
+  </head>
+
+  <body>
+    <script type="text/javascript" src="./web_adapter/script/shake.js"></script>
+    <script
+      type="text/javascript"
+      src="./web_adapter/script/config.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="./web_adapter/script/myadapter.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="./web_adapter/script/adapter.js"
+    ></script>
+    <!-- logrocket -->
+    <script
+      src="https://cdn.lr-ingest.io/LogRocket.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      window.LogRocket && window.LogRocket.init("apicloud/apicloud");
+    </script>
+    <script>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?f5f5dc0f23281c16e5c29d0fe6af6ad8";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-07 22:14:38
+ * @FilePath: /A6001888506312/html/service_win.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header" style="background-image:none;">
+            <a class="aui-pull-left aui-btn " tapmode onclick="api.closeWin();">
+                <span class="aui-iconfont aui-icon-left"></span>
+            </a>
+            <div class="aui-title">Chat</div>
+        </header>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        FastClick.attach(document.body);
+    }, false);
+    apiready = function () {
+        $util.fixPage();
+        $util.openFrame('service_frm');
+    };
+</script>
+
+</html>

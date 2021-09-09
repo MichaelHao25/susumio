@@ -1,0 +1,161 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <header class="aui-bar aui-bar-nav aui-bar-light" style="background-image:none;">
+        <a class="aui-pull-left aui-btn" style="color: #333 !important;" v-text="choice_type == 'group_create' ? 'Seleccione las especificaciones（Participación en la lucha）' : 'Seleccione las especificaciones（Iniciar la lucha）'"></a>
+        <div class="aui-title"></div>
+        <a class="aui-pull-right aui-btn" tapmode onclick="api.closeFrame();">
+            <span class="aui-iconfont aui-icon-close"></span>
+        </a>
+    </header>
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-row aui-padded-10">
+            <!-- 缩略图 -->
+            <div class="aui-col-xs-6">
+                <img :src="select_spec_group_info.thum || goods.goods_info.thum" class="aui-padded-15">
+            </div>
+            <!-- 价格和库存 -->
+            <div class="aui-col-xs-6 aui-padded-10">
+                <h2 class="aui-text-price">
+          <span style="font-size: 0.6rem;">$</span>
+         <span class="aui-font-size-20" style="letter-spacing:.1rem;" v-text="Number(select_spec_group_info.money || goods.money).toPrecision()"></span>
+        </h2>
+                <h4 class="aui-text-default" v-text="'Existencias: ' + (select_spec_group_info.stock || goods.stock)"></h4>
+            </div>
+        </div>
+        <!-- 规格选项 -->
+        <div class="aui-content" style="margin-bottom:2.6rem;">
+            <div class="aui-row aui-padded-5" v-for="(spec, specKey) in spec_info" :key="specKey">
+                <h3 v-text="spec.name" class="aui-font-size-12"></h3>
+                <div class="aui-col-xs-3 aui-padded-t-5 aui-padded-b-5 aui-margin-t-5 aui-font-size-12 aui-text-center" v-for="(option, optionKey) in spec.options" :key="optionKey" v-text="option.option" @click="selectSpec(option, spec, optionKey, specKey)" :class="[{'aui-bg-info': option.isSelected},{'aui-text-white': option.isSelected}]"></div>
+            </div>
+        </div>
+        <footer class="aui-bar aui-bar-tab">
+            <div class="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15" @click="submit">
+                <div class="aui-btn aui-btn-block aui-btn-sm aui-btn-info">Confirmar</div>
+            </div>
+        </footer>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+
+    apiready = function() {
+        $util.fixPage();
+        var app = new Vue({
+            el: '#app',
+            data: {
+                spec_group_info: api.pageParam.spec_group_info,
+                // 拼团类型
+                choice_type: api.pageParam.choice_type,
+                // 商品信息
+                goods: api.pageParam.goods,
+                // 商品规格模板信息
+                spec_info: api.pageParam.spec_template.map(function(spec) {
+                    spec.options = spec.options.map(function(option) {
+                        return {
+                            isSelected: false,
+                            option: option
+                        }
+                    });
+                    return spec;
+                }),
+                // 选择的规格组信息
+                select_spec_group_info: api.pageParam.select_spec_group_info
+            },
+            methods: {
+                // 选择规格
+                selectSpec: function(option, spec, optionKey, specKey) {
+                    var that = this;
+                    spec.options.forEach(function(o, key) {
+                        if (key == optionKey) {
+                            o.isSelected = true;
+                        } else {
+                            o.isSelected = false;
+                        }
+                    });
+                    Vue.set(that.spec_info, specKey, spec);
+                    var options = [];
+                    that.spec_info.forEach(function(s) {
+                        s.options.forEach(function(o) {
+                            if (o.isSelected) {
+                                options.push(o.option)
+                            }
+                        })
+                    })
+
+                    options = options.sort().toString();
+                    that.spec_group_info.forEach(function(item) {
+                        if (options == item.spec_option_group) {
+                            that.select_spec_group_info = item;
+                        }
+                    })
+                },
+                // 确定s
+                submit: function() {
+                    var that = this;
+                    for (var i = 0; i < that.spec_info.length; i++) {
+                        var spec = that.spec_info[i];
+                        if (spec.options.every(function(option) {
+                                return !option.isSelected;
+                            })) {
+                            $util.toast('Elige【' + spec.name + '】Especificaciones técnicas')
+                            return;
+                        }
+                    }
+                    api.sendEvent({
+                        name: 'updateGoodsSpecInfo',
+                        extra: {
+                            select_spec_group_info: that.select_spec_group_info,
+                            goods: that.goods,
+                            type: api.pageParam.type,
+                            order_pid: api.pageParam.order_pid
+                        }
+                    });
+                    app = ''
+                    api.closeFrame();
+                },
+            },
+            mounted: function() {
+                var that = this;
+                // 组合已选中规格
+                if (!$util.isEmptyObject(that.select_spec_group_info)) {
+                    that.spec_info = that.goods.goods_info.spec_info.map(function(spec) {
+                        spec.options = spec.options.map(function(option) {
+                            return {
+                                isSelected: that.select_spec_group_info.spec_option_group.split(',').indexOf(option) != -1,
+                                option: option
+                            }
+                        })
+                        return spec;
+                    })
+                }
+            }
+        })
+    };
+</script>
+
+</html>

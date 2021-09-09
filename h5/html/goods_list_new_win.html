@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav aui-bar-light" id="header" style="background-color:#ffffff!important;">
+        <a class="aui-pull-left aui-btn" tapmode onclick="api.closeWin()">
+            <span class="aui-iconfont aui-icon-left" style="color:#333!important;"></span>
+        </a>
+        <div class="aui-title" style="color:#333!important;" id="title">Categorías</div>
+    </header>
+    <footer class="aui-bar aui-bar-tab" id="footer">
+        <div class="aui-bar-tab-item" tapmode onclick="$util.openWindow('index_win')">
+            <i class="aui-iconfont iconfont icon-shouye"></i>
+            <div class="aui-bar-tab-label">Inicio</div>
+        </div>
+        <div class="aui-bar-tab-item aui-active">
+            <i class="aui-iconfont iconfont icon-leimupinleifenleileibie"></i>
+            <div class="aui-bar-tab-label">Productos</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="$util.openWindow('cart_list_win')">
+            <i class="aui-iconfont iconfont icon-gouwuche"></i>
+            <div class="aui-bar-tab-label">Carro</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="$util.openWindow('home_win')">
+            <i class="aui-iconfont iconfont icon-people"></i>
+            <div class="aui-bar-tab-label">Mi mío</div>
+        </div>
+    </footer>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        $util.fixPage();
+        $util.openFrame('goods_list_new_frm');
+    };
+</script>
+
+</html>

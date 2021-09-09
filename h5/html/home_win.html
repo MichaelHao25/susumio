@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <footer class="aui-bar aui-bar-tab" id="footer">
+        <div class="aui-bar-tab-item" tapmode onclick="$util.openWindow('index_win')">
+            <i class="aui-iconfont iconfont icon-shouye"></i>
+            <div class="aui-bar-tab-label">Inicio</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="$util.openWindow('goods_list_new_win')">
+            <i class="aui-iconfont iconfont icon-leimupinleifenleileibie"></i>
+            <div class="aui-bar-tab-label">Productos</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode onclick="$util.openWindow('cart_list_win')">
+             <i class="aui-iconfont iconfont icon-gouwuche"></i>
+            <div class="aui-bar-tab-label">Carro</div>
+        </div>
+        <div class="aui-bar-tab-item aui-active">
+            <!-- <div class="aui-dot"></div> -->
+            <i class="aui-iconfont iconfont icon-people"></i>
+            <div class="aui-bar-tab-label">Mi mío</div>
+        </div>
+    </footer>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    apiready = function() {
+        $util.fixPage();
+        $util.openFrame('home_frm',api.pageParam);
+    };
+</script>
+
+</html>

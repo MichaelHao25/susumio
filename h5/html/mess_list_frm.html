@@ -1,0 +1,225 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-07 18:45:15
+ * @FilePath: /A6001888506312/html/mess_list_frm.html
+-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/ali_icon_wancll/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/ali_icon_fu/iconfont.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="../ali_icon/ali_icon_zwh/iconfont.css" /> -->
+    <!-- <link rel="stylesheet" type="text/css" href="../css/style.css" /> -->
+</head>
+
+<body style="background-color:#f4f4f4;">
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+            <div id="app">
+                <div class="aui-content aui-margin-b-15">
+                    <ul class="aui-list aui-media-list">
+                        <li @click="openChat(item)" class="aui-list-item aui-list-item-middle"
+                            v-for="(item,index) in lists" :key="index">
+                            <div class="aui-media-list-item-inner">
+                                <div class="aui-list-item-media" style="width: 3rem;">
+                                    <div class="aui-dot" v-show="item.status==0">
+                                    </div>
+                                    <img class="aui-img-round aui-list-img-sm" :src="item.avatar" />
+                                </div>
+                                <div class="aui-list-item-inner aui-list-item-arrow">
+                                    <div class="aui-list-item-text">
+                                        <div class="aui-list-item-title aui-font-size-14" v-text="item.name"></div>
+                                        <div class="aui-list-item-right aui-margin-r-15" style="padding-right:1rem;"
+                                             v-text="item.date"></div>
+                                    </div>
+                                    <div class="aui-list-item-title aui-ellipsis-1"
+                                         style="width:90%;font-size:0.7rem;color: #757575;"
+                                         v-if="item.message_type=='text'" v-text="item.content"></div>
+                                    <div class="aui-list-item-text" v-if="item.message_type=='image'">[图片]</div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="fb"></div>
+        </div>
+    </div>
+
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<!-- <script type="text/javascript" src="../script/layer-v3.1.1/layer/layer.js"></script> -->
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var chatWin = {}
+    var socket;
+    var msgData = {
+        type: 'message',
+        id: $util.user.id,
+        name: $util.user.nick_name,
+        avatar: $util.user.avatar,
+        content: '',
+        message_type: 'text',
+        to_id: '',
+    };
+    var ele;
+    apiready = function () {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: '咨询用户',
+                lists: [],
+            },
+            methods: {
+                openChat: function (item) {
+                    $util.openWindow('mess_detail_win', { userId: item.id });
+                }
+            },
+            mounted: function () {
+                var that = this;
+                $util.ajax({
+                    url: 'api_query/users/message_lists'
+                }).then(function (resp) {
+                    console.log(JSON.stringify(resp))
+                    that.lists = resp.data
+                }).catch(function (err) { })
+
+                //建立WebSocket通讯
+                socket = new WebSocket('ws://www.177pinche.com:8100');
+                //连接成功时触发
+                socket.onopen = function () {
+                    // 登录
+                    msgData.type = 'init';
+                    socket.send(JSON.stringify(msgData));
+                    console.log("websocket握手成功!");
+                };
+
+                // 监听收到的消息
+                socket.onmessage = function (res) {
+                    console.log(res.data);
+                    // var data = eval("("+res.data+")");
+                    let data = JSON.parse(res.data);
+                    let recData = data['data']
+                    switch (data['type']) {
+                        // 登录 更新用户列表
+                        case 'init':
+                            console.log(data['id'] + "登录成功");
+                            break;
+                        // 检测聊天数据
+                        case 'message':
+                            let ishave = 0;
+                            app.lists.forEach(function (item, index) {
+                                if (item.id == recData.id) {
+                                    app.lists[index].content = recData.content;
+                                    app.lists[index].message_type = recData.message_type;
+                                    app.lists[index].timeline = recData.timeline;
+                                    app.lists[index].date = recData.date;
+                                    app.lists[index].hasMessage = 1;
+                                    app.lists[index].message.push(recData);
+                                    ishave = 1;
+                                }
+                            });
+                            if (!ishave) {
+                                let userData = deepCopy(recData);
+                                userData.name ? '' : userData.name = '匿名用户' + userData.id;
+                                userData.hasMessage = 1;
+                                userData.message = [];
+                                userData.message.push(recData);
+                                app.lists.push(userData);
+                            }
+                            ele ? ele.click() : '';
+                            break;
+                        // 离线消息推送
+                        case 'logMessage':
+                            setTimeout(function () {
+                                let ishave = 0;
+                                app.lists.forEach(function (item, index) {
+                                    if (item.id == recData.id) {
+                                        app.lists[index].content = recData.content;
+                                        app.lists[index].message_type = recData.message_type;
+                                        app.lists[index].timeline = recData.timeline;
+                                        app.lists[index].date = recData.date;
+                                        app.lists[index].hasMessage = 1;
+                                        app.lists[index].message.push(recData);
+                                        ishave = 1;
+                                    }
+                                });
+                                if (!ishave) {
+                                    let userData = deepCopy(recData);
+                                    userData.name ? '' : userData.name = '匿名用户' + userData.id;
+                                    userData.hasMessage = 1;
+                                    userData.message = [];
+                                    userData.message.push(recData);
+                                    app.lists.push(userData);
+                                }
+                            }, 1000);
+                            ele ? ele.click() : '';
+                            break;
+                        // 用户退出 更新用户列表
+                        case 'logout':
+                            break;
+                        case 'ping':
+                            break;
+                    }
+                };
+            }
+        })
+
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#ff5656',
+            textColor: '#fff',
+        }, function (ret, err) {
+            $util.ajax({
+                url: 'api_query/users/message_lists'
+            }).then(function (resp) {
+                app.lists = resp.data
+            }).catch(function (err) { })
+        }); api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function (ret, err) {
+            $util.ajax({
+                url: 'api_query/users/message_lists'
+            }).then(function (resp) {
+                app.lists = resp.data
+            }).catch(function (err) { })
+        });
+        //监听内容页面是否发送过消息
+        api.addEventListener({
+            name: 'refreshmess'
+        }, function (ret, err) {
+            $util.ajax({
+                url: 'api_query/users/message_lists'
+            }).then(function (resp) {
+                app.lists = resp.data
+            }).catch(function (err) { })
+        });
+
+
+    };
+
+    function deepCopy(p, c) {
+        return JSON.parse(JSON.stringify(p))
+    }
+</script>
+
+</html>

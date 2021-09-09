@@ -1,0 +1,167 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-06 23:21:45
+ * @FilePath: /A6001888506312/html/bind_third_setting_frm.html
+-->
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <div class="aui-content aui-margin-b-15">
+                <ul class="aui-list aui-list-in">
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-label-icon">
+                            <i class="iconfont icon-gongzhonghao" style="color: #09bb07;font-size: 1.5rem;"></i>
+                        </div>
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-title">Micro carta</div>
+                            <div class="aui-list-item-right">
+                                <div style="font-size:0.7rem;" tapmode @click="bind('no_binding', 'wechat')" v-if="thirdStatus.wechat_openid">Desenganchar</div>
+                                <div style="font-size:0.7rem;" tapmode @click="bind('binding', 'wechat')" v-else>Sujeción</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-label-icon">
+                            <svg style="width: 1.5rem;height: 1.5rem;" aria-hidden="true">
+                              <use xlink:href="#icon-social-qq"></use>
+                            </svg>
+                        </div>
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-title">QQ</div>
+                            <div class="aui-list-item-right">
+                                <div style="font-size:0.7rem;" tapmode @click="bind('no_binding', 'qq')" v-if="thirdStatus.qq_openid">Desenganchar</div>
+                                <div style="font-size:0.7rem;" tapmode @click="bind('binding', 'qq')" v-else>Sujeción</div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../ali_icon/iconfont.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var wx = {};
+    var qq = {}
+    var app = {};
+    var UILoading = {};
+    apiready = function() {
+        $util.fixPage();
+        //wx = api.require("wx");
+        //qq = api.require("QQPlus");
+        UILoading = api.require("UILoading");
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: 'Número de cuenta de terceros',
+                thirdStatus: {
+                    qq_openid: '',
+                    wechat_openid: ''
+                }
+            },
+            methods: {
+                loadThirdBindInfo: function() {
+                    var that = this
+                    //查询所有绑定状态
+                    $util.ajax({
+                        url: 'api_query/oauth/binding'
+                    }).then(function(resp){
+                        that.thirdStatus = resp.data;
+                    }).catch(function(err){})
+                },
+                bind: function(operate, type) {
+                    var that = this;
+                    // 解绑
+                    if (operate == 'no_binding') {
+                        api.confirm({
+                            title: 'Desengancha?',
+                            buttons: ['Confirmar', 'Cancelar']
+                        }, function(ret, err) {
+                            if (ret.buttonIndex == 1) {
+                                $util.ajax({
+                                    url: 'api_users/binding/delete',
+                                    data: {
+                                        openid_type: type
+                                    }
+                                }).then(function(resp) {
+                                    $util.toast(resp.msg);
+                                    that.loadThirdBindInfo();
+                                }).catch(function(err) {})
+                            }
+                        });
+                    } else {
+                        // 绑定操作
+                        if (type == 'qq') {
+
+                        } else if (type == 'wechat') {
+                            bindByWechat(operate, type);
+                        }
+                    }
+                }
+            },
+            mounted: function(){
+                this.loadThirdBindInfo()
+            }
+        });
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            app.loadThirdBindInfo();
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.loadThirdBindInfo();
+        });
+    };
+
+    // 绑定操作
+    function bindOperate(type, openid) {
+        $util.ajax({
+            url: 'api_users/binding/save_in_login',
+            data: {
+                openid_type: type,
+                openid: openid
+            }
+        }).then(function(resp){
+            $util.toast(resp.msg);
+            app.loadThirdBindInfo();
+        }).catch(function(err){})
+    };
+    // 绑定微信
+    function bindByWechat (operate, type) {
+
+    };
+    function getUserInfo (openid, accessToken) {
+      
+    }
+</script>
+
+</html>

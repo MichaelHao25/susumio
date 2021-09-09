@@ -1,0 +1,173 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-29 11:09:35
+ * @FilePath: /A6001888506312/html/goods_detail_win.html
+-->
+<!-- 模型win -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" href="../css/iconfont.css" />
+
+</head>
+
+<body>
+    <div id="app">
+
+        <!-- 底部 -->
+        <footer class="aui-bar aui-bar-tab aui-margin-t-15" id="footer" v-if="isShowFooter">
+            <div class="aui-bar-tab-item" tapmode style="width: 3rem;" @click="addCollection()">
+                <span class="aui-iconfont iconfont icon-shoucang" :style="{color: activeColor}"></span>
+                <div class="aui-bar-tab-label" style="color:#777" v-text="collectionText"></div>
+            </div>
+            <!-- <div v-if="!isDiscountGoods" class="aui-bar-tab-item" style="width: 3rem;" onclick="$util.openWindow('cart_list_win')">
+                <span class="aui-iconfont iconfont icon-gouwuche"></span>
+                <div class="aui-bar-tab-label" style="color:#777">Carro</div>
+            </div> -->
+            <!-- <div class="aui-bar-tab-item" style="width: 3rem;" v-if="is_customer==0" @click="openService()">
+                <span class="aui-iconfont iconfont icon-xiaoxi"></span>
+                <div class="aui-bar-tab-label" style="color:#777">Chat</div>
+            </div> -->
+            <div v-if="!isDiscountGoods" class="aui-bar-tab-item aui-text-white" tapmode
+                 style="width: auto;background-color:#6bcfc4;font-size:0.8rem;" @click="addCart()">Añadir a carro</div>
+            <div class="aui-bar-tab-item aui-text-white" tapmode
+                 style="width: auto;background-color:#06a995;font-size:0.8rem;" @click="buy()">Compra</div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function () {
+        $util.fixPage();
+        $util.openFrame('goods_detail_frm', api.pageParam);
+        app = new Vue({
+            el: '#app',
+            data: {
+                activeColor: '#ccc',
+                collectionText: 'Favorito',
+                is_collect: 0,
+                // 这个变量控制是否可以添加购物车
+                isDiscountGoods: false,
+                is_customer: 0,
+                showAddCard: 'true',
+                isShowFooter: true
+            },
+            methods: {
+                addCollection: function () {
+                    var that = this
+                    if ($api.getStorage('user')) {
+                        if (app.is_collect) {
+                            $util.ajax({
+                                url: 'api_goods/goods_collections/cancel',
+                                data: {
+                                    goods_id: api.pageParam.goodsId
+                                }
+                            }).then(function (resp) {
+                                $util.toast(resp.msg);
+                                that.activeColor = '#ccc';
+                                that.collectionText = 'Favorito';
+                                that.is_collect = 0;
+                            }).catch(function (err) { })
+                        } else {
+                            $util.ajax({
+                                url: 'api_goods/goods_collections/save',
+                                data: {
+                                    goods_id: api.pageParam.goodsId
+                                }
+                            }).then(function (resp) {
+                                $util.toast(resp.msg)
+                                that.activeColor = '#ffc640';
+                                that.collectionText = 'Favorito';
+                                that.is_collect = 1;
+                            }).catch(function (err) { })
+                        }
+                    } else {
+                        $util.toast('Por favor.');
+                        setTimeout(function () {
+                            $util.openWindow('login_win');
+                        }, 500)
+                    }
+                },
+                addCart: function () {
+                    api.execScript({
+                        frameName: 'goods_detail_frm',
+                        script: 'app.addCart();'
+                    });
+                },
+                buy: function () {
+                    api.sendEvent({
+                        name: 'showButton',
+                        extra: {
+                            showButton: false
+                        }
+                    });
+                    api.execScript({
+                        frameName: 'goods_detail_frm',
+                        script: 'app.buy();'
+                    });
+                }, openService: function () {
+                    $util.openWindow('service_win')
+                },
+            },
+            mounted: function () {
+                var that = this
+                that.isDiscountGoods = api.pageParam.isDiscountGoods ? api.pageParam.isDiscountGoods : api.pageParam.showAddCard;
+                // showAddCard ==true 的话不显示按钮
+                if ($util.user) {
+                    $util.ajax({
+                        url: 'api_query/goods/is_collect',
+                        data: {
+                            goods_id: api.pageParam.goodsId
+                        }
+                    }).then(function (resp) {
+                        if (resp.data.is_collect) {
+                            that.activeColor = '#ffc640';
+                            that.collectionText = 'Favorito';
+                            that.is_collect = resp.data.is_collect;
+                        }
+                    }).catch(function (err) { })
+                }
+                if ($util.user != undefined) {
+                    this.is_customer = $util.user.is_customer;
+                }
+            }
+        })
+
+        // 关闭购物流程相关页面
+        api.addEventListener({
+            name: 'viewdisappear'
+        }, function (ret, err) {
+            api.closeWin();
+        });
+
+
+        //  控制button的显示或者隐藏
+        api.addEventListener({
+            name: 'showButton'
+        }, function (ret, err) {
+            if (ret.value.showButton) {
+                app.$data.isShowFooter = true;
+            } else {
+                app.$data.isShowFooter = false;
+            }
+        });
+    };
+</script>
+
+</html>

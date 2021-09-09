@@ -1,0 +1,119 @@
+<!-- 模型win -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header">
+            <a class="aui-pull-left aui-btn" tapmode onclick="api.closeWin()">
+                <span class="aui-iconfont aui-icon-left">Detalles del reparto</span>
+            </a>
+            <!-- <div class="aui-title" v-text="title"></div> -->
+            <a class="aui-pull-right aui-btn">
+                <span class="aui-iconfont" style="font-size: .7rem;color: #2a8ee8!important;" v-text="'Importe: ' + money + 'Dólar'"></span>
+            </a>
+        </header>
+        <div class="aui-tab" id="tab">
+            <div class="aui-tab-item" :class="{'aui-active': (activeStatus == 0)}" tapmode @click="changeStatus(0)">Total</div>
+            <div class="aui-tab-item" :class="{'aui-active': (activeStatus == 1)}" tapmode @click="changeStatus(1)">Pendiente de examen</div>
+            <div class="aui-tab-item" :class="{'aui-active': (activeStatus == 2)}" tapmode @click="changeStatus(2)">Sin verificar</div>
+            <div class="aui-tab-item" :class="{'aui-active': (activeStatus == 3)}" tapmode @click="changeStatus(3)">Fondos asignados</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        tabH = $api.offset($api.byId('tab')).h;
+        app = new Vue({
+            el: '#app',
+            data: {
+                money: '',
+                activeStatus: 0
+            },
+            methods: {
+                changeStatus: function(status) {
+                    this.activeStatus = status;
+                    api.setFrameGroupIndex({
+                        name: 'bonus_detail_frm_group',
+                        index: status,
+                        scroll: true
+                    });
+                },
+            }
+        })
+        // $util.openFrame('bonus_detail_frm');
+        api.openFrameGroup({
+            name: 'bonus_detail_frm_group',
+            background: '#fff',
+            scrollEnabled: true,
+            rect: {
+                x: 0,
+                y: $util.headerH + tabH,
+                w: 'auto',
+                h: 'auto'
+            },
+            index: 0,
+            preload: 0,
+            frames: [{
+                name: 'bonus_detail_frm0',
+                url: './bonus_detail_frm.html',
+                bgColor: '#fff',
+                pageParam: {
+                    status: 0
+                }
+            }, {
+                name: 'bonus_detail_frm1',
+                url: './bonus_detail_frm.html',
+                bgColor: '#fff',
+                pageParam: {
+                    status: 1
+                }
+            }, {
+                name: 'bonus_detail_frm2',
+                url: './bonus_detail_frm.html',
+                bgColor: '#fff',
+                pageParam: {
+                    status: 2
+                }
+            }, {
+                name: 'bonus_detail_frm3',
+                url: './bonus_detail_frm.html',
+                bgColor: '#fff',
+                pageParam: {
+                    status: 3
+                }
+            }]
+        }, function(ret, err) {
+            if (ret) {
+                app.activeStatus = ret.index;
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+        api.addEventListener({
+            name: 'bonus_detail_win_money'
+        }, function(ret, err){
+            app.money = ret.value.money
+        });
+    };
+</script>
+
+</html>

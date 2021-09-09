@@ -1,0 +1,33 @@
+<widget id="A6001888506312" version="0.0.1">
+    <name>wancllshop</name>
+    <description>a simple shop online</description>
+    <author email="itellboy@foxmail.com" href="http://www.apicloud.com">itellboy</author>
+    <content src="./html/index_win.html"/>
+    <access origin="*"/>
+    <preference name="pageBounce" value="false"/>
+    <preference name="appBackground" value="rgba(0,0,0,0.0)"/>
+    <preference name="windowBackground" value="rgba(0,0,0,0.0)"/>
+    <preference name="frameBackgroundColor" value="rgba(0,0,0,0.0)"/>
+    <preference name="hScrollBarEnabled" value="true"/>
+    <preference name="vScrollBarEnabled" value="true"/>
+    <preference name="autoLaunch" value="true"/>
+    <preference name="fullScreen" value="false"/>
+    <preference name="autoUpdate" value="true"/>
+    <preference name="smartUpdate" value="false"/>
+    <preference name="debug" value="false"/>
+    <preference name="statusBarAppearance" value="true"/>
+    <preference name="querySchemes" value="fb,fbapi,fb-messenger-api,fbauth2,fbshareextension" />
+    <preference name="android_abi" value="arm64-v8a"/>
+    <permission name="hardware"/>
+    <permission name="camera"/>
+    <permission name="fileSystem"/>
+    <permission name="internet"/>
+    <permission name="readPhoneState"/>
+    <permission name="location"/>
+    <permission name="record"/>
+    <permission name="bootCompleted"/>
+    <feature name="rongCloud2">
+          <param name="appKey" value="pwe86ga5p4ud6"/>
+    </feature>
+    <meta-data name="com.facebook.sdk.ApplicationId"  value="fb356639354989728" />
+</widget>

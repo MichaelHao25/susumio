@@ -1,0 +1,183 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-06 21:56:12
+ * @FilePath: /A6001888506312/html/comment_list_frm.html
+-->
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <div v-if="haveNoData" class="aui-col-xs-12 aui-text-center" style="margin-top:30%;background-color: #f5f5f5;">
+                <img src="../image/no_content.png" style="width:18%;margin:0 auto;">
+                <h5 style="margin-top:1rem;" class="aui-font-size-14">Oh. Aquí no hay nada.</h5>
+            </div>
+            <div v-else class="aui-padded-5  aui-bg-white aui-border-b" v-for="(comment, commentKey) in list" :key="commentKey">
+              <div class="aui-bg-white aui-padded-r-15 aui-padded-l-15" style="height: 2rem;line-height: 2rem">
+                <span class="aui-font-size-14 aui-pull-left" v-text="comment.create_time"></span>
+                <i class="aui-iconfont iconfont icon-shanchu aui-pull-right" @click="removeComments(comment, commentKey)"></i>
+              </div>
+                <div class="aui-padded-t-5 aui-bg-white" style="background-image:none;">
+                    <ul class="aui-list aui-media-list">
+                        <li class="aui-list-item aui-margin-b-5 aui-bg-default" style="background-image:none;" @click="goGoodsDetail(comment.goods_id)">
+                            <div class="aui-media-list-item-inner">
+                                <div class="aui-list-item-media">
+                                    <img v-if="comment.order_goods_info" :src="comment.order_goods_info.thum">
+                                </div>
+                                <div class="aui-list-item-inner">
+                                    <div class="aui-list-item-text">
+                                        <div class="aui-list-item-title aui-ellipsis-2 aui-font-size-14" v-if="comment.order_goods_info" v-text="comment.order_goods_info.name"></div>
+                                    </div>
+                                    <div class="aui-margin-t-5">
+                                      <span style="font-size: 0.6rem;color: #757575;">Especificaciones:{{comment.order_goods_info.spec_group_info}}</span>
+                                      <span class="aui-font-size-14 aui-pull-right aui-font-size-16 aui-margin-r-15" style="color: #df0303;">${{comment.order_goods_info.sell_price}}</span>
+                                    </div>
+                                    <div>
+                                      <span style="font-size: 0.6rem;color: #757575;">Cantidad:{{comment.order_goods_info.num}}</span>
+                                      <span class="aui-pull-right aui-margin-r-15" style="color: #757575;font-size: 0.6rem;text-decoration: line-through;margin-top: -0.2rem">${{comment.order_goods_info.real_price}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <i class="aui-iconfont iconfont icon-shoucang aui-margin-5" v-for="(item,key) in [1,2,3,4,5]" :key="key" style="font-size: 1.2rem;" :style="{color: ((key + 1) <= comment.score ? '#ffc640' : '#ccc')}"></i>
+                </div>
+                <div class="aui-list-item-text aui-padded-t-5 aui-padded-b-5" v-text="comment.content"></div>
+                <div class="aui-row aui-row-padded">
+                    <div class="aui-col-xs-3" v-for="(img,imgKey) in comment.imgs" :key="imgKey" tapmode @click.stop="previewImg(comment, imgKey)">
+                        <img :src="img" />
+                    </div>
+                </div>
+                <hr class="layui-bg-gray">
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var photoBrowser = {};
+    var page = 1;
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        photoBrowser = api.require("photoBrowser");
+        app = new Vue({
+            el: '#app',
+            data: {
+                list: [],
+                haveNoData: false
+            },
+            methods: {
+                previewImg: function(comment, index) {
+                    photoBrowser.open({
+                        images: comment.imgs,
+                        activeIndex: index,
+                        bgColor: 'rgba(0,0,0,0.85)'
+                    }, function(ret, err) {
+                        if (ret) {
+                            if (ret.eventType == 'click') {
+                                photoBrowser.close();
+                            }
+                        } else {
+                            alert(JSON.stringify(err));
+                        }
+                    });
+                },
+                goGoodsDetail: function(goodsId) {
+                    $util.openWindow('goods_detail_win', {
+                        goodsId: goodsId
+                    });
+                },
+                getData: function() {
+                    var that = this;
+
+                    $util.ajax({
+                        url: 'api_goods/goods_comments/lists',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                    }).then(function(resp) {
+
+                        that.list = that.list.concat(resp.data).unique();
+                        that.haveNoData = !Boolean(that.list.length)
+                    }).catch(function(err) {})
+                    page++;
+                },
+                removeComments: function(comment, index) {
+                    var that = this
+                    api.confirm({
+                        title: 'Confirmar comentarios borrados?',
+                        buttons: ['Confirmar', 'Cancelar']
+                    }, function(ret, err) {
+                        if (ret.buttonIndex == 1) {
+                            $util.ajax({
+                                url:  'api_goods/goods_comments/delete',
+                                data:{
+                                    id: comment.id
+                                },
+                                isLoading: true,
+                            }).then(function(resp){
+                                $util.toast(resp.msg);
+                                that.list.splice(index, 1)
+                            }).catch(function(err){})
+                        }
+                    });
+                },
+            },
+            mounted: function(){
+                this.getData()
+            }
+        })
+
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData();
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData();
+        });
+        // 底部监听
+        api.addEventListener({
+            name: 'scrolltobottom',
+        }, function(ret, err) {
+            app.getData()
+        });
+    };
+</script>
+
+</html>

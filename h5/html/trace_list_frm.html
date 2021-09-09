@@ -1,0 +1,121 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content aui-margin-b-10">
+            <div v-if="haveNoData" class="aui-col-xs-12 aui-text-center" style="margin-top:30%;">
+                <img src="../image/no_content.png" style="width:18%;margin:0 auto;">
+                <h5 style="margin-top:1rem;" class="aui-font-size-14">Oh. Aquí no hay nada.</h5>
+            </div>
+            <div v-else class="aui-flex-col aui-flex-center">
+                <div class="aui-flex-item-12">
+                    <div class="aui-flex-col">
+                        <div class="aui-flex-item-6" style="position: relative;padding:3px;" v-for="(trace,key) in list" :key="key">
+                            <img style="display:block" :src="trace.goods_info.thum" @click="goGoodsDetail(trace)">
+                            <h5 class="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white" v-text="trace.goods_info.name" style="height: 2.2rem;"></h5>
+                            <p class="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white">
+                                <span class="aui-text-price" style="font-size:0.5rem;">$</span>
+                                <span class="aui-text-price aui-font-size-14" v-text="trace.goods_info.sell_price"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var page = 1;
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                list: [],
+                haveNoData: false
+            },
+            methods: {
+                goGoodsDetail: function(trace) {
+                    $util.openWindow('goods_detail_win', {
+                        goodsId: trace.goods_id
+                    })
+                },
+                getData: function() {
+                    var that = this;
+
+                    $util.ajax({
+                        url: '/api_users/user_foot/lists',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                    }).then(function(resp) {
+
+                        that.list = that.list.concat(resp.data).unique();
+                        that.haveNoData = !Boolean(that.list.length)
+                    }).catch(function(err){})
+                    page++;
+                },
+            },
+            mounted: function(){
+                this.getData()
+            }
+        })
+
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData();
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData();
+        });
+        // 底部监听
+        api.addEventListener({
+            name: 'scrolltobottom',
+        }, function(ret, err) {
+            app.getData()
+        });
+
+    };
+</script>
+
+</html>

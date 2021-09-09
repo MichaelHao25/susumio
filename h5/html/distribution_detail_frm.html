@@ -1,0 +1,152 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-06 21:56:47
+ * @FilePath: /A6001888506312/html/distribution_detail_frm.html
+-->
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <div v-if="haveNoData" class="aui-col-xs-12 aui-text-center" style="margin-top:30%;">
+                <img src="../image/no_content.png" style="width:18%;margin:0 auto;">
+                <h5 style="margin-top:1rem;" class="aui-font-size-14">Oh. Aquí no hay nada.</h5>
+            </div>
+
+            <ul v-else class="aui-list aui-media-list aui-bg-default">
+                <li class="aui-list-item aui-list-item-middle aui-bg-white aui-margin-b-10" v-for="(apply, key) in list" :key="key" @click="goDetail(apply)">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title" v-text="apply.intro"></div>
+                                <div class="aui-list-item-right aui-text-info" v-text="'+' + apply.money"></div>
+                            </div>
+                            <div class="aui-list-item-text aui-margin-t-5">
+                                <div class="aui-list-item-title aui-font-size-12 aui-text-pray" v-text="'Numeración: ' + apply.apply_no"></div>
+                                <div class="aui-list-item-right  aui-text-pray aui-font-size-18" style="color: #e95d40!important;">{{apply.status | statusFilter}}</div>
+                            </div>
+                            <div class="aui-list-item-text aui-margin-t-5">
+                                <div class="aui-list-item-title aui-font-size-12 aui-text-pray" v-text="'Tiempo de aplicación: ' + apply.create_time"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var page = 1;
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: '',
+                activeStatus: 0,
+                list: [],
+                haveNoData: false,
+            },
+            methods: {
+                goDetail(apply) {
+                    $util.openWindow('distribution_withdraw_detail_win', {
+                        id: apply.id
+                    });
+                },
+                getData: function() {
+                    var that = this;
+                    var data = {}
+                    if(this.activeStatus != 0){
+                        data.status = this.activeStatus
+                    }
+
+                    $util.ajax({
+                        url: 'api_drp/commission_applys/lists',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                        data: data,
+                        isLoading: true,
+                    }).then(function(resp) {
+
+                        that.list = that.list.concat(resp.data.applys).unique();
+                        that.haveNoData = !Boolean(that.list.length)
+                        api.sendEvent({
+                            name: 'distribution_detail_win_money',
+                            extra: {
+                                money: resp.data.money
+                            }
+                        });
+
+                    }).catch(function(err){})
+                    page++;
+                },
+            },
+            filters: {
+                statusFilter: function(value) {
+                    if (value == 1) {
+                        return 'Pendiente de examen';
+                    } else if (value == 2) {
+                        return 'Sin verificar';
+                    } else if (value == 3) {
+                        return 'Fondos asignados';
+                    }
+                },
+            },
+            mounted: function() {
+                this.activeStatus = api.pageParam.status
+                this.getData()
+            }
+        });
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData();
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData();
+        });
+        // 底部监听
+        api.addEventListener({
+            name: 'scrolltobottom',
+        }, function(ret, err) {
+            app.getData()
+        });
+    };
+</script>
+
+</html>

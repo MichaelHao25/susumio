@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <section class="aui-content" style="margin-bottom:2.5rem;">
+            <div v-if="haveNoData" class="aui-col-xs-12 aui-text-center" style="margin-top:30%;">
+                <img src="../image/no_content.png" style="width:18%;margin:0 auto;">
+                <h5 style="margin-top:1rem;" class="aui-font-size-14">Oh. Aquí no hay nada.</h5>
+            </div>
+            <div v-else class="aui-card-list" v-for="(address,key) in list" :key="key">
+                <div tapmode @click="selectAddress(address)">
+                    <div class="aui-card-list-header aui-font-size-14" v-text="' ' + address.consignee_name + ' ' + address.mobile">
+                    </div>
+                    <div class="aui-card-list-content-padded aui-padded-t-0 text-light" v-text="address.province + address.city + address.area + address.address"></div>
+                </div>
+                <div class="aui-card-list-footer aui-border-t">
+                    <div @click="setDefaultAddress(address)" v-show="address.is_default == 1">
+                        <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-15 aui-text-info"></i>Dirección predeterminada
+                    </div>
+                    <div @click="setDefaultAddress(address)" v-show="address.is_default != 1">
+                        <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-15" style="color: #ccc"></i>Dirección predeterminada
+                    </div>
+                    <div>
+                        <div @click="modifyAddress(address)" style="display:inline;">
+                            <i class="aui-iconfont iconfont icon-icon- aui-margin-r-5 aui-font-size-15"></i>Edición</div>
+                        <div @click="delAddress(address)" style="display:inline;">
+                            <i class="aui-iconfont iconfont icon-shanchu aui-margin-r-5 aui-margin-l-15 aui-font-size-15"></i>Eliminar</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var page = 1;
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                list: [],
+                haveNoData: false
+            },
+            methods: {
+                //设置默认地址
+                setDefaultAddress: function(address) {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_users/addresses/set_default',
+                        data: {
+                            is_default: 1,
+                            id: address.id
+                        },
+                        isLoading: true,
+                    }).then(function(resp){
+                        $util.toast(resp.msg);
+                        that.list.forEach(function(item) {
+                            item.id == address.id ? (item.is_default = 1) : (item.is_default = 0)
+                        })
+                    }).catch(function(err){})
+                },
+                //修改地址
+                modifyAddress: function(address) {
+                    $util.openWindow('address_edit_win', {
+                        addressId: address.id
+                    })
+                },
+                //删除地址
+                delAddress: function(address) {
+                    var that = this
+                    api.confirm({
+                        title: '¿Borrar la dirección?',
+                        buttons: ['Confirmar', 'Cancelar']
+                    }, function(ret, err) {
+                        if (ret.buttonIndex == 1) {
+                            $util.ajax({
+                                url: 'api_users/addresses/delete',
+                                data: {
+                                    id: address.id
+                                },
+                                isLoading: true,
+                            }).then(function(resp){
+                                $util.toast(resp.msg);
+                                setTimeout(function() {
+                                    page = 1;
+                                    that.list = [];
+                                    that.getData();
+                                })
+                            }).catch(function(err){})
+                        }
+                    });
+                },
+                selectAddress: function(address) {
+                    if (api.pageParam.selectAddress) {
+                        api.sendEvent({
+                            name: 'selectAddress',
+                            extra: {
+                                address: address
+                            }
+                        });
+                        api.closeWin();
+                    }
+                },
+                getData: function() {
+                    var that = this;
+
+                    $util.ajax({
+                        url: 'api_users/addresses/lists',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                    }).then(function(resp) {
+
+                        that.list = that.list.concat(resp.data).unique();
+                        that.haveNoData = !Boolean(that.list.length)
+                    }).catch(function(err){})
+                    page++;
+                },
+            },
+            mounted: function(){
+                this.getData()
+            }
+        });
+
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData()
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData()
+        });
+
+        // 底部监听
+        api.addEventListener({
+            name: 'scrolltobottom',
+        }, function(ret, err) {
+            app.getData()
+        });
+        // 刷新地址监听
+        api.addEventListener({
+            name: 'updateAddress'
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData()
+        });
+    };
+</script>
+
+</html>

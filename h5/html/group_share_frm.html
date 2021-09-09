@@ -1,0 +1,77 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+
+    <style>
+        #app {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        #qrcode {
+            padding: .3rem;
+            background-color: #fff;
+            border-radius: 0.2rem;
+            width: 60%;
+            margin-left: 20%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #qrcode img {
+            padding: 5px 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <header class="aui-bar aui-bar-nav aui-bar-light" style="background-image:none;">
+        <a class="aui-pull-left aui-btn" style="color: #333 !important;">¡Invítale a escanear el código binario!</a>
+        <div class="aui-title"></div>
+        <a class="aui-pull-right aui-btn" tapmode onclick="api.closeFrame();">
+            <span class="aui-iconfont aui-icon-close"></span>
+        </a>
+    </header>
+    <div id="app">
+        <div class="" id="qrcode"></div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/qrcode.min.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+
+    apiready = function() {
+        $util.fixPage();
+        var app = new Vue({
+            el: '#app',
+            data: {},
+            methods: {},
+            mounted: function() {
+              new QRCode(document.getElementById("qrcode"), $util.origin + '/index.php/wap/index/onload.html');
+            }
+        })
+    };
+</script>
+
+</html>

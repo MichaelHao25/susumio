@@ -1,0 +1,271 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/ali_icon_fu/iconfont.css" />
+</head>
+<style>
+    .group-goods {
+        background-color: #fff;
+        display: flex;
+        padding: 1rem 0 1rem 1rem;
+        border-bottom: 0.025rem solid #eee;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .group-goods .group-goods_thum {
+        width: 4rem;
+        height: 4rem;
+        margin-right: 0.8rem;
+    }
+
+    .group-goods .group-goods_details {
+        width: 12.5rem;
+    }
+
+    .number {
+        width: 2rem;
+        height: 0.75rem;
+        border-radius: 0.5rem;
+        background-color: #ff0000;
+        color: #fff;
+        padding: 0.1rem 0.25rem;
+    }
+
+    .join-group {
+        height: 10.5rem;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .countTime {
+        padding: 1rem 3.5rem;
+        text-align: center;
+    }
+
+    .join-group span {
+        width: 1rem;
+        height: 1rem;
+        background-color: #000;
+        color: #fff;
+        padding: 0.1rem;
+    }
+
+    .pics {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    .pics_item {
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 50%;
+        background-color: red;
+        margin-right: 1rem;
+    }
+
+    .pics_item_first {
+        position: relative;
+    }
+
+    .pics_item .leader {
+        width: 1.8rem;
+        height: 0.8rem;
+        text-align: center;
+        line-height: 0.8rem;
+        border-radius: 0.5rem;
+        background-color: #ffaa33;
+        color: #fff;
+        position: absolute;
+        top: -0.425rem;
+        right: -1rem;
+        font-size: 0.5rem;
+    }
+
+    .quickJoin {
+        width: 15.5rem;
+        height: 1.75rem;
+        background-color: red;
+        margin: 1.2rem 0;
+        border-radius: 0.5rem;
+        color: #fff;
+        text-align: center;
+        line-height: 1.75rem;
+    }
+
+    .advice {
+        margin-top: 0.5rem;
+        height: 1.7rem;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+</style>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <div class="group-goods">
+            <div class="group-goods_thum">
+                <img :src="thum">
+            </div>
+            <div class="group-goods_details">
+                <div class="title aui-ellipsis-2" v-text="name"></div>
+                <div class="aui-margin-t-5">
+                    <span class="number aui-font-size-14" v-text="'de'+person_num+'personas'"></span>
+                    <span style="font-size: 0.75rem;color: #757575;">ventas{{sell_num}}</span>
+                </div>
+                <div class="price">
+                    <span style="font-size: 0.8rem;color: #ff0000" v-text="'$'"></span>
+                    <span style="color: #ff0000;font-size: 1rem;margin-left: -0.25rem;margin-right: 0.25rem" v-text="group_money"></span>
+                    <span style="color: #757575;font-size: 0.8rem;text-decoration: line-through" v-text="'$'+sell_price"></span>
+                </div>
+            </div>
+        </div>
+        <div class="join-group">
+            <div class="countTime">Faltan{{person_num - userInfo.length}}personas,Cancelarse    automáticamente sin realizarlo en<span>{{hour}}</span>:<span>{{minute}}</span>:<span>{{second}}</span></div>
+            <div class="pics">
+                <div class="pics_item pics_item_first" v-for="(item,key) in userInfo" :key="key">
+                    <img :src="item.user_info.avatar" style="width:100%;height:100%;">
+                    <div class="leader" v-if="key==0">Jefe</div>
+                </div>
+            </div>
+            <div class="quickJoin" @click="buy">Participar</div>
+        </div>
+        <div class="advice">
+            <div class="aui-margin-l-15">Instrucciones para lo grupal</div>
+            <p style="margin-left: 6.25rem ">Sólo funciona con personas suficiente
+                <p/>
+        </div>
+    </div>
+
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../ali_icon/iconfont.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                name: '',
+                thum: '',
+                person_num: '',
+                sell_num: '',
+                sell_price: '',
+                group_money: '',
+                teams: '',
+                hour: '',
+                minute: '',
+                second: '',
+                userInfo: [],
+            },
+            methods: {
+                setTimer: function() {
+                    var that = this;
+                    setInterval(function() {
+                        that.teams.forEach(function(item) {
+                            item.end_time_stamp -= 1000;
+                        })
+                        that.format(that.teams[0].end_time_stamp);
+                    }, 1000)
+                },
+                format: function(value) {
+                    var that = this;
+                    value = Math.floor(value / 1000);
+                    var day = Math.floor(value / 86400);
+                    value %= 86400;
+                    var hour = Math.floor(value / 3600);
+                    that.hour = hour + day * 24;
+                    value %= 3600;
+                    var minute = Math.floor(value / 60);
+                    minute = minute < 10 ? '0' + minute : minute;
+                    that.minute = minute;
+                    var second = value %= 60;
+                    second = second < 10 ? '0' + second : second;
+                    that.second = second;
+                },
+                buy: function() {
+                  var that = this;
+                  setTimeout(function() {
+                    $util.openWindow('group_order_confirm_win', api.pageParam)
+                  }, 500)
+                }
+            },
+            mounted: function() {
+                var that = this;
+                // 查询当前商品的拼团信息
+                $util.ajax({
+                    url: 'api_group_buy/group_buy_user_teams/lists',
+                    data: {
+                        goods_id: api.pageParam.goodinfo[0].goods.goods_id,
+                        group_buy_order_pid:api.pageParam.goodinfo[0].order_pid,
+                    }
+                }).then(function(resp) {
+                    let groupGood = resp.data[0];
+                    that.thum = groupGood.goods_info.thum;
+                    that.name = groupGood.goods_info.name;
+                    that.person_num = groupGood.person_num;
+                    that.sell_num = groupGood.goods_info.sell_num;
+                    that.sell_price = groupGood.goods_info.sell_price;
+                    that.group_money = groupGood.group_buy_info.money;
+                    //获取拼团成员头像
+                    groupGood.info.sort((item1, item2) => {
+                        return item1.order_id - item2.order_id;
+                    });
+                    that.userInfo = groupGood.info;
+                    var nowTime = Date.now();
+                    resp.data.forEach(function(item) {
+                        item.end_time_stamp = item.end_time_stamp * 1000 - nowTime;
+                    })
+                    that.teams = resp.data;
+                    that.setTimer();
+                })
+            },
+            filters: {
+                timeFilter: function(value) {
+                    if (!value) {
+                        return '';
+                    }
+                    if (value < 0) {
+                        return '0 Día 00: 00: 00';
+                    }
+                    value = Math.floor(value / 1000);
+                    var day = Math.floor(value / 86400);
+                    value %= 86400;
+                    var hour = Math.floor(value / 3600);
+                    hour = hour < 10 ? '0' + hour : hour;
+                    value %= 3600;
+                    var minute = Math.floor(value / 60);
+                    minute = minute < 10 ? '0' + minute : minute;
+                    var second = value %= 60;
+                    second = second < 10 ? '0' + second : second;
+                    return day + 'Día ' + hour + ': ' + minute + ': ' + second;
+                }
+            },
+        });
+    };
+</script>
+
+</html>

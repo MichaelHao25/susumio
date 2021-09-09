@@ -1,0 +1,194 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <div class="input aui-list aui-form-list">
+                <div class="input-bank aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">Apodo</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" placeholder="Introduzca el apodo" v-model="user.nick_name">
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="input-bank aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">QQ</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" placeholder="Introduzca el QQ" v-model="user.qq">
+                        </div>
+                    </div>
+                </div> -->
+                <div class="input-bank aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">Whatsapp</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" placeholder="Introduzca la microseñal" v-model="user.wechat">
+                        </div>
+                    </div>
+                </div>
+                <div class="input-bank aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">País</div>
+                        <div class="aui-list-item-input">
+                            <input type="text" placeholder="Correo electrónico" v-model="user.email">
+                        </div>
+                    </div>
+                </div>
+                <div class="input-bank aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">Provincia</div>
+                        <div class="aui-list-item-input">
+                            <select v-model="user.province_code" @change="provinceChange(user.province_code);">
+                <option value="">Seleccione la provincia</option>
+                <option :value="province.id" v-for="(province, provinceKey) in provinces" :key="provinceKey" v-text="province.name"></option>
+              </select>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="input-bank aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">Municipio</div>
+                        <div class="aui-list-item-input">
+                            <select v-model="user.city_code" @change="cityChange(user.city_code);">
+                <option value="">Elige la ciudad</option>
+                <option :value="city.id" v-for="(city, cityKey) in cities" :key="cityKey" v-text="city.name"></option>
+              </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-bank aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">Condado</div>
+                        <div class="aui-list-item-input">
+                            <select v-model="user.area_code">
+                <option value="">Elige el condado</option>
+                <option :value="area.id" v-for="(area, areaKey) in areas" :key="areaKey" v-text="area.name"></option>
+              </select>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <div class="aui-btn aui-btn-info aui-btn-block" style="width: 80%; margin: 1rem auto" tapmode onclick="app.submit()">Presentación</div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                user: {},
+                provinces: [],
+                cities: [],
+                areas: [],
+            },
+            methods: {
+                provinceChange: function(province_code) {
+                    var that = this;
+                    this.user.city_code = '';
+                    this.user.area_code = ''
+                    this.cities = [];
+                    this.areas = [];
+                    this.provinces.forEach(function(item) {
+                        if (item.id == province_code) {
+                            that.cities = item.citys;
+                        }
+                    })
+                },
+                cityChange: function(city_code) {
+                    var that = this;
+                    this.user.area_code = '';
+                    this.areas = [];
+                    this.cities.forEach(function(item) {
+                        if (item.id == city_code) {
+                            that.areas = item.areas;
+                        }
+                    })
+                },
+                submit: function() {
+                    if (typeof lastSubmitTime === 'undefined') {
+                        lastSubmitTime = Date.now();
+                    } else if (Date.now() - lastSubmitTime < 2000) {
+                        lastSubmitTime = Date.now()
+                        return;
+                    }
+                    if (this.user.nick_name  && this.user.wechat && this.user.email && this.user.province_code ) {
+                        $util.ajax({
+                            url: 'api_users/users/update',
+                            data: {
+                                qq: this.user.qq,
+                                wechat: this.user.wechat,
+                                email: this.user.email,
+                                province_code: this.user.province_code,
+                                city_code: this.user.city_code,
+                                area_code: this.user.area_code,
+                                nick_name: this.user.nick_name,
+                            },
+                            isLoading: true,
+                        }).then(function(resp) {
+                            $util.toast(resp.msg);
+                            setTimeout(function() {
+                                api.closeWin()
+                            }, 800);
+                        }).catch(function(err) {})
+                    } else {
+                        $util.toast('Por favor rellene la información completa');
+                    }
+                },
+            },
+            mounted: function() {
+                var that = this;
+                $util.ajax({
+                    url: 'api_systems/regions/index',
+                    isLoading: true,
+                }).then(function(resp){
+                    that.provinces = resp.data;
+                    $util.ajax({
+                        url: 'api_users/users/read',
+                    }).then(function(resp){
+                        that.user = resp.data;
+                        //  设置省市县
+                        that.provinces.forEach(function(item) {
+                            if (item.id == that.user.province_code) {
+                                that.cities = item.citys;
+                            }
+                        });
+                        that.cities.forEach(function(item) {
+                            if (item.id == that.user.city_code) {
+                                that.areas = item.areas;
+                            }
+                        })
+                    }).catch(function(err){})
+                }).catch(function(err){})
+            }
+        })
+    };
+</script>
+
+</html>

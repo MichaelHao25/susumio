@@ -1,0 +1,65 @@
+<!-- 模型win -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <div id="YQContainer"></div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script src="https://www.17track.net/externalcall.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                content: ''
+            },
+            methods: {
+                getData:function(){
+                  var num = api.pageParam.order.express_no;
+          				YQV5.trackSingle({
+          					//必须，指定承载内容的容器ID。
+          					YQ_ContainerId:"YQContainer",
+          					//可选，指定查询结果高度，最大为800px，默认为560px。
+          					YQ_Height:560,
+          					//可选，指定运输商，默认为自动识别。
+          					YQ_Fc:"0",
+          					//可选，指定UI语言，默认根据浏览器自动识别。
+          					YQ_Lang:"en",
+          					//必须，指定要查询的单号。
+          					YQ_Num:num
+          				});
+                }
+            },
+            mounted: function(){
+                this.getData()
+            }
+        });
+    };
+</script>
+
+</html>

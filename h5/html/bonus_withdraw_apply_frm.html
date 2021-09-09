@@ -1,0 +1,178 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-29 18:24:57
+ * @FilePath: /A6001888506312/html/bonus_withdraw_apply_frm.html
+-->
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        .distribution-buttons {
+            width: 100%;
+            color: #fff;
+            text-align: center;
+            height: 2.2rem;
+            line-height: 2.2rem;
+            border-radius: .2rem;
+            margin-bottom: .5rem;
+        }
+
+        .distribution-buttons.wechat {
+            background-color: #09bb07;
+            margin-top: 1rem;
+        }
+
+        .distribution-buttons.wechat:active {
+            background-color: #4ea948;
+        }
+
+        .distribution-buttons.ali {
+            background-color: #0AE;
+        }
+
+        .distribution-buttons.ali:active {
+            background-color: #2c6abe;
+        }
+
+        .distribution-buttons.wallet {
+            background-color: rgb(235, 102, 27);
+        }
+
+        .distribution-buttons.wallet:active {
+            background-color: rgb(219, 92, 19);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <div class="aui-bg-white aui-margin-15 aui-padded-10" style="border-radius: .3rem;">
+                <div>Cantidad de efectivo disponible</div>
+                <div style="border-bottom: 1px solid #f4f4f4;" class="aui-padded-b-5 aui-margin-b-15 aui-margin-t-10">
+                    <span>$</span>
+                    <span class="aui-padded-l-10" style="font-size: 1.5rem;" v-text="bonus_info.can_drawcash_money"></span>
+                    <!-- <input type="number" style="letter-spacing: 1px;width: 90%; display: inline;"> -->
+                </div>
+                <div class="aui-text-pray aui-font-size-12" v-text="'Importe mínimo de efectivo: $' + min_drawcash_money"></div>
+            </div>
+
+            <div class="aui-margin-10">
+                <div class="distribution-buttons wallet" tapmode @click="submit('money')">A la billetera</div>
+                <div class="distribution-buttons wechat" tapmode @click="submit('wechat')">Llegar a la micro carta</div>
+                <div class="distribution-buttons ali" tapmode @click="submit('ali')">Hasta la cuenta</div>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                bonus_info: {
+                    can_drawcash_money: ''
+                },
+                min_drawcash_money: 0,
+            },
+            methods: {
+                submit: function(type) {
+                    if (typeof lastSubmitTime === 'undefined') {
+                        lastSubmitTime = Date.now();
+                    } else if (Date.now() - lastSubmitTime < 2000) {
+                        lastSubmitTime = Date.now()
+                        return;
+                    }
+                    $util.ajax({
+                        url: 'api_query/users/is_set_pay_password',
+                        isLoading: true,
+                    }).then(function(resp) {
+                        if (resp.data.is_set_pay_password == 0) {
+                            $util.toast('Establezca la contraseña de pago');
+                            setTimeout(function() {
+                                $util.openWindow('reset_password_win', {
+                                    type: 2
+                                })
+                            }, 500)
+                        } else {
+                            api.prompt({
+                                title: 'Introduzca la contraseña de pago',
+                                buttons: ['Confirmar', 'Cancelar']
+                            }, function(ret, err) {
+                                if (ret.buttonIndex == 2 && ret.text) {
+                                    $util.ajax({
+                                        url: 'api_bonus/bonus_applys/save',
+                                        data: {
+                                            receipt_type: type,
+                                            pay_password: ret.text
+                                        },
+                                        isLoading: true,
+                                    }).then(function(resp) {
+                                        $util.toast(resp.msg);
+                                        setTimeout(function() {
+                                            api.closeWin()
+                                        }, 500);
+                                    }).catch(function(err) {})
+                                }
+                            });
+                        }
+                    }).catch(function(err) {})
+                },
+                getData: function() {
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_query/bonus/bonus_info',
+                        isLoading: true,
+                    }).then(function(resp) {
+                        resp.data.can_drawcash_money = Number(resp.data.can_drawcash_money).toFixed(2);
+                        that.bonus_info = resp.data;
+                    }).catch(function(err) {});
+                    $util.ajax({
+                        url: 'api_bonus/rules/index',
+                        isLoading: true,
+                    }).then(function(resp) {
+                        that.min_drawcash_money = resp.data.min_drawcash_money;
+                    }).catch(function(err) {})
+                }
+            },
+            mounted: function() {
+                this.getData()
+            }
+        });
+        api.setRefreshHeaderInfo({
+            bgColor: '#fff',
+        }, function(ret, err) {
+            app.getData()
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.getData()
+        });
+    };
+</script>
+
+</html>

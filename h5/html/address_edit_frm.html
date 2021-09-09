@@ -1,0 +1,266 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-12-05 12:26:38
+ * @FilePath: /A6001888506312/html/address_edit_frm.html
+-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+      .aui-list .aui-list-item-label, .aui-list .aui-list-item-label-icon{
+        width: 40%;
+      }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <div class="aui-content aui-margin-b-15">
+            <ul class="aui-list aui-form-list">
+                <li >
+                    <div class="aui-margin-l-15">
+                        <div class="aui-list-item-label">
+                            Nombre
+                        </div>
+                        <div class="aui-margin-l-15 aui-list-item-input">
+                            <input type="text" placeholder="Introduzca el nombre del destinatario" v-model="address.consignee_name">
+                        </div>
+                    </div>
+                </li>
+                <li >
+                    <div class="aui-margin-l-15">
+                        <div class="aui-list-item-label">
+                            Teléfono
+                        </div>
+                        <div class="aui-margin-l-15 aui-list-item-input">
+                            <input type="text" pattern="[0-9]*" placeholder="Por favor,introduzca el teléfono." onkeyup="value=value.replace(/[^\d]/g,'')" v-model="address.mobile">
+                        </div>
+                        <!-- <i class="iconfont icon-jia aui-text-info aui-font-size-18 FastClick" style="position:absolute;right: .5rem;" tapmode onclick="app.selectContact()"></i> -->
+                    </div>
+                </li>
+                <li >
+                    <div class="aui-margin-l-15">
+                        <div class="aui-list-item-label">
+                            Código postal
+                        </div>
+                        <div class="aui-margin-l-15 aui-list-item-input">
+                            <input type="text" placeholder="Código postal" v-model="address.zip_code">
+                        </div>
+                    </div>
+                </li>
+                <li >
+                    <div class="aui-margin-l-15">
+                        <div class="aui-list-item-label">
+                            País
+                        </div>
+                        <div class="aui-margin-l-15 aui-list-item-input">
+                            <select v-model="address.province_code" @change="provinceChange(address.province_code);">
+                                <option value="">Seleccione la País</option>
+                                <option :value="province.id" v-for="(province, provinceKey) in provinces" :key="provinceKey" v-text="province.name"></option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <li class="FastClick">
+                    <div class="aui-margin-l-15">
+                        <div class="aui-list-item-label">
+                            Envio
+                        </div>
+                        <div class="aui-margin-l-15 aui-list-item-input">
+                            <select v-model="address.express_type" @change="cityChange(address.city_code);">
+                                <option value="Express 4-9días">Express 4-9días</option>
+                                <option value="Express 9-14días">Express 9-14días</option>
+                                <option value="Barco 20-25días">Barco 20-25días</option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <!--
+                <li class="aui-list-item FastClick">
+                    <div >
+                        <div class="aui-list-item-label">
+                            Distrito/distrito
+                        </div>
+                        <div class="aui-list-item-input">
+                            <select v-model="address.area_code">
+                                <option value="">Elige el condado.</option>
+                                <option :value="area.id" v-for="(area, areaKey) in areas" :key="areaKey" v-text="area.name"></option>
+                            </select>
+                        </div>
+                    </div>
+                </li> -->
+                <li >
+                    <div class="aui-margin-l-15">
+                        <div class="aui-list-item-label" style="width:65%;">
+                            Dirección detallada
+                        </div>
+                        <div class="aui-margin-l-15 aui-list-item-input">
+                            <textarea placeholder="Introduzca la dirección detallada " v-model="address.address" ></textarea>
+                        </div>
+                    </div>
+                </li>
+                <li class="FastClick">
+                    <div class="aui-margin-l-15">
+                        <div class="aui-list-item-label">
+                            Predeterminar
+                        </div>
+                        <div class="aui-margin-l-15 aui-list-item-input">
+                            <label><input class="aui-radio" type="radio" v-model="address.is_default" name="demo1" value="1">Sí</label>
+                            <label style="margin-left: 1rem;"><input class="aui-radio" type="radio" v-model="address.is_default" name="demo1" value="0">No</label>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: 'Mi dirección',
+                provinces: [],
+                cities: [],
+                areas: [],
+                address: {
+                    province_code: 000001,
+                    province:'',
+                    city_code: '',
+                    area_code: '',
+                    consignee_name: '',
+                    mobile: '',
+                    address: '',
+                    is_default: 1,
+                    express_type:'',
+                }
+            },
+            methods: {
+                submit: function() {
+                    if(typeof lastSubmitTime === 'undefined'){
+                        lastSubmitTime = Date.now();
+                    }else if(Date.now() - lastSubmitTime < 2000){
+                        lastSubmitTime = Date.now()
+                        return;
+                    }
+                    if (!this.address.province_code || !this.address.consignee_name || !this.address.mobile || !this.address.address) {
+                        $util.toast('Por favor rellene la información completa.');
+                        return;
+                    };
+                     console.log(JSON.stringify(this.address))
+
+                    router = api.pageParam.addressId!==undefined ? 'api_users/addresses/update' : 'api_users/addresses/save'
+                    $util.ajax({
+                        url: router,
+                        data: this.address,
+                        isLoading: true,
+                    }).then(function(resp){
+                        console.log(JSON.stringify(resp.msg))
+                        $util.toast(resp.msg);
+                        api.sendEvent({
+                            name: 'updateAddress',
+                        });
+                        setTimeout(function() {
+                            api.closeWin();
+                        }, 500)
+                    }).catch(function(err){})
+                },
+                // 选择联系人
+                selectContact: function() {
+                    var that = this
+                    api.openContacts(function(ret, err) {
+                        // console.log(JSON.stringify(ret))
+                        if (ret.status) {
+                            that.address.consignee_name = ret.name;
+                            that.address.mobile = ret.phone.replace(/ /g, '');
+                        } else {
+                            //alert(JSON.stringify(err))
+                        }
+                    });
+                },
+                provinceChange: function(province_code) {
+
+                    var that = this;
+                    this.address.city_code = '';
+                    this.address.area_code = ''
+                    this.cities = [];
+                    this.areas = [];
+                    this.provinces.forEach(function(item) {
+                        if (item.id == province_code) {
+                            that.cities = item.citys;
+                            that.address.province=item.name;
+                        }
+                    })
+                },
+                cityChange: function(city_code) {
+                    var that = this;
+                    this.address.area_code = '';
+                    this.areas = [];
+                    this.cities.forEach(function(item) {
+                        if (item.id == city_code) {
+                            that.areas = item.areas;
+                        }
+                    })
+                },
+                getRegion:function(){
+                    var that = this
+                    $util.ajax({
+                        url: 'api_systems/regions/index',
+                        isLoading: true,
+                    }).then(function(resp){
+                        that.provinces = resp.data;
+                        if(api.pageParam.addressId){
+                            that.getData()
+                        }
+                    }).catch(function(err){})
+                },
+                getData: function(){
+                    var that = this
+                    $util.ajax({
+                        url: 'api_users/addresses/read',
+                        data: {
+                            id: api.pageParam.addressId
+                        }
+                    }).then(function(resp){
+                        that.address = resp.data;
+                        console.log(JSON.stringify(that.address))
+                        that.provinces.forEach(function(item) {
+                            if (item.id == that.address.province_code) {
+                                that.cities = item.citys;
+                            }
+                        });
+                        that.cities.forEach(function(item) {
+                            if (item.id == app.address.city_code) {
+                                that.areas = item.areas;
+                            }
+                        })
+                    }).catch(function(err){})
+                }
+            },
+            mounted: function(){
+                this.getRegion()
+            }
+        })
+    };
+</script>
+
+</html>

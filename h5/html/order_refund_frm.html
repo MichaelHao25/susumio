@@ -1,0 +1,186 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style>
+        .closeicon {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: red;
+            color: #ffffff;
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content aui-padded-5 aui-bg-white aui-margin-t-10">
+            <div class="aui-margin-b-15">
+                <ul class="aui-list aui-form-list" style="background-image:none;">
+                    <li class="aui-list-item" style="background-image:none;">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">
+                                Importe
+                            </div>
+                            <div class="aui-list-item-input">
+                                <input class="aui-border aui-text-price aui-font-weight aui-padded-5" type="text" readonly :value="'$' + goods.real_price">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item" style="background-image:none;">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-label">
+                                Explicación
+                            </div>
+                            <div class="aui-list-item-input">
+                                <textarea class="aui-border aui-padded-5" placeholder="Notas" v-model="desc"></textarea>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="aui-row aui-row-padded aui-margin-b-10">
+                <div class="aui-col-xs-3" v-for="(img,imgKey) in imgs" :key="imgKey">
+                    <img :src="img" style="height: 4.4rem;" />
+                    <i class="aui-iconfont aui-icon-close closeicon" @click.stop="deleteImg(imgKey)"></i>
+                </div>
+                <div class="aui-col-xs-3" tapmode @click="fileClick()">
+                    <img src="../image/add_photo.png">
+                </div>
+            </div>
+            <div class="area">
+                <div class="submit" tapmode @click="submit()">Presentación de solicitudes</div>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                goods: {},
+                imgs: [],
+                desc: ''
+            },
+            methods: {
+                deleteImg: function(index) {
+                    this.imgs.splice(index, 1)
+                },
+                submit: function() {
+                    if (typeof lastSubmitTime === 'undefined') {
+                        lastSubmitTime = Date.now();
+                    } else if (Date.now() - lastSubmitTime < 2000) {
+                        lastSubmitTime = Date.now()
+                        return;
+                    }
+                    let emojiReg = /[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF][\u200D|\uFE0F]|[\uD83C|\uD83D|\uD83E][\uDC00-\uDFFF]|[0-9|*|#]\uFE0F\u20E3|[0-9|#]\u20E3|[\u203C-\u3299]\uFE0F\u200D|[\u203C-\u3299]\uFE0F|[\u2122-\u2B55]|\u303D|[\A9|\AE]\u3030|\uA9|\uAE|\u3030/gi;
+                      if (this.desc && emojiReg.test(this.desc)) {
+                          this.desc = this.desc.replace(emojiReg, '');
+                    }
+                    if (!this.desc) {
+                        $util.toast('Por favor rellene el reembolso');
+                    } else {
+                        $util.ajax({
+                            url: 'api_orders/return_goods/save',
+                            data: {
+                                order_id: this.goods.order_id,
+                                order_goods_id: this.goods.id,
+                                return_type: 1,
+                                return_reason: this.desc,
+                                imgs: this.imgs,
+                            },
+                            isLoading: true,
+                        }).then(function(resp) {
+                            $util.toast(resp.msg);
+                            api.sendEvent({
+                                name: 'updateOrder',
+                            });
+                            setTimeout(function() {
+                                api.closeWin();
+                            }, 500)
+                        }).catch(function(err) {})
+                    }
+                },
+                fileClick: function() {
+                    if(this.imgs.length > 4){
+                        $util.toast('No pueden subir más de cuatro fotos.')
+                        return
+                    }
+                    var that = this
+                    api.actionSheet({
+                        cancelTitle: 'Cancelar',
+                        buttons: ['Fotografía', 'Biblioteca']
+                    }, function(ret, err) {
+                        var index = ['', 'camera', 'library'];
+                        if (ret.buttonIndex == 3) {
+                            return
+                        }
+                        api.getPicture({
+                            sourceType: index[ret.buttonIndex],
+                            encodingType: 'jpg',
+                            mediaValue: 'pic',
+                            destinationType: 'url',
+                            allowEdit: true,
+                            quality: 50,
+                            saveToPhotoAlbum: false,
+                            targetWidth: 500,
+                        }, function(ret, err) {
+                            if (ret && ret.data) {
+                                $util.ajax({
+                                    url: 'api_systems/helper/upload_file',
+                                    type: 'files',
+                                    data: {
+                                        file: ret.data
+                                    },
+                                    values: {
+                                        save_path: '/public/upload/user_images/',
+                                        is_rename: 1
+                                    },
+                                    isLoading: true,
+                                }).then(function(ret) {
+                                    that.imgs.push()
+                                    that.imgs.push(ret.data.host_file_path)
+                                }).catch(function(err) {})
+                            }
+                        });
+                    })
+                }
+            },
+            mounted: function() {
+                this.goods = api.pageParam.refundGoods
+                this.goods.real_price = Number(this.goods.real_price).toFixed(2)
+            }
+        })
+    };
+</script>
+
+</html>

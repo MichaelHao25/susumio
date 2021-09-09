@@ -1,0 +1,191 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-06 22:21:59
+ * @FilePath: /A6001888506312/html/logistics_frm.html
+-->
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        .goods {
+            display: flex;
+            align-items: center;
+            border-bottom: 0.5rem solid #f4f4f4;
+            background-color: #fff;
+        }
+
+        .goods .thum {
+            padding: 0.5rem 0.5rem;
+            width: 25%;
+        }
+
+        .goods .thum img {
+            width: 100%;
+            border: 1px solid #f4f4f4;
+        }
+
+        .goods .content {
+            width: 75%;
+            padding-top: 0.5rem;
+        }
+
+        .goods .content .status {
+            color: #358eff;
+            margin-bottom: 0.8rem;
+        }
+
+        .goods .content .logistics-info {
+            color: #9e9e9e;
+        }
+
+        .goods .content .telephone {
+            color: #9e9e9e;
+            padding-bottom: 0.5rem;
+        }
+
+        .aui-timeline .aui-timeline-item-label-icon {
+            width: 0.9rem;
+            height: 0.9rem;
+            line-height: 1rem;
+            left: 1.4rem;
+            background-color: #fff;
+        }
+
+        .aui-card-list-content-padded {
+            padding: .2rem .5rem;
+        }
+        .check{
+            color:#1E9FFF;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <!-- 商品信息 -->
+        <div class="goods">
+            <div class="thum" v-for="(goods,key) in order.order_goods_info" :key="key" v-if="key == 0">
+                <img :src="goods.thum">
+            </div>
+            <div class="content">
+                <div class="status aui-font-size-18" v-text="logisticsStatus[info.State]"></div>
+                <div class="logistics-info aui-font-size-14">{{order.express_type | expressTypeFilter}}</div>
+                <!-- <div class="telephone aui-font-size-14" tapmode onclick="call()">官方电话：{{info.comcontact}}</div> -->
+            </div>
+        </div>
+        <!-- 物流信息 -->
+        <section class="aui-content" style="background-color:#fff;">
+          <div @click="check()" class="check aui-padded-15 aui-text-center">Información logística</div>
+        </section>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js">
+</script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var logisticsMap = {
+      HTKY: 'Megatone universal',
+      EMS: 'EMS',
+      STO: 'Correo urgente',
+      SF: 'Otros Express',
+      HHTT: 'Entrega diaria',
+      YTO: '¡Otros!',
+      YD: '¡Merda!',
+      ZTO: 'Mensajería',
+      ZJS: 'Mansión',
+      YZPY: 'Correo urgente',
+      AJ:'Entrega rápida',
+    }
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: 'Logística',
+                order: {},
+                info: {
+                    data: []
+                },
+                // 运输状态
+                logisticsStatus: [
+                    'Transporte en tránsito',
+                    'Lista de bultos',
+                    'Duda(Hubo un problema con el envío)',
+                    'Firmado',
+                    'Retrocedan',
+                    'Sí',
+                    'Retrocede',
+                ],
+            },
+            methods: {
+
+                loadLogistics: function() {
+                    var that = this;
+                    $util.ajax({
+                        url: 'https://t.17track.net/restapi/track',
+                        data: {
+                            guid:"",data:[{num:"RR123456789CN",fc:"0",sc:"0"}],timeZoneOffset:-480
+                        },
+                        isLoading: true,
+                    }).then(function(resp) {
+                        alert(JSON.stringify());
+                    }).catch(function(err) {})
+                },
+                check:function(){
+                  $util.openWindow('view_logistics_win',{
+                    order: api.pageParam.order
+                  });
+                },
+            },
+            filters: {
+                expressTypeFilter: function(str) {
+                    if (str) {
+                        str = (logisticsMap[str] || 'Otros envíos').concat(': ', app.order.express_no);
+                        return str;
+                    } else {
+                        return ''
+                    }
+                    return ''
+                }
+            },
+            mounted: function() {
+                this.order = api.pageParam.order;
+                this.loadLogistics()
+            }
+        })
+
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            app.loadLogistics();
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.loadLogistics();
+        });
+    };
+</script>
+
+</html>

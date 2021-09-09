@@ -1,0 +1,266 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-06 21:56:34
+ * @FilePath: /A6001888506312/html/discount_page_frm.html
+-->
+<!-- 限时折扣frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" href="../css/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="../css/assets/owl.theme.default.min.css">
+    <style media="screen">
+        .header-time {
+            width: 100%;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .wancll_rebate {
+            width: 70%;
+            margin: 0 auto;
+        }
+
+        .headers-time {
+            background: linear-gradient(to bottom, #9c4c20, #eaac81);
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 0.6rem;
+        }
+
+        .rebate-red {
+            background-color: #fb361c;
+            padding: 0 0.2rem;
+            color: #fff;
+            line-height: 0.8rem;
+            line-height: 0.8rem;
+            display: inline-block;
+            font-size: 0.4rem;
+            border-top-right-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+
+        .rebate-red {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .cost_price {
+            text-decoration: line-through;
+            color: #aeaeae
+        }
+
+        .good_rebate {
+            border: 1px solid #e51c23;
+            display: inline-block;
+            padding: 0 0.5rem;
+            line-height: 0.8rem;
+            height: 0.8rem;
+        }
+
+        .goodsli {
+            display: flex;
+            padding: 0.5rem;
+            background-color: #fff;
+            margin-bottom: 1px;
+        }
+
+        .goodimgs {
+            flex: 1;
+            overflow: hidden;
+            margin: auto;
+        }
+
+        .goodimgs img {
+            width: 100%;
+        }
+
+        .goodsinfo {
+            padding-left: .5rem;
+            flex: 3;
+            position: relative;
+        }
+
+        .goodlisttitle {
+            background-color: #fff;
+            font-size: 0.6rem;
+            color: #333;
+            line-height: 1.5rem;
+            height: 1.5rem;
+            padding: 0 1rem;
+            margin: 1rem 0 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <div class="logosimg">
+                <img :src="advertisement.img" v-for="(advertisement, aKey) in advertisements" :key="aKey" v-if="aKey == 0">
+            </div>
+            <!-- 剩余时间 -->
+            <div class="header-time aui-padded-t-10">
+                <img src="../image/Wancll_rebate.png" class="wancll_rebate">
+                <div class="headers-time">Aún
+                    <span>{{discountActivity.deadline | timeFilter}}</span>
+                </div>
+            </div>
+            <!-- 轮播折扣商品 -->
+            <div class="aui-bg-white">
+                <div class="aui-padded-t-15 aui-padded-b-15">
+                    <div class="owl-carousel owl-theme" id="xianshizhekou">
+                        <div class="item" v-for="(rule, key) in discountActivity.rule_info" :key="key" v-if="key < 3" style="padding: 4px;position: relative;">
+                            <div class="rebate-red">Lista de popularidad</div>
+                            <a @click="goGoodsDetail(rule.goods_id)">
+                                <img :src="rule.goods_info.thum" />
+                                <div class="aui-font-size-12 aui-text-default aui-ellipsis-2" v-text="rule.goods_info.name"></div>
+                                <div class="aui-font-size-14">
+                                    <span class="aui-text-price aui-font-size-12">$</span>
+                                    <span class="aui-text-price aui-font-size-14" v-text="rule.discount_price"></span>
+                                    <div class="cost_price aui-font-size-12" v-text=" '$' + rule.goods_info.sell_price"></div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="goodlist">
+                <div class="goodlisttitle">En los robos,los buenos precios se pierden</div>
+                <ul>
+                    <li class="goodsli" v-for="(rule, key) in discountActivity.rule_info">
+                        <div class="goodimgs">
+                            <img :src="rule.goods_info.thum">
+                        </div>
+                        <div class="goodsinfo">
+                            <div class="good_name aui-font-size-12" v-text="rule.goods_info.name"></div>
+                            <div class="good_price aui-font-size-12 aui-text-price" v-text=" '$'+ rule.discount_price"></div>
+                            <div class="cost_price aui-font-size-16 " v-text="'$' + rule.goods_info.sell_price"></div>
+                            <div class="aui-btn aui-btn-danger " @click="goGoodsDetail(rule.goods_id)">Inmediatamente</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../script/owl.carousel.min.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                // 第一张广告图
+                advertisements: [],
+                // 折扣活动
+                discountActivity: {
+                    rule_info: []
+                }
+            },
+            methods: {
+                goGoodsDetail: function(goodsId) {
+                    $util.openWindow('goods_detail_win', {
+                        goodsId: goodsId,
+                        isDiscountGoods: true
+                    })
+                },
+                loadData: function() {
+                    var that = this
+                    // 广告图
+                    $util.ajax({
+                            url: 'api_articles/advertisements/lists',
+                            data: {
+                                type_id: 31
+                            }
+                        }).then(function(resp) {
+                            that.advertisements = resp.data;
+                        }).catch(function(err) {})
+                        // 加载限时折扣
+                    $util.ajax({
+                        url: 'api_query/market/activity',
+                    }).then(function(resp) {
+                        if (resp.data.discount) {
+                            // 计算截至时间
+                            resp.data.discount[0].deadline = resp.data.discount[0].end_timestamp * 1000 - Date.now();
+                            that.discountActivity = resp.data.discount[0];
+                            // 限时折扣轮播初始
+                            setTimeout(function() {
+                                $('#xianshizhekou').owlCarousel({
+                                    loop: true,
+                                    nav: false,
+                                    autoplay: true,
+                                    autoplayTimeout: 4000,
+                                    items: 3
+                                });
+                            }, 50);
+                            // 倒计时
+                            setInterval(function() {
+                                that.discountActivity.deadline -= 1000;
+                            }, 1000)
+                        }
+                    }).catch(function(err) {})
+                }
+            },
+            filters: {
+                timeFilter: function(value) {
+                    if (!value) {
+                        return '';
+                    }
+                    value = Math.floor(value / 1000);
+                    var day = Math.floor(value / 86400);
+                    value %= 86400;
+                    var hour = Math.floor(value / 3600);
+                    hour = hour < 10 ? '0' + hour : hour;
+                    value %= 3600;
+                    var minute = Math.floor(value / 60);
+                    minute = minute < 10 ? '0' + minute : minute;
+                    var second = value %= 60;
+                    second = second < 10 ? '0' + second : second;
+                    return day + 'Día ' + hour + ': ' + minute + ': ' + second;
+                }
+            },
+            mounted: function() {
+                this.loadData()
+            }
+        });
+
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            app.loadData();
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.loadData();
+        });
+    };
+</script>
+
+</html>

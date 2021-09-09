@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <div class="aui-content aui-margin-b-15">
+            <ul class="aui-list aui-media-list">
+                <div v-if="haveNoData" class="aui-col-xs-12 aui-text-center" style="margin-top:30%;">
+                    <img src="../image/no_content.png" style="width:18%;margin:0 auto;">
+                    <h5 style="margin-top:1rem;" class="aui-font-size-14">Oh. Aquí no hay nada.</h5>
+                </div>
+                <li class="aui-list-item aui-list-item-arrow" v-for="(article,key) in list" :key="key" tapmode @click="goArticle(article)">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title" v-text="article.title"></div>
+                            </div>
+                            <div class="aui-list-item-text aui-ellipsis-2" v-text="article.intro"></div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+
+    var app = {}
+    var page = 1;
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                list: [],
+                haveNoData: false
+            },
+            methods: {
+                goArticle: function(article) {
+                    $util.openWindow('article_detail_win', {
+                        articleId: article.id,
+                        type: api.pageParam.type
+                    })
+                },
+                getData: function() {
+                    var that = this;
+
+                    $util.ajax({
+                        url: 'api_articles/' + api.pageParam.type + '/lists',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                    }).then(function(resp) {
+
+                        that.list = that.list.concat(resp.data).unique();
+                        that.haveNoData = !Boolean(that.list.length)
+                    }).catch(function(err){})
+                    page++;
+                },
+            },
+            mounted: function(){
+                this.getData()
+            }
+        })
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            page = 1;
+            app.list = [];
+            app.getData()
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            page = 1;
+            app.list = [];
+            app.getData()
+        });
+
+        api.addEventListener({
+            name: 'scrolltobottom'
+        }, function(ret, err) {
+            app.getData()
+        });
+    };
+</script>
+
+</html>

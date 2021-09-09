@@ -1,0 +1,1137 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" href="../css/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="../css/assets/owl.theme.default.min.css">
+    <style media="screen">
+        body {
+            background: #fff;
+        }
+
+        * {
+            touch-action: pan-y;
+        }
+
+        .owl-theme .owl-nav.disabled+.owl-dots {
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+        }
+
+        .aui-grid {
+            background: none;
+        }
+
+        .aui-grid .aui-grid-label {
+            color: #a3a3a3;
+            margin-top: 0;
+        }
+
+        .aui-grid [class*=aui-col-] {
+            padding: .2rem .2rem;
+        }
+
+        .aui-col-xs-2 {
+            width: 20%;
+        }
+
+        .dot {
+            width: 0.2rem;
+            height: 0.2rem;
+            background-color: #757575;
+            border-radius: 0.2rem;
+        }
+
+        .aui-grid [class*=aui-col-] {
+            padding: 0rem;
+        }
+
+        ::-webkit-input-placeholder {
+            /* WebKit browsers */
+            color: #666666 !important;
+        }
+
+        :-moz-placeholder {
+            /* Mozilla Firefox 4 to 18 */
+            color: #666666 !important;
+        }
+
+        ::-moz-placeholder {
+            /* Mozilla Firefox 19+ */
+            color: #666666 !important;
+        }
+
+        :-ms-input-placeholder {
+            /* Internet Explorer 10+ */
+            color: #666666 !important;
+        }
+
+        .aui-searchbar {
+            background: #fff;
+        }
+
+        .aui-searchbar-input {
+            height: 1.6rem !important;
+            line-height: 1.6rem !important;
+            border-radius: 1rem !important;
+        }
+
+        .aui-searchbar-input input {
+            height: 1.6rem !important;
+        }
+
+        .aui-list .aui-list-item-inner {
+            padding-right: 0px;
+        }
+
+        .aui-list .aui-list-item-right,
+        .aui-list-item-title-row em {
+            margin-left: 0rem;
+        }
+
+        #search-header {
+            background: #f5f5f5;
+        }
+
+        .owl-theme .owl-dots .owl-dot span {
+            width: 10px;
+            height: 10px;
+            border-radius: 10px;
+            background-color: #f4f4f4;
+            margin-top: -1.5rem
+        }
+
+        .owl-theme .owl-dots .owl-dot.active span,
+        .owl-theme .owl-dots .owl-dot:hover span {
+            background-color: #369eff;
+        }
+
+        #xianshizhekou .owl-dots {
+            display: none;
+        }
+
+        #xianshizhekou {
+            width: 96%;
+            margin: 0 auto;
+        }
+
+        .shouxin {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            width: 30%;
+            transform: translate(-50%, -50%);
+        }
+
+        .product-tag {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            margin-top: -2rem;
+            background: url('../image/tag_bg.png');
+            background-size: 100%;
+        }
+
+        .hot-tag {
+            border-radius: .5rem;
+            margin-right: .3rem;
+            border: 1px solid red;
+            color: red;
+            padding: .1rem .2rem;
+            background: #fff;
+        }
+
+        .annoncements-border {
+            border-bottom: 10px solid #f5f5f5;
+        }
+
+        .absolute-bg {
+            position: absolute;
+        }
+
+        .absolute-bg img {
+            width: 100%;
+        }
+
+        .relative-info {
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .relative-info-item {
+            padding-top: 1.4rem;
+            height: 5rem;
+        }
+
+        .coupons-info {
+            font-size: .2rem;
+            color: red;
+        }
+
+        .discount_money {
+            font-size: 1rem;
+            color: red;
+        }
+
+        .coupon-infotext {
+            font-size: .4rem;
+            color: red;
+        }
+
+        .discount_money_tag {
+            font-size: .2rem;
+            color: red;
+        }
+
+        .relative-info-item img {
+            position: absolute;
+        }
+
+        .coupon-price {
+            padding-top: .6rem;
+        }
+
+        .discount-time1 {
+            margin-left: 1rem;
+        }
+
+        .discount-time1 span {
+            font-size: .6rem;
+            background: #000;
+            color: #fff;
+        }
+
+        .discount-list {
+            width: 100%;
+            background-color: #f4f4f4;
+            height: 9rem;
+        }
+
+        .owl-carousel .owl-item img.icon {
+            max-width: .5rem;
+            display: inline;
+        }
+
+        #xinpinhuodong .owl-dots,
+        #jifenduihuan .owl-dots {
+            display: none;
+        }
+
+        .border-radius-2 {
+            border-radius: 2px;
+        }
+
+        .discountTime {
+            display: flex;
+            align-items: center;
+            height: 2.5rem;
+            justify-content: flex-start;
+        }
+
+        .choice-price {
+            background: #f93232;
+            color: #fff;
+            width: 95%;
+            margin: 0 auto;
+            border-radius: 5rem;
+        }
+
+        .district-text {
+            position: relative;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            line-height: 1.4;
+            font-size: 14px;
+            justify-content: space-between;
+        }
+
+        .test-version-popup {
+            width: 18.75rem;
+            height: 22.5rem;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            z-index: 999;
+            margin-left: -9.375rem;
+            margin-top: -11.25rem;
+        }
+
+        .test-version-popup image {
+            width: 100%;
+            height: 100%;
+        }
+
+        .mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 99;
+        }
+
+        .test-version-ok {
+            position: absolute;
+            width: 7rem;
+            height: 2.35rem;
+            top: 14.125rem;
+            left: 6.25rem;
+            background-color: transparent;
+            z-index: 1000;
+            border-radius: 1rem
+        }
+
+        .test-version-close {
+            position: absolute;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            background-color: transparent;
+            top: 20rem;
+            left: 8.75rem;
+            z-index: 1000;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .menu-img {
+            width: 80%;
+            margin: 0px auto;
+        }
+
+        .limited-time span {
+            background-color: #1b1b1b;
+            padding: 0.2rem;
+            color: #fff;
+        }
+
+        .limited .owl-item img.icon {
+            max-width: 5rem;
+            display: inline;
+        }
+
+        .discountTime span {
+            padding: 0.1rem;
+        }
+    </style>
+    <!-- <script type='text/javascript' src='https://webchat.7moor.com/javascripts/7moorInit.js?accessId=6df22850-6fae-11e9-b30d-578324fce01a&autoShow=true&language=EN' async='async'>
+</script> -->
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+            <div id="app">
+                <div id="top">
+                    <div class="aui-list aui-media-list aui-list-noborder" style="background-color:rgba(0,0,0,0)">
+                        <div class="aui-list-item aui-list-item-middle aui-padded-l-5 aui-padded-r-5">
+                            <div class="aui-media-list-item-inner">
+                                <div class="aui-list-item-inner aui-text-center">
+                                    <div class="aui-searchbar" id="search"
+                                         onclick="$util.openWindow('search_page_win')">
+                                        <div class="aui-searchbar-input aui-border-radius " id="search-header">
+                                            <i class="aui-iconfont aui-icon-search"
+                                               style="color: #666666!important;margin-right:-12.25rem;"></i>
+                                            <input type="search" placeholder="Búsqueda" class="aui-text-center"
+                                                   id="search-input"
+                                                   style="color:#666666!important;background-color:#fafafa!important: #fff!important; width: 100%;"
+                                                   tapmode readonly>
+                                        </div>
+                                        <div class="aui-searchbar-btn" style="color: #fff!important;" tapmode>Cancelar
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 中间页 -->
+                <div class="aui-content" style="opacity: 0;">
+                    <!-- 轮播 -->
+                    <div class="owl-carousel owl-theme" id="owl-carousel1">
+                        <div class="item" v-for="(banner,key) in banners" key="key">
+                            <a @click="goModel(banner)">
+                                <img :src="banner.img" />
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 标签 -->
+                    <div class="product-tag aui-padded-t-15 ">
+                        <section class="aui-grid  aui-margin-l-5 aui-margin-r-5 aui-padded-t-15 aui-padded-b-15">
+                            <div class="aui-row aui-padded-t-15 " style="display:flex;flex-wrap:wrap;">
+                                <div class="aui-col-xs-3" v-for="(tag,tagKey) in tags" :key="tagKey"
+                                     @click="goGoodsList(tag)">
+                                    <img :src="tag.thum" class="aui-padded-5" style="margin:0 auto;width:55%;">
+                                    <div class="aui-grid-label" v-text="tag.name"></div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <!-- 公告 -->
+
+                    <!--优惠券信息-->
+                    <div class="coupon-list" v-if="coupons.length != 0" onclick="$util.openWindow('coupon_win')">
+                        <div class="absolute-bg">
+                            <img class="absolute-bg-img" id="absolutebgimg0" src="../image/yhqbg.png" />
+                        </div>
+                        <div class="relative-info" id="relativeinfo0" style="width:72%;">
+                            <div class="aui-flex-item-12 ">
+                                <div class="aui-flex-col ">
+                                    <div class="aui-flex-item-3 relative-info-item"
+                                         v-for="(coupon,couponKey) in coupons" :key="couponKey" v-if="couponKey<4">
+                                        <img src="../image/yhq.png" />
+                                        <div class="coupon-price" style="position:relative">
+                                            <div class="aui-text-center coupons-info" v-if="coupon.coupon_type=='full'">
+                                                <span class="discount_money_tag">$</span>
+                                                <span class="discount_money aui-font-weight"
+                                                      v-text="coupon.change_value"></span>
+                                            </div>
+                                            <div class="aui-text-center coupons-info"
+                                                 v-if="coupon.coupon_type=='discount'">
+                                                <span class="discount_money aui-font-weight"
+                                                      v-text="coupon.change_value"></span>
+                                                <span class="discount_money_tag">Doblar</span>
+                                            </div>
+                                            <div class="coupon-infotext aui-text-center"
+                                                 v-text="'Lleno' + coupon.reach_money + 'Dólar'"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 限时折扣 -->
+                    <div class="discount-list" v-if="discountActivity.rule_info.length>0">
+                        <div class="discountTime" style="display:flex;justify-content:space-between;">
+                            <img :src="'../image/zekou-1.png'" style="width: 11rem;height: 0.7rem;"
+                                 class="aui-margin-l-15">
+                            <div :class="'discount-time1'" style="padding-right:1rem;"
+                                 onclick="$util.openWindow('discount_page_win')">
+                                <span v-text="day"></span> <label v-text="':'"></label>
+                                <span v-text="hour"></span> <label v-text="':'"></label>
+                                <span v-text="minute"></span> <label v-text="':'"></label>
+                                <span v-text="second"></span>
+                            </div>
+                        </div>
+                        <!-- 折扣轮播商品 -->
+                        <div class="owl-carousel owl-theme " id="xianshizhekou">
+                            <div class="item aui-bg-white" v-for="(rule, key) in discountActivity.rule_info "
+                                 :key="key " style="margin: 4px;border-radius: 2px ">
+                                <a @click="goDiscountGoodsDetail(rule.goods_id)">
+                                    <img :src="rule.goods_info.thum" style="border-radius:2px 2px 0 0;" />
+                                    <div class="aui-font-size-12 aui-text-price aui-padded-5 "
+                                         style="display:flex;justify-content:space-between;align-items:center;">
+                                        <span>
+                                            <span class="aui-font-size-12 pink-color"
+                                                  style="font-size:0.5rem;color:#f7568f;">$</span>
+                                            <span class="pink-color" v-text="rule.discount_price"
+                                                  style="color:#f7568f;"></span>
+                                        </span>
+                                        <span
+                                              style="font-size:0.5rem;text-decoration: line-through;color:#cacaca;padding-top:3px;">
+                                            ¥<span v-text="rule.goods_info.sell_price"></span></span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- </div> -->
+                    </div>
+                    <!--积分兑换-->
+
+
+                    <div class="choicegoods-list" v-if="choicegoods.length != 0">
+                        <img :src="jpdt.img" @click="goModel(jpdt)" />
+                        <div class="district-text" style="border-bottom:1px solid #f5f5f5;"
+                             v-if="choicegoods.length != 0">
+                            <h3 style="font-size:14px;font-weight:700;color:#ff0000;">Productos seleccionados</h3>
+                            <div>
+                                <span style="color: #666;"
+                                      @click="$util.openWindow('goods_list_model_win',{tag:'Productos seleccionados'})">Ir
+                                    al
+                                    boutique mall</span><i class="aui-iconfont aui-icon-right"></i>
+                            </div>
+                        </div>
+                        <div class="relative-info" id="relativeinfo3">
+                            <section class="aui-grid">
+                                <div class="aui-row">
+                                    <div class="aui-col-xs-3 " v-for="(goods,goodsKey) in choicegoods" :key="goodsKey"
+                                         v-if="goodsKey<8" @click="goGoodsDetail(goods.id)">
+                                        <div class=" aui-margin-l-5 aui-margin-r-5 aui-margin-t-10"
+                                             style="border:1px solid #efefef;border-radius:0.3rem;overflow:hidden;">
+                                            <img :src="goods.thum" style="border-radius:2px 2px 0 0" />
+                                            <img src="../image/shouxin.png" style="max-width:1rem" class="shouxin"
+                                                 v-if="goods.stock == 0">
+                                            <div class="aui-padded-b-5 aui-padded-t-5  aui-bg-white"
+                                                 style="border-radius: 0 0 2px 2px">
+                                                <div class="choice-price aui-font-size-12 aui-padded-l-5 aui-padded-r-5"
+                                                     style="display:flex;justify-content:space-between;">
+                                                    <span>
+                                                        <span>$</span>
+                                                        <span v-text="goods.sell_price"></span>
+                                                    </span>
+                                                    <span style="text-decoration:line-through;color:#d6d6d6;">
+                                                        <span style="font-size:0.5rem;">$</span>
+                                                        <span style="font-size:0.5rem;"
+                                                              v-text="goods.sell_price"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <!--新品活动-->
+                    <div style="background-color: #f4f4f4;height: 0.5rem;"></div>
+                    <div class="newsgoods-list" v-if="choicegoods.length != 0">
+                        <img :src="xpdt.img" @click="goModel(xpdt)" />
+                        <div class="district-text" v-if="newgoods.length != 0">
+                            <h3 style="font-size:14px;font-weight:700;color:#ff0000;">Novedades</h3>
+                            <div>
+                                <span style="color: #666;"
+                                      @click="$util.openWindow('goods_list_model_win',{tag:'新品产品'})">Ir al
+                                    centro de nuevos</span><i class="aui-iconfont aui-icon-right"></i>
+                            </div>
+                        </div>
+                        <div class="relative-info" id="relativeinfo4" style="width:115%;background-color:#f4f4f4">
+                            <div class="owl-carousel owl-theme aui-padded-b-5 aui-padded-t-5 aui-padded-15"
+                                 id="xinpinhuodong">
+                                <div class="item aui-bg-white " v-for="(goods, key) in newgoods" :key="key "
+                                     v-if="goods.id" @click="goGoodsDetail(goods.id)"
+                                     style="margin: 2px; border-radius:0.4rem;overflow:hidden;">
+                                    <img :src="goods.thum" />
+                                    <img src="../image/shouxin.png" style="max-width:1rem" class="shouxin"
+                                         v-if="goods.stock == 0">
+                                    <h5 class="aui-text-default aui-ellipsis-1 aui-font-size-12 aui-padded-l-10 aui-padded-r-10  aui-bg-white"
+                                        v-text="goods.name"></h5>
+                                    <p class="aui-padded-b-5  aui-padded-l-10 aui-padded-r-10 aui-bg-white"
+                                       style="border-radius:0 0 2px 2px ">
+                                        <span class="aui-text-price aui-font-size-10">$</span>
+                                        <span class="aui-text-price" v-text="goods.sell_price"></span>
+                                    </p>
+                                </div>
+                                <div v-else>&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 商品列表 -->
+
+                    <div class="aui-flex-col aui-flex-center ">
+                        <div class="aui-flex-item-12 ">
+                            <img src="../image/wntj-1.png" style="width:50%;margin:0px auto;"
+                                 class="aui-margin-t-10 aui-margin-b-10" />
+                            <div class="aui-flex-col " style="background-color: #f4f4f4;">
+                                <div class="aui-flex-item-6" style="position: relative;padding:3px;"
+                                     @click="goGoodsDetail(goods.id)" v-for="(goods,goodsKey) in list" :key="goodsKey ">
+                                    <img :src="goods.thum ">
+                                    <img src="../image/shouxin.png" class="shouxin" v-if="goods.stock == 0">
+                                    <h5 style="height: 2rem;"
+                                        class="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-5 aui-padded-r-5 aui-bg-white"
+                                        v-text="goods.name"></h5>
+                                    <p
+                                       class="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10 aui-bg-white ">
+                                        <span class="aui-text-price aui-font-size-10">$</span>
+                                        <span class="aui-text-price " v-text="goods.sell_price "></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 首页弹窗 -->
+                    <div class='test-version-popup' v-if="testVersionShow" v-cloak>
+                        <img src='../image/test-version.png'></image>
+                        <div class='test-version-ok' @click='versionClose'></div>
+                        <div class='test-version-close' @click='versionClose'></div>
+                    </div>
+                    <div class="mask" v-if="testVersionShow" v-cloak></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../script/owl.carousel.min.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    //设置积分兑换高端
+    // .scoregoods-list{
+    //   min-height: 15rem;
+    // }
+
+    for (var i = 0; i < 1; i++) {
+        var bgimg = document.getElementById('absolutebgimg' + i.toString());
+        var info = document.getElementById('relativeinfo' + i.toString());
+        info.style.cssText += 'height:' + bgimg.offsetHeight + 'px;';
+    }
+
+
+    window.addEventListener('load', function () {
+        FastClick.attach(document.body);
+    }, false);
+
+
+    var app = {}
+    var page = 1;
+
+    apiready = function () {
+        $util.fixPage();
+        $api.fixStatusBar($api.byId('top'));
+        app = new Vue({
+            el: '#app',
+            data: {
+                user: $util.user || {},
+                banners: [],
+                list: [],
+                tags: [],
+                bannerGoodsList: [],
+                annoncements: [],
+                coupons: [], //优惠券
+                scoregoods: [], //积分商品
+                groupgoods: [], //团购商品
+                choicegoods: [], //精选商品
+                newgoods: [], //新品商品
+                discountActivity: {
+                    rule_info: []
+                },
+                // 广告
+                advertisements: [],
+                kuaibao: '',
+                // logo
+                logo: '',
+                kuaibao: '',
+                day: '',
+                hour: '',
+                minute: '',
+                second: '',
+                jfdt: {},
+                ptdt: {},
+                jpdt: {},
+                xpdt: {},
+                testVersionShow: false,
+            },
+            filters: {
+                timeFilter: function (value) {
+                    value = Math.floor(value / 1000);
+                    var day = Math.floor(value / 86400);
+                    value %= 86400;
+                    var hour = Math.floor(value / 3600);
+                    hour = hour < 10 ? '0' + hour : hour;
+                    value %= 3600;
+                    var minute = Math.floor(value / 60);
+                    minute = minute < 10 ? '0' + minute : minute;
+                    var second = value %= 60;
+                    second = second < 10 ? '0' + second : second;
+                    return day + 'Día ' + hour + ': ' + minute + ': ' + second;
+                },
+                //获取倒计时天
+                timeFilterday: function (value) {
+                    value = Math.floor(value / 1000);
+                    var day = Math.floor(value / 86400);
+                    return day + 'Día'
+                },
+                //获取倒计时时
+                timeFilterhour: function (value) {
+                    value = Math.floor(value / 1000);
+                    value %= 86400;
+                    var hour = Math.floor(value / 3600);
+                    hour = hour < 10 ? '0' + hour : hour;
+                    return hour
+                },
+                //获取倒计时分
+                timeFilterminute: function (value) {
+                    value = Math.floor(value / 1000);
+                    value %= 86400;
+                    value %= 3600;
+                    var minute = Math.floor(value / 60);
+                    minute = minute < 10 ? '0' + minute : minute;
+                    return minute
+                },
+                //获取倒计时秒
+                timeFiltersecond: function (value) {
+                    value = Math.floor(value / 1000);
+                    value %= 86400;
+                    value %= 3600;
+                    var second = value %= 60;
+                    second = second < 10 ? '0' + second : second;
+                    return second
+                }
+            },
+            methods: {
+                // 去链接设置的模型dddd
+                goModel: function (content) {
+
+                    if (content.is_open_model == 1) {
+                        if (content.model == 'goods') {
+                            $util.openWindow('goods_detail_win', {
+                                goodsId: content.model_id
+                            })
+                        } else if (content.model == 'article') {
+                            $util.openWindow('article_detail_win', {
+                                type: 'articles',
+                                articleId: content.model_id
+                            });
+                        } else if (content.model == 'goods_cate') {
+                            $util.openWindow('goods_list_new_win');
+                        }
+                    } else if (content.href) {
+                        // content.href && $util.openWindow('link_win', {
+                        //     name: content.href,
+                        //     url: content.href
+                        // });
+                        if (api.systemType == 'ios') {
+                            api.openApp({
+                                iosUrl: content.href
+                            });
+                        } else if (api.systemType == 'android') {
+                            api.openApp({
+                                androidPkg: 'android.intent.action.VIEW',
+                                mimeType: 'text/html',
+                                uri: content.href
+                            });
+                        }
+                    }
+                },
+                //去公告列表页面
+                goArticleList: function (data) {
+                    $util.openWindow('article_list_win', {
+                        type: data
+                    })
+                },
+                // 去商品详情
+                goGoodsDetail: function (goodsId) {
+                    $util.openWindow('goods_detail_win', {
+                        goodsId: goodsId
+                    })
+                },
+                //去积分商品详情
+                goScoreGoodsDetail: function (goods) {
+                    if (!$util.user) {
+                        $util.toast('Por favor');
+                        setTimeout(function () {
+                            $util.openWindow('login_win')
+                        }, 500);
+                        return;
+                    } else {
+                        $util.openWindow('score_goods_detail_win', {
+                            id: goods.id
+                        })
+                    }
+
+                },
+                // 去限时折扣商品详情页
+                goDiscountGoodsDetail: function (goodsId) {
+                    $util.openWindow('goods_detail_win', {
+                        goodsId: goodsId,
+                        isDiscountGoods: true
+                    })
+                },
+                //去团购页面
+                goGourpGoodsDetail: function (goods) {
+                    $util.openWindow('group_goods_detail_win', {
+                        goodsId: goods.goods_id,
+                        id: goods.id
+                    })
+                },
+                //去积分兑换页面
+                goScoreShop() {
+                    if (!$util.user) {
+                        $util.toast('Por favor');
+                        setTimeout(function () {
+                            $util.openWindow('login_win')
+                        }, 500);
+                        return;
+                    } else {
+                        $util.openWindow('score_shop_win')
+                    }
+
+                },
+
+                //去拼团页面
+                goGroOtroshop() {
+                    if (!$util.user) {
+                        $util.toast('Por favor');
+                        setTimeout(function () {
+                            $util.openWindow('login_win')
+                        }, 500);
+                        return;
+                    } else {
+                        $util.openWindow('group_shop_win')
+                    }
+                },
+                // 去商品列表
+                goGoodsList: function (tag) {
+                    $util.openWindow('goods_list_model_win', {
+                        tag: tag.name
+                    })
+                },
+                //去精品页面
+                goJinPinGoodsList: function () {
+                    $util.openWindow('goods_list_model_win', {
+                        tag: '精品产品'
+                    })
+                },
+                //去新品页面
+                goXinPinGoodsList: function () {
+                    $util.openWindow('goods_list_model_win', {
+                        tag: '新品产品'
+                    })
+                },
+                // 去公告页面
+                goAnnoncements: function (annoncement) {
+                    $util.openWindow('article_detail_win', {
+                        type: 'annoncements',
+                        articleId: annoncement.id
+                    });
+                },
+                versionClose: function () {
+                    this.testVersionShow = false;
+                },
+                // 去广告页面
+                goAd: function (ad) {
+                    if (ad.model == 'goods') {
+                        $util.openWindow('goods_detail_win', {
+                            goodsId: ad.model_id
+                        });
+                    } else if (ad.model == 'article') {
+                        $util.openWindow('article_detail_win', {
+                            articleId: ad.model_id,
+                            type: 'articles'
+                        });
+                    } else if (ad.model == 'goods_cate') {
+                        $util.openWindow('goods_list_model_win', {
+                            cateId: ad.model_id
+                        });
+                    }
+                },
+                getData: function () {
+                    var that = this;
+
+                    $util.ajax({
+                        url: 'api_goods/goods/lists',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                        isLoading: true,
+                    }).then(function (resp) {
+
+                        that.list = that.list.concat(resp.data).unique();
+                        $('.aui-content').css({
+                            opacity: 1
+                        });
+                        miniRefresh.endUpLoading(true);
+                        miniRefresh.endDownLoading();
+                    }).catch(function (err) { })
+                    page++;
+                },
+                getOtherData: function () {
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_articles/banners/lists',
+                        data: {
+                            type_id: 11
+                        }
+                    }).then(function (resp) {
+                        that.banners = resp.data;
+                        setTimeout(function () {
+                            $('#owl-carousel1').owlCarousel({
+                                loop: true,
+                                nav: false,
+                                autoplay: true,
+                                autoplayTimeout: 4000,
+                                items: 1
+                            });
+                        }, 50);
+                    }).catch(function (err) { });
+                    // 加载商品标签
+                    $util.ajax({
+                        url: 'api_goods/goods_tags/index'
+                    }).then(function (resp) {
+                        that.tags = resp.data
+                    }).catch(function (err) { })
+                    // 加载公告
+                    $util.ajax({
+                        url: 'api_articles/annoncements/lists',
+                        data: {
+                            type_id: 29
+                        },
+                        headers: {
+                            'page-num': 1,
+                            'page-limit': 2
+                        }
+                    }).then(function (resp) {
+
+                        that.annoncements = resp.data;
+                    }).catch(function (err) { });
+                    //加载优惠券
+                    $util.ajax({
+                        url: 'api_query/market/coupon',
+                        data: {},
+                    }).then(function (resp) {
+                        that.coupons = resp.data;
+                    }).catch(function (err) { });
+                    //加载积分商品
+
+                    //查询当前的拼团模式、加载拼团商品
+                    $util.ajax({
+                        url: 'api_group_buy/rules/index',
+                        data: {}
+
+                    }).then(function (resp) {
+                        if (resp.data.type == 1) {
+                            $util.ajax({
+                                url: 'api_group_buy/group_buy_system_goods/lists',
+                                data: {}
+                            }).then(function (resp) {
+                                that.groupgoods = resp.data;
+                            }).catch(function (err) { });
+                        } else if (resp.data.type == 2) {
+                            $util.ajax({
+                                url: 'api_group_buy/group_buy_user_goods/lists',
+                                data: {}
+                            }).then(function (resp) {
+                                that.groupgoods = resp.data;
+                            }).catch(function (err) { });
+                        }
+
+                    }).catch(function (err) { });
+                    //加载精选产品
+                    $util.ajax({
+                        url: 'api_goods/goods/lists',
+                        data: {
+                            custom_tag: 'Sell well'
+                        }
+                    }).then(function (resp) {
+                        that.choicegoods = resp.data;
+                    }).catch(function (err) { });
+                    //加载新品产品
+                    $util.ajax({
+                        url: 'api_goods/goods/lists',
+                        data: {
+                            custom_tag: 'New products'
+                        }
+                    }).then(function (resp) {
+                        resp.data.push({});
+                        that.newgoods = resp.data;
+                        setTimeout(function () {
+                            $('#xinpinhuodong').owlCarousel({
+                                pagination: false,
+                                loop: false,
+                                nav: false,
+                                autoplay: false,
+                                autoplayTimeout: 4000,
+                                items: 4
+                            });
+
+                        }, 50);
+                    }).catch(function (err) { });
+                    // 加载限时折扣
+                    $util.ajax({
+                        url: 'api_query/market/activity',
+                    }).then(function (resp) {
+                        if (resp.data.discount) {
+                            // 计算截至时间
+                            resp.data.discount[0].deadline = resp.data.discount[0].end_timestamp * 1000 - Date.now();
+                            that.discountActivity = resp.data.discount[0];
+                            that.day = that.timeFilterday(that.discountActivity.deadline);
+                            that.hour = that.timeFilterhour(that.discountActivity.deadline);
+                            that.minute = that.timeFilterminute(that.discountActivity.deadline);
+                            that.second = that.timeFiltersecond(that.discountActivity.deadline);
+                            // 限时折扣轮播初始
+                            setTimeout(function () {
+                                $('#xianshizhekou').owlCarousel({
+                                    loop: false,
+                                    nav: false,
+                                    autoplay: true,
+                                    autoplayTimeout: 4000,
+                                    items: 4
+                                });
+                            }, 50);
+                            // 倒计时
+                            setInterval(function () {
+                                that.discountActivity.deadline -= 1000;
+                                that.day = that.timeFilterday(that.discountActivity.deadline);
+                                that.hour = that.timeFilterhour(that.discountActivity.deadline);
+                                that.minute = that.timeFilterminute(that.discountActivity.deadline);
+                                that.second = that.timeFiltersecond(that.discountActivity.deadline);
+                            }, 1000)
+                        }
+                    }).catch(function (err) { });
+                },
+                getParams: function () {
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_systems/params/getParams',
+                        data: {
+                            type: 'basic'
+                        }
+                    }).then(function (resp) {
+                        that.logo = resp.data.wap_index_logo
+                        that.kuaibao = resp.data.kuaibao_img
+                        that.testVersionShow = resp.data.test_pic_show == 0 ? true : false
+                    }).catch(function (err) { })
+                    $util.ajax({
+                        url: 'api_articles/advertisements/lists',
+                    }).then(function (resp) {
+                        resp.data.map(item => {
+                            if (item.type_id === 1) {
+                                that.jfdt = item;
+                            } else if (item.type_id === 2) {
+                                that.ptdt = item;
+                            } else if (item.type_id === 3) {
+                                that.jpdt = item;
+                            } else if (item.type_id === 4) {
+                                that.xpdt = item;
+                            }
+                        })
+                    }).catch(function (err) { })
+                },
+                //获取倒计时时
+                timeFilterhour: function (value) {
+                    value = Math.floor(value / 1000);
+                    value %= 86400;
+                    var hour = Math.floor(value / 3600);
+                    hour = hour < 10 ? '0' + hour : hour;
+                    return hour
+                },
+                //获取倒计时分
+                timeFilterminute: function (value) {
+                    value = Math.floor(value / 1000);
+                    value %= 86400;
+                    value %= 3600;
+                    var minute = Math.floor(value / 60);
+                    minute = minute < 10 ? '0' + minute : minute;
+                    return minute
+                },
+                //获取倒计时秒
+                timeFiltersecond: function (value) {
+                    value = Math.floor(value / 1000);
+                    value %= 86400;
+                    value %= 3600;
+                    var second = value %= 60;
+                    second = second < 10 ? '0' + second : second;
+                    return second
+                },
+                //获取倒计时天
+                timeFilterday: function (value) {
+                    value = Math.floor(value / 1000);
+                    var day = Math.floor(value / 86400);
+                    return day + 'Día'
+                },
+            },
+            mounted: function () {
+                this.getData()
+                this.getOtherData()
+                this.getParams();
+                let result = JSON.parse(localStorage.getItem('global_shareInfo'))
+                if (result) {
+                    $util.openWindow('goods_detail_win', {
+                        // 传入商品id和隐藏加入购物车按钮
+                        goodsId: result.id,
+                        showAddCard: true
+                        // isDiscountGoods:false,
+                    })
+                }
+            }
+        });
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#2cc1f3',
+            textColor: '#fff',
+        }, function (ret, err) {
+            app.user = $api.getStorage('user');
+            $util.user = $api.getStorage('user');
+            page = 1;
+            app.list = []
+            app.getData()
+            app.getOtherData()
+        });
+        api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function (ret, err) {
+            app.user = $api.getStorage('user');
+            $util.user = $api.getStorage('user');
+            page = 1;
+            app.list = []
+            app.getData()
+            app.getOtherData()
+        });
+        // api.addEventListener({
+        //     name: 'appintent'
+        // }, function (ret, err) {
+        //     // console.log(ret);
+        //     if (ret) {
+        //         $util.openWindow('mess_list_win')
+        //     }
+        // })
+        // 被其他的应用唤起的时候调用的方法
+
+        // $('window').on('scroll', () => {
+        //     console.log('scroll');
+        // })
+        // 上拉加载
+        api.addEventListener({
+            name: 'scrolltobottom'
+        }, function (ret, err) {
+            app.getData();
+        });
+
+        // var miniRefresh = new MiniRefresh({
+        //     container: '#minirefresh',
+        //     down: {
+        //         callback: function () {
+        //             // 下拉事件
+        //             app.user = $api.getStorage('user');
+        //             $util.user = $api.getStorage('user');
+        //             page = 1;
+        //             app.list = []
+        //             app.getData()
+        //             app.getOtherData()
+
+        //             // miniRefresh.endDownLoading();
+        //         }
+        //     },
+        //     up: {
+
+        //         callback: function () {
+        //             // 上拉事件
+        //             app.getData();
+        //             // 注意，由于默认情况是开启满屏自动加载的，所以请求失败时，请务必endUpLoading(true)，防止无限请求
+
+        //             // miniRefresh.endUpLoading(true);
+        //         }
+        //     }
+        // });
+
+
+
+        // api.addEventListener({
+        //     name: 'viewappear'
+        // }, function (ret, err) {
+        //     console.log('viewappear');
+        //     app.getParams()
+        // });
+    }
+</script>
+
+</html>

@@ -1,0 +1,171 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-29 18:25:30
+ * @FilePath: /A6001888506312/html/my_receive_account_frm.html
+-->
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <section class="aui-content" style="margin-bottom:2.5rem;">
+            <div class="aui-card-list">
+                <div>
+                    <div class="aui-card-list-header aui-font-size-14">
+                        <span v-if="aliAccount.id" v-text="aliAccount.account + ' (' + aliAccount.name +  ')'"></span>
+                        <span v-else>Sin ataduras</span>
+                        <i class="iconfont icon-zhifubao" style="color: rgb(0, 170, 238);"></i>
+                    </div>
+                </div>
+                <div class="aui-card-list-footer aui-border-t">
+                    <div>
+                        <div @click="modifyAccount('ali')" style="display:inline;" v-if="aliAccount.id">
+                            <i class="aui-iconfont iconfont icon-icon- aui-margin-r-5 aui-font-size-15"></i>Actualización
+                        </div>
+                        <div @click="modifyAccount('ali')" style="display:inline;" v-else>
+                            <i class="aui-iconfont iconfont icon-icon- aui-margin-r-5 aui-font-size-15"></i>Sujeción
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aui-card-list">
+                <div>
+                    <div class="aui-card-list-header aui-font-size-14">
+                        <span v-if="wechatAccount.id">Secuestrado</span>
+                        <span v-else>Sin ataduras</span>
+                        <i class="iconfont icon-weixinzhifu" style="color:#09bb07;"></i>
+                    </div>
+                </div>
+                <div class="aui-card-list-footer aui-border-t">
+                    <div>
+                        <div @click="modifyAccount('wechat')" style="display:inline;" v-if="wechatAccount.id">
+                            <i class="aui-iconfont iconfont icon-icon- aui-margin-r-5 aui-font-size-15"></i>Actualización
+                        </div>
+                        <div @click="modifyAccount('wechat')" style="display:inline;" v-else>
+                            <i class="aui-iconfont iconfont icon-icon- aui-margin-r-5 aui-font-size-15"></i>Sujeción
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var wx = {}
+    var UILoading = {}
+    apiready = function() {
+        UILoading = api.require("UILoading");
+        $util.fixPage();
+        //wx = api.require("wx");
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: 'Mi cuenta bancaria',
+                aliAccount: {},
+                wechatAccount: {},
+            },
+            methods: {
+                modifyAccount: function(type) {
+                    var that = this;
+                    if (type == 'ali') {
+                        that.updateAliAccount();
+                    } else if(type == 'wechat'){
+                        that.updateWechatAccount();
+                    }
+                },
+                updateWechatAccount: function(){
+                  
+                },
+                updateAccount: function(data) {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_users/user_third_accounts/update',
+                        data: data,
+                        isLoading: true,
+                    }).then(function(resp){
+                        that.getData()
+                        $util.toast(resp.msg)
+                    }).catch(function(err){})
+                },
+                updateAliAccount: function() {
+                    var that = this;
+                    api.prompt({
+                        title: 'Introduzca la cuenta de pago número de teléfono/correo electrónico',
+                        buttons: ['Confirmar', 'Cancelar']
+                    }, function(ret, err) {
+                        if (ret.buttonIndex == 1 && ret.text) {
+                            var acct = ret.text;
+                            api.prompt({
+                                title: 'Nombre real,por favor',
+                                buttons: ['Confirmar', 'Cancelar']
+                            }, function(ret, err) {
+                                if (ret.buttonIndex == 2 && ret.text) {
+                                    that.updateAccount({
+                                        type: 'ali',
+                                        account: acct,
+                                        name: ret.text
+                                    })
+                                }
+                            });
+                        }
+                    });
+                },
+                getData: function() {
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_users/user_third_accounts/lists',
+                        isLoading: true,
+                    }).then(function(resp) {
+                        resp.data.forEach(function(item) {
+                            if (item.type == 'ali') {
+                                that.aliAccount = item;
+                            } else if (item.type == 'wechat') {
+                                that.wechatAccount = item;
+                            }
+                        })
+                    }).catch(function(err) {})
+                },
+            },
+            mounted: function() {
+                this.getData()
+            }
+        })
+        api.setRefreshHeaderInfo({
+            bgColor: '#fff',
+        }, function(ret, err) {
+            app.getData()
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.getData()
+        });
+    };
+</script>
+
+</html>

@@ -1,0 +1,82 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content aui-text-center" style="margin: 3rem 0;">
+            <img src="../icon/loading-1.gif" style="width: 1.5rem;margin: 0 auto;display:block;" v-show="!isPaySuccess">
+            <i class="aui-iconfont iconfont icon-roundcheckfill" style="color: #21c002;font-size: 1.5rem;" v-show="isPaySuccess"></i>
+            <h2 v-show="!isPaySuccess" class="aui-text-center aui-margin-t-15">Tramitación de pagos</h2>
+            <h2 v-show="isPaySuccess" class="aui-text-center aui-margin-t-15">Pagar conéxito</h2>
+        </div>
+        <div class="area">
+            <div class="submit" v-if="type == 'buyGoods'" tapmode @click="openOtherWin()">Mira misórdenes</div>
+            <div class="submit" v-else-if="type == 'recharge'" tapmode @click="openOtherWin();">Mira mi cartera</div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            title: 'Resultados de pago',
+            isPaySuccess: false,
+            type: ''
+        },
+        methods: {
+          openOtherWin: function(){
+            if(this.type == 'recharge'){
+              $util.openWindow('wallet_win');
+            }else if(this.type == 'buyGoods'){
+              $util.openWindow('order_list_win',{ status : 0 })
+            }
+          }
+        }
+    })
+    apiready = function() {
+        $util.fixPage();
+
+        app.type = api.pageParam.type;
+        var intervalInt = setInterval(function() {
+            $util.ajax('POST', 'api_query/pay/is_pay', {
+                order_no: api.pageParam.order_no
+            }, function(resp) {
+                if (resp.data.is_pay == 1) {
+                    app.isPaySuccess = true;
+                    clearInterval(intervalInt);
+                    if(app.type == 'recharge'){
+                        api.sendEvent({
+                            name: 'updateWallet',
+                        });
+                    }
+                }
+            }, {}, false)
+        }, 3000)
+    };
+</script>
+
+</html>

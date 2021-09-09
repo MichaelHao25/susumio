@@ -1,0 +1,91 @@
+<!-- 选择市场活动frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <header class="aui-bar aui-bar-nav aui-bar-light" style="background-image:none;">
+        <a class="aui-pull-left aui-btn" style="color: #333 !important;" id="title"></a>
+        <div class="aui-title"></div>
+        <a class="aui-pull-right aui-btn" tapmode onclick="api.closeFrame();">
+            <span class="aui-iconfont aui-icon-close"></span>
+        </a>
+    </header>
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <ul class="aui-list aui-list aui-media-list aui-bg-default" style="background-image:none;">
+                <li class="aui-list-item aui-list-item-middle aui-margin-t-10 aui-margin-b-10 aui-bg-white" v-for="(activity, key) in activities" :key="key" @click="selectActivity(activity)">
+                    <!-- 优惠券 -->
+                    <div class="aui-media-list-item-inner" v-show="type == 'coupon'">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div v-show="activity.coupon_type == 'full'" class="aui-list-item-title">{{'Lleno' + activity.reach_money + 'Reducción de yuan' + activity.change_value + 'Dólar' }}</div>
+                            <div v-show="activity.coupon_type == 'discount'" class="aui-list-item-title">{{'Lleno' + activity.reach_money + 'Yuen' + activity.change_value + 'Doblar' }}</div>
+                            <div class="aui-list-item-text" v-text="'失效时间: ' + activity.expiry_time"></div>
+                        </div>
+                    </div>
+                    <!-- 满减 -->
+                    <div class="aui-media-list-item-inner" v-show="type == 'full'">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-title">{{'Lleno' + activity.full_money + 'Reducción de yuan' + activity.reduce_money + 'Dólar' }}</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = new Vue({
+        el: '#app',
+        data: {
+            activities: [],
+            type: ''
+        },
+        methods: {
+            selectActivity: function(activity) {
+                parent.app.selectedMarketActivity = JSON.parse(JSON.stringify(activity))
+                api.sendEvent({
+                    name: 'selectActivity',
+                    extra: {
+                        selectedMarketActivity: activity,
+                        type: api.pageParam.type
+                    }
+                });
+                api.closeFrame();
+            }
+        },
+    })
+    apiready = function() {
+        $util.fixPage();
+        if (api.pageParam.type == 'full') {
+            $api.text($api.byId('title'), 'Seleccionar actividades de reducción completa');
+        } else if (api.pageParam.type == 'coupon') {
+            $api.text($api.byId('title'), 'Seleccionar cupón');
+        }
+        app.type = api.pageParam.type;
+        app.activities = api.pageParam.activities;
+    };
+</script>
+
+</html>

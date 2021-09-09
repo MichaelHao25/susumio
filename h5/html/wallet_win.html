@@ -1,0 +1,157 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-07 18:45:27
+ * @FilePath: /A6001888506312/html/wallet_win.html
+-->
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        .wrap {
+            background-color: #fff;
+            padding-top: 0.5rem;
+        }
+
+        .top {
+            display: flex;
+            margin: 0 0.375rem;
+            height: 8rem;
+            font-size: 0.9rem;
+            color: #fff;
+            border-radius: 0.5rem;
+            align-items: center;
+        }
+
+        .wallet-left {
+            box-sizing: border-box;
+            width: 66.6%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            ;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .wallet-right {
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .cash {
+            display: flex;
+            border-bottom: 0.025rem solid #eee;
+            align-items: center;
+            padding: 1.5rem 0 1rem 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+            <div id="app">
+                <div class="wrap">
+                    <div class="top" :style="{ 'background': 'url(' + bgHeader + ') no-repeat center center'}">
+                        <div class="wallet-left">
+                            <div style="margin-right: 4.5rem;">Saldo de cartera(Dólar)</div>
+                            <div style="margin-top: 0.5rem;margin-right:4.5rem">$
+                                <span style="font-size: 1.3rem;" v-text="money"></span>
+                            </div>
+                        </div>
+                        <div class="wallet-right">
+                            <div style="box-sizing: border-box;width: 4rem;margin-bottom:0.4rem;height: 1.5rem;border-radius: 0.5rem;border: 0.025rem solid #fff;text-align: center;line-height: 1.5rem"
+                                 onclick="$util.openWindow('recharge_win')">Recargar</div>
+                            <div style="box-sizing: border-box;width: 7rem;height: 1.5rem;border-radius: 0.5rem;border: 0.025rem solid #fff;text-align: center;line-height: 1.5rem"
+                                 onclick="$util.openWindow('withdraw_win')">Sacar dinero</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cash" onclick="$util.openWindow('withdraw_win')">
+                    <i class="aui-iconfont iconfont icon-yinhangqia"
+                       style="color: #000000;font-size: 22px;margin-right: 0.6rem"></i>
+                    <div class="">Tarjeta bancaria</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function () {
+        $util.fixPage();
+        $api.fixStatusBar($api.byId('top'));
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: 'Mi cartera',
+                money: '',
+                bgHeader: '',
+            },
+            methods: {
+                loadAsset: function () {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_query/users/asset'
+                    }).then(function (resp) {
+                        that.money = resp.data.money
+                    }).catch(function (err) { })
+                },
+                getParams: function () {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_systems/params/getParams',
+                        data: {
+                            type: 'user_bg'
+                        }
+                    }).then(function (resp) {
+                        that.bgHeader = resp.data.my_wallet_head_img;
+                    }).catch(function (err) { })
+                }
+            },
+            mounted: function () {
+                this.loadAsset()
+                this.getParams()
+            }
+        })
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#fff',
+        }, function (ret, err) {
+            app.loadAsset()
+        });
+        api.addEventListener({
+            name: 'setRefreshHeaderInfo'
+        }, function (ret, err) {
+            app.loadAsset()
+        });
+        api.addEventListener({
+            name: 'updateWallet'
+        }, function (ret, err) {
+            app.loadAsset()
+        });
+    };
+</script>
+
+</html>

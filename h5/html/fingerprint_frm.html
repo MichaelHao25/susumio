@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html style="height:100%;">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <style>
+        body {
+            height: 100%;
+            background-color: #f4f4f4;
+        }
+
+        .aui-list .aui-list-item {
+            min-height: 2.4rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div class="aui-content" style="margin-bottom:0.4rem;" id="app">
+        <ul class="aui-list aui-list-in">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        Pago de huellas
+                    </div>
+                    <div class="aui-list-item-right">
+                        <input type="checkbox" class="aui-switch" v-model="touchStatus" tapmode onclick="touchStatusChanged();">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var touchID = {};
+    var dialogBox = {};
+    var app = {}
+    touchStatus = $api.getStorage('touchStatus');
+
+    apiready = function() {
+        $util.fixPage();
+        touchID = api.require('touchID');
+        dialogBox = api.require("dialogBox");
+
+        app = new Vue({
+            el: '#app',
+            data: {
+                touchStatus: false,
+            },
+            methods: {
+                changTouchStatus: function(flag) {
+                    var that = this;
+                    setTimeout(function() {
+                        that.touchStatus = flag;
+                    }, 100)
+                }
+            },
+            mounted: function() {
+                if($api.getStorage('touchStatus')){
+                    this.touchStatus = true;
+                }
+            }
+        })
+    };
+    touchStatusChanged = function() {
+        // 如果要关闭指纹支付
+        if (app.touchStatus == true) {
+            $util.toast('Pago de huellas dactilares cerrado.')
+            $api.rmStorage('touchStatus');
+            return;
+        }
+        touchID.isValid(function(ret) {
+            if (ret.status) {
+                if (api.systemType == 'android') {
+                    dialogBox.alert({
+                        texts: {
+                            title: '',
+                            content: 'Compruebe sus huellas',
+                            leftBtnTitle: 'Cancelar',
+                        },
+                        styles: {
+                            bg: '#fff',
+                            w: 300,
+                            title: {
+                                marginT: 20,
+                                icon: 'widget://image/zhiwen.png',
+                                iconSize: 40,
+                                titleSize: 14,
+                                titleColor: '#000'
+                            },
+                            content: {
+                                color: '#000',
+                                size: 14
+                            },
+                            left: {
+                                marginB: 7,
+                                marginL: 90,
+                                w: 130,
+                                h: 35,
+                                corner: 2,
+                                bg: '#fff',
+                                size: 14
+                            },
+                        }
+                    }, function(ret) {
+                        if (ret.eventType == 'left') {
+                            touchID.cancelVerify();
+                            dialogBox.close({
+                                dialogName: 'alert'
+                            });
+                            app.changTouchStatus(false);
+                        }
+                    });
+                }
+                touchID.verify(function(ret) {
+                    if (ret.status) {
+                        dialogBox.close({
+                            dialogName: 'alert'
+                        });
+                        $util.toast('Pago de huellas dactilares activado');
+                        app.changTouchStatus(true);
+                        $api.setStorage('touchStatus', 1);
+                    } else {
+                        app.changTouchStatus(false)
+                        if (ret.code == 0) {
+                            // api.alert({ msg: "用户选择手动输入" });
+                            // variPayPwd();
+                        } else if (ret.code == 1) {
+                            // api.alert({ msg: "取消验证" });
+                        } else if (ret.code == 2) {
+                            // $app.toast('验证三次失败')
+                        } else if (ret.code == 3) {
+                            // api.alert({ msg: "多次验证失败请锁定手机" });
+                        } else {
+                            $util.toast('Error de autenticación')
+                        }
+                    }
+                });
+            } else {
+                app.changTouchStatus(false);
+                var msg = [
+                    '',
+                    'Lo siento,la versión de su teléfono no es Android 6.0 o más,no se puede pagar con huellas digitales.',
+                    'Sin identificación de huellas dactilares.',
+                    'Lo siento,el hardware de su teléfono no permite la identificación de huellas.',
+                    'Lo siento,no ha activado la cerradura de la pantalla.',
+                    'Lo siento,ha añadido al menos una huella dactilar en la configuración para usar esta función'
+                ];
+                if (ret.code) {
+                    $util.toast(msg[ret.code])
+                } else {
+                    $util.toast('touchID estácerrado.Por favor,retírese')
+                }
+            }
+        });
+    }
+</script>
+
+</html>

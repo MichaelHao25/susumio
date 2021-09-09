@@ -1,0 +1,224 @@
+<!--
+ * @since: 2020-11-06 21:52:05
+ * @LastAuthor: Blue
+ * @lastTime: 2020-12-05 00:33:56
+ * @FilePath: /A6001888506312/html/register_email_frm.html
+-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/ali_icon_fu/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+
+    <style media="screen">
+        .b-disabled {
+            color: #696969 !important;
+        }
+
+        .privacy_clause {
+            display: flex;
+            align-items: center;
+            margin-top: 2rem;
+            justify-content: center;
+            padding-bottom: 2rem;
+        }
+
+        input,
+        textarea {
+            -webkit-user-select: auto !important;
+            -khtml-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            -o-user-select: auto !important;
+            user-select: auto !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+            <div id="app">
+                <div class="aui-content aui-text-center">
+                    <div
+                         style="height: 7.5rem;background-color:#fff;display: flex;justify-content: center;align-items: center">
+                        <img tapmode onclick="api.closeWin()" :src="params.wap_login_logo" style="width:60%">
+                    </div>
+                    <div class="area">
+                        <!-- <div class="mix" v-if="is_open_bonus || is_open_drp">
+                    <i class="aui-iconfont aui-icon-mobile"></i>
+                    <input type="text" class="input" pattern="[0-9]*" @keyup="recoMobileChange()" placeholder="输入推荐人手机号码(选填)" v-model="reco_mobile">
+                </div>
+                <div class="tips aui-text-left" v-if="openid">请注册绑定手机号,下次可直接用第三方账号登录</div> -->
+
+                        <div class="mix">
+                            <i class="iconfont icon-youxiang" style="color: #3fa0f9;font-size: 20px"></i>
+                            <input type="input" class="input" placeholder="Correo electrónico" v-model="email"
+                                   id="email">
+                        </div>
+
+                        <div class="mix">
+                            <i class="iconfont icon-mima" style="color: #3fa0f9;font-size: 20px"></i>
+                            <input :type="typeValue" class="input" v-model="password" placeholder="Contraseña"
+                                   id="password">
+                            <i class="iconfont icon-yanjing_yincang" v-if="passwordFlag"
+                               style="color: #bbbbbb;font-size: 20px;margin-right: 0.7rem"
+                               @click="showOrHidePassword"></i>
+                            <i class="iconfont icon-yanjing_xianshi" v-if="!passwordFlag"
+                               style="color: #bbbbbb;font-size: 20px;margin-right: 0.7rem"
+                               @click="showOrHidePassword"></i>
+                        </div>
+                        <div class="other">
+                            <p onclick="$util.openWindow('message_auth_login_win')">Login con email</p>
+                            <p onclick="$util.openWindow('login_win')" style="margin-left: 4rem">Login con cuenta</p>
+                        </div>
+                        <div class="submit1" tapmode onclick="app.doRegister()" style="background-color: #3fa0f9">
+                            Registro</div>
+                        <!--
+                     <div class="receiveperson"  style="background-color: #f2f2f2">
+                    <i class="iconfont icon-shouji" style="color: #999999;font-size: 20px;margin-left: 1rem;margin-right: 0.5rem"></i> 
+                    <input type="tel"  placeholder="Si hay,poner elTeléfono del invitador." style="padding-left:0.5rem;font-size: 0.6rem;" v-model="parent_mobile">
+                </div>
+                -->
+                        <div class="privacy_clause">
+                            <input class="aui-checkbox" type="checkbox" :checked='checkedFlag'
+                                   @click="checkedFlag=!checkedFlag"
+                                   style="width: 0.8rem;height: 0.8rem;margin-right: 0.6rem">
+                            <div style="font-size: 0.6rem;color: #757575;">Acuerdo
+                                <span @click="goRule(5)" class="aui-font-weight"
+                                      style="text-decoration: underline;font-style:italic;">Condiciones de
+                                    servicio</span>Y
+                                <span @click="goRule(6)" class="aui-font-weight"
+                                      style="text-decoration: underline;font-style:italic;">Política de
+                                    privacidad</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var app = {}
+    apiready = function () {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                password: '',
+                title: 'Registro rápido',
+                login_logo: '',
+                passwordFlag: true,
+                typeValue: 'password',
+                checkedFlag: false,
+                message: 'Enviar mensaje',
+                params: {},
+                time: 90,
+                parent_mobile: "",
+                email: "",
+            },
+            methods: {
+
+                doRegister: function () {
+                    if (typeof lastSubmitTime === 'undefined') {
+                        lastSubmitTime = Date.now();
+                    } else if (Date.now() - lastSubmitTime < 2000) {
+                        lastSubmitTime = Date.now()
+                        return;
+                    }
+                    if (!this.checkedFlag) {
+                        $util.toast('Marque la cláusula de servicio')
+                        return;
+                    }
+                    if (!this.password) {
+                        $util.toast('Rellene la contraseña')
+                        return;
+                    }
+                    if (!$util.variPassword(this.password)) {
+                        $util.toast('La combinación de letras y números se limita a 6 a 20 bits');
+                        return;
+                    }
+                    if (!this.email) {
+                        $util.toast('El buzón no puede estar vacío');
+                        return;
+                    }
+                    var emailtest = /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/;
+                    if (!emailtest.test(this.email)) {
+                        $util.toast('Formato de correo incorrecto');
+                        return;
+                    }
+                    var parent_mobile = '';
+                    var parent_email = '';
+                    var emailtest = /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/;
+                    if (emailtest.test(this.parent_mobile)) {
+                        parent_email = this.parent_mobile;
+                    } else {
+                        parent_mobile = this.parent_mobile;
+                    }
+                    var data = {
+                        parent_mobile: parent_mobile || '',
+                        email: this.email,
+                        password: this.password,
+                        parent_email: parent_email || '',
+                    }
+                    $util.ajax({
+                        url: 'api_users/user_accounts/register_email',
+                        data: data,
+                        isLoading: true,
+                    }).then(function (resp) {
+                        $util.toast(resp.msg)
+                        resp.data.user.avatar = resp.data.user.avata ? resp.data.user.avatar : '../image/avatar.png';
+                        $util.user = resp.data.user;
+                        $util.token = resp.data.token;
+                        $api.setStorage('user', resp.data.user);
+                        $api.setStorage('token', resp.data.token);
+                        $api.setStorage('touchStatus', 0);
+                        setTimeout(function () {
+                            $util.openWindow('home_win');
+                        }, 500)
+                    }).catch(function (err) { })
+                },
+                showOrHidePassword: function () {
+                    if (this.typeValue === 'password') {
+                        this.typeValue = 'text'
+                    } else {
+                        this.typeValue = 'password'
+                    }
+                    this.passwordFlag = !this.passwordFlag;
+                }, getParams: function () {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_systems/Params/getParams',
+                        data: {
+                            type: "basic",
+                        }
+                    }).then(function (resp) {
+                        resp.data.wap_login_logo = resp.data.wap_login_logo
+                        that.params = resp.data
+                        that.themeColor = resp.data.basic_color;
+                    }).catch(function (err) { })
+                },
+            },
+            mounted: function () {
+                this.getParams();
+            }
+        })
+    };
+</script>
+
+</html>

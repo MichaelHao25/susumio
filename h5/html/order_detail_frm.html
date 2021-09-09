@@ -1,0 +1,415 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        .order-status {
+            height: 5rem;
+            width: 100%;
+            background: linear-gradient(to bottom, #3de5ff, #39bbff, #358dff);
+        }
+
+        #order-status {
+            background-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <div class="aui-content">
+            <!-- 订单状态 -->
+            <div class="order-status aui-b aui-bg-info">
+                <ul class="aui-list aui-media-list" id="order-status" style="background-image:none;">
+                    <li class="aui-list-item" style="background-image:none;">
+                        <div class="aui-media-list-item-inner">
+                            <div class="aui-list-item-media">
+                                <span class="aui-iconfont iconfont aui-text-white" :class="orderStatusIconObject" style="font-size: 2.2rem;"></span>
+                            </div>
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-text aui-text-white aui-font-size-12" style="line-height:2.3rem;">
+                                    <h2>{{order | orderStatus}}</h2>
+                                </div>
+                                <div class="aui-list-item-text aui-text-white">
+                                    <h3 class="aui-font-size-14">{{order | orderStatusSecond}}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- 收货地址 -->
+            <ul class="aui-list aui-media-list aui-margin-t-5" style="background-image:none;">
+                <li class="aui-list-item" style="background-image:none;">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-label-icon">
+                            <i class="aui-iconfont iconfont icon-dizhi1 aui-font-size-20 aui-text-info"></i>
+                        </div>
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title aui-font-weight" v-text="order.address"></div>
+                            </div>
+                            <div class="aui-info aui-margin-t-10" style="padding:0">
+                                <div class="aui-info-item">
+                                    <span v-text="order.consignee_name"></span>
+                                </div>
+                                <div class="aui-info-item" v-text="order.mobile"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class=" aui-padded-l-5 aui-padded-r-5 aui-margin-t-5 aui-bg-white">
+                <!-- 订单时间和状态 -->
+                <div class="aui-padded-5 aui-font-size-12">
+                    <span v-text="order.create_time"></span>
+                    <span class="aui-pull-right aui-text-info">{{order | orderStatus}}</span>
+                </div>
+                <!-- 商品列表 -->
+                <ul class="aui-list aui-media-list" style="background-image:none;">
+                    <li class="aui-list-item aui-margin-b-5 aui-bg-default" v-for="(goods,index) in order.order_goods_info" :key="index" style="background-image:none;">
+                        <div class="aui-media-list-item-inner">
+                            <!-- 商品缩略图 -->
+                            <div class="aui-list-item-media" @click.stop="goGoodsDetail(goods);">
+                                <img :src="goods.thum">
+                            </div>
+                            <div class="aui-list-item-inner">
+                                <!-- 商品名称 -->
+                                <div class="aui-list-item-text">
+                                    <div class="aui-list-item-title aui-ellipsis-2 aui-font-size-14" style="width:70%;" v-text="goods.name"></div>
+                                    <div class="aui-list-item-righ aui-text-price">
+                                        <span style="font-size: 0.5rem; ">$</span>
+                                        <span class="aui-font-size-14 " v-text="goods.real_price "></span>
+                                    </div>
+                                </div>
+                                <!-- 原价 -->
+                                <div class="aui-list-item-text" v-if="order.market_activity_id != 0">
+                                    <div class="aui-list-item-title aui-ellipsis-2 aui-font-size-14" style="width:70%;"></div>
+                                    <div class="aui-list-item-righ" style="text-decoration: line-through;">
+                                        <span style="font-size: 0.4rem; ">$</span>
+                                        <span class="aui-font-size-12 " v-text="goods.sell_price"></span>
+                                    </div>
+                                </div>
+
+                                <!-- 规格加数量 -->
+                                <div class="aui-list-item-text aui-text-pray aui-margin-t-5">
+                                    <div class="aui-list-item-title aui-font-size-12 aui-text-pray" style="width:70%;">
+                                        <span v-if="goods.spec_group_id != 0" v-text="'Especificaciones: '+ goods.spec_group_info"></span>
+                                    </div>
+                                    <div class="aui-list-item-righ aui-text-pray">
+                                        <span class="aui-padded-5" v-text=" 'x ' + goods.num "></span>
+                                    </div>
+                                </div>
+                                <!-- 评价 -->
+                                <div class="aui-list-item-text aui-margin-t-5">
+                                    <div class="aui-list-item-title aui-text-pray aui-font-size-12 " style="width:70%;"></div>
+                                    <div class="aui-list-item-right " style="width:30%;" @click.stop="goComment(goods)" v-if="order.status == 4 && goods.is_comment == 0 && goods.return_goods_status != 3 && goods.return_goods_status != 1">
+                                        <div class="order-buttons aui-text-right">
+                                            <div class="mini-button aui-font-size-10">Comentar</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 退款 针对已付款和已发货的订单 -->
+                                <div class="aui-list-item-text aui-margin-t-10">
+                                    <div class="aui-list-item-title aui-text-pray aui-font-size-12 " style="width:70%;"></div>
+                                    <div class="aui-list-item-right" style="width:30%;" @click.stop="refund(goods)" v-if="(order.status == 2 || order.status == 3) && goods.return_goods_status == 0">
+                                        <div class="order-buttons aui-text-right">
+                                            <div class="mini-button aui-font-size-10" style="width:5rem;">Reembolso</div>
+                                        </div>
+                                    </div>
+                                    <div class="aui-list-item-right aui-text-right" style="width:30%;" @click.stop="refund(goods)" v-if="goods.return_goods_status == 1">Solicitud de reembolso</div>
+                                    <div class="aui-list-item-right aui-text-right" style="width:30%;" v-else-if="goods.return_goods_status == 2">Reembolso denegado</div>
+                                    <div class="aui-list-item-right aui-text-right" style="width:30%;" v-else-if="goods.return_goods_status == 3&&goods.is_return_money==0">Devolución exitosa<br/>Pendiente de reembolso</div>
+                                    <div class="aui-list-item-right aui-text-right" style="width:30%;" v-else-if="goods.return_goods_status == 3&&goods.is_return_money==1">Devolución exitosa</div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="aui-list aui-list-in">
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title aui-font-size-14">Flete</div>
+                            <div class="aui-list-item-right" v-text="'$' + order.freight_money"></div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item" v-if="order.market_activity_id != 0">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title aui-font-size-14">Preferencias operacionales</div>
+                            <div class="aui-list-item-right" v-text="'$' + order.market_reduce_money"></div>
+                        </div>
+                    </li>
+                    <li class="aui-list-item" v-if="order.market_activity_id != 0">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title aui-font-size-14">Precio total(Flete incluido)</div>
+                            <div class="aui-list-item-right aui-text-price">
+                                <span class="aui-font-size-12">$</span>
+                                <span class="aui-font-size-16" v-text="order.total_money"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- 时间信息 -->
+            <div class="aui-padded-10 aui-bg-white aui-margin-t-5" style="padding-bottom: 1.8rem !important;">
+                <h5 class="aui-padded-t-5 aui-font-size-12" v-text="'Número de pedido: ' + order.order_no"></h5>
+                <h5 class="aui-padded-t-5 aui-font-size-12" v-text="'Tiempo de creación: ' + order.create_time"></h5>
+                <h5 class="aui-padded-t-5 aui-font-size-12" v-if="order.pay_time" v-text="'Tiempo de pago: ' + order.pay_time"></h5>
+                <h5 class="aui-padded-t-5 aui-font-size-12" v-if="order.deliver_time" v-text="'Tiempo de entrega: ' + order.deliver_time"></h5>
+                <h5 class="aui-padded-t-5 aui-font-size-12" v-if="order.confirm_receipt_time" v-text="'Tiempo de recepción confirmado: ' + order.confirm_receipt_time"></h5>
+                <h5 class="aui-padded-t-5 aui-font-size-12" v-if="order.cancel_time" v-text="'Tiempo de cancelación: ' + order.cancel_time"></h5>
+                <h5 class="aui-padded-t-5 aui-font-size-12" v-if="order.apply_return_time" v-text="'Solicitud de reembolso: ' + order.apply_return_time"></h5>
+                <h5 class="aui-padded-t-5 aui-font-size-12" v-if="order.return_time" v-text="'Plazo de aceptación/rechazo del reembolso: ' + order.return_time"></h5>
+                <h5 class="aui-padded-t-5 aui-font-size-12" v-if="order.memo" v-text="'Mi mensaje: ' + order.memo"></h5>
+                <h5 class="aui-padded-t-5 aui-font-size-12" v-if="order.reply_memo" v-text="'Respuesta comercial: ' + order.reply_memo"></h5>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var cancelOrderButtons = ['No quiero comprarlo', 'Error al llenar la información', 'Falta de mercadería', 'Otras razones'];
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                order: {
+                    create_time: '',
+                    order_goods_info: [],
+                    status: '',
+                    total_money: '',
+                    freight_money: '',
+                    address: '',
+                },
+                expressInfo: {
+                    data: []
+                }
+            },
+            methods: {
+                // 查看订单详情
+                goOrderDetail: function(order) {
+                    $util.openWindow('order_detail_win', {
+                        orderId: order.id
+                    });
+                },
+                //评论
+                goComment: function(goods) {
+                    $util.openWindow('comment_add_win', {
+                        goods: goods,
+                    });
+                },
+                //查看物流
+                goLogistics: function() {
+                    $util.openWindow('logistics_win', {
+                        order: this.order
+                    });
+                },
+                // 取消订单
+                cancel: function() {
+                    api.actionSheet({
+                        title: 'Por favor,seleccione la causa de la cancelación',
+                        cancelTitle: 'Cancelar',
+                        buttons: cancelOrderButtons,
+                    }, function(ret, err) {
+                        if (ret) {
+                            if (ret.buttonIndex == 5) {} else if (ret.buttonIndex == 4) {
+                                api.prompt({
+                                    title: 'Introduzca otra razón',
+                                    buttons: ['Confirmar', 'Cancelar']
+                                }, function(ret, err) {
+                                    if (ret) {
+                                        if (ret.buttonIndex == 2) {
+                                            app.doCancel(ret.text);
+                                        }
+                                    } else {
+                                        alert(JSON.stringify(err));
+                                    }
+                                });
+
+                            } else {
+                                app.doCancel(app.order.id, cancelOrderButtons[ret.buttonIndex - 1]);
+                            }
+                        } else {
+                            alert(JSON.stringify(err));
+                        }
+                    });
+                },
+                // 执行取消订单
+                doCancel: function(reason) {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_orders/cancel_orders/user_cancel',
+                        data: {
+                            order_id: app.order.id,
+                            cancel_reason: reason
+                        },
+                        isLoading: true,
+                    }).then(function(resp) {
+                        $util.toast(resp.msg);
+                        that.order.status = 9;
+                        api.sendEvent({
+                            name: 'updateOrder',
+                        });
+                        api.sendEvent({
+                            name: 'updateOrderDetail',
+                            extra: {
+                                order: that.order
+                            }
+                        });
+                    }).catch(function(err) {})
+                },
+                //付款
+                pay: function() {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_orders/pay/pre_pay',
+                        data: {
+                            order_id: app.order.id
+                        },
+                        isLoading: true,
+                    }).then(function(resp) {
+                        $util.openWindow('pay_select_win', {
+                            order_no: app.order.order_no,
+                            total_money: app.order.total_money,
+                        });
+                    }).catch(function(err) {})
+                },
+                // 申请退款
+                refund: function(goods) {
+                    $util.openWindow('order_refund_win', {
+                        refundGoods: goods
+                    });
+                },
+                //提醒发货
+                remind: function() {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_orders/tip_deliver/tip',
+                        data: {
+                            order_id: app.order.id
+                        },
+                        isLoading: true,
+                    }).then(function(resp) {
+                        $util.toast(resp.msg)
+                    }).catch(function(err) {})
+                },
+                // 确认收货
+                finish: function() {
+                    var that = this
+                    api.confirm({
+                        title: 'Confirmen la recepción?',
+                        buttons: ['Confirmar', 'Cancelar']
+                    }, function(ret, err) {
+                        if (ret.buttonIndex == 1) {
+                            $util.ajax({
+                                url: 'api_orders/sign_orders/user_sign',
+                                data: {
+                                    order_id: app.order.id
+                                },
+                                isLoading: true,
+                            }).then(function(resp) {
+                                $util.toast(resp.msg);
+                                that.order.status = 4;
+                                that.sendEvent();
+                            }).catch(function(err) {})
+                        }
+                    });
+                },
+                // 商品详情
+                goGoodsDetail: function(goods) {
+                    $util.openWindow('goods_detail_win', {
+                        goodsId: goods.goods_id
+                    })
+                },
+                // 发送更新订单的事件
+                sendEvent: function() {
+                    api.sendEvent({
+                        name: 'updateOrder',
+                    });
+                }
+            },
+            filters: {
+                orderStatus: function(order) {
+                    var str = '';
+                    if (order.status == 1) {
+                        str += 'Pagará';
+                    } else if (order.status == 2) {
+                        str += 'Esperando la entrega';
+                    } else if (order.status == 3) {
+                        str += 'Mercancías entregadas';
+                    } else if (order.status == 4) {
+                        str += 'El pedido está realizado';
+                    } else if (order.status == 9) {
+                        str += 'Orden cancelada';
+                    }
+                    return str;
+                },
+                orderStatusSecond: function(order) {
+                    if (order.return_status == 1) {
+                        return '';
+                    } else if (order.return_status == 2) {
+                        return '';
+                    } else if (order.return_status == 3) {
+
+                    } else if (order.return_status == 0) {
+                        if (order.status == 1) {
+                            return '';
+                        } else if (order.status == 2) {
+                            return 'El Jefe del almacén estáen camino.Por favor,espere.';
+                        } else if (order.status == 3) {
+                            return '';
+                        } else if (order.status == 4 || order.status == 9) {
+                            return '';
+                        }
+                    }
+                }
+            },
+            computed: {
+                orderStatusIconObject: function() {
+                    if (this.order.status == 1) {
+                        return {
+                            'icon-daifukuan': true
+                        };
+                    } else if (this.order.status == 2) {
+                        return {
+                            'icon-daifahuo': true
+                        };
+                    } else if (this.order.status == 3) {
+                        return {
+                            'icon-yifahuo': true
+                        };
+                    } else if (this.order.status == 4 || this.order.status == 9) {
+                        return {
+                            'icon-iconwxz': true
+                        };
+                    }
+                }
+            },
+            mounted: function() {
+                this.order = api.pageParam.order;
+            }
+        })
+    };
+</script>
+
+</html>

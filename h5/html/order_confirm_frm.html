@@ -1,0 +1,511 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-25 21:48:38
+ * @FilePath: /A6001888506312/html/order_confirm_frm.html
+-->
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        .line:after {
+            display: block;
+            content: "";
+            clear: both;
+        }
+
+        .line .left {
+            color: #777;
+            font-size: 0.75rem;
+            height: 2rem;
+            line-height: 2rem;
+            float: left;
+        }
+
+        .line .right {
+            float: right;
+            color: #777;
+            font-size: 0.75rem;
+            height: 2rem;
+            line-height: 2rem;
+        }
+
+        .line-through-text {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+            <div id="app">
+                <!-- 默认地址 -->
+                <div class="aui-content aui-margin-b-10 aui-margin-t-10">
+                    <ul class="aui-list aui-media-list" style="background-image:none;">
+                        <li class="aui-list-item aui-list-item-arrow" style="background-image:none;" tapmode
+                            onclick="app.selectAddress()">
+                            <div class="aui-media-list-item-inner">
+                                <div class="aui-list-item-label-icon">
+                                    <i class="aui-iconfont iconfont icon-dizhi1 aui-font-size-20 aui-text-info"></i>
+                                </div>
+                                <div class="aui-list-item-inner">
+                                    <div class="aui-list-item-text">
+                                        <div class="aui-list-item-title aui-font-weight"
+                                             v-text="address.province + ' ' + address.city + ' ' + address.area + ' ' + address.address">
+                                        </div>
+                                    </div>
+                                    <div class="aui-info aui-margin-t-10" style="padding:0">
+                                        <div class="aui-info-item">
+                                            <span v-text="address.consignee_name"></span>
+                                        </div>
+                                        <div class="aui-info-item" v-text="address.mobile"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 商品列表 -->
+                <div class="aui-content aui-padded-l-5 aui-padded-r-5 aui-padded-t-5 aui-bg-white"
+                     style="background-image:none;">
+                    <ul class="aui-list aui-media-list">
+                        <li class="aui-list-item aui-margin-b-5 aui-bg-default" v-for="(item,key) in goodsList"
+                            :key="key" style="background-image:none;">
+                            <div class="aui-media-list-item-inner">
+                                <!-- 商品缩略图 -->
+                                <div class="aui-list-item-media">
+                                    <img :src="item.select_spec_group_info.thum || item.goods_info.thum">
+                                </div>
+                                <div class="aui-list-item-inner">
+                                    <!-- 商品名称 -->
+                                    <div class="aui-list-item-text">
+                                        <div class="aui-list-item-title aui-ellipsis-2 aui-font-size-14"
+                                             v-text="item.goods_info.name"></div>
+                                    </div>
+                                    <!-- 商品简介 -->
+                                    <div class="aui-list-item-text">
+                                        <div class="aui-list-item-title aui-ellipsis-2 aui-text-pray  aui-font-size-12 aui-padded-t-5"
+                                             v-text="item.goods_info.intro"></div>
+                                    </div>
+                                    <!-- 规格名称 -->
+                                    <div class="aui-list-item-text" v-if="item.select_spec_group_info.id">
+                                        <div class="aui-list-item-title aui-text-pray aui-font-size-12 aui-padded-t-5"
+                                             v-text="'Especificaciones: ' + item.select_spec_group_info.spec_option_group">
+                                        </div>
+                                    </div>
+                                    <!-- 价格和数量 -->
+                                    <div class="aui-list-item-text aui-margin-t-5">
+                                        <!-- 规格价格 -->
+                                        <div class="aui-list-item-title aui-text-price aui-font-size-14"
+                                             v-if="item.select_spec_group_info.id"
+                                             :class="{'line-through-text' : isDiscountGoods}">
+                                            <span style="font-size: 0.5rem;">$</span>
+                                            <span class="aui-font-size-14"
+                                                  v-text="item.select_spec_group_info.sell_price"></span>
+                                        </div>
+                                        <!-- 商品价格 -->
+                                        <div class="aui-list-item-title aui-text-price aui-font-size-14" v-else
+                                             :class="{'line-through-text' : isDiscountGoods}"
+                                             v-text="'$' + item.goods_info.sell_price"></div>
+                                        <!-- 数量操作 -->
+                                        <div style="display: flex;padding-left: 20px;"
+                                             class="aui-list-item-right aui-text-price aui-margin-t-5"
+                                             style="line-height: 1rem;">
+                                            <i class="aui-iconfont iconfont icon-jian aui-font-size-20 aui-text-info"
+                                               @click="changeNum(item, -1)"></i>
+                                            <!-- <span  v-text="item.num" ></span> -->
+                                            <input class="aui-padded-l-5 aui-padded-r-5 aui-font-size-14 aui-text-center"
+                                                   type="text" pattern="[0-9]*" @change="numberChagne"
+                                                   v-model="item.num">
+                                            <i class="aui-iconfont iconfont icon-jia aui-font-size-20 aui-text-info"
+                                               @click="changeNum(item, 1)"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <ul class="aui-list aui-list-in">
+                    <!-- 选择限时折扣活动 -->
+                    <li class="aui-list-item" v-if="isDiscountGoods">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title aui-font-size-14">Descuento por hora</div>
+                            <div class="aui-list-item-right" v-for="(discount, key) in discounts" :key="key"
+                                 v-if="key == 0">
+                                <span class="aui-text-price aui-font-size-12">$</span>
+                                <span class="aui-text-price aui-font-size-18" v-text="discount.discount_price"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- 选择满减 如果为限时折扣商品则不显示 -->
+                    <li class="aui-list-item" v-if="!isDiscountGoods" v-show="fulls.length != 0" tapmode
+                        onclick="app.selectMarketActivity('full')">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-title aui-font-size-14">Descuento</div>
+                            <div class="aui-list-item-right"
+                                 v-show="selectedMarketType == 'full' && selectedMarketActivity.id">
+                                <span>{{'Lleno' + selectedMarketActivity.full_money + 'Reducción de yuan' + selectedMarketActivity.reduce_money + 'Dólar' }}</span>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- 选择优惠券 如果为限时折扣商品则不显示 -->
+                    <li class="aui-list-item" v-if="!isDiscountGoods" v-show="coupons.length != 0" tapmode
+                        onclick="app.selectMarketActivity('coupon')">
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-title aui-font-size-14">Seleccionar cupón</div>
+                            <div class="aui-list-item-right"
+                                 v-show="selectedMarketType == 'coupon' && selectedMarketActivity.id">
+                                <span
+                                      v-show="selectedMarketActivity.coupon_type == 'full'">{{'Lleno' + selectedMarketActivity.reach_money + 'Reducción de yuan' + selectedMarketActivity.change_value + 'Dólar' }}</span>
+                                <span
+                                      v-show="selectedMarketActivity.coupon_type == 'discount'">{{'Lleno' + selectedMarketActivity.reach_money + 'Yuen' + selectedMarketActivity.change_value + 'Doblar' }}</span>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- 运费 -->
+                    <li class="aui-list-item">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-title aui-font-size-14">Flete</div>
+                            <div class="aui-list-item-right aui-font-size-14">
+                                <span class="aui-font-size-12">$</span>
+                                <span v-text="freight_money"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <!-- 其他信息 -->
+                <div class="aui-padded-l-5 aui-padded-r-5 aui-bg-white aui-padded-b-5" style="margin-bottom:2.8rem;">
+                    <div class="line">
+                        <div class="left">Notas del comprador:</div>
+                        <div class="">
+                            <textarea class="aui-padded-5" rows="18" cols="80"
+                                      style="border:1px solid #f7f7f7;height:5rem;" v-model="message"
+                                      placeholder="Dejar un mensaje"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var app = {}
+    apiready = function () {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                isDiscountGoods: false,
+                message: '',
+                address: {
+                    consignee_name: '',
+                    province: '',
+                    city: '',
+                    area: '',
+                    address: '',
+                    mobile: '',
+                },
+                goodsList: [],
+                freight_money: 0,
+                totalPrice: 0,
+                // 可选择优惠券
+                coupons: [],
+                // 可选择限时折扣
+                discounts: [],
+                // 可选择满减
+                fulls: [],
+                // 选择的营销活动
+                selectedMarketActivity: {},
+                // 选择的营销类型
+                selectedMarketType: 0,
+                // 折扣价格
+                discount_price: 1
+            },
+            methods: {
+                numberChagne: function () {
+                    this.goodsList.forEach(function (item) {
+                        item.num = parseInt(item.num, 10)
+                    })
+                    this.queryFreightMoney();
+                },
+                // 改变数量
+                changeNum: function (item, num) {
+                    if (num == -1 && item.num < 2) {
+                        return;
+                    }
+                    item.num = Number(item.num) + Number(num);
+                    this.queryFreightMoney();
+                },
+                // 提交订单
+                submit: function () {
+                    // 组装订单数据
+                    if (typeof lastSubmitTime === 'undefined') {
+                        lastSubmitTime = Date.now();
+                    } else if (Date.now() - lastSubmitTime < 2000) {
+                        lastSubmitTime = Date.now()
+                        return;
+                    }
+                    var orderData = [];
+                    this.goodsList.forEach(function (item) {
+                        var data = {
+                            goods_id: item.goods_info.id,
+                            num: item.num,
+                            spec_group_id_str: 0,
+                        }
+                        if (item.select_spec_group_info.id) {
+                            data.spec_group_id_str = item.select_spec_group_info.id_str;
+                        }
+                        orderData.push(data);
+                    });
+                    var apiData = {
+                        address_id: this.address.id,
+                        goods_info: orderData,
+                        market_activity_type: this.selectedMarketType || 0,
+                        market_activity_id: this.selectedMarketActivity.id || 0,
+                        memo: this.message
+                    };
+                    // 分享逻辑
+                    // orderData[0].goods_id 当前商品的id
+                    // 使用地址栏携带的id和当前商品进行比对,如果OK的话就附带上邀请码不OK的话就不附带了.
+                    let result = JSON.parse(localStorage.getItem('global_shareInfo'))
+                    if (result) {
+                        if(orderData[0].goods_id==result.id){
+                            apiData.shareCode = result.shareCode;
+                        }
+                    }
+                    // 分享的逻辑
+                    //alert(JSON.stringify(apiData))
+                    $util.ajax({
+                        url: 'api_orders/orders/save',
+                        data: apiData,
+                        isLoading: true,
+                    }).then(function (resp) {
+                        // 分享完毕后清除当前的分享信息
+                        localStorage.removeItem('global_shareInfo')
+                        // 分享完毕后清除当前的分享信息
+                        $util.toast(resp.msg);
+                        setTimeout(function () {
+                            $util.openWindow('pay_select_win', {
+                                order_no: resp.data.order_no,
+                                total_money: resp.data.total_money,
+                            });
+                        }, 500);
+                    })
+                },
+                // 选择地址
+                selectAddress: function () {
+                    $util.openWindow('address_list_win', {
+                        selectAddress: true
+                    })
+                },
+                // 选择优惠券和满减活动
+                selectMarketActivity: function (type) {
+                    this.selectedMarketType = 0;
+                    this.selectedMarketActivity = {};
+                    app.countTotalPrice();
+
+                    var frmParam = {
+                        type: type
+                    };
+                    if (type == 'coupon') {
+                        frmParam.activities = app.coupons;
+                    } else if (type == 'full') {
+                        frmParam.activities = app.fulls;
+                    }
+
+                    api.openFrame({
+                        name: 'select_market_activity_frm',
+                        url: './select_market_activity_frm.html',
+                        rect: {
+                            x: 0,
+                            y: api.winHeight / 3,
+                            w: api.winWidth,
+                            h: api.winHeight / 3 * 2,
+                            marginBottom: 0,
+                        },
+                        pageParam: frmParam,
+                        animation: {
+                            type: "movein", //动画类型（详见动画类型常量）
+                            subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                            duration: 300
+                        },
+                        bounces: false,
+                        bgColor: 'rgba(0,0,0,0)',
+                        vScrollBarEnabled: false,
+                        hScrollBarEnabled: false
+                    });
+                },
+                // 查询运费及可参与活动
+                queryFreightMoney: function () {
+                    var that = this
+                    // 重置选择的优惠
+                    this.selectedMarketType = 0;
+                    this.selectedMarketActivity = {};
+                    // 定义查询数据
+                    var orderData = [];
+                    app.goodsList.forEach(function (item) {
+                        var data = {
+                            goods_id: item.goods_info.id,
+                            num: item.num,
+                            spec_group_id_str: 0
+                        }
+                        if (item.select_spec_group_info.id) {
+                            data.spec_group_id_str = item.select_spec_group_info.id_str;
+                        }
+                        orderData.push(data);
+                    });
+                    $util.ajax({
+                        url: 'api_orders/orders/view',
+                        data: {
+                            address_id: this.address.id,
+                            goods_info: orderData
+                        },
+                        isLoading: true,
+                    }).then(function (resp) {
+                        that.freight_money = resp.data.freight_money;
+                        that.totalPrice = resp.data.total_money;
+                        var goodsIds = [];
+                        that.goodsList.forEach(function (item) {
+                            goodsIds.push(item.goods_info.id)
+                        });
+                        that.queryMarketActivities(resp.data.total_money, goodsIds)
+                    }).catch(function (err) { })
+                },
+                // 查询可参与的优惠活动
+                queryMarketActivities: function (money, goodsIds) {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_query/market/user',
+                        data: {
+                            money: money,
+                            goods_ids: goodsIds
+                        },
+                        isLoading: true,
+                    }).then(function (resp) {
+                        // 去掉后缀0
+                        (resp.data.coupon || []).forEach(function (item) {
+                            item.change_value = Number(item.change_value).toPrecision();
+                            item.reach_money = Number(item.reach_money).toPrecision();
+                        });
+                        // 去掉后缀0
+                        (resp.data.full || []).forEach(function (item) {
+                            item.reduce_money = Number(item.reduce_money).toPrecision();
+                            item.full_money = Number(item.full_money).toPrecision();
+                        })
+                        that.coupons = resp.data.coupon || [];
+                        that.fulls = resp.data.full || [];
+                        that.discounts = resp.data.discount || [];
+                        // 如果是限时折扣商品，则计算总价格
+                        if (api.pageParam.isDiscountGoods && !resp.data.discount) {
+                            $util.toast('No se puede disfrutar el descuento');
+                            setTimeout(function () {
+                                api.closeWin();
+                            }, 800)
+                            return
+                        }
+                        if (api.pageParam.isDiscountGoods) {
+                            that.discount_price = that.discounts[0].discount_price * that.goodsList[0].num;
+                            that.selectedMarketType = 'discount';
+                            that.selectedMarketActivity = app.discounts[0];
+                        }
+                        that.countTotalPrice();
+                    }).catch(function (err) { });
+                },
+                // 计算总价格
+                countTotalPrice: function () {
+                    var price = 0;
+                    if (api.pageParam.isDiscountGoods) {
+                        price = (Number(app.discount_price) + Number(this.freight_money)) || 0
+                    } else if (this.selectedMarketType == 'full' && this.selectedMarketActivity.id) {
+                        price = (this.totalPrice > this.selectedMarketActivity.full_money) ? this.totalPrice - this.selectedMarketActivity.reduce_money : this.totalPrice;
+                    } else if (this.selectedMarketType == 'coupon' && this.selectedMarketActivity.id) {
+                        if (this.selectedMarketActivity.coupon_type == 'full') {
+                            price = (this.totalPrice > this.selectedMarketActivity.reach_money) ? this.totalPrice - this.selectedMarketActivity.change_value : this.totalPrice;
+                        } else if (this.selectedMarketActivity.coupon_type == 'discount') {
+                            price = (this.totalPrice > this.selectedMarketActivity.reach_money) ? this.totalPrice * this.selectedMarketActivity.change_value * 0.1 : this.totalPrice;
+                        }
+                    } else {
+                        price = this.totalPrice;
+                    }
+                    api.sendEvent({
+                        name: 'updateTotalPrice',
+                        extra: {
+                            totalPrice: Number(price).toFixed(2)
+                        }
+                    });
+                },
+                getDefaultAddress: function () {
+                    var that = this
+                    // 加载默认地址
+                    $util.ajax({
+                        url: 'api_query/users/default_address'
+                    }).then(function (resp) {
+                        if (!resp.data.id) {
+                            $util.toast('Añadir la dirección');
+                            setTimeout(function () {
+                                $util.openWindow('address_list_win', {
+                                    selectAddress: true
+                                })
+                            }, 500)
+                        } else {
+                            that.address = resp.data;
+                        }
+                    }).catch(function (err) { })
+                }
+            },
+            watch: {
+                // 地址发生改变
+                address: function (address) {
+                    this.queryFreightMoney();
+                },
+            },
+            mounted: function () {
+                this.goodsList = api.pageParam.goodsList ? JSON.parse(api.pageParam.goodsList) : [];
+                this.isDiscountGoods = api.pageParam.isDiscountGoods ? JSON.parse(api.pageParam.isDiscountGoods) : '';
+                this.getDefaultAddress()
+            }
+        });
+        // 选择地址监听
+        api.addEventListener({
+            name: 'selectAddress'
+        }, function (ret, err) {
+            if (ret) {
+                app.address = ret.value.address;
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+
+        // 选择活动监听
+        api.addEventListener({
+            name: 'selectActivity'
+        }, function (ret, err) {
+            if (ret) {
+                app.selectedMarketActivity = ret.value.selectedMarketActivity;
+                app.selectedMarketType = ret.value.type;
+                app.countTotalPrice();
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+    };
+</script>
+
+</html>

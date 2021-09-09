@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        #checkout {
+            height: 2.5rem;
+            border-top: 1px solid #f4f4f4;
+            bottom: 2.5rem;
+            border-bottom: 1px solid #f4f4f4;
+        }
+
+        #checkout .selectall {
+            display: inline-block;
+            width: 25%;
+            position: relative;
+            text-align: left;
+        }
+
+        #checkout .price {
+            width: 50%;
+            text-align: right;
+            display: inline-block;
+            line-height: 2.5rem;
+            padding-right: 0.5rem;
+            font-size: 0.7rem
+        }
+
+        #checkout .submit {
+            display: inline-block;
+            width: 25%;
+            background: linear-gradient(to bottom, #41c4da, #34a3e4, #2680ef);
+            color: #fff;
+            text-align: center;
+            line-height: 2.5rem;
+        }
+
+        #checkout .submit:active {
+            background-color: #1273f2
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header" style="background-image:none;">
+            <div class="aui-title">Carro</div>
+            <a class="aui-pull-right aui-btn" v-text="cartEdit" @click="editCart();" style="color: #358cff !important;"></a>
+        </header>
+        <footer class="aui-bar aui-bar-tab" id="checkout">
+            <div class="selectall aui-padded-l-15" tapmode @click="selectAll()">
+                <i class="aui-iconfont iconfont icon-yuanxingweixuanzhong aui-font-size-18" style="color: #777;" v-show="!isSelectedAll"></i>
+                <i class="aui-iconfont iconfont icon-roundcheckfill aui-text-info aui-font-size-18" v-show="isSelectedAll"></i>
+                <span>Todo</span>
+            </div>
+            <div class="price">
+                Total:
+                <span class="aui-font-size-14 aui-text-price">$</span>
+                <span class="aui-text-price aui-font-size-20" v-text="totalPrice"></span>
+            </div>
+            <div class="submit" tapmode @click="checkout()">Pagar</div>
+        </footer>
+        <footer class="aui-bar aui-bar-tab" id="footer">
+            <div class="aui-bar-tab-item" tapmode onclick="$util.openWindow('index_win')">
+                <i class="aui-iconfont iconfont icon-shouye"></i>
+                <div class="aui-bar-tab-label">Inicio</div>
+            </div>
+            <div class="aui-bar-tab-item" tapmode onclick="$util.openWindow('goods_list_new_win')">
+                <i class="aui-iconfont iconfont icon-leimupinleifenleileibie"></i>
+                <div class="aui-bar-tab-label">Productos</div>
+            </div>
+            <div class="aui-bar-tab-item aui-active">
+                <i class="aui-iconfont iconfont icon-gouwuche"></i>
+                <div class="aui-bar-tab-label">Carro</div>
+            </div>
+            <div class="aui-bar-tab-item" tapmode onclick="$util.openWindow('home_win')">
+                <!-- <div class="aui-dot"></div> -->
+                <i class="aui-iconfont iconfont icon-people"></i>
+                <div class="aui-bar-tab-label">Mi mío</div>
+            </div>
+        </footer>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        var checkoutDom = $api.byId('checkout');
+        $api.fixTabBar(checkoutDom)
+        var checkoutH = $api.offset(checkoutDom).h;
+        var frameH = api.winHeight - $util.footerH - $util.headerH - checkoutH;
+        $util.openFrame('cart_list_frm', {}, {
+            x: 0,
+            y: $util.headerH,
+            w: 'auto',
+            h: frameH
+        });
+        app = new Vue({
+            el: '#app',
+            data: {
+                isSelectedAll: false,
+                totalPrice: 0,
+                cartEdit: 'Realizar',
+                isEdit: false,
+            },
+            watch: {
+                isEdit: function(value) {
+                    this.cartEdit = value ? 'Completar' : 'Edición'
+                }
+            },
+            methods: {
+                // 编辑购物车
+                editCart: function() {
+                    this.isEdit = !this.isEdit;
+                    api.execScript({
+                        frameName: 'cart_list_frm',
+                        script: 'editCart();'
+                    });
+
+                },
+                // 结算
+                checkout: function() {
+                    api.execScript({
+                        frameName: 'cart_list_frm',
+                        script: 'app.checkout();'
+                    });
+                },
+                // 全选
+                selectAll: function() {
+                    this.isSelectedAll = !this.isSelectedAll;
+                    api.sendEvent({
+                        name: 'selectAllCart',
+                        extra: {
+                            isSelectedAll: this.isSelectedAll
+                        }
+                    });
+                }
+            }
+        })
+
+        // 购物车状态改变
+        api.addEventListener({
+            name: 'updateCartStatus'
+        }, function(ret, err) {
+            if (ret) {
+                var price = 0;
+                ret.value.carts.forEach(function(item) {
+                    if (item.isSelected) {
+                        if (item.spec_group_id_str != 0) {
+                            price += item.spec_group_info.sell_price * item.num;
+                        } else {
+                            price += item.goods_info.sell_price * item.num;
+                        }
+                    }
+                })
+                app.totalPrice = price.toFixed(2);
+                app.isSelectedAll = ret.value.carts.length ? ret.value.carts.every(function(item) {
+                    return item.isSelected;
+                }) : false
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+
+    };
+</script>
+
+</html>

@@ -1,0 +1,292 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        html,
+        body,
+        .apps,
+        .categ {
+            height:98%;
+        }
+
+        .inner li {
+            display: block;
+            font-size: 14px;
+            color: #777;
+            line-height: 40px;
+            text-align: center;
+        }
+
+        .inner .active {
+            color: #06496b;
+            background: #fff;
+        }
+
+        .aui_grid {
+            background: #fff;
+            height: 100%;
+            padding: 10px;
+        }
+
+        .category {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .category li {
+            padding: 0.5rem 0;
+            width: 33.3%;
+            text-align: center;
+        }
+
+        .category li img {
+            margin: 0 auto;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app" class="apps">
+        <!-- 头部 -->
+        <div class="aui-title" style="left:0rem; right: 0rem;" onclick="$util.openWindow('search_page_win')">
+            <div class="aui-searchbar aui-bg-white" id="search">
+                <div class="aui-searchbar-input aui-border-radius aui-bg-default">
+                    <i class="aui-iconfont aui-icon-search"></i>
+                    <input type="search" placeholder="Buscar lo que quieres" id="search-input" disabled>
+                    <div class="aui-searchbar-clear-btn">
+                        <i class="aui-iconfont aui-icon-close"></i>
+                    </div>
+                </div>
+                <div class="aui-searchbar-btn" tapmode>Cancelar</div>
+            </div>
+        </div>
+
+        <!-- 类目 -->
+        <div class="aui-clearfix categ">
+            <!-- 左侧一级类目 -->
+            <ul class="aui-col-xs-3 inner">
+                <li :class="{active: (activeCateId == cate.id)}" v-for="(cate, cateKey) in cates" :key="cateKey" v-text="cate.name" @click="selectCate(cate)"></li>
+            </ul>
+            <!-- 右侧二级类目 -->
+            <div class="aui-col-xs-9 aui_grid">
+                <div>
+                    <img :src="cate_ad.img" @click="goModel(cate_ad)">
+                </div>
+                <div>
+                    <h1 class="aui-font-size-16 aui-padded-t-15" v-text="propsName"></h1>
+                    <ul class="category">
+                        <li v-for="(subCate, subCateKey) in subCates" :key="subCateKey" @click="selectSubCate(subCate)">
+                            <img :src="subCate.thum || '../image/avatar.png'" style="width:80%;height:3.5rem;">
+                            <div class="aui-grid-label aui-padded-t-5" v-text="subCate.name"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../script/horizontalMove.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var page = 1;
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: 'Clasificación de mercancías',
+                activeFooterIndex: 2,
+                goodslist: [],
+                cates: [],
+                subCates: [],
+                activeCateId: '',
+                selectedCateId: '',
+                haveNoData: false,
+                activeTab: 0,
+                other: {},
+                propsName: '',
+                cate_ad:{},
+            },
+            watch: {
+                activeCateId: function(value) {
+                    var that = this;
+                    this.cates.forEach(function(item) {
+                        if (item.id == value) {
+                            that.subCates = item._child || [];
+                        }
+                    })
+                }
+            },
+            methods: {
+                changeNav: function(item) {
+                    this.activeTab = item.id;
+                    this.other = item[item.flag].data;
+                    item.flag = !item.flag;
+                    this.goodslist = [];
+                    page = 1;
+                    this.loadData()
+                },
+                goGoods: function(goodsId) {
+                    var prePageData = {
+                        scrollTop: document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop,
+                        page: page,
+                        data: this.goodslist,
+                        activeCateId: this.activeCateId,
+                        subCates: this.subCates
+                    }
+                    $api.setStorage('preGoodslistPageData', prePageData, sessionStorage);
+                    $util.openWindow('goods_detail_win', {
+                        goodsId: goodsId
+                    });
+                },
+                selectCate: function(cate) {
+                    this.propsName = cate.name;
+                    this.activeCateId = cate.id;
+                    this.selectedCateId = cate.id;
+                    page = 1;
+                    this.goodslist = [];
+                    this.loadData()
+                },
+                selectSubCate: function(subCate) {
+                  $util.openWindow('goods_list_sub_win', {
+                    selectedCateId: subCate.id,
+                    goods_cate_id: subCate.id,
+                  });
+                    this.selectedCateId = subCate.id;
+                    page = 1;
+                    this.goodslist = [];
+                    this.loadData()
+                },
+                loadData: function() {
+                    var that = this;
+                    var data = this.selectedCateId ? {
+                        goods_cate_id: this.selectedCateId
+                    } : {};
+                    for (var key in this.other) {
+                        data[key] = this.other[key]
+                    }
+                    document.body.onscroll = null;
+                    $api.setStorage('preGoodslistPageData', sessionStorage);
+
+
+                    $util.ajax({
+                        url: 'api_goods/goods/lists',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                        data: data,
+                    }).then(function(resp) {
+                        if (resp.data.length > 0) {
+                            that.haveNoData = false;
+                            resp.data.forEach(function(item) {
+                                that.goodslist.push(item);
+                            })
+                            if (resp.data.length == 10) {
+                                // document.body.onscroll = scrollEvent;
+                            } else {
+                                document.body.onscroll = null;
+                            }
+                        } else {
+                            if (page == 1) {
+                                that.haveNoData = true;
+                            }
+                        }
+                    });
+                    page++;
+                },
+                // 去链接设置的模型dddd
+                goModel: function(content) {
+
+                    if (content.is_open_model == 1) {
+                        if (content.model == 'goods') {
+                            $util.openWindow('goods_detail_win', {
+                                goodsId: content.model_id
+                            })
+                        } else if (content.model == 'article') {
+                            $util.openWindow('article_detail_win', {
+                                type: 'articles',
+                                articleId: content.model_id
+                            });
+                        } else if (content.model == 'goods_cate') {
+                            $util.openWindow('goods_list_new_win');
+                        }
+                    } else if (content.href) {
+                        // content.href && $util.openWindow('link_win', {
+                        //     name: content.href,
+                        //     url: content.href
+                        // });
+                        if (api.systemType == 'ios') {
+                            api.openApp({
+                                iosUrl: content.href
+                            });
+                        } else if (api.systemType == 'android') {
+                            api.openApp({
+                                androidPkg: 'android.intent.action.VIEW',
+                                mimeType: 'text/html',
+                                uri: content.href
+                            });
+                        }
+                    }
+                },
+            },
+            mounted: function() {
+                var that = this;
+                $util.ajax({
+                    url: 'api_articles/advertisements/lists',
+                    data: {
+                        type_id: 5,
+                    }
+                }).then(function(resp) {
+                    that.cate_ad = resp.data[0];
+                }).catch(function(err) {})
+                // 加载分类
+                $util.ajax({
+                    url: 'api_goods/goods_cates/lists_tree',
+                }).then(function(resp) {
+                    resp.data.forEach(function(item) {
+                        that.cates.push(item)
+                    });
+                    that.propsName = that.cates[0].name;
+                    that.activeCateId = that.cates[0].id;
+                }, {}, false);
+                var prePageData = $api.getStorage('preGoodslistPageData', sessionStorage);
+                if (prePageData) {
+                    that.activeCateId = prePageData.activeCateId;
+                    that.subCates = prePageData.subCates;
+                    that.goodslist = prePageData.data;
+                    page = prePageData.page;
+                    document.documentElement.scrollTop = prePageData.scrollTop;
+                    // if (prePageData.data.length % 10 == 0) {
+                    //     document.body.onscroll = scrollEvent;
+                    // }
+                } else {
+                    that.loadData();
+                }
+            },
+        })
+    }
+
+</script>
+
+</html>

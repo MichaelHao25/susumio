@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style>
+      .openWallet{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin-bottom: 0.6rem;
+      }
+      .wallet{
+        width:3.5rem;
+        height: 3.5rem;
+        border-radius: 50%;
+        background-color: #d7f3ff;
+        display: flex;
+        justify-content:center;
+        align-items: center;
+        margin-top: 0.6rem;
+      }
+      .openWallet-text{
+        font-weight: 700;
+        font-size: 20px;
+        margin-top: 0.6rem;
+        margin-bottom: 0.6rem;
+      }
+      .openWallet-text1{
+        margin-bottom: 0.6rem;
+        width: 80%;
+        margin: 0 10%;
+      }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <div style="background-color:#fff;">
+            <div class="openWallet">
+              <div class="wallet">
+                <i class="aui-iconfont iconfont icon-qianbao1" style="font-size:2rem;color: #80ddff;"></i>
+              </div>
+              <div class="openWallet-text">Activar la billetera </div>
+              <p class="openWallet-text1">
+                Abre la cartera
+              </p>
+            </div>
+            <div style="border-top: 0.025rem solid #eee;display: flex;align-items: center;justify-content: space-around;height: 3rem;">
+                <div style="border-right: 0.025rem solid #eee;color: #707070;height: 3rem;width: 6.25rem;text-align: center;line-height: 3rem" @click="close">No</div>
+                <div style="color: #0083df;height: 3rem;width: 6.25rem;text-align: center;line-height: 3rem;" class="aui-font-weight aui-font-size-16" @click="open">Listo</div>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+            },
+            methods: {
+              open(){
+                api.sendEvent({
+                  name: "maskShow",
+                  extra: {
+                    maskShow: false,
+                  }
+                });
+                $util.openWindow('open_wallet_win');
+              },
+              close(){
+                api.sendEvent({
+                  name: "maskShow",
+                  extra: {
+                    maskShow: false,
+                  }
+                });
+                api.closeFrame();
+              }
+            },
+        })
+    };
+</script>
+
+</html>

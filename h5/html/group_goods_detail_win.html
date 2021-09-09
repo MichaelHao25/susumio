@@ -1,0 +1,106 @@
+<!-- 模型win -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header" style="background-image:none;">
+            <a class="aui-pull-left aui-btn" onclick="api.closeWin()">
+                <span class="aui-iconfont aui-icon-left"></span>
+            </a>
+            <div class="aui-title" >Detalles del producto</div>
+            <a class="aui-pull-right aui-btn" @click="share()">
+                <i class="aui-iconfont iconfont icon-leimupinleifenleileibie"></i>
+            </a>
+        </header>
+        <!-- 底部 -->
+        <footer class="aui-bar aui-bar-tab aui-margin-t-15" id="footer" style="border-top:1px solid #f1f1f1;">
+            <div class="aui-bar-tab-item aui-text-white" tapmode style="width: auto;background-color:#000;font-size:0.6rem;" @click="buy('only', 0)">
+                <div v-text="'$' + Number(goods.goods_info.sell_price).toPrecision()"></div>
+                Compra individual
+            </div>
+            <div class="aui-bar-tab-item aui-text-white" tapmode style="width: auto;background-color:red;font-size:0.6rem;" @click="buy('group_create', 0)">
+                <div v-text="'$' + Number(goods.money).toPrecision()"></div>
+                <span v-if="group_shop_type == 2" v-text="'Grupo de ' + goods.person_num + ' personas'"></span>
+                <span v-else>Participación en la lucha</span>
+            </div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    apiready = function() {
+        $util.fixPage();
+        var app = new Vue({
+            el: '#app',
+            data: {
+              goods: {
+              money: 0,
+              person_num: 0,
+              goods_info: {
+                sell_price: 0,
+              },
+            },
+            group_shop_type:0
+            },
+            methods: {
+                buy: function(status) {
+                    api.sendEvent({
+                        name: 'buy',
+                        extra: {
+                            type: status,
+                            nums: 0
+                        }
+                    });
+                },
+                share:function(){
+                  api.sendEvent({
+                      name: 'share',
+                      extra: {}
+                  });
+
+                }
+            },
+            mounted: function() {
+              var that = this;
+              $util.ajax({
+                  url: 'api_group_buy/rules/index',
+              }).then(function(resp) {
+                  that.group_shop_type = resp.data.type;
+              }).catch(function(err) {})
+            }
+        })
+        $util.openFrame('group_goods_detail_frm', api.pageParam);
+        // 关闭购物流程相关页面
+        api.addEventListener({
+            name: 'viewdisappear'
+        }, function(ret, err) {
+            api.closeWin();
+        });
+        api.addEventListener({
+            name: 'updateGoods'
+        }, function(ret, err){
+            if( ret ){
+                 app.goods = ret.value.goods;
+            }
+        });
+
+    };
+</script>
+
+</html>

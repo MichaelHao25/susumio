@@ -1,0 +1,81 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        #qrcode {
+            position: absolute;
+            top: 28%;
+            left: 50%;
+            z-index: 9999;
+            transform: translate(-50%, 0);
+            padding: 5px 5px;
+            background-color: #fff;
+            border-radius: 0.2rem;
+        }
+
+        #qrcode img {
+            padding: 5px 5px;
+        }
+
+        .aui-bar.aui-bar-light {
+            background-image: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <img src="" style="width: 100%;" id="img">
+            <div id="qrcode"></div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../script/qrcode.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var user = $api.getStorage('user');
+    apiready = function() {
+        document.getElementById('img').style.height = api.frameHeight + 'px';
+        $util.fixPage();
+        $util.ajax({
+            url: 'api_systems/Params/getParams',
+            data: {
+                type: "basic",
+            }
+        }).then(function(resp) {
+          new QRCode(document.getElementById("qrcode"), $util.origin + '/index.php/wap/index/handle_qrcode.html?parent_mobile=' + user.mobile);
+          $util.ajax({
+              url: 'api_systems/Params/getParams',
+              data: {
+                  type: "basic",
+              }
+          }).then(function(resp) {
+              document.getElementById('img').setAttribute('src', resp.data.share_img || '../image/yaoqing.png')
+          }).catch(function(err) {})
+      }).catch(function(err) {})
+    };
+</script>
+
+</html>

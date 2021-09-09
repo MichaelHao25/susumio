@@ -1,0 +1,128 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <header class="aui-bar aui-bar-nav aui-bar-light" style="background-image:none;">
+        <a class="aui-pull-left aui-btn" style="color: #333 !important;">Propiedades</a>
+        <div class="aui-title"></div>
+        <a class="aui-pull-right aui-btn" tapmode onclick="api.closeFrame();">
+            <span class="aui-iconfont aui-icon-close"></span>
+        </a>
+    </header>
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-row aui-padded-10">
+            <div class="aui-col-xs-6">
+                <img :src="select_spec_group_info.thum || cart.goods_info.thum" class="aui-padded-15">
+            </div>
+            <div class="aui-col-xs-6 aui-padded-10">
+                <h2 class="aui-text-price">
+             <span style="font-size: 0.6rem;">$</span>
+             <span class="aui-font-size-20" style="letter-spacing:.1rem;" v-text="select_spec_group_info.sell_price || cart.goods_info.sell_price"></span>
+           </h2>
+                <h4 class="aui-text-default" v-text="'Existencias: ' + (select_spec_group_info.stock || cart.goods_info.stock)"></h4>
+            </div>
+        </div>
+        <!-- 规格选项 -->
+        <div class="aui-content" style="margin-bottom:2.6rem;">
+            <div class="aui-row aui-padded-5" v-for="(spec, specKey) in cart.goods_info.spec_info" :key="specKey">
+                <h3 v-text="spec.name" class="aui-font-size-12"></h3>
+                <div class="aui-col-xs-3 aui-padded-t-5 aui-padded-b-5 aui-margin-t-5 aui-font-size-12 aui-text-center" v-for="(option, optionKey) in spec.options" :key="optionKey" v-text="option.option" @click="selectSpec(option, spec, optionKey, specKey)" :class="[{'aui-bg-info': option.isSelected},{'aui-text-white': option.isSelected}]"></div>
+            </div>
+        </div>
+        <footer class="aui-bar aui-bar-tab">
+            <div class="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15" @click="submit">
+                <div class="aui-btn aui-btn-block aui-btn-sm aui-btn-info">Confirmar</div>
+            </div>
+        </footer>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+
+    apiready = function() {
+        $util.fixPage();
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                cart: api.pageParam.cart,
+                select_spec_group_info: {}
+            },
+            methods: {
+                // 选择规格
+                selectSpec: function(option, spec, optionKey, specKey) {
+                    var that = this;
+                    spec.options.forEach(function(o, key) {
+                        if (key == optionKey) {
+                            o.isSelected = true;
+                        } else {
+                            o.isSelected = false;
+                        }
+                    });
+                    Vue.set(this.cart.goods_info.spec_info, specKey, spec);
+                    var options = [];
+                    this.cart.goods_info.spec_info.forEach(function(s) {
+                        s.options.forEach(function(o) {
+                            if (o.isSelected) {
+                                options.push(o.option)
+                            }
+                        })
+                    })
+                    options = options.sort().toString();
+                    this.cart.goods_info.spec_group_info.forEach(function(item) {
+                        if (options == item.spec_option_group) {
+                            that.select_spec_group_info = item;
+                        }
+                    });
+                },
+                // 确定
+                submit: function() {
+                    api.sendEvent({
+                        name: 'updateCartSpec',
+                        extra: {
+                            cartId: api.pageParam.cart.id,
+                            selectSpecGroupInfo: this.select_spec_group_info
+                        }
+                    });
+                    api.closeFrame();
+                }
+            },
+            mounted: function() {
+                var spec_group_info_str = api.pageParam.cart.spec_group_info.spec_option_group.split(',')
+                this.cart.goods_info.spec_info = this.cart.goods_info.spec_info.map(function(spec){
+                    spec.options = spec.options.map(function(option){
+                        return {
+                            isSelected: spec_group_info_str.indexOf(option) != -1,
+                            option: option
+                        }
+                    })
+                    return spec
+                })
+            }
+        })
+    };
+</script>
+
+</html>

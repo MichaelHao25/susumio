@@ -1,0 +1,205 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            Nombre real
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input type="text" placeholder="Nombre real,por favor" v-model="name">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            Número de identificación
+                        </div>
+                        <div class="aui-list-item-input">
+                            <input type="text" placeholder="Número de identificación,por favor" v-model="id_card">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="aui-content aui-bg-white  aui-padded-10" style="margin-bottom:2.5rem;">
+            <h5 class="aui-padded-t-10">Por favor,envíe una foto positiva y negativa de su tarjeta de identidad por ejemplo</h5>
+            <section class="aui-grid">
+                <div class="aui-row">
+                    <div class="aui-col-xs-6 aui-padded-r-5">
+                        <img :src="idcard_front">
+                    </div>
+                    <div class="aui-col-xs-6 aui-padded-l-5">
+                        <img :src="idcard_back">
+                    </div>
+                </div>
+            </section>
+            <img class="aui-col-xs-12" src="../image/idcard_front.png" tapmode onclick="app.fileClick('idcard_front')">
+            <img class="aui-col-xs-12 aui-padded-t-10" src="../image/idcard_back.png" tapmode onclick="app.fileClick('idcard_back')">
+        </div>
+        <footer class="aui-bar aui-bar-tab">
+            <div class="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15" tapmode onclick="app.submit()">
+                <div class="aui-btn aui-btn-block aui-btn-sm aui-btn-info">Presentación de informes</div>
+            </div>
+        </footer>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                idcard_front: '../image/idcard_front_example.png',
+                idcard_back: '../image/idcard_back_example.png',
+                name: '',
+                id_card: ''
+            },
+            methods: {
+                submit: function() {
+                    var that = this;
+                    if (typeof lastSubmitTime === 'undefined') {
+                        lastSubmitTime = Date.now();
+                    } else if (Date.now() - lastSubmitTime < 2000) {
+                        lastSubmitTime = Date.now()
+                        return;
+                    }
+                    if (!this.name) {
+                        $util.toast('Nombre real,por favor');
+                        return;
+                    }
+                    // 姓名正则验证
+                    // let nameReg = /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,20}$/
+                    // if (!nameReg.test(this.name)) {
+                    //     $util.toast('真实姓名格式错误');
+                    //     return;
+                    // }
+                    if (!this.id_card) {
+                        $util.toast('Introduzca el número de identificación');
+                        return;
+                    }
+                    // 身份证正则验证
+                    let idcardReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+                    if (!idcardReg.test(this.id_card)) {
+                        $util.toast('Número de documento de identidad');
+                        return;
+                    }
+                    if (this.idcard_front == '../image/idcard_front_example.png') {
+                        $util.toast('Por favor,envíe una foto positiva');
+                        return;
+                    }
+                    if (this.idcard_back == '../image/idcard_back_example.png') {
+                        $util.toast('Por favor,suba la foto negativa');
+                        return;
+                    }
+                    api.confirm({
+                        title: 'Confirmación de la presentación?',
+                        buttons: ['Confirmar', 'Cancelar']
+                    }, function(ret, err) {
+                        if (ret.buttonIndex == 1) {
+                            if (api.pageParam.status == 0) {
+                                var router = 'api_users/user_auths/save';
+                                var data = {
+                                    id_card_front_img: app.idcard_front,
+                                    id_card_back_img: app.idcard_back,
+                                    name: app.name,
+                                    id_card: app.id_card,
+                                    imgs: [],
+                                    status: 1,
+                                };
+                            } else {
+                                var router = 'api_users/user_auths/update';
+                                var data = {
+                                    id: api.pageParam.id,
+                                    id_card_front_img: app.idcard_front,
+                                    id_card_back_img: app.idcard_back,
+                                    name: app.name,
+                                    id_card: app.id_card,
+                                    imgs: [],
+                                    status: 1,
+                                }
+                            }
+                            $util.ajax({
+                                url: router,
+                                data: data,
+                                isLoading: true,
+                            }).then(function(resp) {
+                                $util.toast('Presentación exitosa');
+                                setTimeout(function(resp) {
+                                    $util.openWindow('home_win');
+                                }, 500)
+                            }).catch(function(err) {})
+                        }
+                    });
+                },
+                fileClick: function(type) {
+                    var that = this
+                    api.actionSheet({
+                        cancelTitle: 'Cancelar',
+                        buttons: ['Fotografía', 'Biblioteca']
+                    }, function(ret, err) {
+                        var index = ['', 'camera', 'library'];
+                        if (ret.buttonIndex == 3) {
+                            return
+                        }
+                        api.getPicture({
+                            sourceType: index[ret.buttonIndex],
+                            encodingType: 'jpg',
+                            mediaValue: 'pic',
+                            destinationType: 'url',
+                            allowEdit: true,
+                            quality: 50,
+                            saveToPhotoAlbum: false,
+                            targetWidth: 500,
+                        }, function(ret, err) {
+                            if (ret && ret.data) {
+                                $util.ajax({
+                                    url: 'api_systems/helper/upload_file',
+                                    type: 'files',
+                                    data: {
+                                        file: ret.data
+                                    },
+                                    values: {
+                                        save_path: '/public/upload/user_images/',
+                                        is_rename: 1
+                                    },
+                                    isLoading: true,
+                                }).then(function(ret) {
+                                    that[type] = ret.data.host_file_path;
+                                }).catch(function(err) {})
+                            }
+                        });
+                    });
+                }
+            }
+        })
+    };
+</script>
+
+</html>

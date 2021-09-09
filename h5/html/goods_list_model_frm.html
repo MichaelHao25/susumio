@@ -1,0 +1,285 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css"/>
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css"/>
+    <style media="screen">
+        .shouxin {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            width: 30%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+
+<body>
+<div id="minirefresh" class="minirefresh-wrap">
+    <div class="minirefresh-scroll">
+        <div id="app">
+            <!-- 筛选 -->
+            <section>
+                <div id="tab" class="aui-tab">
+                    <div class="aui-tab-item" v-for="header in navHeaders"
+                         :class="{'aui-active': activeTab == header.id}" @click="changeNav(header)" tapmode
+                         v-html="header[header.flag].name"></div>
+                </div>
+            </section>
+            <!-- 商品列表 -->
+            <div v-if="haveNoData" class="aui-col-xs-12 aui-text-center" style="margin-top:30%;">
+                <img src="../image/no_content.png" style="width:18%;margin:0 auto;">
+                <h5 style="margin-top:1rem;" class="aui-font-size-14">Oh,Aquíno hay nada</h5>
+            </div>
+            <div v-else class="aui-content" style="margin-bottom:2.8rem;">
+                <div class="aui-flex-col aui-flex-center aui-border-tb">
+                    <div class="aui-flex-item-12">
+                        <div class="aui-flex-col">
+                            <div class="aui-flex-item-6" style="position: relative;padding:3px;"
+                                 @click="goGoods(goods.id)" v-for="(goods,goodsKey) in list" :key="goodsKey">
+                                <img style="display:block;" :src="goods.thum">
+                                <img src="../image/shouxin.png" class="shouxin" v-if="goods.stock == 0">
+                                <h5 class="aui-bg-white aui-text-default aui-ellipsis-2 aui-font-size-14 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10"
+                                    v-text="goods.name" style="height: 2.2rem;"></h5>
+                                <p class="aui-bg-white aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10">
+                                    <span class="aui-text-price aui-font-size-10">$</span>
+                                    <span class="aui-text-price" v-text="goods.sell_price"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var page = 1;
+    var data = {};
+    var navHeaders = [{
+        id: 0,
+        flag: true,
+        true: {
+            name: 'General',
+            data: {
+                'sort_by': 'all',
+                'sort_type': 'desc'
+            }
+        },
+        false: {
+            name: 'General',
+            data: {
+                'sort_by': 'all',
+                'sort_type': 'asc'
+            }
+        },
+    }, {
+        id: 1,
+        flag: true,
+        true: {
+            name: 'Precio<span class="aui-font-size-12 aui-margin-l-5 aui-iconfont aui-icon-down"></span>',
+            data: {
+                'sort_by': 'sell_price',
+                'sort_type': 'desc'
+            }
+        },
+        false: {
+            name: 'Precio<span class="aui-font-size-12 aui-margin-l-5 aui-iconfont aui-icon-top"></span>',
+            data: {
+                'sort_by': 'sell_price',
+                'sort_type': 'asc'
+            }
+        },
+    }, {
+        id: 2,
+        flag: true,
+        true: {
+            name: 'Ventas<span class="aui-font-size-12 aui-margin-l-5 aui-iconfont aui-icon-down"></span>',
+            data: {
+                'sort_by': 'sell_num',
+                'sort_type': 'desc'
+            }
+        },
+        false: {
+            name: 'Ventas<span class="aui-font-size-12 aui-margin-l-5 aui-iconfont aui-icon-top"></span>',
+            data: {
+                'sort_by': 'sell_num',
+                'sort_type': 'asc'
+            }
+        },
+    }, {
+        id: 3,
+        flag: true,
+        true: {
+            name: 'Nuevo<span class="aui-font-size-12 aui-margin-l-5 aui-iconfont aui-icon-top"></span>',
+            data: {
+                'sort_by': 'new_goods',
+                'sort_type': 'desc'
+            }
+        },
+        false: {
+            name: 'Nuevo<span class="aui-font-size-12 aui-margin-l-5 aui-iconfont aui-icon-down"></span>',
+            data: {
+                'sort_by': 'new_goods',
+                'sort_type': 'asc'
+            }
+        },
+    }]
+    apiready = function () {
+        $util.fixPage();
+        if (api.pageParam.cateId) {
+            data.goods_cate_id = api.pageParam.cateId
+        } else if (api.pageParam.keyword) {
+            data.keyword = api.pageParam.keyword
+        } else if (api.pageParam.tag) {
+            // data.tag = api.pageParam.tag
+            data.custom_tag = api.pageParam.tag
+        } else if (api.pageParam.distribution) {
+            data.system_type = 'drp'
+        } else if (api.pageParam.bonus) {
+            data.system_type = 'bonus'
+        }
+        app = new Vue({
+            el: '#app',
+            data: {
+                list: [],
+                haveNoData: false,
+                navHeaders: navHeaders,
+                activeTab: 0,
+                other: {}
+            },
+            methods: {
+                goGoods: function (goodsId) {
+                    $util.openWindow('goods_detail_win', {
+                        goodsId: goodsId
+                    });
+                },
+                getData: function () {
+                    var that = this;
+                    if (this.selectedCateId) {
+                        data.goods_cate_id = this.selectedCateId
+                    }
+
+                    $util.ajax({
+                        url: 'api_goods/goods/lists',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                        data: data,
+                    }).then(function (resp) {
+                        // page++;
+                        that.list = that.list.concat(resp.data).unique();
+                        // console.log('that.list.length',that.list.length)
+                        // console.log('that.list.length',!Boolean(that.list.length))
+                        that.haveNoData = !Boolean(that.list.length)
+                        // todo 只针对这个页面处理问题
+                        if (resp.data.length == 10) {
+                            window.miniRefresh && window.miniRefresh.endDownLoading(false);
+                            window.miniRefresh && window.miniRefresh.endUpLoading(false);
+                        }
+                    }).catch(function (err) {
+                    })
+                    page++;
+                },
+                changeNav: function (item) {
+                    this.activeTab = item.id;
+                    this.other = item[item.flag].data;
+                    item.flag = !item.flag;
+                    let sortBy = this.other['sort_by'];
+                    let sortType = this.other['sort_type'];
+                    if (sortBy === 'all' && sortType === 'asc') {
+                        this.list.sort((item1, item2) => {
+                            return item2.id - item1.id;
+                        })
+                    } else if (sortBy === 'all' && sortType === 'desc') {
+                        this.list.sort((item1, item2) => {
+                            return item1.id - item2.id;
+                        })
+                    } else if (sortBy === 'sell_price' && sortType === 'asc') {
+                        this.list.sort((item1, item2) => {
+                            return item2.sell_price - item1.sell_price;
+                        })
+                    } else if (sortBy === 'sell_price' && sortType === 'desc') {
+                        this.list.sort((item1, item2) => {
+                            return item1.sell_price - item2.sell_price;
+                        })
+                    } else if (sortBy === 'sell_num' && sortType === 'asc') {
+                        this.list.sort((item1, item2) => {
+                            return item2.sell_num - item1.sell_num;
+                        })
+                    } else if (sortBy === 'sell_num' && sortType === 'desc') {
+                        this.list.sort((item1, item2) => {
+                            return item1.sell_num - item2.sell_num;
+                        })
+                    } else if (sortBy === 'new_goods' && sortType === 'asc') {
+                        this.list.sort((item1, item2) => {
+                            return (new Date(item2.update_time)) - new Date(item1.update_time);
+                        })
+                    } else if (sortBy === 'new_goods' && sortType === 'desc') {
+                        this.list.sort((item1, item2) => {
+                            return (new Date(item1.update_time)) - new Date(item2.update_time);
+                        })
+                    }
+                },
+            },
+            mounted: function () {
+                this.getData()
+            }
+        })
+
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function (ret, err) {
+            page = 1;
+            app.list = [];
+            app.getData()
+        });
+        api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function (ret, err) {
+            page = 1;
+            app.list = [];
+            app.getData()
+        });
+
+        api.addEventListener({
+            name: 'scrolltobottom'
+        }, function (ret, err) {
+            console.log('scrolltobottom')
+            app.getData()
+        });
+
+        api.addEventListener({
+            name: 'refreshSearchGoodslist'
+        }, function (ret, err) {
+            if (ret) {
+                page = 1;
+                app.list = [];
+                app.getData()
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+    };
+</script>
+
+</html>

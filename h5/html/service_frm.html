@@ -1,0 +1,83 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-07 18:50:07
+ * @FilePath: /A6001888506312/html/service_frm.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+  <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+  <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+<style>
+  .list_kf li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+
+<body>
+  <div id="minirefresh" class="minirefresh-wrap">
+    <div class="minirefresh-scroll">
+      <div id="app">
+        <ul class="list_kf aui-padded-10">
+          <li v-for="(inx, inxkey) in lists" :key="inxkey">
+            <img src="../image/head.png" class="aui-col-xs-3" />
+            <span class="aui-col-xs-6 aui-padded-l-10">Servicio<br />({{inx.mobile}})</span>
+            <span class="aui-col-xs-3" @click="gotogt(inx)" style="text-align: center">Chatear</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+  window.addEventListener('load', function () {
+    FastClick.attach(document.body);
+  }, false);
+
+  var app = new Vue({
+    el: '#app',
+    data: {
+      lists: []
+    },
+    methods: {
+      loudData: function () {
+        var _this = this;
+        $util.ajax({
+          url: 'api_users/users/customer_lists'
+        }).then(function (resp) {
+          _this.lists = resp.data;
+          console.log(resp.data);
+        }).catch(err => { })
+      },
+      gotogt(item) {
+        $util.openWindow('mess_detail_win', { userId: item.id });
+      }
+    }
+  })
+
+  apiready = function () {
+    $util.fixPage();
+    if (!$util.user) {
+      $util.openWindow('login_win');
+      api.closeFrame();
+    }
+    // 
+    app.loudData()
+  };
+</script>
+
+</html>

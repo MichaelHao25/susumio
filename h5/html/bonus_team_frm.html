@@ -1,0 +1,128 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content">
+            <div class="aui-clearfix aui-margin-10">
+                <i class="iconfont icon-tubiao-" style="color: #2a8ee8;"></i>
+                <span class="aui-margin-l-10 aui-font-size-14">Información del miembro</span>
+                <span class="aui-pull-right aui-font-size-14 aui-text-pray">Comisión/distribuidor subalterno</span>
+            </div>
+            <div v-if="haveNoData" class="aui-col-xs-12 aui-text-center" style="margin-top:30%;">
+                <img src="../image/no_content.png" style="width:18%;margin:0 auto;">
+                <h5 style="margin-top:1rem;" class="aui-font-size-14">Oh. Aquí no hay nada.</h5>
+            </div>
+
+            <ul class="aui-list aui-media-list aui-bg-default">
+                <li class="aui-list-item aui-list-item-middle aui-bg-white aui-margin-b-10" v-for="(team, teamKey) in list" :key="teamKey">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-media" style="width: 3rem;">
+                            <img :src="team.avatar || '../image/avatar.png'" class="aui-img-round aui-list-img-sm">
+                        </div>
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title" v-text="team.nick_name || team.mobile"></div>
+                                <div class="aui-list-item-right aui-text-info" v-text="'+' + team.user_info.already_drawcash_bonus_money + '元'"></div>
+                            </div>
+                            <div class="aui-list-item-text aui-margin-t-5">
+                                <div class="aui-list-item-title aui-font-size-14 aui-text-pray">Fecha de inscripción:{{team.become_bonus_time}}</div>
+                                <div class="aui-list-item-right  aui-text-pray" v-text="(team.team_num || 0) + '成员'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var page = 1;
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: '',
+                list: [],
+                haveNoData: false,
+            },
+            methods: {
+                getData: function() {
+                    var that = this;
+
+                    $util.ajax({
+                        url: 'api_bonus/team/team_users',
+                        headers: {
+                            'page-num': page,
+                            'page-limit': 10
+                        },
+                        isLoading: true,
+                    }).then(function(resp) {
+
+                        that.list = that.list.concat(resp.data.team_users);
+                        that.haveNoData = !Boolean(that.list.length)
+                        api.sendEvent({
+                            name: 'bonus_team_frm_team_info',
+                            extra: {
+                                team_info: resp.data.team_info
+                            }
+                        });
+
+                    }).catch(function(err) {})
+                    page++;
+                },
+            },
+            mounted: function() {
+                this.getData()
+            }
+        });
+        // 下拉刷新
+        api.setRefreshHeaderInfo({
+            bgColor: '#eee',
+            textColor: '#fff',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData();
+        });api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function(ret, err) {
+            app.list = [];
+            page = 1;
+            app.getData();
+        });
+        // 底部监听
+        api.addEventListener({
+            name: 'scrolltobottom',
+        }, function(ret, err) {
+            app.getData()
+        });
+    };
+</script>
+
+</html>

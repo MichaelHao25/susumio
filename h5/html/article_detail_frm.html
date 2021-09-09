@@ -1,0 +1,85 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        .content img {
+            max-width: 99%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content aui-padded-10">
+            <h3 v-text="article.title" style="font-weight: bold;"></h3>
+            <div class="aui-row aui-padded-t-10 aui-padded-b-10" style="line-height:1rem;">
+                <div class="aui-col-xs-4">
+                    <div class="aui-font-size-12" v-text="article.update_time"></div>
+                </div>
+                <div class="aui-col-xs-4">
+                    <div class="aui-font-size-12 aui-text-center" v-text="article.author"></div>
+                </div>
+                <div class="aui-col-xs-4" v-if="article.click_num">
+                    <div class="aui-font-size-12 aui-text-right" v-text="'Nivel de lectura: ' + article.click_num"></div>
+                </div>
+            </div>
+            <div class="content aui-padded-t-10 aui-padded-b-10 aui-font-size-14" v-html="article.content"></div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                article: {
+                    update_time: '',
+                    author: '',
+                    click_num: ''
+                }
+            },
+            methods: {
+                getData: function(){
+                    var that = this
+                    $util.ajax({
+                        url: 'api_articles/' + api.pageParam.type + '/read',
+                        data: {
+                            id: api.pageParam.articleId
+                        },
+                        isLoading: true,
+                    }).then(function(resp){
+                        that.article = resp.data
+                    }).catch(function(err){})
+                }
+            },
+            mounted: function(){
+                this.getData()
+            }
+        })
+    };
+</script>
+
+</html>

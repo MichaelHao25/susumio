@@ -1,0 +1,230 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-07 18:46:19
+ * @FilePath: /A6001888506312/html/user_message_frm.html
+-->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/user_iconfont.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="../css/style.css" /> -->
+    <style>
+        .message-image {
+            float: left;
+            height: 3rem;
+            width: 3rem;
+        }
+
+        .message-product {
+            padding: 0.5rem 0.3rem;
+            width: 98%;
+            margin-left: 1%;
+            margin-right: 1%;
+            border-bottom: 0.5px solid #f8f8f8;
+        }
+
+        .message-product-title {
+            height: 2rem;
+            line-height: 2rem;
+            font-size: 0.9rem;
+            display: flex;
+        }
+
+        .message-product-context {
+            text-indent: 0.5rem;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .message-product-title-right {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body class="global-bg">
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+            <div id="app" v-cloak>
+                <div class="context">
+                    <!-- 商品列表 -->
+                    <div v-if="haveNoData" class="aui-col-xs-12 aui-text-center"
+                         style="padding-top:30%;padding-bottom:70%;">
+                        <img src="../image/no_content.png" style="width:18%;margin:0 auto;">
+                        <h5 style="margin-top:1rem;" class="aui-font-size-14">Oh. Aquí no hay nada.</h5>
+                    </div>
+                    <div v-else class="message-product" v-for="item in list" @click="message(item)">
+                        <div class="message-image"><img src="../image/head.png"></div>
+                        <div class="message-product-content">
+                            <div class="message-product-title">
+                                <div class="message-product-title-left aui-font-size-14"
+                                     style="margin-left: 0.5rem;flex:2;">{{item.targetId | targetIdFilter}}</div>
+                                <div class="message-product-title-right aui-font-size-10" style="flex:1;">
+                                    {{item.receivedTime | timeFilter}}</div>
+                            </div>
+                            <div class="message-product-context aui-font-size-12" v-text="item.latestMessage.text">
+                            </div>
+                            <div class="message-product-context aui-font-size-12" v-if="item.latestMessage.imageUrl">
+                                [Imagen]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    var rong = {}
+    apiready = function () {
+        $util.fixPage();
+        rong = api.require('rongCloud2');
+        app = new Vue({
+            el: '#app',
+            data: {
+                list: [],
+                rongToken: '',
+                haveNoData: false,
+                user: $util.user,
+
+            },
+            methods: {
+                message: function (item) {
+                    $util.openWindow('user_messsage_detail_win', { id: item.targetId })
+                },
+                getToken: function () {
+                    var that = this;
+                    $util.ajax({
+                        url: 'api_systems/im/get_token',
+                        isLoading: true
+                    }).then(function (resp) {
+                        that.rongToken = resp.data.token
+                        console.log(1)
+                        that.initRong();
+                        console.log(2)
+                    })
+                },
+                initRong: function () {
+                    var that = this;
+                    var param = {
+                        appKey: "pwe86ga5p4ud6"
+                    };
+                    rong.init(param, function (ret, err) {
+                        console.log(1111)
+                        if (ret.status == 'error') {
+                            console.log(JSON.stringify(ret))
+                        } else {
+                            console.log('融云初始化成功')
+                            that.connect()
+                        }
+                    });
+                },
+
+                connect: function () {
+
+                    var that = this;
+                    that.setConnectionStatusListener();
+                    that.setOnReceiveMessageListener();
+                    console.log(JSON.stringify(this.rongToken))
+                    rong.connect({
+                        token: that.rongToken
+                    }, function (ret, err) {
+                        if (ret.status == 'success') {
+                            console.log(JSON.stringify(ret))
+                            that.getConversationList();
+                        } else {
+                            console.log(JSON.stringify(err) + JSON.stringify(ret))
+                        }
+                    });
+                },
+                setOnReceiveMessageListener: function () {
+                    var that = this;
+                    rong.setOnReceiveMessageListener(function (ret, err) {
+                        that.getToken();
+                    })
+                },
+                setConnectionStatusListener: function () {
+                    rong.setConnectionStatusListener(function (ret, err) {
+                        console.log(JSON.stringify(ret))
+                        console.log(JSON.stringify(ret.result.connectionStatus))
+                    });
+                },
+                getConversationList: function () {
+                    var that = this;
+                    rong.getConversationList(function (ret, err) {
+                        api.refreshHeaderLoadDone();
+                        // api.toast({ msg: JSON.stringify(ret.result) });
+
+                        that.list = (ret.result || [])
+                        that.list.map(function (item) {
+
+
+                        })
+
+                        that.haveNoData = !Boolean(that.list.length)
+                    })
+                }
+
+
+            },
+            filters: {
+                timeFilter: function (value) {
+                    var date = new Date(value);
+                    var year = date.getFullYear()
+                    var month = date.getMonth() + 1
+                    var data = date.getDate()
+                    var hours = date.getHours()
+                    var minutes = date.getMinutes()
+                    var seconds = date.getSeconds()
+                    return year + '-' + (parseInt(month) < 10 ? '0' + month : month) + '-' + (parseInt(data) < 10 ? '0' + data : data) + ' ' + (parseInt(hours) < 10 ? '0' + hours : hours) + ':' + (parseInt(minutes) < 10 ? '0' + minutes : minutes) + ':' + (parseInt(seconds) < 10 ? '0' + seconds : seconds);
+                },
+                targetIdFilter: function (value) {
+                    var arr = value.split('#');
+                    return 'Número' + arr[1] + '(Servicio al cliente)'
+                }
+            },
+            mounted: function () {
+                this.getToken();
+            }
+        });
+
+        api.setRefreshHeaderInfo({
+            bgColor: '#fff',
+        }, function (ret, err) {
+            app.getToken();
+        }); api.addEventListener({
+            name: 'setRefreshHeaderInfo',
+        }, function (ret, err) {
+            app.getToken();
+        });
+        api.addEventListener({
+            name: 'updateMess'
+        }, function (ret, err) {
+            app.getToken();
+        });
+
+
+
+    };
+</script>
+
+</html>

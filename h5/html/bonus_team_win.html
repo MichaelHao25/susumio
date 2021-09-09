@@ -1,0 +1,59 @@
+<!-- 模型win -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+</head>
+
+<body>
+    <div id="app">
+        <header class="aui-bar aui-bar-nav aui-bar-light" id="header">
+            <a class="aui-pull-left aui-btn" tapmode onclick="api.closeWin()">
+                <span class="aui-iconfont aui-icon-left">
+                  Mi equipo
+                  <span class="aui-text-pray aui-font-size-16" v-text="'(' + team_info.total_num + ')'"></span>
+                </span>
+            </a>
+            <!-- <div class="aui-title" v-text="title"></div> -->
+            <a class="aui-pull-right aui-btn">
+                <span class="aui-iconfont"></span>
+            </a>
+        </header>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        $util.openFrame('bonus_team_frm')
+        app = new Vue({
+            el: '#app',
+            data: {
+                level: 1,
+                team_info: {
+                    total_num: 0,
+                },
+            },
+        });
+        api.addEventListener({
+            name: 'bonus_team_frm_team_info'
+        }, function(ret, err) {
+            app.team_info = ret.value.team_info
+        });
+    };
+</script>
+
+</html>

@@ -1,0 +1,99 @@
+<!-- 模型frm -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        .b-disabled {
+            background: #696969 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 中间页 -->
+        <div class="aui-content aui-text-center">
+            <img :src="params.wap_login_logo" style="width:65%;margin:2.5rem auto 0 auto;margin-bottom: 2rem;">
+            <div class="area">
+                <div class="mix">
+                    <i class="iconfont icon-xinfeng2"></i>
+                    <input type="text" class="input short" placeholder="Correo electrónico" v-model="email">
+                </div>
+
+                <div class="submit" tapmode onclick="app.doBind()" v-text="title">Cambiar</div>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    var app = {};
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                title: 'Cambiar',
+                email: '',
+                params: {},
+            },
+            methods: {
+                doBind: function() {
+                    var emailtest= /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/;
+                    if (!emailtest.test(this.email)) {
+                        $util.toast('Por favor,escriba el número correcto')
+                        return;
+                    }
+                    $util.ajax({
+                        url: 'api_users/user_accounts/change_email',
+                        data: {
+                            email: this.email,
+                        },
+                        isLoading: true,
+                    }).then(function(resp){
+                        $util.toast(resp.msg);
+                        $api.clearStorage();
+                        setTimeout(function() {
+                            api.closeToWin({
+                                name: 'root'
+                            });
+                        }, 500)
+                    })
+                },
+                getParams: function() {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_systems/Params/getParams',
+                        data: {
+                            type: "basic",
+                        }
+                    }).then(function(resp) {
+                        resp.data.wap_login_logo = resp.data.wap_login_logo
+                        that.params = resp.data
+                    }).catch(function(err) {})
+                }
+            },
+            mounted: function(){
+                this.getParams()
+            }
+        });
+    };
+</script>
+
+</html>

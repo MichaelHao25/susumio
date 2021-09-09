@@ -1,0 +1,164 @@
+<!--
+ * @since: 2020-10-24 12:04:02
+ * @LastAuthor: Blue
+ * @lastTime: 2020-11-07 18:41:27
+ * @FilePath: /A6001888506312/html/bonus_wallet_win.html
+-->
+<!-- 模型win -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
+    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+    <style media="screen">
+        body {
+            background-color: #fff;
+        }
+
+        .distribution-bg {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: -1;
+        }
+
+        #avatar {
+            margin: 1.5rem auto 1rem auto;
+            width: 18%;
+        }
+
+        .distribution-button {
+            height: 1.3rem;
+            line-height: 1.3rem;
+            border-radius: 1.3rem;
+            text-align: center;
+            background-color: #358cff;
+            width: 45%;
+            color: #fff;
+            display: inline-block;
+            margin-top: .3rem;
+        }
+
+        .distribution-button:active {
+            background-color: #207bf1
+        }
+
+        .returni {
+            position: absolute;
+            z-index: 100;
+            left: .5rem;
+            top: 1.3rem;
+            color: #333;
+            font-weight: 400;
+            font-size: .9rem;
+        }
+
+        .aui-clearfix:after {
+            display: table;
+            content: "";
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="minirefresh" class="minirefresh-wrap">
+        <div class="minirefresh-scroll">
+    <div id="app">
+        <!-- 头部 -->
+        <div style="position: relative;">
+            <i class="aui-iconfont aui-icon-left returni" tapmode style="color: #fff!important;" onclick="api.closeWin()"></i>
+            <img src="../image/distribution_bg.png" class="distribution-bg">
+            <!-- 中间页 -->
+            <div class="aui-content aui-text-center aui-text-white">
+                <div class="aui-font-size-14" style="margin-top: 2.5rem;">Comisión de compensación</div>
+                <div style="font-size: 1.7rem;margin-top:1rem;margin-bottom: 1.5rem;" v-text="info.can_drawcash_money"></div>
+                <!-- 操作 -->
+                <div class="aui-bg-white aui-margin-15 aui-text-default aui-clearfix aui-padded-15" style="border-radius: .3rem;box-shadow: 0 5px 10px 0 #f3fbff;">
+                    <div class="aui-col-xs-4 aui-border-r">
+                        <div class="aui-font-size-20" v-text="info.total_money"></div>
+                        <div class="aui-font-size-14 aui-text-pray aui-padded-t-5">Comisión acumulada</div>
+                    </div>
+                    <div class="aui-col-xs-4">
+                        <div class="aui-font-size-20" v-text="info.can_drawcash_money"></div>
+                        <div class="aui-font-size-14 aui-text-pray aui-padded-t-5">Comisión de compensación</div>
+                    </div>
+                    <div class="aui-col-xs-4">
+                        <div class="aui-font-size-20" v-text="info.wait_pay_money"></div>
+                        <div class="aui-font-size-14 aui-text-pray aui-padded-t-5">Comisión por cobrar</div>
+                    </div>
+                </div>
+                <!-- 面板 -->
+                <ul class="aui-list aui-list-in">
+                    <li class="aui-list-item aui-list-item-arrow" onclick="$util.openWindow('bonus_withdraw_apply_win')">
+                        <div class="aui-list-item-label-icon">
+                            <i class="iconfont icon-tixian aui-font-size-20 " style="color: #56abef"></i>
+                        </div>
+                        <div class="aui-list-item-inner">Sacar dinero</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/util.js"></script>
+<script type="text/javascript" src="../script/vue.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript">
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    var app = {}
+    apiready = function() {
+        $util.fixPage();
+        app = new Vue({
+            el: '#app',
+            data: {
+                user: $api.getStorage('user'),
+                info: {
+                    already_apply_money: '',
+                    can_drawcash_money: '',
+                    total_money: '',
+                    wait_pay_money: ''
+                }
+            },
+            methods: {
+                getData: function() {
+                    var that = this
+                    $util.ajax({
+                        url: 'api_query/bonus/bonus_info'
+                    }).then(function(resp) {
+                        resp.data.already_apply_money = Number(resp.data.already_apply_money).toFixed(2);
+                        resp.data.can_drawcash_money = Number(resp.data.can_drawcash_money).toFixed(2);
+                        resp.data.total_money = Number(resp.data.total_money).toFixed(2);
+                        resp.data.wait_pay_money = Number(resp.data.wait_pay_money).toFixed(2);
+                        that.info = resp.data;
+                    }).catch(function(err) {})
+                }
+            },
+            mounted: function() {
+                this.getData()
+            }
+        });
+        api.setRefreshHeaderInfo({
+            bgColor: '#fff',
+        }, function (ret, err) {
+            app.getData()
+        });
+        api.addEventListener({
+            name: 'setRefreshHeaderInfo'
+        }, function (ret, err) {
+            app.getData()
+        });
+    };
+</script>
+
+</html>
