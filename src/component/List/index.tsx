@@ -9,9 +9,12 @@ import { ListState } from '@/models/list';
 
 interface PageProps {
   dispatch: Dispatch;
-  Header?: React.FC;
+  header?: React.ReactNode;
   top?: string;
   bottom?: string;
+  params: {
+    [key: string]: string;
+  };
   type: AllList;
   list: ListState;
 }
@@ -23,33 +26,43 @@ export default connect(({ list }: { list: ListState }) => {
 })(
   React.memo((props: PageProps) => {
     const miniRefresh = useRef<any>();
-    const { Header = '', top = '', bottom = '', dispatch, type, list } = props;
+    const {
+      header = '',
+      top = '',
+      bottom = '',
+      dispatch,
+      type,
+      list,
+      params,
+    } = props;
     const page = useRef({
       pageLimit: 10,
       pageNum: 1,
     });
+    const cb = (data = []) => {
+      page.current.pageNum = page.current.pageNum + 1;
+      miniRefresh.current.endDownLoading(true);
+      if (data.length < 10) {
+        miniRefresh.current.endUpLoading(true);
+      } else {
+        miniRefresh.current.endUpLoading(false);
+      }
+    };
     const loadData = (reload = false) => {
+      if (reload) {
+        page.current.pageNum = 1;
+      }
       switch (type) {
         case AllList.postApiGoodsGoodsLists: {
-          if (reload) {
-            page.current.pageNum = 1;
-          }
           dispatch({
             type: 'list/postApiGoodsGoodsLists',
             payload: {
               ...page.current,
-              cb(data = []) {
-                page.current.pageNum = page.current.pageNum + 1;
-                miniRefresh.current.endDownLoading(true);
-                console.log(data.length);
-                if (data.length < 10) {
-                  miniRefresh.current.endUpLoading(true);
-                } else {
-                  miniRefresh.current.endUpLoading(false);
-                }
-              },
+              ...params,
+              cb,
             },
           });
+          break;
         }
       }
     };
@@ -85,7 +98,7 @@ export default connect(({ list }: { list: ListState }) => {
                   style={{ height: '2rem', marginBottom: 0 }}
                 >
                   {value.name}
-                </h5>{' '}
+                </h5>
                 <p
                   style={{ marginBottom: 0 }}
                   className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10 aui-bg-white "
@@ -108,7 +121,7 @@ export default connect(({ list }: { list: ListState }) => {
           style={{ top: top ? top : '0', bottom: bottom ? bottom : '0' }}
         >
           <div className="minirefresh-scroll">
-            {Header ? <Header /> : <></>}
+            {header}
             <div
               className="aui-flex-col "
               style={{ backgroundColor: 'rgb(244, 244, 244)' }}

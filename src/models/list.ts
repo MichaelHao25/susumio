@@ -36,10 +36,13 @@ export default <ListModel>{
           list: list.postApiGoodsGoodsLists,
         };
       });
-      const { pageLimit = 10, pageNum = 1, cb } = payload;
+      debugger;
+
+      const { pageLimit = 10, pageNum = 1, cb, customTag = '' } = payload;
       const res: ListResponse | undefined = yield call(postApiGoodsGoodsLists, {
         pageLimit,
         pageNum,
+        customTag,
       });
       if (res) {
         yield put({

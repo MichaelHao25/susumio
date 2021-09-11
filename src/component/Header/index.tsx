@@ -1,3 +1,5 @@
+import { history } from 'umi';
+
 interface Props {
   title: string;
 }
@@ -10,7 +12,12 @@ export default (props: Props) => {
       id="header"
       style={{ backgroundColor: '#ffffff!important' }}
     >
-      <a className="aui-pull-left aui-btn">
+      <a
+        onClick={() => {
+          history.goBack();
+        }}
+        className="aui-pull-left aui-btn"
+      >
         <span
           className="aui-iconfont aui-icon-left"
           style={{ color: '#333!important' }}

@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.less';
 import 'swiper/components/pagination/pagination.less';
 import SwiperCore, { Pagination } from 'swiper';
-import { connect, ConnectProps, Dispatch } from 'umi';
+import { connect, ConnectProps, Dispatch, Link } from 'umi';
 import React, { useEffect } from 'react';
 import List from '@/component/List';
 import { AllList } from '@/services/interface';
@@ -91,70 +91,94 @@ const Header = () => {
               className="aui-row aui-padded-t-15 "
               style={{ display: 'flex', flexWrap: 'wrap' }}
             >
-              <div className="aui-col-xs-3">
+              <Link
+                to={'/goodsListModel?custom_tag=Envío gratis'}
+                className="aui-col-xs-3"
+              >
                 <img
                   src="https://www.177pinche.com/public/upload/goods_images/20210317/96184edac14b56a6b9bdd5c0d425ba12.gif"
                   className="aui-padded-5"
                   style={{ margin: '0px auto', width: '55%' }}
                 />
                 <div className="aui-grid-label">Envío gratis</div>
-              </div>
-              <div className="aui-col-xs-3">
+              </Link>
+              <Link
+                to={'/goodsListModel?custom_tag=USA'}
+                className="aui-col-xs-3"
+              >
                 <img
                   src="https://www.177pinche.com/public/upload/goods_images/20210317/d963afcb3644c4c9522fffe66f6b75cd.png"
                   className="aui-padded-5"
                   style={{ margin: '0px auto', width: '55%' }}
                 />
                 <div className="aui-grid-label">USA</div>
-              </div>
-              <div className="aui-col-xs-3">
+              </Link>
+              <Link
+                to={'/goodsListModel?custom_tag=MÉXICO'}
+                className="aui-col-xs-3"
+              >
                 <img
                   src="https://www.177pinche.com/public/upload/goods_images/20201122/1c7cbe0b5b20f603f33c68d329040fe8.png"
                   className="aui-padded-5"
                   style={{ margin: '0px auto', width: '55%' }}
                 />
                 <div className="aui-grid-label">MÉXICO</div>
-              </div>
-              <div className="aui-col-xs-3">
+              </Link>
+              <Link
+                to={'/goodsListModel?custom_tag=Otros países'}
+                className="aui-col-xs-3"
+              >
                 <img
                   src="https://www.177pinche.com/public/upload/goods_images/20210317/a52daf9e04b101dfc7a69941c67a36e1.gif"
                   className="aui-padded-5"
                   style={{ margin: '0px auto', width: '55%' }}
                 />
                 <div className="aui-grid-label">Otros países</div>
-              </div>
-              <div className="aui-col-xs-3">
+              </Link>
+              <Link
+                to={'/goodsListModel?custom_tag=Bodega'}
+                className="aui-col-xs-3"
+              >
                 <img
                   src="https://www.177pinche.com/public/upload/goods_images/20210317/1fdf75f2ec06e2c209599dd5e8f75d19.gif"
                   className="aui-padded-5"
                   style={{ margin: '0px auto', width: '55%' }}
                 />
                 <div className="aui-grid-label">Bodega</div>
-              </div>
-              <div className="aui-col-xs-3">
+              </Link>
+              <Link
+                to={'/goodsListModel?custom_tag=En México'}
+                className="aui-col-xs-3"
+              >
                 <img
                   src="https://www.177pinche.com/public/upload/goods_images/20201122/b8efd9185685f111913a4a60c9d81350.jpg"
                   className="aui-padded-5"
                   style={{ margin: '0px auto', width: '55%' }}
                 />
                 <div className="aui-grid-label">En México</div>
-              </div>
-              <div className="aui-col-xs-3">
+              </Link>
+              <Link
+                to={'/goodsListModel?custom_tag=Tienda local'}
+                className="aui-col-xs-3"
+              >
                 <img
                   src="https://www.177pinche.com/public/upload/goods_images/20210527/218e24952a7d82e582f821f17d736d88.jpg"
                   className="aui-padded-5"
                   style={{ margin: '0px auto', width: '55%' }}
                 />
                 <div className="aui-grid-label">Tienda local</div>
-              </div>
-              <div className="aui-col-xs-3">
+              </Link>
+              <Link
+                to={'/goodsListModel?custom_tag=Ganar'}
+                className="aui-col-xs-3"
+              >
                 <img
                   src="https://www.177pinche.com/public/upload/goods_images/20201207/3769d2d8636d4f2ce506a8e8d336c79e.gif"
                   className="aui-padded-5"
                   style={{ margin: '0px auto', width: '55%' }}
                 />
                 <div className="aui-grid-label">Ganar</div>
-              </div>
+              </Link>
             </div>
           </section>
         </div>
@@ -180,7 +204,8 @@ export default connect(({}: {}) => ({}))(
     return (
       <div className="indexPage">
         <List
-          Header={Header}
+          header={<Header />}
+          params={{}}
           bottom={'2.5rem'}
           type={AllList.postApiGoodsGoodsLists}
         />

@@ -1,5 +1,6 @@
 export enum AllList {
   postApiGoodsGoodsLists,
+  postApiGoodsGoodsListsFreeShipping,
 }
 
 export interface ListResponse extends BaseResponse {
@@ -10,6 +11,7 @@ export interface ListResponse extends BaseResponse {
 export interface ListRequest {
   pageLimit: number;
   pageNum: number;
+  customTag?: string;
 }
 export type DetailsAttrInfo = {
   name: string;
