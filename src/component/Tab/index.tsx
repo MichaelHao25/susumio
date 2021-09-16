@@ -5,7 +5,8 @@ export default function IndexPage() {
   return (
     <footer className="aui-bar aui-bar-tab">
       <NavLink
-        to={'/'}
+        to={'./'}
+        exact={true}
         className="aui-bar-tab-item"
         activeClassName={'aui-active'}
       >
@@ -13,7 +14,7 @@ export default function IndexPage() {
         <div className="aui-bar-tab-label">Inicio</div>
       </NavLink>
       <NavLink
-        to={'/dddd'}
+        to={'/goodsListNew'}
         className="aui-bar-tab-item"
         activeClassName={'aui-active'}
       >
@@ -21,7 +22,7 @@ export default function IndexPage() {
         <div className="aui-bar-tab-label">Productos</div>
       </NavLink>
       <NavLink
-        to={'/dddd'}
+        to={'/carLIst'}
         className="aui-bar-tab-item"
         activeClassName={'aui-active'}
       >
@@ -29,7 +30,7 @@ export default function IndexPage() {
         <div className="aui-bar-tab-label">Carro</div>
       </NavLink>
       <NavLink
-        to={'/dddd'}
+        to={'/login'}
         className="aui-bar-tab-item"
         activeClassName={'aui-active'}
       >

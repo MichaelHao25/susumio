@@ -92,7 +92,7 @@ const Header = () => {
               style={{ display: 'flex', flexWrap: 'wrap' }}
             >
               <Link
-                to={'/goodsListModel?custom_tag=Envío gratis'}
+                to={'/goodsListModel?customTag=Envío gratis&title=Envío gratis'}
                 className="aui-col-xs-3"
               >
                 <img
@@ -103,7 +103,7 @@ const Header = () => {
                 <div className="aui-grid-label">Envío gratis</div>
               </Link>
               <Link
-                to={'/goodsListModel?custom_tag=USA'}
+                to={'/goodsListModel?customTag=USA&title=USA'}
                 className="aui-col-xs-3"
               >
                 <img
@@ -114,7 +114,7 @@ const Header = () => {
                 <div className="aui-grid-label">USA</div>
               </Link>
               <Link
-                to={'/goodsListModel?custom_tag=MÉXICO'}
+                to={'/goodsListModel?customTag=MÉXICO&title=MÉXICO'}
                 className="aui-col-xs-3"
               >
                 <img
@@ -125,7 +125,7 @@ const Header = () => {
                 <div className="aui-grid-label">MÉXICO</div>
               </Link>
               <Link
-                to={'/goodsListModel?custom_tag=Otros países'}
+                to={'/goodsListModel?customTag=Otros países&title=Otros países'}
                 className="aui-col-xs-3"
               >
                 <img
@@ -136,7 +136,7 @@ const Header = () => {
                 <div className="aui-grid-label">Otros países</div>
               </Link>
               <Link
-                to={'/goodsListModel?custom_tag=Bodega'}
+                to={'/goodsListModel?customTag=Bodega&title=Bodega'}
                 className="aui-col-xs-3"
               >
                 <img
@@ -147,7 +147,7 @@ const Header = () => {
                 <div className="aui-grid-label">Bodega</div>
               </Link>
               <Link
-                to={'/goodsListModel?custom_tag=En México'}
+                to={'/goodsListModel?customTag=En México&title=En México'}
                 className="aui-col-xs-3"
               >
                 <img
@@ -158,7 +158,7 @@ const Header = () => {
                 <div className="aui-grid-label">En México</div>
               </Link>
               <Link
-                to={'/goodsListModel?custom_tag=Tienda local'}
+                to={'/goodsListModel?customTag=Tienda local&title=Tienda local'}
                 className="aui-col-xs-3"
               >
                 <img
@@ -169,7 +169,7 @@ const Header = () => {
                 <div className="aui-grid-label">Tienda local</div>
               </Link>
               <Link
-                to={'/goodsListModel?custom_tag=Ganar'}
+                to={'/goodsListModel?customTag=Ganar&title=Ganar'}
                 className="aui-col-xs-3"
               >
                 <img

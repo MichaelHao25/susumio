@@ -12,6 +12,7 @@ export interface ListRequest {
   pageLimit: number;
   pageNum: number;
   customTag?: string;
+  id?: string;
 }
 export type DetailsAttrInfo = {
   name: string;

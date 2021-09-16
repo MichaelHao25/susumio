@@ -39,15 +39,20 @@ export default connect(({ list }: { list: ListState }) => {
       pageLimit: 10,
       pageNum: 1,
     });
-    const cb = (data = []) => {
-      page.current.pageNum = page.current.pageNum + 1;
-      miniRefresh.current.endDownLoading(true);
-      if (data.length < 10) {
-        miniRefresh.current.endUpLoading(true);
-      } else {
-        miniRefresh.current.endUpLoading(false);
-      }
-    };
+    const cb =
+      (reload: boolean) =>
+      (data = []) => {
+        page.current.pageNum = page.current.pageNum + 1;
+        if (reload) {
+          miniRefresh.current.endDownLoading(true);
+        } else {
+          if (data.length < 10) {
+            miniRefresh.current.endUpLoading(true);
+          } else {
+            miniRefresh.current.endUpLoading(false);
+          }
+        }
+      };
     const loadData = (reload = false) => {
       if (reload) {
         page.current.pageNum = 1;
@@ -59,7 +64,7 @@ export default connect(({ list }: { list: ListState }) => {
             payload: {
               ...page.current,
               ...params,
-              cb,
+              cb: cb(reload),
             },
           });
           break;

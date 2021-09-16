@@ -1,0 +1,79 @@
+.carList {
+  #header {
+    position: fixed;
+    top: 0;
+    z-index: 20;
+  }
+  .aui-list {
+    padding-top: 2.25rem;
+  }
+  .aui-list > li:first-child {
+    position: fixed;
+    top: 2.25rem;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background: #ffffff;
+  }
+  #checkout {
+    height: 2.5rem;
+    border-top: 1px solid #f4f4f4;
+    bottom: 2.5rem;
+    border-bottom: 1px solid #f4f4f4;
+  }
+
+  #checkout .selectall {
+    display: inline-block;
+    width: 25%;
+    position: relative;
+    text-align: left;
+  }
+
+  #checkout .price {
+    width: 50%;
+    text-align: right;
+    display: inline-block;
+    line-height: 2.5rem;
+    padding-right: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  #checkout .submit {
+    display: inline-block;
+    width: 25%;
+    background: linear-gradient(to bottom, #41c4da, #34a3e4, #2680ef);
+    color: #fff;
+    text-align: center;
+    line-height: 2.5rem;
+  }
+
+  #checkout .submit:active {
+    background-color: #1273f2;
+  }
+  .cart-num {
+    flex: 1;
+    border: 1px solid #dedede;
+    margin: 0 0.1rem;
+  }
+  .aui-wanch {
+    background: #358cff;
+    color: #fff;
+    font-size: 0.6rem;
+    text-align: center;
+    align-items: center;
+    margin: 0.5rem 0;
+    display: flex;
+    display: -webkit-flex;
+    /* Safari */
+    align-items: center;
+    /*指定垂直居中*/
+    padding: 0 0.5rem;
+  }
+  .aui-bar-btn-item {
+    border-color: #dedede;
+  }
+  .aui-float-right {
+    float: right;
+    margin: 0 0.5rem;
+  }
+}

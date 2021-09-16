@@ -5,19 +5,34 @@ import List from '@/component/List';
 import React from 'react';
 import { ConnectProps } from 'umi';
 
-interface Props extends ConnectProps<{}, {}, { custom_tag: string }> {}
+interface Props
+  extends ConnectProps<
+    {},
+    {},
+    { customTag: string; title: string; id: string }
+  > {}
 
-export default function goodsListNewPage(props: Props) {
-  console.log(props);
+export default (props: Props) => {
   const {
     location: {
-      query: { custom_tag },
+      query: { customTag = '', title = '', id = '' },
     },
   } = props;
+  let params: {
+    customTag?: string;
+    id?: string;
+  } = {};
+  debugger;
+  if (customTag) {
+    params.customTag = customTag;
+  }
+  if (id) {
+    params.id = id;
+  }
   return (
     <div className="goodsListModel">
       <>
-        <Header title={'Envío gratis'} />
+        <Header title={title} />
         <section>
           <div id="tab" className="aui-tab">
             <div className="aui-tab-item">General</div>
@@ -39,9 +54,7 @@ export default function goodsListNewPage(props: Props) {
       <List
         top={`${2.2 + 2.25}rem`}
         type={AllList.postApiGoodsGoodsLists}
-        params={{
-          customTag: custom_tag,
-        }}
+        params={params}
       />
       {/*<div className="aui-flex-col aui-flex-center ">*/}
       {/*  <div className="aui-flex-item-12 ">*/}
@@ -118,4 +131,4 @@ export default function goodsListNewPage(props: Props) {
       {/*</div>*/}
     </div>
   );
-}
+};
