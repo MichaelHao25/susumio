@@ -3,7 +3,7 @@ import { history } from 'umi';
 import { Loading, Notify } from 'notiflix';
 
 Notify.init({
-  position: 'center-center',
+  position: 'right-top',
   cssAnimationStyle: 'from-bottom',
   // timeout: 1000 * 60,
 });
@@ -19,7 +19,6 @@ const errorHandler = function (error: ResponseError) {
   } = error;
   // 如果有message的话就展示他没有的话就展示response
   console.log('method:', method, 'url:', url);
-  debugger;
   // 如果有报错信息的话就显示报错信息
   if (message) {
     Notify.failure(message);

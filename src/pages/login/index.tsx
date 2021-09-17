@@ -1,23 +1,23 @@
 import Header from '@/component/Header';
 import './index.less';
-import { history } from 'umi';
+import { history, useDispatch } from 'umi';
 import { postApiUsersUserAccountsLogin } from '@/services/api';
 import { useState } from 'react';
-import { failure, Report } from 'notiflix';
+import { Report } from 'notiflix';
 
 export default function goodsListNewPage() {
   const [mobile, setMobile] = useState<string>('18600899806');
   const [password, setPassword] = useState<string>('123456');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   function handleSubmit() {
-    postApiUsersUserAccountsLogin({
-      mobile,
-      password,
-    }).then((res) => {
-      console.log(res);
-      const { code = 0 } = res;
-      Report.failure('Error', res.msg, 'OK');
+    dispatch({
+      type: 'userinfo/postApiUsersUserAccountsLogin',
+      payload: {
+        mobile,
+        password,
+      },
     });
   }
 

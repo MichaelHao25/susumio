@@ -22,7 +22,6 @@ export default (props: Props) => {
     customTag?: string;
     id?: string;
   } = {};
-  debugger;
   if (customTag) {
     params.customTag = customTag;
   }
