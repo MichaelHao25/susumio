@@ -1,19 +1,16 @@
-import { Effect, ImmerReducer, history } from 'umi';
-
-import {
-  postApiGoodsGoodsLists,
-  postApiUsersUserAccountsLogin,
-} from '@/services/api';
-import { Details, ListResponse } from '@/services/interface';
-import Notiflix, { Notify, Report } from 'notiflix';
-import { AnyAction } from 'redux';
+import { postApiUsersUserAccountsLogin } from '@/services/api';
+import { Details } from '@/services/interface';
+import { Notify, Report } from 'notiflix';
 import { EffectsCommandMap } from 'dva';
+import { ImmerReducer } from '@@/plugin-dva/connect';
+
+import { history } from 'umi';
 
 export interface ListState {
   postApiGoodsGoodsLists: Details[];
 }
 
-export interface userinfoModel {
+export interface UserinfoModel {
   namespace: 'userinfo';
   state: {
     token: {
@@ -92,7 +89,7 @@ export interface userinfoModel {
   };
 }
 
-export default <userinfoModel>{
+const userinfoModel: UserinfoModel = {
   namespace: 'userinfo',
   state: {
     token: {
@@ -189,3 +186,5 @@ export default <userinfoModel>{
     },
   },
 };
+
+export default userinfoModel;

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { connect, Dispatch } from 'umi';
+import { connect, Dispatch, Link } from 'umi';
 import styles from './index.less';
 // @ts-ignore
 import MiniRefreshTools from 'minirefresh';
@@ -90,28 +90,29 @@ export default connect(({ list }: { list: ListState }) => {
     function getList() {
       switch (type) {
         case AllList.postApiGoodsGoodsLists: {
-          return list.postApiGoodsGoodsLists.map((value) => {
+          return list.postApiGoodsGoodsLists.map((item) => {
             return (
-              <div
-                key={value.id}
+              <Link
+                to={`/goodsDetails?id=${item.id}`}
+                key={item.id}
                 className="aui-flex-item-6"
                 style={{ position: 'relative', padding: '3px' }}
               >
-                <img src={value.thum} /> {/**/}
+                <img src={item.thum} /> {/**/}
                 <h5
                   className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-5 aui-padded-r-5 aui-bg-white"
                   style={{ height: '2rem', marginBottom: 0 }}
                 >
-                  {value.name}
+                  {item.name}
                 </h5>
                 <p
                   style={{ marginBottom: 0 }}
                   className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10 aui-bg-white "
                 >
                   <span className="aui-text-price aui-font-size-10">$</span>{' '}
-                  <span className="aui-text-price ">{value.sell_price}</span>
+                  <span className="aui-text-price ">{item.sell_price}</span>
                 </p>
-              </div>
+              </Link>
             );
           });
         }

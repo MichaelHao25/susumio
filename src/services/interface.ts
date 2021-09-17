@@ -8,12 +8,6 @@ export interface ListResponse extends BaseResponse {
   data: Details[];
 }
 
-export interface ListRequest {
-  pageLimit: number;
-  pageNum: number;
-  customTag?: string;
-  id?: string;
-}
 export type DetailsAttrInfo = {
   name: string;
   options: string[];
