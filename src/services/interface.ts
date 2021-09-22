@@ -65,7 +65,7 @@ export interface Details {
   buy_get_score: number;
   status: number;
   attr_info: DetailsAttrInfo[];
-  spec_info: DetailsAttrInfo[];
+  spec_info: [DetailsAttrInfo, DetailsAttrInfo];
   freight_template_id: number;
   create_time: string;
   update_time: string;

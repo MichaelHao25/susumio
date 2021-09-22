@@ -154,15 +154,13 @@ const userinfoModel: UserinfoModel = {
         mobile,
         password,
       });
-      const { code = 0, data } = res;
-      if (code) {
+      if (res) {
+        const { data } = res;
         window.localStorage.setItem('userinfo', JSON.stringify(data));
         window.localStorage.setItem('token', data.token.token);
         Report.success('ok', res.msg, 'OK', () => {
           history.push('/');
         });
-      } else {
-        Report.failure('Error', res.msg, 'OK');
       }
     },
   },

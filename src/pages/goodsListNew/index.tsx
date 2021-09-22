@@ -27,25 +27,20 @@ export default () => {
   const [id, setId] = useState<number>(0);
   const [name, setName] = useState<string>('');
   useEffect(() => {
-    getApiGoodsGoodsCatesListsTree().then((res: { data: CategoryList[] }) => {
-      setCategoryList(res.data);
-      setId(res.data[0].id);
-      setName(res.data[0].name);
-      setChildList(res.data[0]._child);
+    getApiGoodsGoodsCatesListsTree().then((res) => {
+      if (res) {
+        const {
+          data,
+        }: {
+          data: CategoryList[];
+        } = res;
+        setCategoryList(data);
+        setId(data[0].id);
+        setName(data[0].name);
+        setChildList(data[0]._child);
+      }
     });
   }, []);
-  useEffect(() => {
-    // postApiGoodsGoodsLists({
-    //   id,
-    //   pageLimit: 10.,
-    //   pageNum: 1,
-    // }).then(res => {
-    //   console.log(res)
-    //   if (res.data instanceof Array) {
-    //     setGoodsList(res.data)
-    //   }
-    // })
-  }, [id]);
   return (
     <div className="goodsListNew">
       <Header title={'Categorías'} />

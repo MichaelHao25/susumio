@@ -5,11 +5,17 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.less';
 import 'swiper/components/pagination/pagination.less';
 import {
+  postApiGoodsCartsSave,
+  postApiGoodsGoodsCollectionsCancel,
+  postApiGoodsGoodsCollectionsSave,
   postApiGoodsGoodsComments,
+  postApiGoodsGoodsIsCollect,
   postApiGoodsGoodsRead,
 } from '@/services/api';
 import { Details } from '@/services/interface';
 import { history } from '@@/core/umiExports';
+import Notiflix, { Notify } from 'notiflix';
+import SpecInfoSelect from '@/pages/goodsDetails/SpecInfoSelect';
 
 interface Props
   extends ConnectProps<{}, {}, { id: string; isDiscountGoods: string }> {}
@@ -72,6 +78,7 @@ export default (props: Props) => {
   const [goods, setGoods] = useState<Details | undefined>();
   const [commentsList, setCommentsList] = useState<Comment[]>([]);
   const [tab, setTab] = useState<Tab>(Tab.Details);
+  const [isCollect, setIsCollect] = useState<0 | 1>(0);
   // // 是否是折扣商品
   // const [isDiscountGoods, setIsDiscountGoods] = useState<string>('')
   // useEffect(() => {
@@ -81,17 +88,27 @@ export default (props: Props) => {
     postApiGoodsGoodsRead({
       id,
     }).then((res) => {
-      const { data, code } = res;
-      if (code === 1) {
+      if (res) {
+        const { data } = res;
         setGoods(data);
       }
     });
     postApiGoodsGoodsComments({
       id,
     }).then((res) => {
-      const { data, code } = res;
-      if (code === 1) {
+      if (res) {
+        const { data } = res;
         setCommentsList(data);
+      }
+    });
+    postApiGoodsGoodsIsCollect({
+      id,
+    }).then((res) => {
+      if (res) {
+        const {
+          data: { is_collect },
+        } = res;
+        setIsCollect(is_collect);
       }
     });
   }, [id]);
@@ -105,6 +122,7 @@ export default (props: Props) => {
     attr_info = [],
     desc = '',
     thums = [],
+    thum = '',
   } = goods || {};
 
   function getTabComment() {
@@ -132,7 +150,7 @@ export default (props: Props) => {
             <></>
           )}
           <div className="aui-list aui-media-list">
-            {commentsList.map((item) => {
+            {commentsList.map((item, index) => {
               return (
                 <div className="aui-list-item aui-padded-b-5" key={item.id}>
                   <div className="aui-info">
@@ -166,11 +184,13 @@ export default (props: Props) => {
                     {'1'
                       .repeat(5)
                       .split('')
-                      .map((index) => (
+                      .map((_, index) => (
                         <i
                           className="aui-iconfont iconfont icon-shoucang aui-margin-5"
+                          key={index}
                           style={{
-                            color: index + 1 <= item.score ? '#ffc640' : '#ccc',
+                            color:
+                              index + 1 <= ~~item.score ? '#ffc640' : '#ccc',
                           }}
                         />
                       ))}
@@ -231,6 +251,49 @@ export default (props: Props) => {
       );
     } else {
       return <></>;
+    }
+  }
+
+  function toggleCollect() {
+    if (isCollect) {
+      postApiGoodsGoodsCollectionsCancel({
+        id,
+      }).then((res) => {
+        if (res) {
+          setIsCollect(0);
+        }
+      });
+    } else {
+      postApiGoodsGoodsCollectionsSave({
+        id,
+      }).then((res) => {
+        if (res) {
+          setIsCollect(1);
+        }
+      });
+    }
+  }
+
+  function addCard() {
+    const { free_shipping = false, spec_info = [], id = 0 } = goods || {};
+    if (free_shipping) {
+      Notify.failure('Package items cannot be added to shopping cart');
+      return;
+    }
+    // 如果没有分类信息的话
+    if (spec_info.length === 0) {
+      postApiGoodsCartsSave({
+        id,
+        specGroupIdStr: 0,
+        num: 1,
+        status: 1,
+      }).then((res) => {
+        console.log(res);
+        if (res) {
+          Notify.success(res.msg);
+        }
+      });
+    } else {
     }
   }
 
@@ -346,6 +409,52 @@ export default (props: Props) => {
       {/*    </div>*/}
       {/*  </div>*/}
       {/*</div>*/}
+
+      <div style={{ height: '2.25rem' }} />
+      <footer
+        className="aui-bar aui-bar-tab aui-margin-t-15"
+        id="footer"
+        v-if="isShowFooter"
+      >
+        <div
+          className="aui-bar-tab-item"
+          style={{ width: '3rem' }}
+          onClick={toggleCollect}
+        >
+          {/*@click="addCollection()"*/}
+          <span
+            className={`aui-iconfont iconfont icon-shoucang`}
+            style={{ color: isCollect ? '#ffc640' : '' }}
+          />
+          <div className="aui-bar-tab-label" style={{ color: '#777' }}>
+            Favorito
+          </div>
+        </div>
+        <div
+          className="aui-bar-tab-item aui-text-white"
+          onClick={addCard}
+          style={{
+            width: 'auto',
+            backgroundColor: '#6bcfc4',
+            fontSize: '0.8rem',
+          }}
+        >
+          Añadir a carro
+        </div>
+        <div
+          className="aui-bar-tab-item aui-text-white"
+          style={{
+            width: 'auto',
+            backgroundColor: '#06a995',
+            fontSize: '0.8rem',
+          }}
+        >
+          Compra
+        </div>
+        {/*@click="buy()"*/}
+      </footer>
+
+      <SpecInfoSelect goods={goods} />
     </div>
   );
 };

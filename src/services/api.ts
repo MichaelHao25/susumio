@@ -1,6 +1,67 @@
 import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 
+interface PostApiGoodsCartsSave {
+  id: number;
+  specGroupIdStr: number;
+  num: number;
+  status: number;
+}
+
+/**
+ * 查询是否被收藏
+ */
+export const postApiGoodsCartsSave = (data: PostApiGoodsCartsSave) => {
+  const { id, specGroupIdStr, num, status } = data;
+  return request.post(`/api_goods/carts/save`, {
+    data: {
+      goods_id: id,
+      spec_group_id_str: specGroupIdStr,
+      num,
+      status,
+    },
+  });
+};
+
+/**
+ * 查询是否被收藏
+ */
+export const postApiGoodsGoodsIsCollect = (data: PostApiGoodsGoodsRead) => {
+  const { id } = data;
+  return request.post(`/api_query/goods/is_collect`, {
+    data: {
+      goods_id: id,
+    },
+  });
+};
+
+/**
+ * 取消收藏
+ */
+export const postApiGoodsGoodsCollectionsCancel = (
+  data: PostApiGoodsGoodsRead,
+) => {
+  const { id } = data;
+  return request.post(`/api_goods/goods_collections/cancel`, {
+    data: {
+      goods_id: id,
+    },
+  });
+};
+/**
+ * 添加收藏
+ */
+export const postApiGoodsGoodsCollectionsSave = (
+  data: PostApiGoodsGoodsRead,
+) => {
+  const { id } = data;
+  return request.post(`/api_goods/goods_collections/save`, {
+    data: {
+      goods_id: id,
+    },
+  });
+};
+
 interface CustomHeader extends RequestOptionsInit {
   headers: {
     'page-limit': string;

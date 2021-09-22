@@ -11,99 +11,131 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport"
-        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
-  <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-  <link rel="stylesheet" type="text/css" href="../css/aui.css" />
-  <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
-  <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+  <meta name="format-detection"
+        content="telephone=no,email=no,date=no,address=no">
+  <link rel="stylesheet"
+        type="text/css"
+        href="../css/aui.css"/>
+  <link rel="stylesheet"
+        type="text/css"
+        href="../css/aui-flex.css"/>
+  <link rel="stylesheet"
+        type="text/css"
+        href="../ali_icon/iconfont.css"/>
 </head>
 
 <body>
-  <!-- <div id="minirefresh" class="minirefresh-wrap">
-        <div class="minirefresh-scroll"> -->
-  <header class="aui-bar aui-bar-nav aui-bar-light" style="background-image:none;position:fixed;">
-    <a class="aui-pull-left aui-btn" style="color: #333 !important;">Seleccionar especificaciones</a>
-    <div class="aui-title"></div>
-    <a class="aui-pull-right global-click aui-btn" tapmode>
-      <!-- 在下面绑定global-click的点击事件发送event -->
-      <span class="aui-iconfont aui-icon-close"></span>
-    </a>
-  </header>
-  <div style="height:40px"></div>
-  <div id="app">
-    <!-- 中间页 -->
-    <div class="aui-row aui-padded-10">
-      <!-- 缩略图 -->
-      <div class="aui-col-xs-6">
-        <img :src="goods.thum" class="aui-padded-15">
-      </div>
-      <!-- 价格和库存 -->
-      <div class="aui-col-xs-6 aui-padded-10">
-        <h2 class="aui-text-price">
-          <span style="font-size: 0.6rem;">$</span>
-          <span class="aui-font-size-20" style="letter-spacing:.1rem;" v-text="goods.sell_price"></span>
-        </h2>
-        <h4 class="aui-text-default" v-text="'Existencias: ' + (goods.stock)"></h4>
-      </div>
+<!-- <div id="minirefresh" class="minirefresh-wrap">
+      <div class="minirefresh-scroll"> -->
+<header class="aui-bar aui-bar-nav aui-bar-light"
+        style="background-image:none;position:fixed;">
+  <a class="aui-pull-left aui-btn"
+     style="color: #333 !important;">Seleccionar especificaciones</a>
+  <div class="aui-title"></div>
+  <a class="aui-pull-right global-click aui-btn"
+     tapmode>
+    <!-- 在下面绑定global-click的点击事件发送event -->
+    <span class="aui-iconfont aui-icon-close"></span>
+  </a>
+</header>
+<div style="height:40px"></div>
+<div id="app">
+  <!-- 中间页 -->
+  <div class="aui-row aui-padded-10">
+    <!-- 缩略图 -->
+    <div class="aui-col-xs-6">
+      <img :src="goods.thum"
+           class="aui-padded-15">
     </div>
-    <!-- 规格选项 -->
-    <div class="aui-content" style="margin-bottom:2.6rem;">
-      <div class="aui-row aui-padded-5">
-        <h3 v-text="spec_info_0.name" class="aui-font-size-12"></h3>
-        <div v-for="(option, optionKey) in new_spec_info" class="aui-col-xs-3" :key="optionKey"
-             @click="selectSpec(option, new_spec_info, optionKey)">
-          <div class="num-icon" v-text="option.total_count" v-if="option.total_count>0"></div>
-          <div class=" aui-padded-t-5 aui-padded-b-5 aui-margin-t-10 aui-font-size-12 aui-text-center aui-border aui-margin-r-10"
-               v-text="option.option"
-               :class="[{'aui-bg-info': option.isSelected},{'aui-text-white': option.isSelected}]">
-          </div>
-        </div>
-      </div>
-      <div class="aui-row aui-padded-5">
-        <h3 v-text="spec_info_1.name" class="aui-font-size-12"></h3>
-        <!-- 规格项、库存、熟练 -->
-        <!-- <div  v-for="(itemT, itemKeyT) in new_spec_info" v-if="itemT.isSelected" > -->
-        <div v-for="(itemT, itemKeyT) in new_spec_info" v-if="itemT.isSelected">
-          <div class="aui-list-item-text aui-margin-t-5 is-flex" v-for="(item, itemKey) in itemT.options">
-            <div class="flex-2">
-              <div class="spec-btn aui-font-size-12">
-                {{item.option}}
-              </div>
-            </div>
-            <div class="aui-list-item-title aui-font-size-12 aui-padded-l-10 aui-padded-r-10 spec-middle flex-2">
-              Existencias:{{item.stock}}
-            </div>
-            <div class="aui-list-item-right aui-text-price is-flex aui-padded-l-15 flex-2">
-              <i class="aui-iconfont iconfont icon-jian aui-font-size-20 aui-text-info"
-                 @click="changeNum(itemT,itemKey, -1,item.stock)"></i>
-              <input class="aui-padded-l-5 aui-padded-r-5 aui-font-size-14 aui-text-center" type="text"
-                     style="margin-top:-0.25rem;" pattern="[0-9]*" @change="numberChagne(itemT,item,item.num)"
-                     v-model="item.num">
-              <i class="aui-iconfont iconfont icon-jia aui-font-size-20 aui-text-info"
-                 @click="changeNum(itemT,itemKey, 1,item.stock)"></i>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- 价格和库存 -->
+    <div class="aui-col-xs-6 aui-padded-10">
+      <h2 class="aui-text-price">
+        <span style="font-size: 0.6rem;">$</span>
+        <span class="aui-font-size-20"
+              style="letter-spacing:.1rem;"
+              v-text="goods.sell_price"></span>
+      </h2>
+      <h4 class="aui-text-default"
+          v-text="'Existencias: ' + (goods.stock)"></h4>
     </div>
-    <footer class="aui-bar aui-bar-tab">
-      <div class="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15 aui-font-size-12" style="min-width: 8rem;">
-        Total:<span class="aui-font-size-14 aui-text-danger">{{total_count}}</span> Importe：<span
-              class="aui-font-size-14 aui-text-danger">${{total_money}}</span>
-      </div>
-      <div class="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15" @click="submit">
-        <div class="aui-btn aui-btn-block aui-btn-sm aui-btn-info">Confirmar</div>
-      </div>
-    </footer>
   </div>
-  <!-- </div>
-    </div> -->
+  <!-- 规格选项 -->
+  <div class="aui-content"
+       style="margin-bottom:2.6rem;">
+    <div class="aui-row aui-padded-5">
+      <h3 v-text="spec_info_0.name"
+          class="aui-font-size-12"></h3>
+      <div v-for="(option, optionKey) in new_spec_info"
+           class="aui-col-xs-3"
+           :key="optionKey"
+           @click="selectSpec(option, new_spec_info, optionKey)">
+        <div class="num-icon"
+             v-text="option.total_count"
+             v-if="option.total_count>0"></div>
+        <div class=" aui-padded-t-5 aui-padded-b-5 aui-margin-t-10 aui-font-size-12 aui-text-center aui-border aui-margin-r-10"
+             v-text="option.option"
+             :class="[{'aui-bg-info': option.isSelected},{'aui-text-white': option.isSelected}]">
+        </div>
+      </div>
+    </div>
+    <div class="aui-row aui-padded-5">
+      <h3 v-text="spec_info_1.name"
+          class="aui-font-size-12"></h3>
+      <!-- 规格项、库存、熟练 -->
+      <!-- <div  v-for="(itemT, itemKeyT) in new_spec_info" v-if="itemT.isSelected" > -->
+      <div v-for="(itemT, itemKeyT) in new_spec_info"
+           v-if="itemT.isSelected">
+        <div class="aui-list-item-text aui-margin-t-5 is-flex"
+             v-for="(item, itemKey) in itemT.options">
+          <div class="flex-2">
+            <div class="spec-btn aui-font-size-12">
+              {{item.option}}
+            </div>
+          </div>
+          <div class="aui-list-item-title aui-font-size-12 aui-padded-l-10 aui-padded-r-10 spec-middle flex-2">
+            Existencias:{{item.stock}}
+          </div>
+          <div class="aui-list-item-right aui-text-price is-flex aui-padded-l-15 flex-2">
+            <i class="aui-iconfont iconfont icon-jian aui-font-size-20 aui-text-info"
+               @click="changeNum(itemT,itemKey, -1,item.stock)"></i>
+            <input class="aui-padded-l-5 aui-padded-r-5 aui-font-size-14 aui-text-center"
+                   type="text"
+                   style="margin-top:-0.25rem;"
+                   pattern="[0-9]*"
+                   @change="numberChagne(itemT,item,item.num)"
+                   v-model="item.num">
+            <i class="aui-iconfont iconfont icon-jia aui-font-size-20 aui-text-info"
+               @click="changeNum(itemT,itemKey, 1,item.stock)"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="aui-bar aui-bar-tab">
+    <div class="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15 aui-font-size-12"
+         style="min-width: 8rem;">
+      Total:<span class="aui-font-size-14 aui-text-danger">{{total_count}}</span> Importe：<span
+      class="aui-font-size-14 aui-text-danger">${{total_money}}</span>
+    </div>
+    <div class="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15"
+         @click="submit">
+      <div class="aui-btn aui-btn-block aui-btn-sm aui-btn-info">Confirmar</div>
+    </div>
+  </footer>
+</div>
+<!-- </div>
+  </div> -->
 
 </body>
-<script type="text/javascript" src="../script/api.js"></script>
-<script type="text/javascript" src="../script/util.js"></script>
-<script type="text/javascript" src="../script/vue.min.js"></script>
-<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript"
+        src="../script/api.js"></script>
+<script type="text/javascript"
+        src="../script/util.js"></script>
+<script type="text/javascript"
+        src="../script/vue.min.js"></script>
+<script type="text/javascript"
+        src="../script/fastclick.js"></script>
 <script type="text/javascript">
   window.addEventListener('load', function () {
     FastClick.attach(document.body);
@@ -138,8 +170,7 @@
         numberChagne: function (itemT, item, num) {
           if (!num) {
             item.num = 0
-          }
-          else {
+          } else {
             item.num = parseInt(num)
           }
           var total_count = 0;
@@ -201,6 +232,7 @@
           var spec_info_0 = this.goods.spec_info[0]
           var spec_info_1 = this.goods.spec_info[1]
           var newarray = []
+          debugger
           this.spec_info_0 = spec_info_0
           this.spec_info_1 = spec_info_1
           this.new_spec_info = spec_info_0.options.map(function (item, index) {
@@ -226,7 +258,18 @@
                 }
                 return is_incloud
               })
-              var objectinfo = { option: item_1.option, num: 0, name: spec_info_item[0].name, id: spec_info_item[0].id, thum: spec_info_item[0].thum, id_str: spec_info_item[0].id_str, goods_id: spec_info_item[0].goods_id, spec_option_group: spec_info_item[0].spec_option_group, sell_price: spec_info_item[0].sell_price, stock: spec_info_item[0].stock }
+              var objectinfo = {
+                option: item_1.option,
+                num: 0,
+                name: spec_info_item[0].name,
+                id: spec_info_item[0].id,
+                thum: spec_info_item[0].thum,
+                id_str: spec_info_item[0].id_str,
+                goods_id: spec_info_item[0].goods_id,
+                spec_option_group: spec_info_item[0].spec_option_group,
+                sell_price: spec_info_item[0].sell_price,
+                stock: spec_info_item[0].stock
+              }
               options_info.push(objectinfo)
             })
             item.options = options_info

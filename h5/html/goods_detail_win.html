@@ -29,14 +29,7 @@
                 <span class="aui-iconfont iconfont icon-shoucang" :style="{color: activeColor}"></span>
                 <div class="aui-bar-tab-label" style="color:#777" v-text="collectionText"></div>
             </div>
-            <!-- <div v-if="!isDiscountGoods" class="aui-bar-tab-item" style="width: 3rem;" onclick="$util.openWindow('cart_list_win')">
-                <span class="aui-iconfont iconfont icon-gouwuche"></span>
-                <div class="aui-bar-tab-label" style="color:#777">Carro</div>
-            </div> -->
-            <!-- <div class="aui-bar-tab-item" style="width: 3rem;" v-if="is_customer==0" @click="openService()">
-                <span class="aui-iconfont iconfont icon-xiaoxi"></span>
-                <div class="aui-bar-tab-label" style="color:#777">Chat</div>
-            </div> -->
+
             <div v-if="!isDiscountGoods" class="aui-bar-tab-item aui-text-white" tapmode
                  style="width: auto;background-color:#6bcfc4;font-size:0.8rem;" @click="addCart()">Añadir a carro</div>
             <div class="aui-bar-tab-item aui-text-white" tapmode

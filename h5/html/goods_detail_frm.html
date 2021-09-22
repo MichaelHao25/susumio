@@ -458,6 +458,7 @@
                 },
                 //增加购物车
                 addCart: function () {
+                  debugger
                     if (this.load == 0) {
                         return;
                     }
@@ -598,6 +599,8 @@
                 // 选择规格
                 selectSpec: function (type) {
                     var that = this;
+                    debugger
+                  console.log(this.select_spec_group_info);
                     api.openFrame({
                         name: 'goods_spec_info_select_frm',
                         url: that.isDiscountGoods ? './goods_spec_info_select_frm.html' : './goods_spec_info_last_select_frm.html',

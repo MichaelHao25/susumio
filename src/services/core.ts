@@ -1,40 +1,44 @@
 import { Context, extend, ResponseError } from 'umi-request';
 import { history } from 'umi';
-import { Loading, Notify } from 'notiflix';
+import { Loading, Notify, Report } from 'notiflix';
 
 Notify.init({
   position: 'right-top',
   cssAnimationStyle: 'from-bottom',
   // timeout: 1000 * 60,
 });
+const publicError = 'code=0';
 const errorHandler = function (error: ResponseError) {
-  // 请求已发送但服务端返回状态码非 2xx 的响应
-  const {
-    data: { message = undefined } = {},
-    data = {},
-    request: {
-      options: { url, method },
-    },
-    message: jsErroeMessage,
-  } = error;
-  // 如果有message的话就展示他没有的话就展示response
-  console.log('method:', method, 'url:', url);
-  // 如果有报错信息的话就显示报错信息
-  if (message) {
-    Notify.failure(message);
-    console.log('res:', data);
-    if (data.code === 401) {
-      history.push('/login');
-    }
-  } else {
-    // 请求初始化时出错或者异常响应返回的异常
-    if (jsErroeMessage) {
-      Notify.failure(error.message);
-      console.log('res:', error.message);
-    } else {
-      // 如果没有报错信息代码初始化也没出错的话就打印响应结果
-      Notify.failure(JSON.stringify(data));
+  // 如果是非自定义的错误的
+  if (error.message !== publicError) {
+    // 请求已发送但服务端返回状态码非 2xx 的响应
+    const {
+      data: { message = undefined } = {},
+      data = {},
+      request: {
+        options: { url, method },
+      },
+      message: jsErroeMessage,
+    } = error;
+    // 如果有message的话就展示他没有的话就展示response
+    console.log('method:', method, 'url:', url);
+    // 如果有报错信息的话就显示报错信息
+    if (message) {
+      Notify.failure(message);
       console.log('res:', data);
+      if (data.code === 401) {
+        history.push('/login');
+      }
+    } else {
+      // 请求初始化时出错或者异常响应返回的异常
+      if (jsErroeMessage) {
+        Notify.failure(error.message);
+        console.log('res:', error.message);
+      } else {
+        // 如果没有报错信息代码初始化也没出错的话就打印响应结果
+        Notify.failure(JSON.stringify(data));
+        console.log('res:', data);
+      }
     }
   }
   stack.shift();
@@ -60,6 +64,18 @@ export const request = extend({
     auth: 'Basic_Ivj6eZRxMTx2yiyunZvnG8R67',
   },
   errorHandler,
+});
+// php的话返回1的话就是OK
+// 0就是失败现在针对0的话在全局处理。
+request.interceptors.response.use(async (response, options) => {
+  const res = await response.clone().json();
+  const { code = 0 } = res;
+  if (code !== 1) {
+    Report.failure('Error', res.msg, 'OK');
+
+    throw new Error(publicError);
+  }
+  return response;
 });
 request.use(async (ctx: Context, next: () => void) => {
   // 检查是否可以携带token，如果有的话就添加token
