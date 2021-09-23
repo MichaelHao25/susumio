@@ -11,7 +11,7 @@ export interface ListResponse extends BaseResponse {
 export type DetailsAttrInfo = {
   name: string;
   options: string[];
-  value: string;
+  // value: string;
 };
 export type DetailsGroupInfo = {
   id: number;
