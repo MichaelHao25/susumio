@@ -39,6 +39,28 @@ export const postQueryOrdersCount = () => {
   return request.post(`/api_query/orders/count`);
 };
 
+export interface CartInfo {
+  goods_id: number;
+  spec_group_id_str: string;
+  num: number;
+}
+interface PostApiGoodsCartsBatchSave {
+  cart_info: CartInfo[];
+}
+/**
+ * 批量添加购物车
+ */
+export const postApiGoodsCartsBatchSave = (
+  data: PostApiGoodsCartsBatchSave,
+) => {
+  const { cart_info } = data;
+  return request.post(`/api_goods/carts/batch_save`, {
+    data: {
+      cart_info,
+    },
+  });
+};
+
 interface PostApiGoodsCartsSave {
   id: number;
   specGroupIdStr: number;

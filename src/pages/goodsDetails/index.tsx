@@ -79,6 +79,7 @@ export default (props: Props) => {
   const [commentsList, setCommentsList] = useState<Comment[]>([]);
   const [tab, setTab] = useState<Tab>(Tab.Details);
   const [isCollect, setIsCollect] = useState<0 | 1>(0);
+  const [showLayout, setShowLayout] = useState<boolean>(false);
   // // 是否是折扣商品
   // const [isDiscountGoods, setIsDiscountGoods] = useState<string>('')
   // useEffect(() => {
@@ -135,7 +136,6 @@ export default (props: Props) => {
               style={{
                 marginTop: '20%',
                 marginBottom: '4rem',
-                backgroundColor: '#f5f5f5',
               }}
             >
               <img
@@ -294,6 +294,7 @@ export default (props: Props) => {
         }
       });
     } else {
+      setShowLayout(true);
     }
   }
 
@@ -411,11 +412,7 @@ export default (props: Props) => {
       {/*</div>*/}
 
       <div style={{ height: '2.25rem' }} />
-      <footer
-        className="aui-bar aui-bar-tab aui-margin-t-15"
-        id="footer"
-        v-if="isShowFooter"
-      >
+      <footer className="aui-bar aui-bar-tab aui-margin-t-15" id="footer">
         <div
           className="aui-bar-tab-item"
           style={{ width: '3rem' }}
@@ -448,13 +445,23 @@ export default (props: Props) => {
             backgroundColor: '#06a995',
             fontSize: '0.8rem',
           }}
+          onClick={addCard}
         >
           Compra
         </div>
         {/*@click="buy()"*/}
       </footer>
 
-      <SpecInfoSelect goods={goods} />
+      {showLayout ? (
+        <SpecInfoSelect
+          goods={goods}
+          handleCloseLayout={() => {
+            setShowLayout(false);
+          }}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
