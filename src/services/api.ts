@@ -1,6 +1,44 @@
 import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 
+/**
+ * 获取用户对等级和余额
+ */
+export const postDrpDbStatus = () => {
+  return request.post(`/api_query/systems/info`);
+};
+/**
+ * 获取用户对等级和余额
+ */
+export const postUsersAsset = () => {
+  return request.post(`/api_query/users/asset`);
+};
+
+/**
+ * 查询是否设置了支付密码
+ */
+export const postQueryPayPassword = () => {
+  return request.post(`/api_query/users/is_set_pay_password`);
+};
+
+/**
+ * 加载用户信息
+ */
+export const postUsersInfoRead = (id: string) => {
+  return request.post(`/api_users/users/read`, {
+    data: {
+      id,
+    },
+  });
+};
+
+/**
+ * 加载订单数量
+ */
+export const postQueryOrdersCount = () => {
+  return request.post(`/api_query/orders/count`);
+};
+
 interface PostApiGoodsCartsSave {
   id: number;
   specGroupIdStr: number;

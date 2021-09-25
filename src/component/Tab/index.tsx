@@ -30,7 +30,7 @@ export default function IndexPage() {
         <div className="aui-bar-tab-label">Carro</div>
       </NavLink>
       <NavLink
-        to={'/login'}
+        to={'/my'}
         className="aui-bar-tab-item"
         activeClassName={'aui-active'}
       >
