@@ -66,7 +66,11 @@ interface Comment {
     avatar: string;
   };
 }
-
+export enum LayoutType {
+  None,
+  Shop,
+  AddCart,
+}
 export default (props: Props) => {
   const {
     location: {
@@ -75,11 +79,11 @@ export default (props: Props) => {
     },
   } = props;
   // 商品详情
-  const [goods, setGoods] = useState<Details | undefined>();
+  const [goods, setGoods] = useState<Details>();
   const [commentsList, setCommentsList] = useState<Comment[]>([]);
   const [tab, setTab] = useState<Tab>(Tab.Details);
   const [isCollect, setIsCollect] = useState<0 | 1>(0);
-  const [showLayout, setShowLayout] = useState<boolean>(false);
+  const [showLayout, setShowLayout] = useState<LayoutType>(LayoutType.None);
   // // 是否是折扣商品
   // const [isDiscountGoods, setIsDiscountGoods] = useState<string>('')
   // useEffect(() => {
@@ -274,7 +278,7 @@ export default (props: Props) => {
     }
   }
 
-  function addCard() {
+  function addCart(type: LayoutType) {
     const { free_shipping = false, spec_info = [], id = 0 } = goods || {};
     if (free_shipping) {
       Notify.failure('Package items cannot be added to shopping cart');
@@ -288,13 +292,12 @@ export default (props: Props) => {
         num: 1,
         status: 1,
       }).then((res) => {
-        console.log(res);
         if (res) {
           Notify.success(res.msg);
         }
       });
     } else {
-      setShowLayout(true);
+      setShowLayout(type);
     }
   }
 
@@ -429,7 +432,7 @@ export default (props: Props) => {
         </div>
         <div
           className="aui-bar-tab-item aui-text-white"
-          onClick={addCard}
+          onClick={() => addCart(LayoutType.AddCart)}
           style={{
             width: 'auto',
             backgroundColor: '#6bcfc4',
@@ -445,20 +448,25 @@ export default (props: Props) => {
             backgroundColor: '#06a995',
             fontSize: '0.8rem',
           }}
-          onClick={addCard}
+          onClick={() => addCart(LayoutType.Shop)}
         >
           Compra
         </div>
         {/*@click="buy()"*/}
       </footer>
 
-      {showLayout ? (
-        <SpecInfoSelect
-          goods={goods}
-          handleCloseLayout={() => {
-            setShowLayout(false);
-          }}
-        />
+      {showLayout !== LayoutType.None ? (
+        goods ? (
+          <SpecInfoSelect
+            goods={goods}
+            type={showLayout}
+            handleCloseLayout={() => {
+              setShowLayout(LayoutType.None);
+            }}
+          />
+        ) : (
+          <></>
+        )
       ) : (
         <></>
       )}

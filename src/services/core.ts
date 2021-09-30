@@ -7,38 +7,40 @@ Notify.init({
   cssAnimationStyle: 'from-bottom',
   // timeout: 1000 * 60,
 });
-const publicError = 'code=0';
-const errorHandler = function (error: ResponseError) {
+interface Error extends ResponseError {
+  msg: string;
+  code: number;
+}
+const errorHandler = function (error: Error) {
   // 如果是非自定义的错误的
-  if (error.message !== publicError) {
-    // 请求已发送但服务端返回状态码非 2xx 的响应
-    const {
-      data: { message = undefined } = {},
-      data = {},
-      request: {
-        options: { url, method },
-      },
-      message: jsErroeMessage,
-    } = error;
-    // 如果有message的话就展示他没有的话就展示response
-    console.log('method:', method, 'url:', url);
-    // 如果有报错信息的话就显示报错信息
-    if (message) {
-      Notify.failure(message);
-      console.log('res:', data);
-      if (data.code === 401) {
-        history.push('/login');
-      }
+  // 请求已发送但服务端返回状态码非 2xx 的响应
+  const {
+    data = {},
+    request: {
+      options: { url, method },
+    },
+    msg = '',
+    code = 0,
+    message: jsErroeMessage = '',
+  } = error;
+  // 如果有message的话就展示他没有的话就展示response
+  console.log('method:', method, 'url:', url);
+  // 如果有报错信息的话就显示报错信息
+  if (msg) {
+    Notify.failure(msg);
+    console.log('res:', data);
+    if (code === 100400) {
+      history.replace('/login');
+    }
+  } else {
+    // 请求初始化时出错或者异常响应返回的异常
+    if (jsErroeMessage) {
+      Notify.failure(error.message);
+      console.log('res:', error.message);
     } else {
-      // 请求初始化时出错或者异常响应返回的异常
-      if (jsErroeMessage) {
-        Notify.failure(error.message);
-        console.log('res:', error.message);
-      } else {
-        // 如果没有报错信息代码初始化也没出错的话就打印响应结果
-        Notify.failure(JSON.stringify(data));
-        console.log('res:', data);
-      }
+      // 如果没有报错信息代码初始化也没出错的话就打印响应结果
+      Notify.failure(JSON.stringify(data));
+      console.log('res:', data);
     }
   }
   stack.shift();
@@ -70,10 +72,11 @@ export const request = extend({
 request.interceptors.response.use(async (response, options) => {
   const res = await response.clone().json();
   const { code = 0 } = res;
+  debugger;
   if (code !== 1) {
     Report.failure('Error', res.msg, 'OK');
 
-    throw new Error(publicError);
+    throw res;
   }
   return response;
 });

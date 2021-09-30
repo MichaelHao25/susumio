@@ -5,6 +5,14 @@ declare module '*.svg' {
   export function ReactComponent(
     props: React.SVGProps<SVGSVGElement>,
   ): React.ReactElement;
+
   const url: string;
   export default url;
+}
+declare global {
+  interface window {
+    paypal: {
+      Buttons: (props: { [key: string]: any }) => (className: string) => void;
+    };
+  }
 }

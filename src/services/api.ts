@@ -1,6 +1,99 @@
 import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 
+interface PostPayssionPay {
+  order_no: string;
+  pm_id: string;
+}
+/**
+ * paypal支付
+ */
+export const postPayssionPay = (data: PostPayssionPay) => {
+  return request.post(`/api_payssion/payssion/pay`, {
+    data,
+  });
+};
+
+interface PostPayPaypal {
+  order_no: string;
+}
+/**
+ * paypal支付
+ */
+export const postPayPaypal = (data: PostPayPaypal) => {
+  return request.post(`/api_orders/pay/paypal`, {
+    data,
+  });
+};
+interface PayMoney {
+  order_no: string;
+  pay_password: string;
+}
+/**
+ * 用余额支付
+ */
+export const postPayMoney = (data: PayMoney) => {
+  return request.post(`/api_orders/pay/money`, {
+    data,
+  });
+};
+
+export interface PostQuerySave {
+  address_id: number;
+  goods_info: { goods_id: number; num: number; spec_group_id_str: string }[];
+  /*优惠相关*/
+  market_activity_type: number;
+  /*优惠相关*/
+  market_activity_id: number;
+  memo: string;
+}
+
+/**
+ * 校验订单金额和物品的
+ */
+export const postQuerySave = (data: PostQuerySave) => {
+  return request.post(`/api_orders/orders/save`, {
+    data,
+  });
+};
+
+export interface PostQueryMarketUser {
+  money: number;
+  goods_ids: number[];
+}
+
+/**
+ * 校验订单金额和物品的
+ */
+export const postQueryMarketUser = (data: PostQueryMarketUser) => {
+  return request.post(`/api_query/market/user`, {
+    data,
+  });
+};
+
+export interface PostOrdersView {
+  address_id: number;
+  goods_info: {
+    goods_id: number;
+    num: number;
+    spec_group_id_str: string;
+  }[];
+}
+
+/**
+ * 查询订单金额
+ */
+export const postOrdersView = (data: PostOrdersView) => {
+  return request.post(`/api_orders/orders/view`, {
+    data,
+  });
+};
+/**
+ * 查询默认地址
+ */
+export const postQueryUsersDefaultAddress = () => {
+  return request.post(`/api_query/users/default_address`);
+};
 /**
  * 获取用户对等级和余额
  */
@@ -44,9 +137,11 @@ export interface CartInfo {
   spec_group_id_str: string;
   num: number;
 }
+
 interface PostApiGoodsCartsBatchSave {
   cart_info: CartInfo[];
 }
+
 /**
  * 批量添加购物车
  */

@@ -40,45 +40,6 @@
                             </div>
                         </div>
                     </li>
-                    <!--
-                    <li class="aui-list-item" style="height:3rem;">
-                        <div class="aui-list-item-label-icon">
-                            <i class="aui-iconfont iconfont icon-weixinzhifu" style="font-size: 1.5rem;color:#09bb07;"></i>
-                        </div>
-                        <div class="aui-list-item-inner">
-                            <div class="aui-list-item-title">Pago de micro carta</div>
-                            <div class="aui-list-item-right" @click="changeTabName('wechat')">
-                                <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20 aui-text-info" v-show="activeTabName == 'wechat'"></i>
-                                <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20" style="color: #ccc" v-show="activeTabName != 'wechat'"></i>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="aui-list-item" style="height:3rem;">
-                        <div class="aui-list-item-label-icon">
-                            <i class="aui-iconfont iconfont icon-zhifubao" style="font-size: 1.5rem;color: #0ae"></i>
-                        </div>
-                        <div class="aui-list-item-inner">
-                            <div class="aui-list-item-title">Pago del Tesoro</div>
-                            <div class="aui-list-item-right" @click="changeTabName('ali')">
-                                <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20 aui-text-info" v-show="activeTabName == 'ali'"></i>
-                                <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20" style="color: #ccc" v-show="activeTabName != 'ali'"></i>
-                            </div>
-                        </div>
-                    </li>-->
-
-                    <!-- <li class="aui-list-item" style="height:3rem;">
-                        <div class="aui-list-item-label-icon">
-                           <img src="../image/paypal.png" style="width:1.5rem;height:auto;display:inline" />
-                        </div>
-
-                       <div class="aui-list-item-inner">
-                            <div class="aui-list-item-title">Paypal</div>
-                            <div class="aui-list-item-right" @click="changeTabName('paypal')">
-                                <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20 aui-text-info" v-show="activeTabName == 'paypal'"></i>
-                                <i class="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20" style="color: #ccc" v-show="activeTabName != 'paypal'"></i>
-                            </div>
-                        </div>
-                    </li> -->
                 </ul>
             </div>
             <div class="area">
@@ -422,7 +383,7 @@
     };
 
     function payByPaypal(order) {
-      
+
     };
     function payByPayssion(pay_type, order_no) {
         $util.ajax({
@@ -504,7 +465,7 @@
             },
             methods: {
                 submit: function() {
-                
+
                     if (this.activeTabName == 'wechat') {
                         //微信支付
                         payByWx(this.order);
@@ -512,7 +473,7 @@
                         //支付宝支付
                         payByAli(this.order);
                     } else if (this.activeTabName == 'yue') {
-                        
+
                         payByYuE(this.order);
                     } else if (this.activeTabName == 'paypal') {
                         payByPaypal(this.order);

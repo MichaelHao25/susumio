@@ -1,11 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Details, DetailsAttrInfo } from '@/services/interface';
+import { Details } from '@/services/interface';
 import { Notify } from 'notiflix';
 import { CartInfo, postApiGoodsCartsBatchSave } from '@/services/api';
+import { LayoutType } from '@/pages/goodsDetails/index';
+import { history } from 'umi';
+
+export interface GoodsList {
+  thum: string;
+  name: string;
+  intro: string;
+  spec_option_group: string;
+  sell_price: number;
+  num: string;
+  id: number;
+  goods_id: number;
+  goods_id_str: string;
+}
 
 interface Props {
-  goods?: Details;
+  goods: Details;
   handleCloseLayout: () => void;
+  type: LayoutType;
 }
 
 interface GoodsItem extends List {
@@ -21,7 +36,7 @@ interface List {
 }
 
 export default (props: Props) => {
-  const { goods, handleCloseLayout } = props;
+  const { goods, handleCloseLayout, type } = props;
   const { thum = '', sell_price = 0, stock = 0 } = goods || {};
   const [data, setData] = useState<List[]>([]);
   const [typeOneIndex, setTypeOneIndex] = useState<number>(0);
@@ -84,7 +99,7 @@ export default (props: Props) => {
 
   function getValue(id: number): string {
     const res = (selectList[typeOneIndex] || []).find((item) => item.id === id);
-    return res ? res.num : '';
+    return res ? res.num : '0';
   }
 
   function getCount(index: number): React.ReactNode {
@@ -161,22 +176,50 @@ export default (props: Props) => {
       Notify.failure('Seleccione el producto que desea comprar.');
       return;
     }
+    if (goods.minimum > totalNum) {
+      Notify.failure(goods.name + 'La mínima cantidad es ' + goods.minimum);
+      return;
+    }
+
     const list = Object.values(selectList).flat(2);
-    const cart_info: CartInfo[] = list.map((item) => {
-      return {
-        goods_id: item.id,
-        spec_group_id_str: item.spec_group_id_str,
-        num: parseInt(item.num),
-      };
-    });
-    postApiGoodsCartsBatchSave({
-      cart_info,
-    }).then((res: any) => {
-      if (res) {
-        Notify.success(res.msg);
-        handleCloseLayout();
-      }
-    });
+    if (type === LayoutType.AddCart) {
+      const cart_info: CartInfo[] = list.map((item) => {
+        return {
+          goods_id: item.id,
+          spec_group_id_str: item.spec_group_id_str,
+          num: parseInt(item.num),
+        };
+      });
+      postApiGoodsCartsBatchSave({
+        cart_info,
+      }).then((res: any) => {
+        if (res) {
+          Notify.success(res.msg);
+          handleCloseLayout();
+        }
+      });
+    } else {
+      const goodsList: GoodsList[] = list.map((item) => {
+        const info = goods.spec_group_info.find((a) => a.id === item.id);
+        if (!info) {
+          throw new Error('没有找到');
+        }
+        return {
+          thum: info.thum ? info.thum : goods.thum,
+          name: goods.name,
+          intro: goods.intro,
+          spec_option_group: info.spec_option_group,
+          sell_price: goods.sell_price,
+          num: item.num,
+          id: item.id,
+          goods_id: info.goods_id,
+          goods_id_str: item.spec_group_id_str,
+        };
+      });
+      history.push('/orderConfirm', {
+        goodsList: goodsList.filter((item) => parseInt(item.num) !== 0),
+      });
+    }
   }
 
   return (

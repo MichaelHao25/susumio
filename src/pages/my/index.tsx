@@ -1,5 +1,5 @@
 import './index.less';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   postDrpDbStatus,
   postQueryOrdersCount,
@@ -7,6 +7,7 @@ import {
   postUsersAsset,
   postUsersInfoRead,
 } from '@/services/api';
+import Tab from '@/component/Tab';
 
 interface OrdersCount {
   return_goods_num: number;
@@ -501,6 +502,8 @@ export default () => {
           </div>
         </section>
       </div>
+      <div style={{ height: '2.5rem' }}></div>
+      <Tab />
     </div>
   );
 };
