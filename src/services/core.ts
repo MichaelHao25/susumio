@@ -7,10 +7,12 @@ Notify.init({
   cssAnimationStyle: 'from-bottom',
   // timeout: 1000 * 60,
 });
+
 interface Error extends ResponseError {
   msg: string;
   code: number;
 }
+
 const errorHandler = function (error: Error) {
   // 如果是非自定义的错误的
   // 请求已发送但服务端返回状态码非 2xx 的响应
@@ -65,6 +67,7 @@ export const request = extend({
     'client-type': 'app',
     auth: 'Basic_Ivj6eZRxMTx2yiyunZvnG8R67',
   },
+  // @ts-ignore
   errorHandler,
 });
 // php的话返回1的话就是OK
@@ -72,7 +75,6 @@ export const request = extend({
 request.interceptors.response.use(async (response, options) => {
   const res = await response.clone().json();
   const { code = 0 } = res;
-  debugger;
   if (code !== 1) {
     Report.failure('Error', res.msg, 'OK');
 

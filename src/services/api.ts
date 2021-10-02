@@ -7,7 +7,7 @@ export interface PostUserAccountsRegister {
 }
 
 /**
- * 获取用户对等级和余额
+ * 使用手机号注册
  */
 export const postUserAccountsRegister = (data: PostUserAccountsRegister) => {
   return request.post(`/api_users/user_accounts/register`, {
