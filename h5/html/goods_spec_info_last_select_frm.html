@@ -232,7 +232,6 @@
           var spec_info_0 = this.goods.spec_info[0]
           var spec_info_1 = this.goods.spec_info[1]
           var newarray = []
-          debugger
           this.spec_info_0 = spec_info_0
           this.spec_info_1 = spec_info_1
           this.new_spec_info = spec_info_0.options.map(function (item, index) {
@@ -277,6 +276,7 @@
         },
         // 确定
         submit: function () {
+          debugger
           var that = this;
           if (that.total_count == 0) {
             $util.toast('Seleccione el producto que desea comprar.')
@@ -293,6 +293,7 @@
               showButton: true
             }
           });
+
           api.sendEvent({
             name: 'updateLastGoodsSpecInfo',
             extra: {

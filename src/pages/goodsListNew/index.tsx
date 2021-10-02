@@ -43,7 +43,7 @@ export default () => {
   }, []);
   return (
     <div className="goodsListNew">
-      <Header title={'Categorías'} />
+      <Header title={'Categorías'} noBack={true} />
       <div style={{ height: '2.25rem' }}></div>
       <div className="aui-title" style={{ left: '0rem', right: '0rem' }}>
         {/*onClick="$util.openWindow('search_page_win')"*/}

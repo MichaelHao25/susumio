@@ -1,13 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Details, DetailsAttrInfo } from '@/services/interface';
+import { Details } from '@/services/interface';
+import { Notify } from 'notiflix';
+import { CartInfo, postApiGoodsCartsBatchSave } from '@/services/api';
+import { LayoutType } from '@/pages/goodsDetails/index';
+import { history } from 'umi';
+
+export interface GoodsList {
+  thum: string;
+  name: string;
+  intro: string;
+  spec_option_group: string;
+  sell_price: number;
+  num: string;
+  id: number;
+  goods_id: number;
+  goods_id_str: string;
+}
 
 interface Props {
-  goods?: Details;
+  goods: Details;
+  handleCloseLayout: () => void;
+  type: LayoutType;
 }
 
 interface GoodsItem extends List {
   id: number;
   stock: number;
+  spec_group_id_str: string;
 }
 
 interface List {
@@ -17,21 +36,21 @@ interface List {
 }
 
 export default (props: Props) => {
-  const { goods } = props;
+  const { goods, handleCloseLayout, type } = props;
   const { thum = '', sell_price = 0, stock = 0 } = goods || {};
   const [data, setData] = useState<List[]>([]);
   const [typeOneIndex, setTypeOneIndex] = useState<number>(0);
   const [selectList, setSelectList] = useState<{
-    [ke: string]: {
+    [key: string]: {
       id: number;
       num: string;
       stock: number;
+      spec_group_id_str: string;
     }[];
   }>({});
-  // <Map<number, {
-  //   id: number,
-  //   num: string,
-  // }Object>>
+  const [totalNum, setTotalNum] = useState<number>(0);
+  const [totalMoney, setTotalMoney] = useState<number>(0);
+
   useEffect(() => {
     const { spec_info = [], spec_group_info = [] } = goods || {};
     if (spec_info.length === 0) {
@@ -50,12 +69,13 @@ export default (props: Props) => {
           const res = spec_group_info.find(
             (item) => item.spec_option_group === `${type}_${cType}`,
           );
-          const { id = 0, stock = 0 } = res || {};
+          const { id = 0, stock = 0, id_str = '' } = res || {};
           return {
             id,
             stock,
             type: spec_info[1].name,
             name: cType,
+            spec_group_id_str: id_str,
             children: [],
           };
         }),
@@ -64,10 +84,22 @@ export default (props: Props) => {
 
     setData(list);
   }, [goods]);
+  useEffect(() => {
+    let totalNum = Object.values(selectList).reduce((a, b) => {
+      return (
+        a +
+        b.reduce((c, d) => {
+          return c + ~~d.num;
+        }, 0)
+      );
+    }, 0);
+    setTotalNum(totalNum);
+    setTotalMoney(Number((totalNum * sell_price).toFixed(2)));
+  }, [selectList]);
 
   function getValue(id: number): string {
     const res = (selectList[typeOneIndex] || []).find((item) => item.id === id);
-    return res ? res.num : '';
+    return res ? res.num : '0';
   }
 
   function getCount(index: number): React.ReactNode {
@@ -87,9 +119,10 @@ export default (props: Props) => {
       type: 'add' | 'remove' | 'set';
       num?: string;
       stock: number;
+      spec_group_id_str: string;
     },
   ) {
-    const { type, num, stock } = action;
+    const { type, num, stock, spec_group_id_str } = action;
     let value = parseInt(num ? num : '0');
     if (value < 0 || value > stock) {
       return;
@@ -122,18 +155,71 @@ export default (props: Props) => {
           id,
           num: '1',
           stock: stock,
+          spec_group_id_str,
         });
       } else {
         res.push({
           id,
-          num,
+          num: value.toString(),
           stock,
+          spec_group_id_str,
         });
       }
 
       selectList[typeOneIndex] = res;
     }
     setSelectList({ ...selectList });
+  }
+
+  function handleSubmit() {
+    if (totalNum === 0) {
+      Notify.failure('Seleccione el producto que desea comprar.');
+      return;
+    }
+    if (goods.minimum > totalNum) {
+      Notify.failure(goods.name + 'La mínima cantidad es ' + goods.minimum);
+      return;
+    }
+
+    const list = Object.values(selectList).flat(2);
+    if (type === LayoutType.AddCart) {
+      const cart_info: CartInfo[] = list.map((item) => {
+        return {
+          goods_id: item.id,
+          spec_group_id_str: item.spec_group_id_str,
+          num: parseInt(item.num),
+        };
+      });
+      postApiGoodsCartsBatchSave({
+        cart_info,
+      }).then((res: any) => {
+        if (res) {
+          Notify.success(res.msg);
+          handleCloseLayout();
+        }
+      });
+    } else {
+      const goodsList: GoodsList[] = list.map((item) => {
+        const info = goods.spec_group_info.find((a) => a.id === item.id);
+        if (!info) {
+          throw new Error('没有找到');
+        }
+        return {
+          thum: info.thum ? info.thum : goods.thum,
+          name: goods.name,
+          intro: goods.intro,
+          spec_option_group: info.spec_option_group,
+          sell_price: goods.sell_price,
+          num: item.num,
+          id: item.id,
+          goods_id: info.goods_id,
+          goods_id_str: item.spec_group_id_str,
+        };
+      });
+      history.push('/orderConfirm', {
+        goodsList: goodsList.filter((item) => parseInt(item.num) !== 0),
+      });
+    }
   }
 
   return (
@@ -160,6 +246,7 @@ export default (props: Props) => {
         <a
           className="aui-pull-right aui-btn"
           // onClick={close}
+          onClick={handleCloseLayout}
         >
           <span className="aui-iconfont aui-icon-close" />
         </a>
@@ -224,7 +311,7 @@ export default (props: Props) => {
 
           {/* 规格项、库存、熟练 */}
           {data?.[typeOneIndex]?.children?.map((item, index) => {
-            const { name, stock, id } = item;
+            const { name, stock, id, spec_group_id_str } = item;
             return (
               <div
                 className="aui-list-item-text aui-margin-t-5 is-flex"
@@ -239,7 +326,11 @@ export default (props: Props) => {
                 <div className="aui-list-item-right aui-text-price is-flex aui-padded-l-15 flex-2">
                   <i
                     onClick={() =>
-                      handleChangeNum(id, { type: 'remove', stock })
+                      handleChangeNum(id, {
+                        type: 'remove',
+                        stock,
+                        spec_group_id_str,
+                      })
                     }
                     className="aui-iconfont iconfont icon-jian aui-font-size-20 aui-text-info"
                   />
@@ -256,6 +347,7 @@ export default (props: Props) => {
                         type: 'set',
                         num: value,
                         stock,
+                        spec_group_id_str,
                       });
                     }}
                     value={getValue(id)}
@@ -266,6 +358,7 @@ export default (props: Props) => {
                       handleChangeNum(id, {
                         type: 'add',
                         stock,
+                        spec_group_id_str,
                       })
                     }
                     className="aui-iconfont iconfont icon-jia aui-font-size-20 aui-text-info"
@@ -285,22 +378,20 @@ export default (props: Props) => {
           className="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15 aui-font-size-12"
           style={{ minWidth: '8rem' }}
         >
-          Total:
-          <span className="aui-font-size-14 aui-text-danger">
-            {'{'}
-            {'{'}total_count{'}'}
-            {'}'}
-          </span>{' '}
-          Importe：
-          <span className="aui-font-size-14 aui-text-danger">
-            ${'{'}
-            {'{'}total_money{'}'}
-            {'}'}
-          </span>
+          <div>
+            Total:
+            <span className="aui-font-size-14 aui-text-danger">{totalNum}</span>
+          </div>
+          <div>
+            Importe：
+            <span className="aui-font-size-14 aui-text-danger">
+              ${totalMoney}
+            </span>
+          </div>
         </div>
         <div
           className="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15"
-          data-click="submit"
+          onClick={handleSubmit}
         >
           <div className="aui-btn aui-btn-block aui-btn-sm aui-btn-info">
             Confirmar

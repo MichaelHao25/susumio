@@ -419,6 +419,7 @@
                 },
                 //点击购买
                 buy: function () {
+
                     if (this.load == 0) {
                         return;
                     }
@@ -458,7 +459,6 @@
                 },
                 //增加购物车
                 addCart: function () {
-                  debugger
                     if (this.load == 0) {
                         return;
                     }
@@ -520,6 +520,7 @@
                         }, 500);
                         return;
                     }
+
                     var goodsList = []
                     var that = this
 
@@ -599,7 +600,7 @@
                 // 选择规格
                 selectSpec: function (type) {
                     var that = this;
-                    debugger
+
                   console.log(this.select_spec_group_info);
                     api.openFrame({
                         name: 'goods_spec_info_select_frm',
@@ -816,6 +817,7 @@
             if (ret) {
                 app.goods = ret.value.goods;
                 app.select_last_spec_info = ret.value.select_last_spec_info;
+                debugger
                 if (ret.value.type == 'cart') {
                     app.addLastCart();
                 }
