@@ -1,8 +1,47 @@
 import Header from '@/component/Header';
 import './index.less';
 import { history } from 'umi';
+import { useState } from 'react';
+import { Notify } from 'notiflix';
+import {
+  postUserAccountsRegister,
+  PostUserAccountsRegister,
+} from '@/services/api';
 
 export default () => {
+  const [mobile, setMobile] = useState<string>('18600899806');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>('123456');
+  const [checked, setChecked] = useState<boolean>(false);
+
+  function handleSubmit() {
+    if (!checked) {
+      Notify.failure('Marque la cláusula de servicio');
+      return;
+    }
+    if (!password) {
+      Notify.failure('Rellene la contraseña');
+      return;
+    }
+    if (!/^[A-Za-z0-9]{6,20}$/.test(password)) {
+      Notify.failure(
+        'La combinación de letras y números se limita a 6 a 20 bits',
+      );
+      return;
+    }
+    postUserAccountsRegister({
+      password,
+      mobile,
+    }).then((res) => {
+      if (res) {
+        Notify.success(res.msg);
+        window.localStorage.setItem('userinfo', JSON.stringify(res.data));
+        window.localStorage.setItem('token', res.data.token.token);
+        history.push('/');
+      }
+    });
+  }
+
   return (
     <div className="register">
       <Header title={'Registro'} />
@@ -30,8 +69,11 @@ export default () => {
             <input
               type="tel"
               className="input"
+              value={mobile}
+              onChange={(e) => {
+                setMobile(e.target.value);
+              }}
               placeholder="Número de teléfono"
-              value="mobile"
               id="mobile"
             />
           </div>
@@ -42,32 +84,28 @@ export default () => {
               style={{ color: '#3fa0f9', fontSize: '20px' }}
             />
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               className="input"
-              value="password"
               placeholder="Contraseña"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              value={password}
               id="password"
             />
             <i
-              className="iconfont icon-yanjing_yincang"
-              // v-if="passwordFlag"
+              className={`iconfont ${
+                showPassword ? 'icon-yanjing_xianshi' : 'icon-yanjing_yincang'
+              }`}
               style={{
                 color: '#bbbbbb',
                 fontSize: '20px',
                 marginRight: '0.7rem',
               }}
-            />
-            {/*@click="showOrHidePassword"*/}
-            <i
-              className="iconfont icon-yanjing_xianshi"
-              // v-if="!passwordFlag"
-              style={{
-                color: '#bbbbbb',
-                fontSize: '20px',
-                marginRight: '0.7rem',
+              onClick={() => {
+                setShowPassword((prev) => !prev);
               }}
             />
-            {/*@click="showOrHidePassword"*/}
           </div>
           <div className="other">
             <p
@@ -77,7 +115,6 @@ export default () => {
             >
               Login (Email)
             </p>
-            {/*onclick="$util.openWindow('message_auth_login_win')"*/}
             <p
               style={{ marginLeft: '5.2rem' }}
               onClick={() => {
@@ -86,10 +123,12 @@ export default () => {
             >
               Login (Cuenta)
             </p>
-            {/*onclick="$util.openWindow('login_win')"*/}
           </div>
-          <div className="submit1" style={{ backgroundColor: '#3fa0f9' }}>
-            {/*tapmode onclick="app.doRegister()"*/}
+          <div
+            className="submit1"
+            style={{ backgroundColor: '#3fa0f9' }}
+            onClick={handleSubmit}
+          >
             Registro
           </div>
           <div className="privacy_clause">
@@ -101,8 +140,11 @@ export default () => {
                 height: '0.8rem',
                 marginRight: '0.6rem',
               }}
+              checked={checked}
+              onChange={(e) => {
+                setChecked(e.target.checked);
+              }}
             />
-            {/*:checked="checkedFlag" @click="checkedFlag=!checkedFlag"*/}
             <div style={{ fontSize: '0.6rem', color: '#757575' }}>
               Acuerdo
               <span

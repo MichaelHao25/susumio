@@ -1,8 +1,12 @@
 import Header from '@/component/Header';
 import './index.less';
 import { history } from 'umi';
+import { useState } from 'react';
 
 export default () => {
+  const [email, setEmail] = useState<string>('18600899806');
+  const [password, setPassword] = useState<string>('123456');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   return (
     <div className="registerEmail">
       <Header title={'Registro Email'} />
@@ -36,8 +40,11 @@ export default () => {
             <input
               type="input"
               className="input"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
               placeholder="Correo electrónico"
-              v-model="email"
               id="email"
             />
           </div>
@@ -47,33 +54,28 @@ export default () => {
               style={{ color: '#3fa0f9', fontSize: '20px' }}
             />
             <input
-              type={'password'}
+              type={showPassword ? 'text' : 'password'}
               className="input"
-              value="password"
               placeholder="Contraseña"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              value={password}
               id="password"
             />
-            {/*:type="typeValue"*/}
             <i
-              className="iconfont icon-yanjing_yincang"
-              // v-if="passwordFlag"
+              className={`iconfont ${
+                showPassword ? 'icon-yanjing_xianshi' : 'icon-yanjing_yincang'
+              }`}
               style={{
                 color: '#bbbbbb',
                 fontSize: '20px',
                 marginRight: '0.7rem',
               }}
-            />
-            {/*@click="showOrHidePassword"*/}
-            <i
-              className="iconfont icon-yanjing_xianshi"
-              // v-if="!passwordFlag"
-              style={{
-                color: '#bbbbbb',
-                fontSize: '20px',
-                marginRight: '0.7rem',
+              onClick={() => {
+                setShowPassword((prev) => !prev);
               }}
             />
-            {/*@click="showOrHidePassword"*/}
           </div>
           <div className="other">
             <p

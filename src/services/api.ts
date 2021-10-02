@@ -1,6 +1,19 @@
 import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 
+export interface PostUserAccountsRegister {
+  mobile: string;
+  password: string;
+}
+
+/**
+ * 获取用户对等级和余额
+ */
+export const postUserAccountsRegister = (data: PostUserAccountsRegister) => {
+  return request.post(`/api_users/user_accounts/register`, {
+    data,
+  });
+};
 /**
  * 获取用户对等级和余额
  */
