@@ -2,11 +2,45 @@ import Header from '@/component/Header';
 import './index.less';
 import { history } from 'umi';
 import { useState } from 'react';
+import { postLoginAsEmail, postRegisterAsEmail } from '@/services/api';
+import { Notify } from 'notiflix';
 
 export default () => {
   const [email, setEmail] = useState<string>('18600899806');
   const [password, setPassword] = useState<string>('123456');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  function handleSubmit() {
+    if (!password) {
+      Notify.failure('Rellene la contraseña');
+      return;
+    }
+    if (!/^[A-Za-z0-9]{6,20}$/.test(password)) {
+      Notify.failure(
+        'La combinación de letras y números se limita a 6 a 20 bits',
+      );
+      return;
+    }
+    if (!email) {
+      Notify.failure('El buzón no puede estar vacío');
+      return;
+    }
+    var emailtest = /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/;
+    if (!emailtest.test(email)) {
+      Notify.failure('Formato de correo incorrecto');
+      return;
+    }
+    postLoginAsEmail({
+      email,
+      password,
+    }).then((res) => {
+      if (res) {
+        Notify.success(res.msg);
+        window.localStorage.setItem('userinfo', JSON.stringify(res.data));
+        window.localStorage.setItem('token', res.data.token.token);
+        history.push('/');
+      }
+    });
+  }
   return (
     <div className="messageAuthLogin">
       <Header title={'Código de verificación de mensajes'} />

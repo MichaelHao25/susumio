@@ -1,6 +1,34 @@
 import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 
+export interface PostLoginAsEmail {
+  email: string;
+  password: string;
+}
+
+/**
+ * 使用邮箱注册
+ */
+export const postLoginAsEmail = (data: PostLoginAsEmail) => {
+  return request.post(`/api_users/user_accounts/login_email`, {
+    data,
+  });
+};
+
+export interface PostRegisterAsEmail {
+  email: string;
+  password: string;
+}
+
+/**
+ * 使用邮箱注册
+ */
+export const postRegisterAsEmail = (data: PostRegisterAsEmail) => {
+  return request.post(`/api_users/user_accounts/register_email`, {
+    data,
+  });
+};
+
 export interface PostUserAccountsRegister {
   mobile: string;
   password: string;

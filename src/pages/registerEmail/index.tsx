@@ -2,11 +2,51 @@ import Header from '@/component/Header';
 import './index.less';
 import { history } from 'umi';
 import { useState } from 'react';
+import { Notify } from 'notiflix';
+import { postRegisterAsEmail, postUserAccountsRegister } from '@/services/api';
 
 export default () => {
   const [email, setEmail] = useState<string>('18600899806');
   const [password, setPassword] = useState<string>('123456');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [checked, setChecked] = useState<boolean>(false);
+  function handleSubmit() {
+    if (!checked) {
+      Notify.failure('Marque la cláusula de servicio');
+      return;
+    }
+    if (!password) {
+      Notify.failure('Rellene la contraseña');
+      return;
+    }
+    if (!/^[A-Za-z0-9]{6,20}$/.test(password)) {
+      Notify.failure(
+        'La combinación de letras y números se limita a 6 a 20 bits',
+      );
+      return;
+    }
+    if (!email) {
+      Notify.failure('El buzón no puede estar vacío');
+      return;
+    }
+    var emailtest = /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/;
+    if (!emailtest.test(email)) {
+      Notify.failure('Formato de correo incorrecto');
+      return;
+    }
+    postRegisterAsEmail({
+      email,
+      password,
+    }).then((res) => {
+      if (res) {
+        Notify.success(res.msg);
+        window.localStorage.setItem('userinfo', JSON.stringify(res.data));
+        window.localStorage.setItem('token', res.data.token.token);
+        history.push('/');
+      }
+    });
+  }
+
   return (
     <div className="registerEmail">
       <Header title={'Registro Email'} />
@@ -85,7 +125,6 @@ export default () => {
             >
               Login (Email)
             </p>
-            {/*onclick="$util.openWindow('message_auth_login_win')"*/}
             <p
               style={{ marginLeft: '5.2rem' }}
               onClick={() => {
@@ -94,10 +133,12 @@ export default () => {
             >
               Login (Cuenta)
             </p>
-            {/*onclick="$util.openWindow('login_win')"*/}
           </div>
-          <div className="submit1" style={{ backgroundColor: '#3fa0f9' }}>
-            {/*tapmode onclick="app.doRegister()"*/}
+          <div
+            className="submit1"
+            style={{ backgroundColor: '#3fa0f9' }}
+            onClick={handleSubmit}
+          >
             Registro
           </div>
           <div className="privacy_clause">
@@ -108,6 +149,10 @@ export default () => {
                 width: '0.8rem',
                 height: '0.8rem',
                 marginRight: '0.6rem',
+              }}
+              checked={checked}
+              onChange={(e) => {
+                setChecked(e.target.checked);
               }}
             />
             {/*:checked="checkedFlag" @click="checkedFlag=!checkedFlag"*/}
