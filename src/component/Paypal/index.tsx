@@ -16,16 +16,9 @@ interface Props {
 
 const Paypal = (props: Props) => {
   useEffect(() => {
-    const clientId = `AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi`;
-    const currency = `USD`;
-    const src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}`;
-    const script = document.createElement('script');
-    script.src = src;
-    if (!window.paypal) {
-      document.body.appendChild(script);
-    }
-    script.onload = () => {
+    const onload = () => {
       if (typeof window !== `undefined`) {
+        // @ts-ignore
         window.paypal
           .Buttons({
             ...props,
@@ -33,10 +26,17 @@ const Paypal = (props: Props) => {
           .render('#paypal-button');
       }
     };
+    // @ts-ignore
     if (!window.paypal) {
+      const clientId = `AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi`;
+      const currency = `USD`;
+      const src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}`;
+      const script = document.createElement('script');
+      script.src = src;
       document.body.appendChild(script);
+      script.onload = onload;
     } else {
-      script.onload();
+      onload();
     }
   }, []);
 
