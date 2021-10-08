@@ -24,8 +24,7 @@ export default () => {
       Notify.failure('El buzón no puede estar vacío');
       return;
     }
-    var emailtest = /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/;
-    if (!emailtest.test(email)) {
+    if (!/^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/.test(email)) {
       Notify.failure('Formato de correo incorrecto');
       return;
     }
