@@ -32,7 +32,35 @@ export type DetailsGroupInfo = {
   create_time: string;
   update_time: string;
 };
-
+export interface CartList {
+  create_time: string;
+  goods_id: number;
+  goods_info: Details;
+  id: number;
+  num: number;
+  spec_group_id_str: string;
+  spec_group_info: {
+    cost_price: number;
+    create_time: string;
+    goods_code: string;
+    goods_id: number;
+    goods_no: string;
+    id: number;
+    id_str: string;
+    is_virtual: number;
+    market_price: number;
+    red_price: number;
+    sell_price: number;
+    sort: number;
+    spec_option_group: string;
+    stock: number;
+    thum: string;
+    update_time: string;
+    weight: number;
+  };
+  status: number;
+  update_time: string;
+}
 export interface Details {
   id: number;
   goods_cate_id: number;
