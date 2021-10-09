@@ -22,7 +22,7 @@ export default function IndexPage() {
         <div className="aui-bar-tab-label">Productos</div>
       </NavLink>
       <NavLink
-        to={'/carLIst'}
+        to={'/cartLIst'}
         className="aui-bar-tab-item"
         activeClassName={'aui-active'}
       >

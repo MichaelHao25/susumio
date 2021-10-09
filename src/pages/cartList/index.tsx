@@ -1,11 +1,9 @@
-import Header from '@/component/Header';
 import './index.less';
-import { AllList } from '@/services/interface';
-import List from '@/component/List';
-import React, { useState } from 'react';
-import { ConnectProps } from 'umi';
+import { CartList } from '@/services/interface';
+import React, { useEffect, useState } from 'react';
+import { ConnectProps, Link } from 'umi';
 import Tab from '@/component/Tab';
-import res from './res.json';
+import { postCartsLists } from '@/services/api';
 
 interface Props extends ConnectProps<{}, {}, {}> {}
 
@@ -13,12 +11,27 @@ export default (props: Props) => {
   const [edit, setEdit] = useState<number>(0);
   const [menu, setMenu] = useState<boolean>(false);
   const [selectList, setSelectList] = useState<number[]>([]);
-  const [list, setList] = useState(() => {
-    return [...res.data];
-  });
-  const selectAll = (): boolean => {
-    return false;
+  const [list, setList] = useState<CartList[]>([]);
+  useEffect(() => {
+    postCartsLists().then((res) => {
+      if (res) {
+        const { data = [] } = res;
+        setList(data.filter((item: CartList) => item.goods_info));
+      }
+    });
+  }, []);
+  const selectAllStatus = (): boolean => {
+    return selectList.length === list.length;
   };
+  const getTotalMoney = () => {
+    return list
+      .filter((item) => selectList.includes(item.id))
+      .reduce((a, b) => {
+        return a + b.num * b.goods_info.sell_price;
+      }, 0)
+      .toFixed(2);
+  };
+
   return (
     <div className="carList">
       <header
@@ -68,6 +81,15 @@ export default (props: Props) => {
                     width: '1.7rem',
                     alignItems: 'center',
                   }}
+                  onClick={() => {
+                    const newSelectList = [...selectList];
+                    if (newSelectList.includes(id)) {
+                      newSelectList.splice(newSelectList.indexOf(id), 1);
+                    } else {
+                      newSelectList.push(id);
+                    }
+                    setSelectList(newSelectList);
+                  }}
                 >
                   {selectList.includes(id) ? (
                     <i className="aui-iconfont iconfont icon-roundcheckfill aui-text-info  aui-font-size-18" />
@@ -75,11 +97,12 @@ export default (props: Props) => {
                     <i className="aui-iconfont iconfont icon-yuanxingweixuanzhong  aui-font-size-18 aui-text-pray" />
                   )}
                 </div>
-                <div
+                <Link
                   className="aui-list-item-media"
                   style={{
                     width: '5rem',
                   }}
+                  to={`/goodsDetails?id=${cart.goods_id}`}
                 >
                   {/* 规格缩略图 */}
                   <img
@@ -87,7 +110,7 @@ export default (props: Props) => {
                     className="aui-list-img-sm"
                     style={{ border: '1px solid #f4f4f4' }}
                   />
-                </div>
+                </Link>
                 {/* 查看购物车详情 */}
                 {edit === id ? (
                   <div
@@ -166,9 +189,7 @@ export default (props: Props) => {
                         </span>
                         <span>
                           {/* 规格价格 */}
-                          {cart.spec_group_id_str
-                            ? cart.spec_group_info.sell_price
-                            : cart.spec_group_info.sell_price}
+                          {cart.spec_group_info.sell_price}
                           {/* 商品价格 */}
                         </span>
                       </span>
@@ -211,8 +232,19 @@ export default (props: Props) => {
       </ul>
 
       <footer className="aui-bar aui-bar-tab" id="checkout">
-        <div className="selectall aui-padded-l-15">
-          {selectAll() ? (
+        <div
+          className="selectall aui-padded-l-15"
+          onClick={() => {
+            if (selectList.length === list.length) {
+              setSelectList([]);
+            } else {
+              setSelectList(() => {
+                return list.map((item) => item.id);
+              });
+            }
+          }}
+        >
+          {selectAllStatus() ? (
             <i className="aui-iconfont iconfont icon-roundcheckfill aui-text-info aui-font-size-18" />
           ) : (
             <i
@@ -225,10 +257,9 @@ export default (props: Props) => {
         <div className="price">
           Total:
           <span className="aui-font-size-14 aui-text-price">$</span>
-          <span
-            className="aui-text-price aui-font-size-20"
-            v-text="totalPrice"
-          />
+          <span className="aui-text-price aui-font-size-20">
+            {getTotalMoney()}
+          </span>
         </div>
         <div className="submit">Pagar</div>
       </footer>

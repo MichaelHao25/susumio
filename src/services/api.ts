@@ -1,6 +1,12 @@
 import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 
+/**
+ * 获取购物车
+ */
+export const postCartsLists = () => {
+  return request.post(`/api_goods/carts/lists`);
+};
 export interface PostLoginAsEmail {
   email: string;
   password: string;
