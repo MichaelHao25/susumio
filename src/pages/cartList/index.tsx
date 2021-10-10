@@ -1,9 +1,11 @@
 import './index.less';
 import { CartList } from '@/services/interface';
 import React, { useEffect, useState } from 'react';
-import { ConnectProps, Link } from 'umi';
+import { ConnectProps, history, Link } from 'umi';
 import Tab from '@/component/Tab';
 import { postCartsLists } from '@/services/api';
+import Notiflix, { Notify } from 'notiflix';
+import { GoodsList } from '@/pages/goodsDetails/SpecInfoSelect';
 
 interface Props extends ConnectProps<{}, {}, {}> {}
 
@@ -31,6 +33,31 @@ export default (props: Props) => {
       }, 0)
       .toFixed(2);
   };
+
+  function handleSubmit() {
+    const goodsList: GoodsList[] = list
+      .filter((item) => selectList.includes(item.id))
+      .map<GoodsList>((item) => {
+        return {
+          thum: item.goods_info.thum,
+          name: item.goods_info.name,
+          intro: item.goods_info.intro,
+          spec_option_group: item.spec_group_info.spec_option_group,
+          sell_price: item.goods_info.sell_price,
+          num: item.num.toString(10),
+          id: item.id,
+          goods_id: item.goods_id,
+          goods_id_str: item.spec_group_id_str,
+        };
+      });
+    if (goodsList.length == 0) {
+      Notify.failure('No se ha seleccionado nada artículo.');
+    } else {
+      history.push('/orderConfirm', {
+        goodsList: goodsList,
+      });
+    }
+  }
 
   return (
     <div className="carList">
@@ -261,7 +288,9 @@ export default (props: Props) => {
             {getTotalMoney()}
           </span>
         </div>
-        <div className="submit">Pagar</div>
+        <div className="submit" onClick={handleSubmit}>
+          Pagar
+        </div>
       </footer>
       <div style={{ height: '2.25rem' }}></div>
       <div style={{ height: '2.5rem' }}></div>
