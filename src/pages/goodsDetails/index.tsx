@@ -66,11 +66,13 @@ interface Comment {
     avatar: string;
   };
 }
+
 export enum LayoutType {
   None,
   Shop,
   AddCart,
 }
+
 export default (props: Props) => {
   const {
     location: {
@@ -301,6 +303,37 @@ export default (props: Props) => {
     }
   }
 
+  function buy(type: LayoutType) {
+    const token = window.localStorage.getItem('token');
+    if (!token) {
+      history.replace('/login');
+      return;
+    }
+    if (goods) {
+      if (goods.spec_info.length > 0) {
+        setShowLayout(type);
+      } else {
+        // 不知道有那些没有分类
+        // 先搁置
+        Notify.failure('请联系管理员');
+        // history.push('/orderConfirm', {
+        //   goodsList: {
+        //     thum: goods.thum,
+        //     name: goods.name,
+        //     intro: goods.intro,
+        //     spec_option_group: info.spec_option_group,
+        //     sell_price: goods.sell_price,
+        //     num: 1,
+        //     id: goods.id,
+        //     goods_id: goods.goods_id,
+        //     goods_id_str: goods.spec_group_id_str,
+        //
+        //   },
+        // });
+      }
+    }
+  }
+
   return (
     <div className="goodsDetail">
       {/*返回按钮*/}
@@ -448,11 +481,10 @@ export default (props: Props) => {
             backgroundColor: '#06a995',
             fontSize: '0.8rem',
           }}
-          onClick={() => addCart(LayoutType.Shop)}
+          onClick={() => buy(LayoutType.Shop)}
         >
           Compra
         </div>
-        {/*@click="buy()"*/}
       </footer>
 
       {showLayout !== LayoutType.None ? (

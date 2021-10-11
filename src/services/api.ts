@@ -7,6 +7,7 @@ import { RequestOptionsInit } from 'umi-request';
 export const postCartsLists = () => {
   return request.post(`/api_goods/carts/lists`);
 };
+
 export interface PostLoginAsEmail {
   email: string;
   password: string;
@@ -48,10 +49,12 @@ export const postUserAccountsRegister = (data: PostUserAccountsRegister) => {
     data,
   });
 };
+
 interface PostPayssionPay {
   order_no: string;
   pm_id: string;
 }
+
 /**
  * paypal支付
  */
@@ -64,6 +67,7 @@ export const postPayssionPay = (data: PostPayssionPay) => {
 interface PostPayPaypal {
   order_no: string;
 }
+
 /**
  * paypal支付
  */
@@ -72,10 +76,12 @@ export const postPayPaypal = (data: PostPayPaypal) => {
     data,
   });
 };
+
 interface PayMoney {
   order_no: string;
   pay_password: string;
 }
+
 /**
  * 用余额支付
  */
@@ -361,4 +367,31 @@ export const postApiGoodsGoodsLists = (data: ListRequest) => {
     },
   };
   return request.post(`/api_goods/goods/lists`, res);
+};
+
+export interface OrdersData {
+  status?: number;
+  is_has_return_goods?: number;
+  is_comment?: number;
+}
+export interface OrdersLists extends OrdersData {
+  pageLimit: number;
+  pageNum: number;
+}
+
+/**
+ * 列表接口可以使用标签查询和id查询
+ * @param data
+ */
+export const postApiOrdersLists = (data: OrdersLists) => {
+  const { pageLimit = 10, pageNum = 1, ...req } = data;
+
+  const res: CustomHeader = {
+    headers: {
+      'page-limit': pageLimit.toString(),
+      'page-num': pageNum.toString(),
+    },
+    data: req,
+  };
+  return request.post(`/api_orders/orders/lists`, res);
 };

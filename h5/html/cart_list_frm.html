@@ -419,8 +419,9 @@
                 info.spec_option_group = info.spec_option_group.split('_').sort().toString();
                 return info;
               });
-
+            //
             });
+
             that.list = that.list.concat(resp.data).unique();
             that.haveNoData = !Boolean(that.list.length)
             that.updateCartStatus()

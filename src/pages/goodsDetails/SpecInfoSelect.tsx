@@ -204,7 +204,6 @@ export default (props: Props) => {
         if (!info) {
           throw new Error('没有找到');
         }
-        debugger;
         return {
           thum: info.thum ? info.thum : goods.thum,
           name: goods.name,

@@ -1,9 +1,133 @@
+import { postApiOrdersLists } from '@/services/api';
+
 export enum AllList {
   postApiGoodsGoodsLists,
   postApiGoodsGoodsListsFreeShipping,
+  postApiOrdersLists,
+}
+
+export interface OrdersListItem {
+  id: number;
+  user_id: number;
+  order_no: string;
+  content: string;
+  type: number;
+  market_activity_type: string;
+  market_activity_id: number;
+  market_reduce_money: number;
+  zip_code: string;
+  goods_money: number;
+  freight_money: number;
+  total_money: number;
+  total_score: number;
+  mobile: string;
+  consignee_name: number;
+  province: string;
+  province_code: string;
+  city: string;
+  city_code: string;
+  area: string;
+  area_code: string;
+  address: string;
+  memo: string;
+  reply_memo: null;
+  is_pay: number;
+  pay_type: null;
+  pay_time: null;
+  is_app_pay: number;
+  deliver_tip_num: number;
+  last_deliver_tip_time: null;
+  deliver_time: null;
+  is_open_eorder: number;
+  express_type: string;
+  express_no: null;
+  eorder_express_type: null;
+  is_submit_eorder: number;
+  confirm_receipt_time: null;
+  cancel_reason: null;
+  cancel_time: null;
+  is_comment: number;
+  is_has_return_goods: number;
+  is_all_return_goods: number;
+  is_deal_return_goods: number;
+  return_goods_money: number;
+  is_group_buy_first: number;
+  group_buy_order_pid: number;
+  group_buy_time_length: null;
+  group_buy_end_timestamp: null;
+  group_buy_person_num: null;
+  group_buy_goods_id: null;
+  group_buy_status: number;
+  status: number;
+  create_time: string;
+  update_time: string;
+  order_goods_info: [
+    {
+      id: number;
+      order_id: number;
+      goods_id: number;
+      user_id: number;
+      name: string;
+      thum: string;
+      intro: string;
+      standard: string;
+      spec_group_id: number;
+      spec_group_id_str: string;
+      spec_group_info: string;
+      sell_price: number;
+      score: number;
+      real_price: number;
+      weight: number;
+      num: number;
+      is_comment: number;
+      return_goods_status: number;
+      is_return_goods: number;
+      is_return_money: number;
+      create_time: string;
+      update_time: string;
+      commission_info: {
+        id: number;
+        user_id: number;
+        order_id: number;
+        goods_id: number;
+        order_goods_id: number;
+        level: number;
+        expect_money: number;
+        real_commisson_money: null;
+        real_commission_rate: number;
+        real_money: null;
+        already_drawcash_money: number;
+        source_user_id: number;
+        order_status: number;
+        status: number;
+        commission_apply_id: null;
+        apply_no: null;
+        create_time: string;
+        update_time: string;
+        user_info: {
+          id: number;
+          mobile: string;
+          nick_name: string;
+          avatar: string;
+        };
+      }[];
+      bonus_info: [];
+    },
+  ];
+  user_info: {
+    id: number;
+    mobile: string;
+    nick_name: string;
+    avatar: string;
+  };
 }
 
 export interface ListResponse extends BaseResponse {
+  page: { page_num: string; page_limit: string; data_count: number };
+  data: Details[];
+}
+
+export interface OrderListResponse extends BaseResponse {
   page: { page_num: string; page_limit: string; data_count: number };
   data: Details[];
 }
@@ -32,6 +156,7 @@ export type DetailsGroupInfo = {
   create_time: string;
   update_time: string;
 };
+
 export interface CartList {
   create_time: string;
   goods_id: number;
@@ -61,6 +186,7 @@ export interface CartList {
   status: number;
   update_time: string;
 }
+
 export interface Details {
   id: number;
   goods_cate_id: number;
