@@ -8,6 +8,7 @@ import {
   postUsersInfoRead,
 } from '@/services/api';
 import Tab from '@/component/Tab';
+import { history } from '@@/core/history';
 
 interface OrdersCount {
   return_goods_num: number;
@@ -176,8 +177,13 @@ export default () => {
           >
             <ul className="aui-list" style={{ backgroundImage: 'none' }}>
               <li
-                data-onclick="$util.openWindow('order_list_win', {status: 0})"
+                // data-onclick="$util.openWindow('order_list_win', {status: 0})"
                 className="aui-list-item"
+                onClick={() => {
+                  history.push('/orderList', {
+                    status: 0,
+                  });
+                }}
               >
                 <div className="aui-list-item-inner aui-list-item-arrow">
                   <div className="aui-list-item-title">Mi pedido</div>
@@ -191,7 +197,12 @@ export default () => {
           <section className="aui-grid aui-margin-b-10">
             <div className="aui-row">
               <div
-                data-onclick="$util.openWindow('order_list_win', {status: 1})"
+                // data-onclick="$util.openWindow('order_list_win', {status: 1})"
+                onClick={() => {
+                  history.push('/orderList', {
+                    status: 1,
+                  });
+                }}
                 className="aui-col-5"
               >
                 <i
@@ -208,7 +219,12 @@ export default () => {
                 )}
               </div>
               <div
-                data-onclick="$util.openWindow('order_list_win', {status: 2})"
+                // data-onclick="$util.openWindow('order_list_win', {status: 2})"
+                onClick={() => {
+                  history.push('/orderList', {
+                    status: 2,
+                  });
+                }}
                 className="aui-col-5"
               >
                 <i
@@ -225,7 +241,12 @@ export default () => {
                 )}
               </div>
               <div
-                data-onclick="$util.openWindow('order_list_win', {status: 3})"
+                // data-onclick="$util.openWindow('order_list_win', {status: 3})"
+                onClick={() => {
+                  history.push('/orderList', {
+                    status: 3,
+                  });
+                }}
                 className="aui-col-5"
               >
                 <i
@@ -242,7 +263,12 @@ export default () => {
                 )}
               </div>
               <div
-                data-onclick="$util.openWindow('order_list_win', {status: 4})"
+                // data-onclick="$util.openWindow('order_list_win', {status: 4})"
+                onClick={() => {
+                  history.push('/orderList', {
+                    status: 4,
+                  });
+                }}
                 className="aui-col-5"
               >
                 <i

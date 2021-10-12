@@ -12,9 +12,11 @@ interface PageProps {
   header?: React.ReactNode;
   top?: string;
   bottom?: string;
-  params: {
-    [key: string]: string | number;
-  };
+  params:
+    | {
+        [key: string]: string | number;
+      }
+    | -1;
   type: AllList;
   list: ListState;
 }
@@ -105,8 +107,9 @@ export default connect(({ list }: { list: ListState }) => {
     }, []);
     useEffect(() => {
       page.current.pageNum = 1;
-
-      loadData(false);
+      if (params !== -1) {
+        loadData(false);
+      }
     }, [params]);
 
     function getList() {
@@ -154,20 +157,31 @@ export default connect(({ list }: { list: ListState }) => {
             }
             return str;
           };
+          console.log(list.postApiOrdersLists);
           return (
             <div className="aui-content" style={{ width: '100%' }}>
               {/*什么都没有*/}
-              {/*{*/}
-              {/*  list.postApiOrdersLists.length === 0 ? <div style={{display:"flex",justifyContent:'center'}}><div*/}
-              {/*    className="aui-col-xs-12 aui-text-center"*/}
-              {/*    style={{marginTop: "30%"}}>*/}
-
-              {/*    <img src={require('../../assets/img/no_content.png')}*/}
-              {/*         style={{width: '18%', margin: '0 auto'}}/>*/}
-              {/*    <h5 style={{marginTop: '1rem'}}*/}
-              {/*        className="aui-font-size-14">Oh. Aquí no hay nada.</h5>*/}
-              {/*  </div></div> : <></>*/}
-              {/*}*/}
+              {list.postApiOrdersLists.length === 0 ? (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <div
+                    className="aui-col-xs-12 aui-text-center"
+                    style={{ marginTop: '30%' }}
+                  >
+                    <img
+                      src={require('../../assets/img/no_content.png')}
+                      style={{ width: '18%', margin: '0 auto' }}
+                    />
+                    <h5
+                      style={{ marginTop: '1rem' }}
+                      className="aui-font-size-14"
+                    >
+                      Oh. Aquí no hay nada.
+                    </h5>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
               {list.postApiOrdersLists.map((order) => {
                 return (
                   <div

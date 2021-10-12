@@ -3,10 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { AllList } from '@/services/interface';
 import List from '@/component/List';
 import { OrdersData } from '@/services/api';
+import { ConnectProps } from 'umi';
 
-export default () => {
-  const [activeStatus, setActiveStatus] = useState<number>(0);
-  const [params, setParams] = useState<OrdersData>({});
+interface Props extends ConnectProps<{}, { status: number }, {}> {}
+
+export default (props: Props) => {
+  const [activeStatus, setActiveStatus] = useState<number>(() => {
+    return props.location.state.status;
+  });
+  const [params, setParams] = useState<OrdersData | -1>(-1);
+  console.log(props);
   useEffect(() => {
     if (activeStatus == 1 || activeStatus == 2 || activeStatus == 3) {
       // 待付款 待发货 待签收
