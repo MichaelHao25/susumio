@@ -1,9 +1,87 @@
-import { postApiOrdersLists } from '@/services/api';
+import { postAddressLists, postApiOrdersLists } from '@/services/api';
 
 export enum AllList {
   postApiGoodsGoodsLists,
-  postApiGoodsGoodsListsFreeShipping,
   postApiOrdersLists,
+  postAddressLists,
+}
+export interface AddressListResponse extends BaseResponse {
+  page: { page_num: string; page_limit: string; data_count: number };
+  data: AddressItem[];
+}
+export interface AddressItem {
+  address: string;
+  address_info: string;
+  area: string;
+  area_code: string;
+  city: string;
+  city_code: string;
+  consignee_name: string;
+  create_time: string;
+  express_type: string;
+  id: number;
+  is_default: 0 | 1;
+  latitude: number;
+  longitude: number;
+  mobile: string;
+  province: string;
+  province_code: string;
+  sort: number;
+  update_time: string;
+  user_id: number;
+  zip_code: string;
+}
+
+export interface OrderListItemGoodsInfo {
+  id: number;
+  order_id: number;
+  goods_id: number;
+  user_id: number;
+  name: string;
+  thum: string;
+  intro: string;
+  standard: string;
+  spec_group_id: number;
+  spec_group_id_str: string;
+  spec_group_info: string;
+  sell_price: number;
+  score: number;
+  real_price: number;
+  weight: number;
+  num: number;
+  is_comment: number;
+  return_goods_status: number;
+  is_return_goods: number;
+  is_return_money: number;
+  create_time: string;
+  update_time: string;
+  commission_info: {
+    id: number;
+    user_id: number;
+    order_id: number;
+    goods_id: number;
+    order_goods_id: number;
+    level: number;
+    expect_money: number;
+    real_commisson_money: null;
+    real_commission_rate: number;
+    real_money: null;
+    already_drawcash_money: number;
+    source_user_id: number;
+    order_status: number;
+    status: number;
+    commission_apply_id: null;
+    apply_no: null;
+    create_time: string;
+    update_time: string;
+    user_info: {
+      id: number;
+      mobile: string;
+      nick_name: string;
+      avatar: string;
+    };
+  }[];
+  bonus_info: [];
 }
 
 export interface OrdersListItem {
@@ -40,12 +118,14 @@ export interface OrdersListItem {
   deliver_time: null;
   is_open_eorder: number;
   express_type: string;
-  express_no: null;
+  express_no: string;
   eorder_express_type: null;
   is_submit_eorder: number;
   confirm_receipt_time: null;
   cancel_reason: null;
   cancel_time: null;
+  apply_return_time: boolean;
+  return_time: boolean;
   is_comment: number;
   is_has_return_goods: number;
   is_all_return_goods: number;
@@ -61,59 +141,8 @@ export interface OrdersListItem {
   status: number;
   create_time: string;
   update_time: string;
-  order_goods_info: [
-    {
-      id: number;
-      order_id: number;
-      goods_id: number;
-      user_id: number;
-      name: string;
-      thum: string;
-      intro: string;
-      standard: string;
-      spec_group_id: number;
-      spec_group_id_str: string;
-      spec_group_info: string;
-      sell_price: number;
-      score: number;
-      real_price: number;
-      weight: number;
-      num: number;
-      is_comment: number;
-      return_goods_status: number;
-      is_return_goods: number;
-      is_return_money: number;
-      create_time: string;
-      update_time: string;
-      commission_info: {
-        id: number;
-        user_id: number;
-        order_id: number;
-        goods_id: number;
-        order_goods_id: number;
-        level: number;
-        expect_money: number;
-        real_commisson_money: null;
-        real_commission_rate: number;
-        real_money: null;
-        already_drawcash_money: number;
-        source_user_id: number;
-        order_status: number;
-        status: number;
-        commission_apply_id: null;
-        apply_no: null;
-        create_time: string;
-        update_time: string;
-        user_info: {
-          id: number;
-          mobile: string;
-          nick_name: string;
-          avatar: string;
-        };
-      }[];
-      bonus_info: [];
-    },
-  ];
+  return_status: number;
+  order_goods_info: OrderListItemGoodsInfo[];
   user_info: {
     id: number;
     mobile: string;

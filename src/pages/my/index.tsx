@@ -37,8 +37,7 @@ interface DrpDbStatus {
   is_open_bonus: boolean;
   is_open_drp: boolean;
 }
-
-export default () => {
+const index = () => {
   const [ordersCount, setOrderCount] = useState<OrdersCount>({
     return_goods_num: 0,
     wait_comment_num: 0,
@@ -177,7 +176,6 @@ export default () => {
           >
             <ul className="aui-list" style={{ backgroundImage: 'none' }}>
               <li
-                // data-onclick="$util.openWindow('order_list_win', {status: 0})"
                 className="aui-list-item"
                 onClick={() => {
                   history.push('/orderList', {
@@ -197,7 +195,6 @@ export default () => {
           <section className="aui-grid aui-margin-b-10">
             <div className="aui-row">
               <div
-                // data-onclick="$util.openWindow('order_list_win', {status: 1})"
                 onClick={() => {
                   history.push('/orderList', {
                     status: 1,
@@ -533,3 +530,6 @@ export default () => {
     </div>
   );
 };
+
+index.wrappers = ['@/wrappers/auth'];
+export default index;

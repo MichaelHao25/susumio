@@ -48,13 +48,18 @@ export default (props: Props) => {
   });
   const [memo, setMemo] = useState<string>('');
   useEffect(() => {
-    console.log(goodsList);
     postQueryUsersDefaultAddress().then((res) => {
-      console.log(',,', res);
       if (res) {
-        setAddress(res.data);
+        const address = sessionStorage.getItem('address');
+        let parseAddress: any = {};
+        if (address) {
+          parseAddress = JSON.parse(address);
+          setAddress(parseAddress);
+        } else {
+          setAddress(res.data);
+        }
         const req = {
-          address_id: res.data.id,
+          address_id: address ? parseAddress.id : res.data.id,
           goods_info: goodsList.map((item) => {
             return {
               goods_id: item.goods_id,
@@ -109,6 +114,12 @@ export default (props: Props) => {
     });
   }
 
+  function selectAddress() {
+    history.push('/addressList', {
+      selectAddress: true,
+    });
+  }
+
   return (
     <div className={'orderConfirm'}>
       <Header title={'Hacer el pedido'} />
@@ -118,7 +129,7 @@ export default (props: Props) => {
           style={{ backgroundImage: 'none' }}
         >
           <li
-            data-onClick="app.selectAddress()"
+            onClick={selectAddress}
             className="aui-list-item aui-list-item-arrow"
             style={{ backgroundImage: 'none' }}
           >

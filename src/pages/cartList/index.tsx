@@ -9,7 +9,7 @@ import { GoodsList } from '@/pages/goodsDetails/SpecInfoSelect';
 
 interface Props extends ConnectProps<{}, {}, {}> {}
 
-export default (props: Props) => {
+const index = (props: Props) => {
   const [edit, setEdit] = useState<number>(0);
   const [menu, setMenu] = useState<boolean>(false);
   const [selectList, setSelectList] = useState<number[]>([]);
@@ -299,3 +299,6 @@ export default (props: Props) => {
     </div>
   );
 };
+
+index.wrappers = ['@/wrappers/auth'];
+export default index;

@@ -12,7 +12,6 @@ export default (props: Props) => {
     return props.location.state.status;
   });
   const [params, setParams] = useState<OrdersData | -1>(-1);
-  console.log(props);
   useEffect(() => {
     if (activeStatus == 1 || activeStatus == 2 || activeStatus == 3) {
       // 待付款 待发货 待签收

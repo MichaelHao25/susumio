@@ -6,8 +6,15 @@ import './assets/css/ali_icon_fu/iconfont.less';
 import './assets/css/ali_icon_wancll/iconfont.less';
 import './index.less';
 
+// paypal
 const clientId = `AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi`;
 const currency = `USD`;
 const src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}`;
 const script = document.createElement('script');
 script.src = src;
+document.body.appendChild(script);
+
+// 物流
+const script2 = document.createElement('script');
+script2.src = 'https://www.17track.net/externalcall.js';
+document.body.appendChild(script2);

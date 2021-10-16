@@ -73,7 +73,7 @@ export enum LayoutType {
   AddCart,
 }
 
-export default (props: Props) => {
+const index = (props: Props) => {
   const {
     location: {
       query: { id = '' },
@@ -505,3 +505,6 @@ export default (props: Props) => {
     </div>
   );
 };
+
+index.wrappers = ['@/wrappers/auth'];
+export default index;

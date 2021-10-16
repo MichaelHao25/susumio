@@ -1,11 +1,25 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { connect, Dispatch, Link } from 'umi';
+import React, { useEffect, useRef } from 'react';
+import { connect, Dispatch, history, Link } from 'umi';
 import styles from './index.less';
 // @ts-ignore
 import MiniRefreshTools from 'minirefresh';
 import 'minirefresh/dist/debug/minirefresh.css';
-import { AllList, OrdersListItem } from '@/services/interface';
-import { ListState } from '@/models/list';
+import {
+  AddressItem,
+  AllList,
+  OrderListItemGoodsInfo,
+  OrdersListItem,
+} from '@/services/interface';
+import { AddressAction, ListState } from '@/models/list';
+import { Confirm, Notify } from 'notiflix';
+import {
+  postAddressDelete,
+  postAddressSetDefault,
+  postCancelOrders,
+  postOrderFinish,
+  postPayPrepay,
+  postTipDeliver,
+} from '@/services/api';
 
 interface PageProps {
   dispatch: Dispatch;
@@ -14,12 +28,13 @@ interface PageProps {
   bottom?: string;
   params:
     | {
-        [key: string]: string | number;
+        [key: string]: string | number | boolean;
       }
     | -1;
   type: AllList;
   list: ListState;
 }
+
 const global = {
   params: {},
 };
@@ -63,7 +78,6 @@ export default connect(({ list }: { list: ListState }) => {
       if (reload) {
         page.current.pageNum = 1;
       }
-      console.log('global.params', global.params);
       switch (type) {
         case AllList.postApiGoodsGoodsLists: {
           dispatch({
@@ -79,6 +93,16 @@ export default connect(({ list }: { list: ListState }) => {
         case AllList.postApiOrdersLists: {
           dispatch({
             type: 'list/postApiOrdersLists',
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+        }
+        case AllList.postAddressLists: {
+          dispatch({
+            type: 'list/postAddressLists',
             payload: {
               ...page.current,
               ...global.params,
@@ -114,6 +138,133 @@ export default connect(({ list }: { list: ListState }) => {
 
     function getList() {
       switch (type) {
+        case AllList.postAddressLists: {
+          const setDefaultAddress = (addressId: number): void => {
+            postAddressSetDefault({
+              addressId,
+            }).then((res) => {
+              if (res) {
+                Notify.success(res.msg);
+                dispatch({
+                  type: 'list/updateAddress',
+                  payload: {
+                    type: AddressAction.SetDefault,
+                    addressId,
+                  },
+                });
+              }
+            });
+          };
+          const modifyAddress = (addressId: number): void => {
+            history.push('/addressEdit', {
+              addressId,
+            });
+          };
+          const deleteAddress = (addressId: number): void => {
+            Confirm.show(
+              'waring',
+              '¿Borrar la dirección?',
+              'Confirmar',
+              'Cancelar',
+              () => {
+                postAddressDelete({
+                  addressId,
+                }).then((res) => {
+                  if (res) {
+                    Notify.success(res.msg);
+                    dispatch({
+                      type: 'list/updateAddress',
+                      payload: {
+                        type: AddressAction.DeleteItem,
+                        addressId,
+                      },
+                    });
+                  }
+                });
+              },
+            );
+          };
+          const selectAddress = (address: AddressItem) => {
+            const { selectAddress = false } = params === -1 ? {} : params;
+            if (selectAddress) {
+              sessionStorage.setItem('address', JSON.stringify(address));
+              history.goBack();
+            }
+          };
+          return (
+            <section className="aui-content" style={{ width: '100%' }}>
+              {list.postAddressLists.length === 0 ? (
+                <div
+                  className="aui-col-xs-12 aui-text-center"
+                  style={{ marginTop: '30%' }}
+                >
+                  <img
+                    src={require('../../assets/img/no_content.png')}
+                    style={{ width: '18%', margin: '0 auto' }}
+                  />
+                  <h5
+                    style={{ marginTop: '1rem' }}
+                    className="aui-font-size-14"
+                  >
+                    Oh. Aquí no hay nada.
+                  </h5>
+                </div>
+              ) : (
+                ''
+              )}
+              {list.postAddressLists.map((address: AddressItem) => {
+                return (
+                  <div key={address.id} className="aui-card-list">
+                    <div onClick={() => selectAddress(address)}>
+                      <div className="aui-card-list-header aui-font-size-14">
+                        {address.consignee_name}
+                        {address.mobile}
+                      </div>
+                      <div className="aui-card-list-content-padded aui-padded-t-0 text-light">
+                        {address.province} {address.city} {address.area}
+                        {address.address}
+                      </div>
+                    </div>
+                    <div className="aui-card-list-footer aui-border-t">
+                      <div onClick={() => setDefaultAddress(address.id)}>
+                        {address.is_default != 1 ? (
+                          <>
+                            <i
+                              className="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-15"
+                              style={{ color: '#ccc' }}
+                            />
+                            Dirección predeterminada
+                          </>
+                        ) : (
+                          <>
+                            <i className="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-15 aui-text-info" />
+                            Dirección predeterminada
+                          </>
+                        )}
+                      </div>
+                      <div>
+                        <div
+                          onClick={() => modifyAddress(address.id)}
+                          style={{ display: 'inline' }}
+                        >
+                          <i className="aui-iconfont iconfont icon-icon- aui-margin-r-5 aui-font-size-15" />
+                          Edición
+                        </div>
+                        <div
+                          onClick={() => deleteAddress(address.id)}
+                          style={{ display: 'inline' }}
+                        >
+                          <i className="aui-iconfont iconfont icon-shanchu aui-margin-r-5 aui-margin-l-15 aui-font-size-15" />
+                          Eliminar
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </section>
+          );
+        }
         case AllList.postApiGoodsGoodsLists: {
           return list.postApiGoodsGoodsLists.map((item) => {
             return (
@@ -157,7 +308,136 @@ export default connect(({ list }: { list: ListState }) => {
             }
             return str;
           };
-          console.log(list.postApiOrdersLists);
+
+          const cancelOrder = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ) => {
+            e.stopPropagation();
+            Confirm.show(
+              'Confirm',
+              'Por favor,seleccione la causa de la cancelación?',
+              'Confirmar',
+              'Cancelar',
+              function () {
+                postCancelOrders({
+                  order_id: order.id,
+                  cancel_reason: 'Confirmar',
+                }).then((res) => {
+                  if (res) {
+                    Notify.success(res.msg);
+                    dispatch({
+                      type: 'list/setState',
+                      payload: {
+                        key: ['postApiOrdersLists', { id: order.id }],
+                        value: {
+                          status: 9,
+                        },
+                      },
+                    });
+                  }
+                });
+              },
+              function () {},
+            );
+          };
+          const orderPay = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ) => {
+            e.stopPropagation();
+            postPayPrepay({
+              order_id: order.id,
+            }).then((res) => {
+              if (res) {
+                history.push('/paySelect', {
+                  order_no: order.order_no,
+                  total_money: order.total_money,
+                });
+              }
+            });
+          };
+          const refund = (
+            e: React.MouseEvent<HTMLDivElement>,
+            goods: OrderListItemGoodsInfo,
+          ) => {
+            e.stopPropagation();
+            history.push('/refundGoods', {
+              goods: goods,
+            });
+          };
+          const goComment = (
+            e: React.MouseEvent<HTMLDivElement>,
+            goods: OrderListItemGoodsInfo,
+          ) => {
+            e.stopPropagation();
+            history.push('/logistics', {
+              goods: goods,
+            });
+          };
+          const goLogistics = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ) => {
+            e.stopPropagation();
+            history.push('/logistics', {
+              order,
+            });
+          };
+          const remind = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ) => {
+            e.stopPropagation();
+            postTipDeliver({
+              order_id: order.id,
+            }).then((res) => {
+              if (res) {
+                Notify.success(res.msg);
+              }
+            });
+          };
+          const finish = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ) => {
+            e.stopPropagation();
+            Confirm.show(
+              'Confirm',
+              'Confirmen la recepción?',
+              'Confirmar',
+              'Cancelar',
+              function () {
+                postOrderFinish({
+                  order_id: order.id,
+                }).then((res) => {
+                  if (res) {
+                    Notify.success(res.msg);
+                    dispatch({
+                      type: 'list/setState',
+                      payload: {
+                        key: ['postApiOrdersLists', { id: order.id }],
+                        value: {
+                          status: 4,
+                        },
+                      },
+                    });
+                  }
+                });
+              },
+              function () {},
+            );
+          };
+          // 显示html详情
+          const viewDetails = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ): void => {
+            history.push('/viewHtmlDetails', {
+              order,
+            });
+          };
+
           return (
             <div className="aui-content" style={{ width: '100%' }}>
               {/*什么都没有*/}
@@ -187,7 +467,11 @@ export default connect(({ list }: { list: ListState }) => {
                   <div
                     className="aui-padded-5 aui-bg-white aui-margin-t-10"
                     key={order.id}
-                    // onClick={()=>goOrderDetail(order)}
+                    onClick={() => {
+                      history.push('/orderDetail', {
+                        order,
+                      });
+                    }}
                   >
                     <div className="aui-padded-5 aui-font-size-12">
                       <span>{order.cancel_time}</span>
@@ -208,10 +492,12 @@ export default connect(({ list }: { list: ListState }) => {
                                 className="aui-media-list-item-inner"
                                 style={{ width: '100%' }}
                               >
-                                <div className="aui-list-item-media aui-col-4">
-                                  {/*@click.stop="goGoodsDetail(goods);"*/}
+                                <Link
+                                  className="aui-list-item-media aui-col-4"
+                                  to={`/goodsDetails?id=${goods.goods_id}`}
+                                >
                                   <img src={goods.thum} />
-                                </div>
+                                </Link>
 
                                 <div className="aui-list-item-inner aui-col-8">
                                   <div className="aui-list-item-text aui-col-xs-12">
@@ -236,7 +522,7 @@ export default connect(({ list }: { list: ListState }) => {
                                       <div
                                         className="aui-list-item-title aui-ellipsis-2 aui-font-size-14"
                                         style={{ width: '70%' }}
-                                      ></div>
+                                      />
                                       <div
                                         className="aui-list-item-righ"
                                         style={{
@@ -288,8 +574,8 @@ export default connect(({ list }: { list: ListState }) => {
                                       <div
                                         className="aui-list-item-right "
                                         style={{ width: '30%' }}
+                                        onClick={(e) => goComment(e, goods)}
                                       >
-                                        {/*@click.stop="goComment(goods)"*/}
                                         <div className="order-buttons aui-text-right">
                                           <div className="mini-button aui-font-size-10">
                                             comentar
@@ -311,7 +597,7 @@ export default connect(({ list }: { list: ListState }) => {
                                       <div
                                         className="aui-list-item-right"
                                         style={{ width: '30%' }}
-                                        // @click.stop="refund(goods)""
+                                        onClick={(e) => refund(e, goods)}
                                       >
                                         <div className="order-buttons aui-text-right">
                                           <div
@@ -329,7 +615,7 @@ export default connect(({ list }: { list: ListState }) => {
                                       <div
                                         className="aui-list-item-right aui-text-right"
                                         style={{ width: '30%' }}
-                                        // @click.stop="refund(goods)"
+                                        onClick={(e) => refund(e, goods)}
                                       >
                                         Solicitud de reembolso
                                       </div>
@@ -350,7 +636,7 @@ export default connect(({ list }: { list: ListState }) => {
                                     {goods.return_goods_status == 3 &&
                                     goods.is_return_money == 0 ? (
                                       <div
-                                        className="aui-list-item-right <aui-text-ri>m</aui-text-ri>ght"
+                                        className="aui-list-item-right aui-text-right"
                                         style={{ width: '30%' }}
                                       >
                                         Devolución exitosa
@@ -403,57 +689,68 @@ export default connect(({ list }: { list: ListState }) => {
                     </div>
                     {/* 按钮组 */}
                     <div className="order-buttons aui-padded-b-5 ">
-                      {
-                        order.status == 1 ? (
-                          <div className="button active ">Pagar</div>
-                        ) : (
-                          <></>
-                        )
-                        // @click.stop="pay(order)"
-                      }
-                      {
-                        order.status == 1 ? (
-                          <div className="button ">Cancelar</div>
-                        ) : (
-                          <></>
-                        )
-                        // @click.stop="cancel(order)"
-                      }
-                      {order.status == 2 ? (
-                        <div className="button ">Recordatorio</div>
+                      {order.status == 1 ? (
+                        <div
+                          className="button active "
+                          onClick={(e) => orderPay(e, order)}
+                        >
+                          Pagar
+                        </div>
                       ) : (
                         <></>
                       )}
-                      {/*@click.stop="remind(order)"*/}
-                      {
-                        order.status == 3 ? (
-                          <div
-                            className="button active "
-                            style={{ width: '7rem' }}
-                          >
-                            Confirmar
-                          </div>
-                        ) : (
-                          <></>
-                        )
-                        // @click.stop="finish(order)"
-                      }
-                      {
-                        order.status >= 3 && order.status != 9 ? (
-                          <div className="button ">Logística</div>
-                        ) : (
-                          <></>
-                        )
-                        // @click.stop="goLogistics(order)"
-                      }
+                      {order.status == 1 ? (
+                        <div
+                          className="button "
+                          onClick={(e) => cancelOrder(e, order)}
+                        >
+                          Cancelar
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {order.status == 2 ? (
+                        <div
+                          className="button "
+                          onClick={(e) => remind(e, order)}
+                        >
+                          Recordatorio
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                       {order.status == 3 ? (
-                        <div className="button " style={{ width: '6rem' }}>
+                        <div
+                          className="button active "
+                          style={{ width: '7rem' }}
+                          onClick={(e) => finish(e, order)}
+                        >
+                          Confirmar
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {order.status >= 3 && order.status != 9 ? (
+                        <div
+                          className="button "
+                          onClick={(e) => goLogistics(e, order)}
+                        >
+                          Logística
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {order.status == 3 ? (
+                        <div
+                          className="button "
+                          style={{ width: '6rem' }}
+                          onClick={(e) => viewDetails(e, order)}
+                        >
                           Detalles
                         </div>
                       ) : (
                         <></>
                       )}
-                      {/*@click.stop="view_details(order)"*/}
                     </div>
                   </div>
                 );

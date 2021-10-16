@@ -1,6 +1,174 @@
 import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
+import { AddressItem } from '@/services/interface';
 
+/**
+ * 新建或者更新地址
+ */
+export const postAddressesCreate = (req: AddressItem) => {
+  const url =
+    req.id !== 0 ? `/api_users/addresses/update` : '/api_users/addresses/save';
+
+  return request.post(url, {
+    data: req,
+  });
+};
+
+/**
+ * 根据地址id查询地址
+ */
+export const postQueryAddressById = (addressId: number) => {
+  return request.post(`/api_users/addresses/read`, {
+    data: {
+      id: addressId,
+    },
+  });
+};
+
+/**
+ * 地区下拉获取
+ */
+export const postRegions = () => {
+  return request.post(`/api_systems/regions/index`);
+};
+
+export interface PostAddressLists {
+  pageLimit: number;
+  pageNum: number;
+}
+
+/**
+ * 获取地址列表
+ */
+export const postAddressLists = (req: PostAddressLists) => {
+  const { pageLimit = 10, pageNum = 1 } = req;
+  return request.post(`/api_users/addresses/lists`, {
+    headers: {
+      'page-limit': pageLimit.toString(),
+      'page-num': pageNum.toString(),
+    },
+  });
+};
+
+export interface PostAddressDelete {
+  addressId: number;
+}
+
+/**
+ * 删除地址
+ */
+export const postAddressDelete = (req: PostAddressDelete) => {
+  const { addressId } = req;
+  return request.post(`/api_users/addresses/delete`, {
+    data: {
+      id: addressId,
+    },
+  });
+};
+
+export interface PostAddressSetDefault {
+  addressId: number;
+}
+
+/**
+ * 设置默认地址
+ */
+export const postAddressSetDefault = (req: PostAddressSetDefault) => {
+  const { addressId } = req;
+  return request.post(`/api_users/addresses/set_default`, {
+    data: {
+      is_default: 1,
+      id: addressId,
+    },
+  });
+};
+
+export interface PostOrderCommentsSave {
+  score: number;
+  imgs: string[];
+  goods_id: number;
+  order_id: number;
+  content: string;
+  status: number;
+}
+
+/**
+ * 确认收货
+ */
+export const postOrderCommentsSave = (req: PostOrderCommentsSave) => {
+  const { order_id } = req;
+  return request.post(`/api_goods/goods_comments/save`, {
+    data: {
+      order_id,
+    },
+  });
+};
+
+export interface PostOrderFinish {
+  order_id: number;
+}
+
+/**
+ * 确认收货
+ */
+export const postOrderFinish = (req: PostOrderFinish) => {
+  const { order_id } = req;
+  return request.post(`/api_orders/sign_orders/user_sign`, {
+    data: {
+      order_id,
+    },
+  });
+};
+
+export interface PostTipDeliver {
+  order_id: number;
+}
+
+/**
+ * 提醒
+ */
+export const postTipDeliver = (req: PostTipDeliver) => {
+  const { order_id } = req;
+  return request.post(`/api_orders/tip_deliver/tip`, {
+    data: {
+      order_id,
+    },
+  });
+};
+
+export interface PostPayPrepay {
+  order_id: number;
+}
+
+/**
+ * 支付
+ */
+export const postPayPrepay = (req: PostPayPrepay) => {
+  const { order_id } = req;
+  return request.post(`/api_orders/pay/pre_pay`, {
+    data: {
+      order_id,
+    },
+  });
+};
+
+export interface PostCancelOrders {
+  order_id: number;
+  cancel_reason: string;
+}
+
+/**
+ * 取消订单
+ */
+export const postCancelOrders = (req: PostCancelOrders) => {
+  const { order_id, cancel_reason } = req;
+  return request.post(`/api_orders/cancel_orders/user_cancel`, {
+    data: {
+      order_id,
+      cancel_reason,
+    },
+  });
+};
 /**
  * 获取购物车
  */
@@ -374,6 +542,7 @@ export interface OrdersData {
   is_has_return_goods?: number;
   is_comment?: number;
 }
+
 export interface OrdersLists extends OrdersData {
   pageLimit: number;
   pageNum: number;
