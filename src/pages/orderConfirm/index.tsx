@@ -50,6 +50,11 @@ export default (props: Props) => {
   useEffect(() => {
     postQueryUsersDefaultAddress().then((res) => {
       if (res) {
+        if (!res.data.id) {
+          Notify.failure('Añadir la dirección');
+          selectAddress();
+          return;
+        }
         const address = sessionStorage.getItem('address');
         let parseAddress: any = {};
         if (address) {
@@ -58,6 +63,7 @@ export default (props: Props) => {
         } else {
           setAddress(res.data);
         }
+
         const req = {
           address_id: address ? parseAddress.id : res.data.id,
           goods_info: goodsList.map((item) => {

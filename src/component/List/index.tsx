@@ -10,12 +10,14 @@ import {
   OrderListItemGoodsInfo,
   OrdersListItem,
 } from '@/services/interface';
-import { AddressAction, ListState } from '@/models/list';
+import { Action, ListState } from '@/models/list';
 import { Confirm, Notify } from 'notiflix';
 import {
   postAddressDelete,
   postAddressSetDefault,
   postCancelOrders,
+  postCommentsDelete,
+  postFavoriteDelete,
   postOrderFinish,
   postPayPrepay,
   postTipDeliver,
@@ -79,6 +81,39 @@ export default connect(({ list }: { list: ListState }) => {
         page.current.pageNum = 1;
       }
       switch (type) {
+        case AllList.postUserFootLists: {
+          dispatch({
+            type: 'list/postUserFootLists',
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
+        case AllList.postCommentsLists: {
+          dispatch({
+            type: 'list/postCommentsLists',
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
+        case AllList.postFavorite: {
+          dispatch({
+            type: 'list/postFavorite',
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
         case AllList.postApiGoodsGoodsLists: {
           dispatch({
             type: 'list/postApiGoodsGoodsLists',
@@ -138,6 +173,338 @@ export default connect(({ list }: { list: ListState }) => {
 
     function getList() {
       switch (type) {
+        case AllList.postUserFootLists: {
+          return (
+            <div className="aui-content" style={{ width: '100%' }}>
+              {list.postUserFootLists.length === 0 ? (
+                <div
+                  className="aui-col-xs-12 aui-text-center"
+                  style={{ marginTop: '30%' }}
+                >
+                  <img
+                    src={require('../../assets/img/no_content.png')}
+                    style={{ width: '18%', margin: '0 auto' }}
+                  />
+                  <h5
+                    style={{ marginTop: '1rem' }}
+                    className="aui-font-size-14"
+                  >
+                    Oh. Aquí no hay nada.
+                  </h5>
+                </div>
+              ) : (
+                ''
+              )}
+
+              <div className="aui-flex-col aui-flex-center">
+                <div className="aui-flex-item-12">
+                  <div className="aui-flex-col">
+                    {list.postUserFootLists.map((trace) => {
+                      return (
+                        <div
+                          className="aui-flex-item-6"
+                          style={{ position: 'relative', padding: '3px' }}
+                          key={trace.id}
+                        >
+                          <img
+                            style={{ display: 'block' }}
+                            src={trace.goods_info.thum}
+                            onClick={() => {
+                              history.push(
+                                `/goodsDetails?id=${trace.goods_id}`,
+                              );
+                            }}
+                          />
+                          <h5
+                            className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white"
+                            style={{ height: '2.2rem' }}
+                          >
+                            {trace.goods_info.name}
+                          </h5>
+                          <p className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white">
+                            <span
+                              className="aui-text-price"
+                              style={{ fontSize: '0.5rem' }}
+                            >
+                              $
+                            </span>
+                            <span className="aui-text-price aui-font-size-14">
+                              {trace.goods_info.sell_price}
+                            </span>
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+        case AllList.postCommentsLists: {
+          const removeComments = (commentId: number) => {
+            Confirm.show(
+              'Confirmar comentarios borrados?',
+              '',
+              'Confirmar',
+              'Cancelar',
+              () => {
+                postCommentsDelete(commentId).then((res) => {
+                  if (res) {
+                    Notify.success(res.msg);
+                    dispatch({
+                      type: 'list/updateComments',
+                      payload: {
+                        type: Action.DeleteItem,
+                        commentId,
+                      },
+                    });
+                  }
+                });
+              },
+            );
+          };
+          return (
+            <div className="aui-content" style={{ width: '100%' }}>
+              {list.postCommentsLists.length === 0 ? (
+                <div
+                  className="aui-col-xs-12 aui-text-center"
+                  style={{ marginTop: '30%' }}
+                >
+                  <img
+                    src={require('../../assets/img/no_content.png')}
+                    style={{ width: '18%', margin: '0 auto' }}
+                  />
+                  <h5
+                    style={{ marginTop: '1rem' }}
+                    className="aui-font-size-14"
+                  >
+                    Oh. Aquí no hay nada.
+                  </h5>
+                </div>
+              ) : (
+                ''
+              )}
+
+              {list.postCommentsLists.map((comment) => {
+                return (
+                  <div
+                    className="aui-padded-5  aui-bg-white aui-border-b"
+                    key={comment.id}
+                  >
+                    <div
+                      className="aui-bg-white aui-padded-r-15 aui-padded-l-15"
+                      style={{ height: '2rem', lineHeight: '2rem' }}
+                    >
+                      <span className="aui-font-size-14 aui-pull-left">
+                        {comment.create_time}
+                      </span>
+                      <i
+                        className="aui-iconfont iconfont icon-shanchu aui-pull-right"
+                        onClick={() => removeComments(comment.id)}
+                      />
+                    </div>
+                    <div
+                      className="aui-padded-t-5 aui-bg-white"
+                      style={{ backgroundImage: 'none' }}
+                    >
+                      <ul className="aui-list aui-media-list">
+                        <li
+                          className="aui-list-item aui-margin-b-5 aui-bg-default"
+                          style={{ backgroundImage: 'none' }}
+                          onClick={() => {
+                            history.push(
+                              `/goodsDetails?id=${comment.goods_id}`,
+                            );
+                          }}
+                        >
+                          <div className="aui-media-list-item-inner">
+                            <div className="aui-list-item-media">
+                              {comment.order_goods_info ? (
+                                <img src={comment.order_goods_info.thum} />
+                              ) : (
+                                ''
+                              )}
+                            </div>
+                            <div className="aui-list-item-inner">
+                              <div className="aui-list-item-text">
+                                {comment.order_goods_info ? (
+                                  <div className="aui-list-item-title aui-ellipsis-2 aui-font-size-14">
+                                    {comment.order_goods_info.name}
+                                  </div>
+                                ) : (
+                                  ''
+                                )}
+                              </div>
+                              <div className="aui-margin-t-5">
+                                <span
+                                  style={{
+                                    fontSize: '0.6rem',
+                                    color: '#757575',
+                                  }}
+                                >
+                                  Especificaciones:
+                                  {comment.order_goods_info.spec_group_info}
+                                </span>
+                                <span
+                                  className="aui-font-size-14 aui-pull-right aui-font-size-16 aui-margin-r-15"
+                                  style={{ color: '#df0303' }}
+                                >
+                                  {comment.order_goods_info.sell_price}
+                                </span>
+                              </div>
+                              <div>
+                                <span
+                                  style={{
+                                    fontSize: '0.6rem',
+                                    color: '#757575',
+                                  }}
+                                >
+                                  Cantidad:{comment.order_goods_info.num}
+                                </span>
+                                <span
+                                  className="aui-pull-right aui-margin-r-15"
+                                  style={{
+                                    color: '#757575',
+                                    fontSize: '0.6rem',
+                                    textDecoration: 'line-through',
+                                    marginTop: '-0.2rem',
+                                  }}
+                                >
+                                  {comment.order_goods_info.real_price}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      {'.'
+                        .repeat(5)
+                        .split('')
+                        .map((_, index) => {
+                          return (
+                            <i
+                              className="aui-iconfont iconfont icon-shoucang aui-margin-5"
+                              style={{
+                                fontSize: '1.2rem',
+                                color:
+                                  index + 1 <= parseInt(comment.score)
+                                    ? '#ffc640'
+                                    : '#ccc',
+                              }}
+                            />
+                          );
+                        })}
+                    </div>
+                    <div className="aui-list-item-text aui-padded-t-5 aui-padded-b-5">
+                      {comment.content}
+                    </div>
+                    <div className="aui-row aui-row-padded">
+                      {comment.imgs.map((img, index) => (
+                        <div className="aui-col-xs-3" key={index}>
+                          <img src={img} />
+                        </div>
+                      ))}
+                    </div>
+                    <hr className="layui-bg-gray" />
+                  </div>
+                );
+              })}
+            </div>
+          );
+        }
+
+        case AllList.postFavorite: {
+          const removeFavorite = (favoriteId: number) => {
+            Confirm.show('¿Cancelar del favorito?', '', 'Sí', 'No', () => {
+              postFavoriteDelete(favoriteId).then((res) => {
+                if (res) {
+                  Notify.success(res.msg);
+                  dispatch({
+                    type: 'list/updateFavorite',
+                    payload: {
+                      type: Action.DeleteItem,
+                      favoriteId,
+                    },
+                  });
+                }
+              });
+            });
+          };
+          return (
+            <div
+              className="aui-content aui-margin-b-10"
+              style={{ width: '100%' }}
+            >
+              {list.postFavorite.length === 0 ? (
+                <div
+                  className="aui-col-xs-12 aui-text-center"
+                  style={{ marginTop: '30%' }}
+                >
+                  <img
+                    src={require('../../assets/img/no_content.png')}
+                    style={{ width: '18%', margin: '0 auto' }}
+                  />
+                  <h5
+                    style={{ marginTop: '1rem' }}
+                    className="aui-font-size-14"
+                  >
+                    Oh. Aquí no hay nada.
+                  </h5>
+                </div>
+              ) : (
+                <></>
+              )}
+              <div className="aui-flex-col aui-flex-center">
+                <div className="aui-flex-item-12">
+                  <div className="aui-flex-col">
+                    {list.postFavorite.map((collection) => {
+                      return (
+                        <div
+                          className="aui-flex-item-6"
+                          style={{ position: 'relative', padding: '3px' }}
+                          key={collection.id}
+                        >
+                          <img
+                            style={{ display: 'block' }}
+                            src={collection.goods_info.thum}
+                            onClick={() => {
+                              history.push(
+                                `/goodsDetails?id=${collection.goods_id}`,
+                              );
+                            }}
+                          />
+                          <h5 className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white">
+                            {collection.goods_info.name}
+                          </h5>
+                          <p className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white">
+                            <span
+                              className="aui-text-price"
+                              style={{ fontSize: '0.5rem' }}
+                            >
+                              $
+                            </span>
+                            <span className="aui-text-price aui-font-size-14">
+                              {collection.goods_info.sell_price}
+                            </span>
+                            <span
+                              className="aui-iconfont iconfont icon-shanchu aui-pull-right"
+                              onClick={() => {
+                                removeFavorite(collection.id);
+                              }}
+                            />
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
         case AllList.postAddressLists: {
           const setDefaultAddress = (addressId: number): void => {
             postAddressSetDefault({
@@ -148,7 +515,7 @@ export default connect(({ list }: { list: ListState }) => {
                 dispatch({
                   type: 'list/updateAddress',
                   payload: {
-                    type: AddressAction.SetDefault,
+                    type: Action.SetDefault,
                     addressId,
                   },
                 });
@@ -175,7 +542,7 @@ export default connect(({ list }: { list: ListState }) => {
                     dispatch({
                       type: 'list/updateAddress',
                       payload: {
-                        type: AddressAction.DeleteItem,
+                        type: Action.DeleteItem,
                         addressId,
                       },
                     });

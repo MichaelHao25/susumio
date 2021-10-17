@@ -9,6 +9,7 @@ import {
 } from '@/services/api';
 import Tab from '@/component/Tab';
 import { history } from '@@/core/history';
+import { Link } from 'umi';
 
 interface OrdersCount {
   return_goods_num: number;
@@ -160,7 +161,7 @@ const index = () => {
           </div>
           <i
             id="setting"
-            data-onclick="$util.openWindow('setting_win')"
+            onClick={() => history.push('/set')}
             className="iconfont icon-shezhishedingpeizhichilun aui-text-white"
           />
         </div>
@@ -363,10 +364,7 @@ const index = () => {
         </div>
         <section className="aui-grid" style={{ marginTop: '0.5rem' }}>
           <div className="aui-row">
-            <div
-              data-onclick="$util.openWindow('cart_list_win')"
-              className="aui-col-xs-3"
-            >
+            <Link to={'/cartLIst'} className="aui-col-xs-3">
               <i
                 className="aui-iconfont iconfont icon-gouwuche2"
                 style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
@@ -374,11 +372,8 @@ const index = () => {
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Carro
               </div>
-            </div>
-            <div
-              data-onclick="$util.openWindow('collection_list_win')"
-              className="aui-col-xs-3"
-            >
+            </Link>
+            <Link to={'/favorite'} className="aui-col-xs-3">
               <i
                 className="aui-iconfont iconfont icon-star"
                 style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
@@ -386,11 +381,8 @@ const index = () => {
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Mi favorito
               </div>
-            </div>
-            <div
-              data-onclick="$util.openWindow('address_list_win')"
-              className="aui-col-xs-3"
-            >
+            </Link>
+            <Link to={'/addressList'} className="aui-col-xs-3">
               <i
                 className="aui-iconfont iconfont icon-dizhi-01"
                 style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
@@ -398,11 +390,8 @@ const index = () => {
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Mi dirección
               </div>
-            </div>
-            <div
-              data-onclick="$util.openWindow('comment_list_win')"
-              className="aui-col-xs-3"
-            >
+            </Link>
+            <Link to={'/commentList'} className="aui-col-xs-3">
               <i
                 className="aui-iconfont iconfont icon-dingdan1"
                 style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
@@ -410,9 +399,10 @@ const index = () => {
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Mi comentario
               </div>
-            </div>
+            </Link>
             <div
-              data-onclick="$util.openWindow('coupon_list_win')"
+              // to={'/'}
+              // coupon_list_win
               className="aui-col-xs-3"
             >
               <i
@@ -423,10 +413,7 @@ const index = () => {
                 Mi cupón
               </div>
             </div>
-            <div
-              data-onclick="$util.openWindow('trace_list_win')"
-              className="aui-col-xs-3"
-            >
+            <Link to={'/traceList'} className="aui-col-xs-3">
               <i
                 className="aui-iconfont iconfont icon-zuji1"
                 style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
@@ -434,7 +421,7 @@ const index = () => {
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Mis huellas
               </div>
-            </div>
+            </Link>
             <div
               data-onclick="$util.openWindow('mess_list_win')"
               className="aui-col-xs-3"
@@ -507,10 +494,7 @@ const index = () => {
             )}
             {(userInfo.is_bonus || userInfo.is_distributor) &&
             (drpDbStatus.is_open_drp || drpDbStatus.is_open_bonus) ? (
-              <div
-                data-onclick="$util.openWindow('my_qrcode_win')"
-                className="aui-col-xs-3"
-              >
+              <Link to={'/myQrcode'} className="aui-col-xs-3">
                 <i
                   className="aui-iconfont iconfont icon-qr-code"
                   style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
@@ -518,7 +502,7 @@ const index = () => {
                 <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                   Invitación a código binario
                 </div>
-              </div>
+              </Link>
             ) : (
               <></>
             )}

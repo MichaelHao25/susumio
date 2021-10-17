@@ -272,6 +272,7 @@ export default (props: Props) => {
           </li>
         </ul>
       </div>
+      <div style={{ height: '2.5rem' }} />
       <footer className="aui-bar aui-bar-tab">
         <div
           className="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15"

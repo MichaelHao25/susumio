@@ -5,10 +5,15 @@ import {
   postAddressLists,
   postApiGoodsGoodsLists,
   postApiOrdersLists,
+  postCommentsLists,
+  postFavorite,
+  postUserFootLists,
 } from '@/services/api';
 import {
   AddressItem,
   AddressListResponse,
+  CartList,
+  CommentItem,
   Details,
   ListResponse,
   OrderListResponse,
@@ -19,9 +24,12 @@ export interface ListState {
   postApiGoodsGoodsLists: Details[];
   postApiOrdersLists: OrdersListItem[];
   postAddressLists: AddressItem[];
+  postFavorite: CartList[];
+  postCommentsLists: CommentItem[];
+  postUserFootLists: CartList[];
 }
 
-export enum AddressAction {
+export enum Action {
   SetDefault,
   DeleteItem,
 }
@@ -32,14 +40,37 @@ export interface ListModel {
     postApiGoodsGoodsLists: Effect;
     postApiOrdersLists: Effect;
     postAddressLists: Effect;
+    postFavorite: Effect;
+    postCommentsLists: Effect;
+    postUserFootLists: Effect;
   };
   reducers: {
+    updateComments: ImmerReducer<
+      ListState,
+      {
+        type: string;
+        payload: {
+          type: Action;
+          commentId: number;
+        };
+      }
+    >;
+    updateFavorite: ImmerReducer<
+      ListState,
+      {
+        type: string;
+        payload: {
+          type: Action;
+          favoriteId: number;
+        };
+      }
+    >;
     updateAddress: ImmerReducer<
       ListState,
       {
         type: string;
         payload: {
-          type: AddressAction;
+          type: Action;
           addressId: number;
         };
       }
@@ -61,8 +92,73 @@ export default <ListModel>{
     postApiGoodsGoodsLists: [],
     postApiOrdersLists: [],
     postAddressLists: [],
+    postFavorite: [],
+    postCommentsLists: [],
+    postUserFootLists: [],
   },
   effects: {
+    *postUserFootLists({ payload }, { call, select, put }) {
+      const { list } = yield select(({ list }: { list: ListState }) => {
+        return {
+          list: list.postUserFootLists,
+        };
+      });
+      const { cb, ...req } = payload;
+      const res: ListResponse | undefined = yield call(postUserFootLists, req);
+      if (res) {
+        yield put({
+          type: 'setState',
+          payload: {
+            postUserFootLists:
+              req.pageNum === 1 ? res.data : list.concat(res.data),
+          },
+        });
+        cb(res.data);
+      } else {
+        cb([]);
+      }
+    },
+    *postCommentsLists({ payload }, { call, select, put }) {
+      const { list } = yield select(({ list }: { list: ListState }) => {
+        return {
+          list: list.postCommentsLists,
+        };
+      });
+      const { cb, ...req } = payload;
+      const res: ListResponse | undefined = yield call(postCommentsLists, req);
+      if (res) {
+        yield put({
+          type: 'setState',
+          payload: {
+            postCommentsLists:
+              req.pageNum === 1 ? res.data : list.concat(res.data),
+          },
+        });
+        cb(res.data);
+      } else {
+        cb([]);
+      }
+    },
+    *postFavorite({ payload }, { call, select, put }) {
+      const { list } = yield select(({ list }: { list: ListState }) => {
+        return {
+          list: list.postFavorite,
+        };
+      });
+      const { cb, ...req } = payload;
+      const res: ListResponse | undefined = yield call(postFavorite, req);
+      if (res) {
+        yield put({
+          type: 'setState',
+          payload: {
+            postFavorite: req.pageNum === 1 ? res.data : list.concat(res.data),
+          },
+        });
+        cb(res.data);
+      } else {
+        cb([]);
+      }
+    },
     *postAddressLists({ payload }, { call, select, put }) {
       const { list } = yield select(({ list }: { list: ListState }) => {
         return {
@@ -147,12 +243,39 @@ export default <ListModel>{
   },
 
   reducers: {
+    updateComments(state, action) {
+      const {
+        payload: { commentId, type },
+      } = action;
+      if (type === Action.DeleteItem) {
+        const index = state.postCommentsLists.findIndex((favorite) => {
+          if (favorite.id === commentId) {
+            return true;
+          }
+        });
+        state.postCommentsLists.splice(index, 1);
+      }
+    },
+
+    updateFavorite(state, action) {
+      const {
+        payload: { favoriteId, type },
+      } = action;
+      if (type === Action.DeleteItem) {
+        const index = state.postFavorite.findIndex((favorite) => {
+          if (favorite.id === favoriteId) {
+            return true;
+          }
+        });
+        state.postFavorite.splice(index, 1);
+      }
+    },
     updateAddress(state, action) {
       const {
         payload: { addressId, type },
       } = action;
 
-      if (type === AddressAction.SetDefault) {
+      if (type === Action.SetDefault) {
         state.postAddressLists.forEach((address) => {
           if (address.id === addressId) {
             address.is_default = 1;
@@ -161,10 +284,10 @@ export default <ListModel>{
           }
         });
       }
-      if (type === AddressAction.DeleteItem) {
+      if (type === Action.DeleteItem) {
         const index = state.postAddressLists.findIndex((address) => {
           if (address.id === addressId) {
-            return false;
+            return true;
           }
         });
         state.postAddressLists.splice(index, 1);

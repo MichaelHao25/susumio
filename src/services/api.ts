@@ -2,6 +2,91 @@ import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 import { AddressItem } from '@/services/interface';
 
+export interface PostUserFootLists {
+  pageLimit: number;
+  pageNum: number;
+}
+
+/**
+ * 足迹功能
+ */
+export const postUserFootLists = (req: PostUserFootLists) => {
+  const { pageLimit = 10, pageNum = 1 } = req;
+  return request.post(`/api_users/user_foot/lists`, {
+    headers: {
+      'page-limit': pageLimit.toString(),
+      'page-num': pageNum.toString(),
+    },
+  });
+};
+/**
+ * 删除收藏
+ */
+export const postCommentsDelete = (commentId: number) => {
+  return request.post(`/api_goods/goods_comments/delete`, {
+    data: {
+      id: commentId,
+    },
+  });
+};
+
+export interface PostCommentsLists {
+  pageLimit: number;
+  pageNum: number;
+}
+
+/**
+ * 获取评论列表
+ */
+export const postCommentsLists = (req: PostCommentsLists) => {
+  const { pageLimit = 10, pageNum = 1 } = req;
+  return request.post(`/api_goods/goods_comments/lists`, {
+    headers: {
+      'page-limit': pageLimit.toString(),
+      'page-num': pageNum.toString(),
+    },
+  });
+};
+
+/**
+ * 删除收藏
+ */
+export const postFavoriteDelete = (favoriteId: number) => {
+  return request.post(`/api_goods/goods_collections/delete`, {
+    data: {
+      id: favoriteId,
+    },
+  });
+};
+
+export interface PostFavorite {
+  pageLimit: number;
+  pageNum: number;
+}
+
+/**
+ * 获取收藏列表
+ */
+export const postFavorite = (req: PostFavorite) => {
+  const { pageLimit = 10, pageNum = 1 } = req;
+  return request.post(`/api_goods/goods_collections/lists`, {
+    headers: {
+      'page-limit': pageLimit.toString(),
+      'page-num': pageNum.toString(),
+    },
+  });
+};
+
+/**
+ * 获取版本信息等
+ */
+export const postGetParams = () => {
+  return request.post(`/api_systems/Params/getParams`, {
+    data: {
+      type: 'basic',
+    },
+  });
+};
 /**
  * 新建或者更新地址
  */

@@ -6,8 +6,8 @@ import { useState } from 'react';
 import { Report } from 'notiflix';
 
 export default function goodsListNewPage() {
-  const [mobile, setMobile] = useState<string>('18600899806');
-  const [password, setPassword] = useState<string>('123456');
+  const [mobile, setMobile] = useState<string>('13968066530');
+  const [password, setPassword] = useState<string>('954321');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const dispatch = useDispatch();
 

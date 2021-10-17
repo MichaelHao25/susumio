@@ -1,14 +1,66 @@
-import { postAddressLists, postApiOrdersLists } from '@/services/api';
+import {
+  postAddressLists,
+  postApiOrdersLists,
+  postCommentsLists,
+  postUserFootLists,
+} from '@/services/api';
 
 export enum AllList {
   postApiGoodsGoodsLists,
   postApiOrdersLists,
   postAddressLists,
+  postFavorite,
+  postCommentsLists,
+  postUserFootLists,
 }
+
+export interface CommentItem {
+  id: number;
+  user_id: number;
+  order_id: number;
+  goods_id: number;
+  content: string;
+  imgs: string[];
+  score: string;
+  status: number;
+  create_time: string;
+  update_time: string;
+  order_goods_info: {
+    id: number;
+    order_id: number;
+    goods_id: number;
+    user_id: number;
+    name: string;
+    thum: string;
+    intro: string;
+    standard: '';
+    spec_group_id_str: string;
+    spec_group_info: string;
+    sell_price: number;
+    score: number;
+    real_price: number;
+    weight: number;
+    num: number;
+    is_comment: number;
+    return_goods_status: number;
+    is_return_goods: number;
+    is_return_money: number;
+    create_time: string;
+    update_time: string;
+  };
+  user_info: {
+    id: number;
+    mobile: string;
+    nick_name: string;
+    avatar: string;
+  };
+}
+
 export interface AddressListResponse extends BaseResponse {
   page: { page_num: string; page_limit: string; data_count: number };
   data: AddressItem[];
 }
+
 export interface AddressItem {
   address: string;
   address_info: string;

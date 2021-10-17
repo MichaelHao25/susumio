@@ -2,7 +2,7 @@ import { postApiUsersUserAccountsLogin } from '@/services/api';
 import { Details } from '@/services/interface';
 import { Notify, Report } from 'notiflix';
 import { EffectsCommandMap } from 'dva';
-import { ImmerReducer } from '@@/plugin-dva/connect';
+import { ImmerReducer, Subscription } from '@@/plugin-dva/connect';
 
 import { history } from 'umi';
 
@@ -10,60 +10,62 @@ export interface ListState {
   postApiGoodsGoodsLists: Details[];
 }
 
+export interface UserinfoState {
+  token?: {
+    id: number;
+    user_account_id: number;
+    user_id: number;
+    client_type: string;
+    token: string;
+    refresh_token: string;
+    expire_time: number;
+    create_time: string;
+    update_time: string;
+  };
+  user?: {
+    id: number;
+    mobile: string;
+    user_name: string;
+    nick_name: string;
+    avatar: string;
+    is_customer: boolean;
+    gender: number;
+    telephone: string;
+    qq: string;
+    wechat: string;
+    email: string;
+    province: string;
+    province_code: string;
+    city: string;
+    city_code: string;
+    area: string;
+    area_code: string;
+    memo: string;
+    role_ids: number[];
+    become_distributor_time: string;
+    is_distributor: boolean;
+    distributor_level_id: number;
+    parent_id: string;
+    parent_ids: string;
+    become_bonus_time: string;
+    is_bonus: boolean;
+    bonus_level_id: number;
+    status: number;
+    keep_sign_in_num: number;
+    total_sign_in_num: number;
+    last_sign_in_time: string;
+    create_time: string;
+    update_time: string;
+    user_level: string;
+    user_level_id: number;
+    is_set_pwd: number;
+    guid: string;
+  };
+}
+
 export interface UserinfoModel {
   namespace: 'userinfo';
-  state: {
-    token: {
-      id: number | null;
-      user_account_id: number | null;
-      user_id: number | null;
-      client_type: string | null;
-      token: string | null;
-      refresh_token: string | null;
-      expire_time: number | null;
-      create_time: string | null;
-      update_time: string | null;
-    };
-    user: {
-      id: number | null;
-      mobile: string | null;
-      user_name: string | null;
-      nick_name: string | null;
-      avatar: string | null;
-      is_customer: boolean | null;
-      gender: number | null;
-      telephone: string | null;
-      qq: string | null;
-      wechat: string | null;
-      email: string | null;
-      province: string | null;
-      province_code: string | null;
-      city: string | null;
-      city_code: string | null;
-      area: string | null;
-      area_code: string | null;
-      memo: string | null;
-      role_ids: number[] | null;
-      become_distributor_time: string | null;
-      is_distributor: boolean | null;
-      distributor_level_id: number | null;
-      parent_id: string | null;
-      parent_ids: string | null;
-      become_bonus_time: string | null;
-      is_bonus: boolean | null;
-      bonus_level_id: number | null;
-      status: number | null;
-      keep_sign_in_num: number | null;
-      total_sign_in_num: number | null;
-      last_sign_in_time: string | null;
-      create_time: string | null;
-      update_time: string | null;
-      user_level: string | null;
-      user_level_id: number | null;
-      is_set_pwd: number | null;
-      guid: string | null;
-    };
-  };
+  state: UserinfoState;
   effects: {
     postApiUsersUserAccountsLogin: (
       action: {
@@ -87,62 +89,12 @@ export interface UserinfoModel {
       }
     >;
   };
+  subscriptions: { onload: Subscription };
 }
 
 const userinfoModel: UserinfoModel = {
   namespace: 'userinfo',
-  state: {
-    token: {
-      id: null,
-      user_account_id: null,
-      user_id: null,
-      client_type: null,
-      token: null,
-      refresh_token: null,
-      expire_time: null,
-      create_time: null,
-      update_time: null,
-    },
-    user: {
-      id: null,
-      mobile: null,
-      user_name: null,
-      nick_name: null,
-      avatar: null,
-      is_customer: null,
-      gender: null,
-      telephone: null,
-      qq: null,
-      wechat: null,
-      email: null,
-      province: null,
-      province_code: null,
-      city: null,
-      city_code: null,
-      area: null,
-      area_code: null,
-      memo: null,
-      role_ids: null,
-      become_distributor_time: null,
-      is_distributor: null,
-      distributor_level_id: null,
-      parent_id: null,
-      parent_ids: null,
-      become_bonus_time: null,
-      is_bonus: null,
-      bonus_level_id: null,
-      status: null,
-      keep_sign_in_num: null,
-      total_sign_in_num: null,
-      last_sign_in_time: null,
-      create_time: null,
-      update_time: null,
-      user_level: null,
-      user_level_id: null,
-      is_set_pwd: null,
-      guid: null,
-    },
-  },
+  state: {},
   effects: {
     *postApiUsersUserAccountsLogin({ payload }, { call, select, put }) {
       const { mobile, password } = payload;
@@ -158,6 +110,10 @@ const userinfoModel: UserinfoModel = {
         const { data } = res;
         window.localStorage.setItem('userinfo', JSON.stringify(data));
         window.localStorage.setItem('token', data.token.token);
+        yield put({
+          type: 'setState',
+          payload: data,
+        });
         Report.success('ok', res.msg, 'OK', () => {
           history.push('/');
         });
@@ -181,6 +137,18 @@ const userinfoModel: UserinfoModel = {
           state[key] = value;
         },
       );
+    },
+  },
+  subscriptions: {
+    onload({ dispatch, history }) {
+      const userInfo = window.localStorage.getItem('userinfo');
+      if (userInfo) {
+        const parseUserInfo = JSON.parse(userInfo);
+        dispatch({
+          type: 'setState',
+          payload: parseUserInfo,
+        });
+      }
     },
   },
 };
