@@ -38,7 +38,9 @@ interface DrpDbStatus {
   is_open_bonus: boolean;
   is_open_drp: boolean;
 }
+
 const index = () => {
+  const [openWallet, setOpenWallet] = useState<boolean>(false);
   const [ordersCount, setOrderCount] = useState<OrdersCount>({
     return_goods_num: 0,
     wait_comment_num: 0,
@@ -239,7 +241,6 @@ const index = () => {
                 )}
               </div>
               <div
-                // data-onclick="$util.openWindow('order_list_win', {status: 3})"
                 onClick={() => {
                   history.push('/orderList', {
                     status: 3,
@@ -285,7 +286,11 @@ const index = () => {
                 )}
               </div>
               <div
-                data-onclick="$util.openWindow('order_refund_list_win')"
+                onClick={() => {
+                  history.push('/orderList', {
+                    status: -1,
+                  });
+                }}
                 className="aui-col-5"
               >
                 <i
@@ -311,15 +316,12 @@ const index = () => {
         <div className="wallet1">
           <div className="wallet-into">
             <div className="aui-font-weight aui-margin-l-15">Mi cartera</div>
-            <div
-              className="aui-margin-r-15"
-              data-onClick="$util.openWindow('wallet_frm')"
-            >
+            <Link className="aui-margin-r-15" to={'/wallet'}>
               <p>
                 Entrar a mi cartera
                 <i className="aui-iconfont aui-icon-right" />
               </p>
-            </div>
+            </Link>
           </div>
           <div className="wallet-price">
             <div
@@ -334,19 +336,16 @@ const index = () => {
                 ${usersAsset.money}
               </div>
             </div>
-            <div
-              className="recharge"
-              data-onClick="$util.openWindow('recharge_win')"
-            >
+            <Link className="recharge" to={'/recharge'}>
               Recargar
-            </div>
-            <div
+            </Link>
+            <Link
               className="recharge aui-margin-r-5"
-              data-onClick="$util.openWindow('withdraw_win')"
+              to={'/withdraw'}
               style={{ marginLeft: '3rem', width: '7rem' }}
             >
               Sacar dinero
-            </div>
+            </Link>
           </div>
         </div>
       ) : (
@@ -354,7 +353,14 @@ const index = () => {
           <div className="wallet-wancll aui-font-weight aui-font-size-18">
             Billetera
           </div>
-          <div className="goOpen">Activar</div>
+          <div
+            className="goOpen"
+            onClick={() => {
+              setOpenWallet(true);
+            }}
+          >
+            Activar
+          </div>
         </div>
       )}
 
@@ -480,7 +486,7 @@ const index = () => {
         >
           <div className="aui-row">
             {drpDbStatus.is_open_drp ? (
-              <div className="aui-col-xs-3">
+              <Link className="aui-col-xs-3" to={'/distribution'}>
                 <i
                   className="aui-iconfont iconfont icon-daifahuo"
                   style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
@@ -488,7 +494,7 @@ const index = () => {
                 <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                   Centro de distribución
                 </div>
-              </div>
+              </Link>
             ) : (
               <></>
             )}
@@ -509,7 +515,66 @@ const index = () => {
           </div>
         </section>
       </div>
-      <div style={{ height: '2.5rem' }}></div>
+      <div
+        style={{
+          backgroundColor: '#fff',
+          display: openWallet ? 'block' : 'none',
+        }}
+        className="openWallet-layout"
+      >
+        <div className="openWallet">
+          <div className="wallet">
+            <i
+              className="aui-iconfont iconfont icon-qianbao1"
+              style={{ fontSize: '2rem', color: '#80ddff' }}
+            />
+          </div>
+          <div className="openWallet-text">Activar la billetera</div>
+          <p className="openWallet-text1">Abre la cartera</p>
+        </div>
+        <div
+          style={{
+            borderTop: '0.025rem solid #eee',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-around',
+            height: '3rem',
+          }}
+        >
+          <div
+            style={{
+              borderRight: '0.025rem solid #eee',
+              color: '#707070',
+              height: '3rem',
+              width: '6.25rem',
+              textAlign: 'center',
+              lineHeight: '3rem',
+            }}
+            onClick={() => {
+              setOpenWallet(false);
+            }}
+          >
+            No
+          </div>
+          <div
+            style={{
+              color: '#0083df',
+              height: '3rem',
+              width: '6.25rem',
+              textAlign: 'center',
+              lineHeight: '3rem',
+            }}
+            className="aui-font-weight aui-font-size-16"
+            onClick={() => {
+              history.push('/initPayPassword');
+              setOpenWallet(false);
+            }}
+          >
+            Listo
+          </div>
+        </div>
+      </div>
+      <div style={{ height: '2.5rem' }} />
       <Tab />
     </div>
   );

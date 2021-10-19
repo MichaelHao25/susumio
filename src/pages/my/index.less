@@ -1,6 +1,48 @@
 .my {
   background-color: #f4f4f4;
 
+  .openWallet-layout {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 285px;
+    height: 270px;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+
+    .openWallet {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      margin-bottom: 0.6rem;
+    }
+
+    .wallet {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      background-color: #d7f3ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 0.6rem;
+    }
+
+    .openWallet-text {
+      font-weight: 700;
+      font-size: 20px;
+      margin-top: 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .openWallet-text1 {
+      margin-bottom: 0.6rem;
+      width: 80%;
+      margin: 0 10%;
+    }
+  }
+
   #top {
     background-size: 100% 100%;
     height: 10.25rem;

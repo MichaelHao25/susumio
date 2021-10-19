@@ -35,39 +35,45 @@ export default (props: Props) => {
   }, [activeStatus]);
   const header = (
     <>
-      <Header title={'Mi pedido'} />
-      <div className="aui-tab" id="tab">
-        <div
-          className={`aui-tab-item ${activeStatus == 0 ? 'aui-active' : ''}`}
-          onClick={() => setActiveStatus(0)}
-        >
-          Total
+      <Header
+        title={activeStatus !== -1 ? 'Mi pedido' : 'Reembolso/devolución'}
+      />
+      {activeStatus !== -1 ? (
+        <div className="aui-tab" id="tab">
+          <div
+            className={`aui-tab-item ${activeStatus == 0 ? 'aui-active' : ''}`}
+            onClick={() => setActiveStatus(0)}
+          >
+            Total
+          </div>
+          <div
+            className={`aui-tab-item ${activeStatus == 1 ? 'aui-active' : ''}`}
+            onClick={() => setActiveStatus(1)}
+          >
+            pagará
+          </div>
+          <div
+            className={`aui-tab-item ${activeStatus == 2 ? 'aui-active' : ''}`}
+            onClick={() => setActiveStatus(2)}
+          >
+            Despachará
+          </div>
+          <div
+            className={`aui-tab-item ${activeStatus == 3 ? 'aui-active' : ''}`}
+            onClick={() => setActiveStatus(3)}
+          >
+            Recibirá
+          </div>
+          <div
+            className={`aui-tab-item ${activeStatus == 4 ? 'aui-active' : ''}`}
+            onClick={() => setActiveStatus(4)}
+          >
+            Comentará
+          </div>
         </div>
-        <div
-          className={`aui-tab-item ${activeStatus == 1 ? 'aui-active' : ''}`}
-          onClick={() => setActiveStatus(1)}
-        >
-          pagará
-        </div>
-        <div
-          className={`aui-tab-item ${activeStatus == 2 ? 'aui-active' : ''}`}
-          onClick={() => setActiveStatus(2)}
-        >
-          Despachará
-        </div>
-        <div
-          className={`aui-tab-item ${activeStatus == 3 ? 'aui-active' : ''}`}
-          onClick={() => setActiveStatus(3)}
-        >
-          Recibirá
-        </div>
-        <div
-          className={`aui-tab-item ${activeStatus == 4 ? 'aui-active' : ''}`}
-          onClick={() => setActiveStatus(4)}
-        >
-          Comentará
-        </div>
-      </div>
+      ) : (
+        ''
+      )}
     </>
   );
   return (

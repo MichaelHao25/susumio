@@ -12,7 +12,6 @@ export default () => {
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
     return userinfo;
   });
-  console.log(user);
   if (!user) {
     throw 'user error';
   }

@@ -81,6 +81,17 @@ export default connect(({ list }: { list: ListState }) => {
         page.current.pageNum = 1;
       }
       switch (type) {
+        case AllList.postAssetLogsList: {
+          dispatch({
+            type: 'list/postAssetLogsList',
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
         case AllList.postUserFootLists: {
           dispatch({
             type: 'list/postUserFootLists',
@@ -173,6 +184,52 @@ export default connect(({ list }: { list: ListState }) => {
 
     function getList() {
       switch (type) {
+        case AllList.postAssetLogsList: {
+          return (
+            <div className="aui-content" style={{ width: '100%' }}>
+              {list.postAssetLogsList.length === 0 ? (
+                <div
+                  className="aui-col-xs-12 aui-text-center"
+                  style={{ marginTop: '30%' }}
+                >
+                  <img
+                    src={require('../../assets/img/no_content.png')}
+                    style={{ width: '18%', margin: '0 auto' }}
+                  />
+                  <h5
+                    style={{ marginTop: '1rem' }}
+                    className="aui-font-size-14"
+                  >
+                    Oh. Aquí no hay nada.
+                  </h5>
+                </div>
+              ) : (
+                ''
+              )}
+              <ul className="wallet-ul">
+                {list.postAssetLogsList.map((log) => {
+                  return (
+                    <li className={styles.wallet_li} key={log.id}>
+                      <div className="wallet-text text-one aui-font-size-16 aui-text-default">
+                        <div className="wallet-text-left">{log.intro}</div>
+                        <div className="wallet-text-right">
+                          {log.symbol}
+                          {log.change_money}
+                        </div>
+                      </div>
+                      <div className="wallet-text text-two aui-font-size-12">
+                        <div className="wallet-text-left">
+                          {log.update_time}
+                        </div>
+                        <div className="wallet-text-right" />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        }
         case AllList.postUserFootLists: {
           return (
             <div className="aui-content" style={{ width: '100%' }}>

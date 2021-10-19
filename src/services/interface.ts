@@ -1,6 +1,7 @@
 import {
   postAddressLists,
   postApiOrdersLists,
+  postAssetLogsList,
   postCommentsLists,
   postUserFootLists,
 } from '@/services/api';
@@ -12,8 +13,26 @@ export enum AllList {
   postFavorite,
   postCommentsLists,
   postUserFootLists,
+  postAssetLogsList,
 }
-
+export interface LogItem {
+  id: number;
+  user_id: number;
+  asset_type: string;
+  change_type: string;
+  change_money: number;
+  intro: string;
+  desc: string;
+  create_time: string;
+  update_time: string;
+  symbol: string;
+  user_info: {
+    id: number;
+    mobile: string;
+    nick_name: string;
+    avatar: string;
+  };
+}
 export interface CommentItem {
   id: number;
   user_id: number;

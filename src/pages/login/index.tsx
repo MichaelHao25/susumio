@@ -1,9 +1,7 @@
 import Header from '@/component/Header';
 import './index.less';
 import { history, useDispatch } from 'umi';
-import { postApiUsersUserAccountsLogin } from '@/services/api';
 import { useState } from 'react';
-import { Report } from 'notiflix';
 
 export default function goodsListNewPage() {
   const [mobile, setMobile] = useState<string>('13968066530');

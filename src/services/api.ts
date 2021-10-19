@@ -2,6 +2,101 @@ import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 import { AddressItem } from '@/services/interface';
 
+export interface PostCommissionApply {
+  receipt_type: string;
+  pay_password: string;
+}
+/**
+ * 提现
+ */
+export const postCommissionApply = (req: PostCommissionApply) => {
+  return request.post(`/api_drp/commission_applys/save`);
+};
+/**
+ * 分销相关
+ */
+export const postRulesIndex = () => {
+  return request.post(`/api_drp/rules/index`);
+};
+/**
+ * 分销相关
+ */
+export const postCommissionInfo = () => {
+  return request.post(`/api_query/drp/commission_info`);
+};
+
+/**
+ * 分销首页基础信息获取
+ */
+export const postDistributorInfo = () => {
+  return request.post(`/api_query/drp/distributor_info`);
+};
+
+export interface PostAssetLogsList {
+  pageLimit: number;
+  pageNum: number;
+}
+
+/**
+ * 足迹功能
+ */
+export const postAssetLogsList = (req: PostAssetLogsList) => {
+  const { pageLimit = 10, pageNum = 1 } = req;
+  return request.post(`/api_users/user_asset_logs/lists`, {
+    headers: {
+      'page-limit': pageLimit.toString(),
+      'page-num': pageNum.toString(),
+    },
+  });
+};
+
+export interface PostWithdraw {
+  asset_type: 'money';
+  bank_card_id: 0;
+  money: string;
+  pay_password: string;
+  type: 'withdrawToBankCard';
+}
+
+/**
+ * 充值
+ */
+export const postWithdraw = (req: PostWithdraw) => {
+  return request.post(`/api_users/user_drawcashs/save`, {
+    data: req,
+  });
+};
+
+export interface PostRecharges {
+  money: string;
+  asset_type: 'money';
+  type: 1;
+}
+
+/**
+ * 充值
+ */
+export const postRecharges = (req: PostRecharges) => {
+  return request.post(`/api_users/user_recharges/save`, {
+    data: req,
+  });
+};
+
+export interface PostSetPayPasswordFirst {
+  mobile: string;
+  pay_password: string;
+  pay_password_confirm: string;
+}
+
+/**
+ * 第一次设置密码
+ */
+export const postSetPayPasswordFirst = (req: PostSetPayPasswordFirst) => {
+  return request.post(`/api_users/user_accounts/reset_pay_password_first`, {
+    data: req,
+  });
+};
+
 export interface PostUserFootLists {
   pageLimit: number;
   pageNum: number;
@@ -80,10 +175,10 @@ export const postFavorite = (req: PostFavorite) => {
 /**
  * 获取版本信息等
  */
-export const postGetParams = () => {
+export const postGetParams = (type?: string) => {
   return request.post(`/api_systems/Params/getParams`, {
     data: {
-      type: 'basic',
+      type: type ? type : 'basic',
     },
   });
 };
