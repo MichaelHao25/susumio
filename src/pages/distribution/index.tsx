@@ -48,7 +48,6 @@ export default () => {
       }
     });
   }, []);
-  console.log(params.distribution_centre_head_img);
   return (
     <div className={'distribution'}>
       <div style={{ position: 'relative' }}>

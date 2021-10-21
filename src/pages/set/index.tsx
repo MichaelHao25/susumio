@@ -1,9 +1,16 @@
 import Header from '@/component/Header';
 import React, { useEffect, useState } from 'react';
-import { Confirm } from 'notiflix';
-import { history, useSelector } from 'umi';
-import { postGetParams, postQueryPayPassword } from '@/services/api';
+import Notiflix, { Confirm, Notify } from 'notiflix';
+import { history, useDispatch, useSelector } from 'umi';
+import {
+  postCommissionApply,
+  postGetParams,
+  postQueryPayPassword,
+  PostUsersUpdate,
+  postUsersUpdate,
+} from '@/services/api';
 import { UserinfoState } from '@/pages/login/model';
+import './index.less';
 
 export default () => {
   const [params, setParams] = useState<{
@@ -15,6 +22,7 @@ export default () => {
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
     return userinfo;
   });
+  const dispatch = useDispatch();
   if (!user) {
     throw 'user error';
   }
@@ -41,6 +49,97 @@ export default () => {
       window.localStorage.clear();
       history.push('/');
     });
+  };
+  const updateUserInfo = (req: PostUsersUpdate) => {
+    postUsersUpdate(req).then((res) => {
+      if (res) {
+        dispatch({
+          type: 'userinfo/setState',
+          payload: {
+            user: res.data,
+          },
+        });
+      }
+    });
+  };
+  const handleModifyName = () => {
+    Notiflix.Confirm.show(
+      'Introduzca un nuevo apodo',
+      `<input type="text" class="confirm_password"/>`,
+      'OK',
+      'Cancelar',
+      function () {
+        const input: HTMLInputElement | null =
+          document.querySelector('.confirm_password');
+        if (input) {
+          const value = input.value;
+          if (value !== '') {
+            updateUserInfo({
+              nick_name: value,
+            });
+          }
+        }
+      },
+      function () {},
+    );
+  };
+  const passwordSetting = () => {
+    if (isCloseWallet) {
+      // 已经设置了支付密码
+      Notiflix.Confirm.show(
+        'Elige',
+        `${[
+          'Cambiar contraseña',
+          'Restablecer contraseña',
+          'Cambiar contraseña de pago',
+          'Restablecer contraseña de pago',
+        ]
+          .map((item, index) => {
+            return `<button class="layout_button">${item}</button>`;
+          })
+          .join('')}`,
+        'Ok',
+        'Cancelar',
+        () => {},
+        () => {},
+        {
+          messageMaxLength: 500,
+        },
+      );
+      const handleClick = (index: number) => () => {
+        document
+          .querySelector<HTMLDivElement>('div#NotiflixConfirmWrap')
+          ?.remove();
+        if (index === 1 || index === 3) {
+          history.push('/resetPassword', {
+            type: index,
+          });
+        }
+        if (index === 2 || index === 4) {
+          history.push('/restPasswordEmail', {
+            type: index,
+          });
+        }
+      };
+      document
+        .querySelectorAll<HTMLButtonElement>('.layout_button')
+        .forEach((element, index) => {
+          element.addEventListener('click', handleClick(index + 1));
+        });
+    } else {
+      Notiflix.Confirm.show(
+        'Elige',
+        '',
+        'Cambiar contraseña',
+        'Cancelar',
+        () => {
+          history.push('/resetPassword', {
+            type: 1,
+          });
+        },
+        () => {},
+      );
+    }
   };
   return (
     <div>
@@ -72,7 +171,7 @@ export default () => {
               </div>
             </div>
           </li>
-          <li className="aui-list-item" data-click="modify('nickname')">
+          <li className="aui-list-item" onClick={handleModifyName}>
             <div className="aui-list-item-inner aui-list-item-arrow">
               <div className="aui-list-item-title">Apodo</div>
               <div
@@ -83,7 +182,13 @@ export default () => {
               </div>
             </div>
           </li>
-          <li className="aui-list-item" data-click="modify('email')">
+          <li
+            className="aui-list-item"
+            // data-click="modify('email')"
+            onClick={() => {
+              history.push('/modifyEmail');
+            }}
+          >
             <div className="aui-list-item-inner aui-list-item-arrow">
               <div className="aui-list-item-title">Correo electrónico</div>
               <div
@@ -94,33 +199,45 @@ export default () => {
               </div>
             </div>
           </li>
-          <li className="aui-list-item" data-click="modify('mobile')">
+          <li
+            className="aui-list-item"
+            // data-click="modify('mobile')"
+            onClick={() => {
+              history.push('/modifyMobile');
+            }}
+          >
             <div className="aui-list-item-inner aui-list-item-arrow">
               <div className="aui-list-item-title">Número de teléfono</div>
               <div
                 className="aui-list-item-right"
                 style={{ fontSize: '0.8rem', color: '#999' }}
-                v-text="user.mobile"
-              />
+              >
+                {user.mobile}
+              </div>
             </div>
           </li>
-          <li className="aui-list-item" data-click="passwordSetting()">
+          <li
+            className="aui-list-item"
+            // data-click="passwordSetting()"
+            onClick={passwordSetting}
+          >
             <div className="aui-list-item-inner aui-list-item-arrow">
               Configuración de contraseñas
             </div>
           </li>
-          {isCloseWallet ? (
-            <li
-              className="aui-list-item"
-              data-onclick="$util.openWindow('fingerprint_win')"
-            >
-              <div className="aui-list-item-inner aui-list-item-arrow">
-                Pago de huellas
-              </div>
-            </li>
-          ) : (
-            ''
-          )}
+          {/*指纹支付*/}
+          {/*{isCloseWallet ? (*/}
+          {/*  <li*/}
+          {/*    className="aui-list-item"*/}
+          {/*    data-onclick="$util.openWindow('fingerprint_win')"*/}
+          {/*  >*/}
+          {/*    <div className="aui-list-item-inner aui-list-item-arrow">*/}
+          {/*      Pago de huellas*/}
+          {/*    </div>*/}
+          {/*  </li>*/}
+          {/*) : (*/}
+          {/*  ''*/}
+          {/*)}*/}
         </ul>
         <ul className="aui-list aui-list-in aui-margin-b-10">
           <li
@@ -136,8 +253,7 @@ export default () => {
           <li className="aui-list-item">
             <div className="aui-list-item-inner">
               <div className="aui-list-item-title" style={{ width: '75%' }}>
-                Changsha Network abre cientos de millones de páginas web
-                Technology Co
+                Network Technology
               </div>
               <div
                 className="aui-list-item-right"

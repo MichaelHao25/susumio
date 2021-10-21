@@ -51,9 +51,7 @@ export default (props: Props) => {
 
   function handlePayBalance() {
     setIsBalance(true);
-    Notiflix.Confirm.merge({
-      plainText: false,
-    });
+
     Notiflix.Confirm.show(
       'Introduzca la contraseña de pago',
       `<input type="password" class="confirm_password"/>`,

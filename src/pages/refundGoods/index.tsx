@@ -3,6 +3,8 @@ import { ConnectProps } from '@@/plugin-dva/connect';
 import { OrderListItemGoodsInfo } from '@/services/interface';
 import { useState } from 'react';
 import { Notify } from 'notiflix';
+import { postReturnGoods } from '@/services/api';
+import { history } from 'umi';
 
 interface Props
   extends ConnectProps<{}, { goods: OrderListItemGoodsInfo }, {}> {}
@@ -17,7 +19,22 @@ export default (props: Props) => {
   const [imgs, setImgs] = useState<string[]>([]);
 
   function submit() {
-    Notify.failure('error');
+    if (!desc) {
+      Notify.failure('Por favor rellene el reembolso');
+      return;
+    }
+    postReturnGoods({
+      order_id: goods.order_id,
+      order_goods_id: goods.id,
+      return_type: 1,
+      return_reason: desc,
+      imgs: imgs,
+    }).then((res) => {
+      if (res) {
+        Notify.success(res.msg);
+        history.goBack();
+      }
+    });
   }
 
   return (
@@ -71,13 +88,6 @@ export default (props: Props) => {
                 </div>
               );
             })}
-            <div className="aui-col-xs-3" v-for="(img,imgKey) in imgs">
-              <img src="img" style={{ height: '4.4rem' }} />
-              <i
-                className="aui-iconfont aui-icon-close closeicon"
-                data-click="deleteImg(imgKey)"
-              />
-            </div>
             <div className="aui-col-xs-3" data-click="fileClick()">
               <img src={require('../../assets/img/add_photo.png')} />
             </div>

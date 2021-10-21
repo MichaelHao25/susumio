@@ -55,9 +55,6 @@ export default () => {
         return;
       }
 
-      Notiflix.Confirm.merge({
-        plainText: false,
-      });
       Notiflix.Confirm.show(
         'Introduzca el Código de transacción.',
         `<input type="password" class="confirm_password"/>`,

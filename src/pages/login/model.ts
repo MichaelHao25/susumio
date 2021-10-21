@@ -11,7 +11,7 @@ export interface ListState {
 }
 
 export interface UserinfoState {
-  token?: {
+  token: {
     id: number;
     user_account_id: number;
     user_id: number;
@@ -22,7 +22,7 @@ export interface UserinfoState {
     create_time: string;
     update_time: string;
   };
-  user?: {
+  user: {
     id: number;
     mobile: string;
     user_name: string;
@@ -94,7 +94,58 @@ export interface UserinfoModel {
 
 const userinfoModel: UserinfoModel = {
   namespace: 'userinfo',
-  state: {},
+  state: {
+    token: {
+      id: 0,
+      user_account_id: 0,
+      user_id: 0,
+      client_type: '',
+      token: '',
+      refresh_token: '',
+      expire_time: 0,
+      create_time: '',
+      update_time: '',
+    },
+    user: {
+      id: 0,
+      mobile: '',
+      user_name: '',
+      nick_name: '',
+      avatar: '',
+      is_customer: false,
+      gender: 0,
+      telephone: '',
+      qq: '',
+      wechat: '',
+      email: '',
+      province: '',
+      province_code: '',
+      city: '',
+      city_code: '',
+      area: '',
+      area_code: '',
+      memo: '',
+      role_ids: [],
+      become_distributor_time: '',
+      is_distributor: false,
+      distributor_level_id: 0,
+      parent_id: '',
+      parent_ids: '',
+      become_bonus_time: '',
+      is_bonus: false,
+      bonus_level_id: 0,
+      status: 0,
+      keep_sign_in_num: 0,
+      total_sign_in_num: 0,
+      last_sign_in_time: '',
+      create_time: '',
+      update_time: '',
+      user_level: '',
+      user_level_id: 0,
+      is_set_pwd: 0,
+      guid: '',
+    },
+  },
   effects: {
     *postApiUsersUserAccountsLogin({ payload }, { call, select, put }) {
       const { mobile, password } = payload;

@@ -16,9 +16,6 @@ export default () => {
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
     return userinfo;
   });
-  if (!user) {
-    throw 'user error';
-  }
   const submit = () => {
     postSetPayPasswordFirst({
       mobile: user.mobile,

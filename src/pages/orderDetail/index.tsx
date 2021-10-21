@@ -532,7 +532,7 @@ export default (props: Props) => {
           )}
         </div>
       </div>
-
+      <div style={{ minHeight: '2.25rem' }} />
       <footer className="aui-bar aui-bar-tab" id="footer">
         <div className="order-buttons aui-padded-b-5 ">
           {order.status == 1 ? (

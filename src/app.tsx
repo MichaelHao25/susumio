@@ -5,6 +5,20 @@ import './assets/css/iconfont.css';
 import './assets/css/ali_icon_fu/iconfont.less';
 import './assets/css/ali_icon_wancll/iconfont.less';
 import './index.less';
+import Notiflix, { Notify } from 'notiflix';
+
+Notify.init({
+  position: 'right-top',
+  cssAnimationStyle: 'from-bottom',
+  // timeout: 1000 * 60,
+});
+
+Notiflix.Confirm.init({
+  plainText: false,
+  messageMaxLength: 500,
+  buttonsMaxLength: 500,
+  titleMaxLength: 500,
+});
 
 // paypal
 const clientId = `AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi`;

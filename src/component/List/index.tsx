@@ -795,7 +795,7 @@ export default connect(({ list }: { list: ListState }) => {
             goods: OrderListItemGoodsInfo,
           ) => {
             e.stopPropagation();
-            history.push('/logistics', {
+            history.push('/commentAdd', {
               goods: goods,
             });
           };

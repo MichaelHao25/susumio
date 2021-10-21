@@ -12,9 +12,6 @@ export default () => {
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
     return userinfo;
   });
-  if (!user) {
-    throw 'user error';
-  }
   useEffect(() => {
     postGetParams().then((res) => {
       if (res) {

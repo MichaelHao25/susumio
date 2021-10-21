@@ -2,12 +2,6 @@ import { Context, extend, ResponseError } from 'umi-request';
 import { history } from 'umi';
 import { Loading, Notify, Report } from 'notiflix';
 
-Notify.init({
-  position: 'right-top',
-  cssAnimationStyle: 'from-bottom',
-  // timeout: 1000 * 60,
-});
-
 interface Error extends ResponseError {
   msg: string;
   code: number;

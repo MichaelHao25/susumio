@@ -2,10 +2,128 @@ import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 import { AddressItem } from '@/services/interface';
 
+export interface PostReturnGoods {
+  order_id: number;
+  order_goods_id: number;
+  return_type: 1;
+  return_reason: string;
+  imgs: string[];
+}
+
+/**
+ * 订单评价
+ */
+export const postReturnGoods = (req: PostReturnGoods) => {
+  return request.post('/api_orders/return_goods/save', {
+    data: req,
+  });
+};
+
+export interface PostUpdatePasswordByEmail {
+  type: number;
+  email: string;
+  code: string;
+  password?: string;
+  pay_password?: string;
+}
+
+/**
+ * 通过邮件更新用户密码/支付密码
+ */
+export const postUpdatePasswordByEmail = (req: PostUpdatePasswordByEmail) => {
+  const { type } = req;
+  const url =
+    type == 2
+      ? '/api_users/user_accounts/reset_password_email'
+      : '/api_users/user_accounts/reset_pay_password_email';
+  return request.post(url, {
+    data: req,
+  });
+};
+
+export interface PostSendEmailCode {
+  type: number;
+  email: string;
+}
+
+/**
+ * 更新用户密码/支付密码
+ */
+export const postSendEmailCode = (req: PostSendEmailCode) => {
+  return request.post('/api_systems/helper/send_email_code', {
+    data: req,
+  });
+};
+
+export interface PostUpdatePassword {
+  type: number;
+  mobile: string;
+  password?: string;
+  password_confirm?: string;
+  pay_password_confirm?: string;
+  pay_password?: string;
+}
+
+/**
+ * 更新用户密码/支付密码
+ */
+export const postUpdatePassword = (req: PostUpdatePassword) => {
+  const { type } = req;
+  const url =
+    type === 1
+      ? '/api_users/user_accounts/reset_password'
+      : '/api_users/user_accounts/reset_pay_password';
+  return request.post(url, {
+    data: req,
+  });
+};
+
+export interface PostUpdateMobile {
+  old_mobile: string;
+  new_mobile: string;
+}
+
+/**
+ * 更新用户邮箱
+ */
+export const postUpdateMobile = (req: PostUpdateMobile) => {
+  return request.post(`/api_users/user_accounts/change_mobile`, {
+    data: req,
+  });
+};
+
+export interface PostUpdateEmail {
+  email: string;
+}
+
+/**
+ * 更新用户邮箱
+ */
+export const postUpdateEmail = (req: PostUpdateEmail) => {
+  return request.post(`/api_users/user_accounts/change_email`, {
+    data: req,
+  });
+};
+
+export interface PostUsersUpdate {
+  nick_name?: string;
+  avatar?: string;
+}
+
+/**
+ * 更新用户信息
+ */
+export const postUsersUpdate = (req: PostUsersUpdate) => {
+  return request.post(`/api_users/users/update`, {
+    data: req,
+  });
+};
+
 export interface PostCommissionApply {
   receipt_type: string;
   pay_password: string;
 }
+
 /**
  * 提现
  */
@@ -175,10 +293,10 @@ export const postFavorite = (req: PostFavorite) => {
 /**
  * 获取版本信息等
  */
-export const postGetParams = (type?: string) => {
+export const postGetParams = (type: string = 'basic') => {
   return request.post(`/api_systems/Params/getParams`, {
     data: {
-      type: type ? type : 'basic',
+      type: type,
     },
   });
 };
@@ -276,11 +394,8 @@ export interface PostOrderCommentsSave {
  * 确认收货
  */
 export const postOrderCommentsSave = (req: PostOrderCommentsSave) => {
-  const { order_id } = req;
   return request.post(`/api_goods/goods_comments/save`, {
-    data: {
-      order_id,
-    },
+    data: req,
   });
 };
 
