@@ -16,7 +16,6 @@ interface PageProps extends ConnectProps {
 }
 
 const Header = () => {
-  console.log('test github webhook');
   return (
     <>
       <div id="top">
