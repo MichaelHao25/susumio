@@ -14,6 +14,7 @@ export enum AllList {
   postCommentsLists,
   postUserFootLists,
   postAssetLogsList,
+  postApplyList,
 }
 export interface LogItem {
   id: number;

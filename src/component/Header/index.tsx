@@ -5,10 +5,11 @@ interface Props {
   title: string;
   noBack?: boolean;
   right?: ReactNode;
+  left?: string;
 }
 
 export default (props: Props) => {
-  const { title, noBack, right } = props;
+  const { title, noBack, right, left = '' } = props;
   return (
     <header
       className="aui-bar aui-bar-nav aui-bar-light"
@@ -27,7 +28,9 @@ export default (props: Props) => {
           <span
             className="aui-iconfont aui-icon-left"
             style={{ color: '#333!important' }}
-          />
+          >
+            {left ? left : ''}
+          </span>
         </a>
       )}
 

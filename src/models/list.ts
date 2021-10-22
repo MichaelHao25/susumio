@@ -5,6 +5,7 @@ import {
   postAddressLists,
   postApiGoodsGoodsLists,
   postApiOrdersLists,
+  postApplyLists,
   postAssetLogsList,
   postCommentsLists,
   postFavorite,
@@ -30,6 +31,7 @@ export interface ListState {
   postCommentsLists: CommentItem[];
   postUserFootLists: CartList[];
   postAssetLogsList: LogItem[];
+  postApplyList: any[];
 }
 
 export enum Action {
@@ -47,6 +49,7 @@ export interface ListModel {
     postCommentsLists: Effect;
     postUserFootLists: Effect;
     postAssetLogsList: Effect;
+    postApplyList: Effect;
   };
   reducers: {
     updateComments: ImmerReducer<
@@ -100,8 +103,33 @@ export default <ListModel>{
     postCommentsLists: [],
     postUserFootLists: [],
     postAssetLogsList: [],
+    postApplyList: [],
   },
   effects: {
+    *postApplyList({ payload }, { call, select, put }) {
+      const { list } = yield select(({ list }: { list: ListState }) => {
+        return {
+          list: list.postApplyList,
+        };
+      });
+      const { cb, ...req } = payload;
+      const res: ListResponse | undefined = yield call(postApplyLists, req);
+      debugger;
+      if (res) {
+        yield put({
+          type: 'setState',
+          payload: {
+            postApplyList:
+              req.pageNum === 1
+                ? res.data.applys
+                : list.concat(res.data.applys),
+          },
+        });
+        cb(res.data);
+      } else {
+        cb([]);
+      }
+    },
     *postAssetLogsList({ payload }, { call, select, put }) {
       const { list } = yield select(({ list }: { list: ListState }) => {
         return {

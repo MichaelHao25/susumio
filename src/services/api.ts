@@ -2,6 +2,28 @@ import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 import { AddressItem } from '@/services/interface';
 
+export interface PostApplyLists {
+  status: number;
+  pageLimit: number;
+  pageNum: number;
+}
+
+/**
+ * 分销相关接口
+ */
+export const postApplyLists = (req: PostApplyLists) => {
+  const { status, pageLimit, pageNum } = req;
+  return request.post('/api_drp/commission_applys/lists', {
+    headers: {
+      'page-limit': pageLimit.toString(),
+      'page-num': pageNum.toString(),
+    },
+    data: {
+      status,
+    },
+  });
+};
+
 export interface PostReturnGoods {
   order_id: number;
   order_goods_id: number;

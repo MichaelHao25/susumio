@@ -81,6 +81,17 @@ export default connect(({ list }: { list: ListState }) => {
         page.current.pageNum = 1;
       }
       switch (type) {
+        case AllList.postApplyList: {
+          dispatch({
+            type: 'list/postApplyList',
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
         case AllList.postAssetLogsList: {
           dispatch({
             type: 'list/postAssetLogsList',
@@ -184,6 +195,79 @@ export default connect(({ list }: { list: ListState }) => {
 
     function getList() {
       switch (type) {
+        case AllList.postApplyList: {
+          debugger;
+
+          return (
+            <div className="aui-content" style={{ width: '100%' }}>
+              {list.postApplyList.length === 0 ? (
+                <div
+                  className="aui-col-xs-12 aui-text-center"
+                  style={{ marginTop: '30%' }}
+                >
+                  <img
+                    src={require('../../assets/img/no_content.png')}
+                    style={{ width: '18%', margin: '0 auto' }}
+                  />
+                  <h5
+                    style={{ marginTop: '1rem' }}
+                    className="aui-font-size-14"
+                  >
+                    Oh. Aquí no hay nada.
+                  </h5>
+                </div>
+              ) : (
+                ''
+              )}
+              <ul className="aui-list aui-media-list aui-bg-default">
+                {list.postApplyList.map((apply) => {
+                  return (
+                    <li
+                      className="aui-list-item aui-list-item-middle aui-bg-white aui-margin-b-10"
+                      v-for="(apply, key) in list"
+                      data-click="goDetail(apply)"
+                    >
+                      <div className="aui-media-list-item-inner">
+                        <div className="aui-list-item-inner">
+                          <div className="aui-list-item-text">
+                            <div
+                              className="aui-list-item-title"
+                              v-text="apply.intro"
+                            />
+                            <div
+                              className="aui-list-item-right aui-text-info"
+                              v-text="'+' + apply.money"
+                            />
+                          </div>
+                          <div className="aui-list-item-text aui-margin-t-5">
+                            <div
+                              className="aui-list-item-title aui-font-size-12 aui-text-pray"
+                              v-text="'Numeración: ' + apply.apply_no"
+                            />
+                            <div
+                              className="aui-list-item-right  aui-text-pray aui-font-size-18"
+                              style={{ color: '#e95d40!important' }}
+                            >
+                              {'{'}
+                              {'{'}apply.status | statusFilter{'}'}
+                              {'}'}
+                            </div>
+                          </div>
+                          <div className="aui-list-item-text aui-margin-t-5">
+                            <div
+                              className="aui-list-item-title aui-font-size-12 aui-text-pray"
+                              v-text="'Tiempo de aplicación: ' + apply.create_time"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        }
         case AllList.postAssetLogsList: {
           return (
             <div className="aui-content" style={{ width: '100%' }}>

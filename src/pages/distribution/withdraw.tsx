@@ -91,6 +91,9 @@ export default () => {
           <a
             className="aui-pull-right aui-btn"
             // onClick="$util.openWindow('distribution_detail_win')"
+            onClick={() => {
+              history.push('/distribution/list');
+            }}
           >
             <span className="aui-iconfont">Detalle</span>
           </a>
