@@ -145,6 +145,7 @@ const index = (props: Props) => {
               }}
             >
               <img
+                loading="lazy"
                 src={require('../../assets/img/no_content.png')}
                 style={{ width: '18%', margin: '0 auto' }}
               />
@@ -171,6 +172,7 @@ const index = (props: Props) => {
                         }}
                       >
                         <img
+                          loading="lazy"
                           src={
                             item.user_info.avatar ||
                             require('../../assets/img/avatar.png')
@@ -223,6 +225,7 @@ const index = (props: Props) => {
                           style={{ height: '5rem' }}
                         >
                           <img
+                            loading="lazy"
                             style={{ width: '100%', height: '100%' }}
                             src={item}
                           />
@@ -249,7 +252,7 @@ const index = (props: Props) => {
           {thums.map((item, index) => {
             return (
               <div key={index}>
-                <img src={item} />
+                <img loading="lazy" src={item} />
               </div>
             );
           })}
@@ -354,7 +357,7 @@ const index = (props: Props) => {
         {imgs.map((src, index) => {
           return (
             <SwiperSlide key={index}>
-              <img src={src} alt="" />
+              <img loading="lazy" src={src} alt="" />
             </SwiperSlide>
           );
         })}

@@ -260,7 +260,7 @@ export default (props: Props) => {
                       className="aui-list-item-media"
                       to={`/goodsDetails?id=${goods.goods_id}`}
                     >
-                      <img src={goods.thum} />
+                      <img loading="lazy" src={goods.thum} />
                     </Link>
                     <div className="aui-list-item-inner">
                       {/* 商品名称 */}

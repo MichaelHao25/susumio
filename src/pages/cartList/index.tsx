@@ -133,6 +133,7 @@ const index = (props: Props) => {
                 >
                   {/* 规格缩略图 */}
                   <img
+                    loading="lazy"
                     src={cart.spec_group_info.thum || cart.goods_info.thum}
                     className="aui-list-img-sm"
                     style={{ border: '1px solid #f4f4f4' }}

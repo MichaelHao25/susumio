@@ -63,7 +63,7 @@ export default (props: Props) => {
         <div className="aui-content">
           <div className="goods">
             <div className="thum">
-              <img src={goods.thum} />
+              <img loading="lazy" src={goods.thum} />
             </div>
             <div className="content">
               <textarea
@@ -81,6 +81,7 @@ export default (props: Props) => {
               {imgs.map((img) => {
                 return (
                   <img
+                    loading="lazy"
                     src={img}
                     className="photo"
                     style={{
@@ -92,6 +93,7 @@ export default (props: Props) => {
                 );
               })}
               <img
+                loading="lazy"
                 src={require('../../assets/img/add_photo.png')}
                 onClick={fileClick}
               />

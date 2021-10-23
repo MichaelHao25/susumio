@@ -44,6 +44,7 @@ export default () => {
           }}
         />
         <img
+          loading="lazy"
           src={require('../../assets/img/distribution_bg.png')}
           className="distribution-bg"
         />

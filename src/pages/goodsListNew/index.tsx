@@ -94,7 +94,10 @@ export default () => {
         {/* 右侧二级类目 */}
         <div className="aui-col-xs-9 aui_grid">
           <div>
-            <img src="https://www.177pinche.com/public/upload/article_images/20190726/f9b6991c87826650c32f1047e72273b8.png" />
+            <img
+              loading="lazy"
+              src="https://www.177pinche.com/public/upload/article_images/20190726/f9b6991c87826650c32f1047e72273b8.png"
+            />
             {/*@click="goModel(cate_ad)"*/}
           </div>
           <div>
@@ -112,6 +115,7 @@ export default () => {
                     }}
                   >
                     <img
+                      loading="lazy"
                       src={item.thum}
                       style={{ width: '80%', height: '3.5rem' }}
                     />

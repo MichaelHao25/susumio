@@ -24,6 +24,7 @@ export default () => {
       <Header title={'Mi código binario'} />
       <div className="aui-content">
         <img
+          loading="lazy"
           src={share_img ? share_img : require('../../assets/img/yaoqing.png')}
           style={{ width: '100%' }}
           id="img"

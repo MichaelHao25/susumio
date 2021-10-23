@@ -204,6 +204,7 @@ export default connect(({ list }: { list: ListState }) => {
                   style={{ marginTop: '30%' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/no_content.png')}
                     style={{ width: '18%', margin: '0 auto' }}
                   />
@@ -275,6 +276,7 @@ export default connect(({ list }: { list: ListState }) => {
                   style={{ marginTop: '30%' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/no_content.png')}
                     style={{ width: '18%', margin: '0 auto' }}
                   />
@@ -321,6 +323,7 @@ export default connect(({ list }: { list: ListState }) => {
                   style={{ marginTop: '30%' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/no_content.png')}
                     style={{ width: '18%', margin: '0 auto' }}
                   />
@@ -346,6 +349,7 @@ export default connect(({ list }: { list: ListState }) => {
                           key={trace.id}
                         >
                           <img
+                            loading="lazy"
                             style={{ display: 'block' }}
                             src={trace.goods_info.thum}
                             onClick={() => {
@@ -411,6 +415,7 @@ export default connect(({ list }: { list: ListState }) => {
                   style={{ marginTop: '30%' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/no_content.png')}
                     style={{ width: '18%', margin: '0 auto' }}
                   />
@@ -460,7 +465,10 @@ export default connect(({ list }: { list: ListState }) => {
                           <div className="aui-media-list-item-inner">
                             <div className="aui-list-item-media">
                               {comment.order_goods_info ? (
-                                <img src={comment.order_goods_info.thum} />
+                                <img
+                                  loading="lazy"
+                                  src={comment.order_goods_info.thum}
+                                />
                               ) : (
                                 ''
                               )}
@@ -543,7 +551,7 @@ export default connect(({ list }: { list: ListState }) => {
                     <div className="aui-row aui-row-padded">
                       {comment.imgs.map((img, index) => (
                         <div className="aui-col-xs-3" key={index}>
-                          <img src={img} />
+                          <img loading="lazy" src={img} />
                         </div>
                       ))}
                     </div>
@@ -583,6 +591,7 @@ export default connect(({ list }: { list: ListState }) => {
                   style={{ marginTop: '30%' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/no_content.png')}
                     style={{ width: '18%', margin: '0 auto' }}
                   />
@@ -607,6 +616,7 @@ export default connect(({ list }: { list: ListState }) => {
                           key={collection.id}
                         >
                           <img
+                            loading="lazy"
                             style={{ display: 'block' }}
                             src={collection.goods_info.thum}
                             onClick={() => {
@@ -705,6 +715,7 @@ export default connect(({ list }: { list: ListState }) => {
                   style={{ marginTop: '30%' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/no_content.png')}
                     style={{ width: '18%', margin: '0 auto' }}
                   />
@@ -780,7 +791,7 @@ export default connect(({ list }: { list: ListState }) => {
                 className="aui-flex-item-6"
                 style={{ position: 'relative', padding: '3px' }}
               >
-                <img src={item.thum} /> {/**/}
+                <img loading="lazy" src={item.thum} /> {/**/}
                 <h5
                   className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-5 aui-padded-r-5 aui-bg-white"
                   style={{ height: '2rem', marginBottom: 0 }}
@@ -954,6 +965,7 @@ export default connect(({ list }: { list: ListState }) => {
                     style={{ marginTop: '30%' }}
                   >
                     <img
+                      loading="lazy"
                       src={require('../../assets/img/no_content.png')}
                       style={{ width: '18%', margin: '0 auto' }}
                     />
@@ -1002,7 +1014,7 @@ export default connect(({ list }: { list: ListState }) => {
                                   className="aui-list-item-media aui-col-4"
                                   to={`/goodsDetails?id=${goods.goods_id}`}
                                 >
-                                  <img src={goods.thum} />
+                                  <img loading="lazy" src={goods.thum} />
                                 </Link>
 
                                 <div className="aui-list-item-inner aui-col-8">

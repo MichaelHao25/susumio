@@ -44,6 +44,7 @@ export default () => {
         {/* 中间页 */}
         <div className="aui-content aui-text-center">
           <img
+            loading="lazy"
             src={params.wap_login_logo}
             style={{
               width: '65%',

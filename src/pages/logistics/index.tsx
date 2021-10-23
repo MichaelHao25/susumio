@@ -69,7 +69,7 @@ export default (props: Props) => {
           {order.order_goods_info.map((goods) => {
             return (
               <div className="thum">
-                <img src={goods.thum} />
+                <img loading="lazy" src={goods.thum} />
               </div>
             );
           })}

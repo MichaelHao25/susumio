@@ -149,6 +149,7 @@ export default () => {
           <li className="aui-list-item" data-click="injectUplpadFile();">
             <div className="aui-list-item-media">
               <img
+                loading="lazy"
                 src={user.avatar}
                 className="aui-img-round aui-list-img-sm"
                 id="avatar"

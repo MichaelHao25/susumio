@@ -143,7 +143,11 @@ export default (props: Props) => {
               alignItems: 'center',
             }}
           >
-            <img src={params.wap_login_logo} style={{ width: '60%' }} />
+            <img
+              loading="lazy"
+              src={params.wap_login_logo}
+              style={{ width: '60%' }}
+            />
           </div>
           <div className="mix">
             <i

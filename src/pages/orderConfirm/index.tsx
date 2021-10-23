@@ -186,7 +186,7 @@ export default (props: Props) => {
               >
                 <div className="aui-media-list-item-inner">
                   <div className="aui-list-item-media">
-                    <img src={thum} />
+                    <img loading="lazy" src={thum} />
                   </div>
                   <div className="aui-list-item-inner">
                     <div className="aui-list-item-text">

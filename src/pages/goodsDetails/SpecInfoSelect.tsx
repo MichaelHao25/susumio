@@ -255,7 +255,7 @@ export default (props: Props) => {
       <div className="aui-row aui-padded-10">
         {/* 缩略图 */}
         <div className="aui-col-xs-6">
-          <img src={thum} className="aui-padded-15" />
+          <img loading="lazy" src={thum} className="aui-padded-15" />
         </div>
         {/* 价格和库存 */}
         <div className="aui-col-xs-6 aui-padded-10">

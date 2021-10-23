@@ -80,7 +80,7 @@ export default (props: Props) => {
             {imgs.map((url, index) => {
               return (
                 <div className="aui-col-xs-3" key={index}>
-                  <img src={url} style={{ height: '4.4rem' }} />
+                  <img loading="lazy" src={url} style={{ height: '4.4rem' }} />
                   <i
                     className="aui-iconfont aui-icon-close closeicon"
                     data-click="deleteImg(imgKey)"
@@ -89,7 +89,10 @@ export default (props: Props) => {
               );
             })}
             <div className="aui-col-xs-3" data-click="fileClick()">
-              <img src={require('../../assets/img/add_photo.png')} />
+              <img
+                loading="lazy"
+                src={require('../../assets/img/add_photo.png')}
+              />
             </div>
           </div>
           <div className="area">

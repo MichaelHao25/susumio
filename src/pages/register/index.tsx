@@ -56,6 +56,7 @@ export default () => {
           }}
         >
           <img
+            loading="lazy"
             src="https://www.177pinche.com/public/upload/user_images/20190701/52f0b7ea6656a4af7484d6503e2f0a51.png"
             style={{ width: '60%' }}
           />

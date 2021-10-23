@@ -215,6 +215,7 @@ export default (props: Props) => {
       <div id="payssion-button-container" className="aui-margin-t-15">
         <div>
           <img
+            loading="lazy"
             src={require('../../assets/img/payssion/logo.png')}
             className="aui-margin-t-15"
             style={{ height: '2rem', margin: '0 auto' }}
@@ -269,14 +270,20 @@ export default (props: Props) => {
                   onClick={() => payByPayssion('spei_mx')}
                   style={{ padding: '0.4rem 0.6rem' }}
                 >
-                  <img src={require('../../assets/img/payssion/spei_mx.png')} />
+                  <img
+                    loading="lazy"
+                    src={require('../../assets/img/payssion/spei_mx.png')}
+                  />
                 </div>
                 <div
                   className="aui-col-10"
                   onClick={() => payByPayssion('oxxo_mx')}
                   style={{ padding: '0.4rem 0.6rem' }}
                 >
-                  <img src={require('../../assets/img/payssion/oxxo_mx.png')} />
+                  <img
+                    loading="lazy"
+                    src={require('../../assets/img/payssion/oxxo_mx.png')}
+                  />
                 </div>
               </div>
             </section>
@@ -288,6 +295,7 @@ export default (props: Props) => {
                   style={{ padding: '0.4rem 0.6rem' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/payssion/bancomer_mx.png')}
                     className="aui-margin-t-15"
                   />
@@ -298,6 +306,7 @@ export default (props: Props) => {
                   style={{ padding: '0.4rem 0.6rem' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/payssion/santander_mx.png')}
                     className="aui-margin-t-15"
                   />
@@ -319,6 +328,7 @@ export default (props: Props) => {
                   style={{ padding: '0.4rem 2rem' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/payssion/efecty_co.png')}
                   />
                 </div>
@@ -328,6 +338,7 @@ export default (props: Props) => {
                   style={{ padding: '0.4rem 2rem' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/payssion/baloto_co.png')}
                   />
                 </div>
@@ -341,6 +352,7 @@ export default (props: Props) => {
                   style={{ padding: '0.4rem 2.5rem' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/payssion/pse_co.png')}
                     className="aui-margin-t-15"
                   />
@@ -351,6 +363,7 @@ export default (props: Props) => {
                   style={{ padding: '0.4rem 2.5rem' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/payssion/exito_co.png')}
                     className="aui-margin-t-15"
                   />
@@ -371,7 +384,10 @@ export default (props: Props) => {
                   onClick={() => payByPayssion('bcp_pe')}
                   style={{ padding: '0.4rem 0.6rem' }}
                 >
-                  <img src={require('../../assets/img/payssion/bcp_pe.png')} />
+                  <img
+                    loading="lazy"
+                    src={require('../../assets/img/payssion/bcp_pe.png')}
+                  />
                 </div>
                 <div
                   className="aui-col-10"
@@ -379,6 +395,7 @@ export default (props: Props) => {
                   style={{ padding: '0.4rem 0.6rem' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/payssion/interbank_pe.png')}
                   />
                 </div>
@@ -392,6 +409,7 @@ export default (props: Props) => {
                   style={{ padding: '0.4rem 0.6rem' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/payssion/bbva_pe.png')}
                     className="aui-margin-t-15"
                   />
@@ -402,6 +420,7 @@ export default (props: Props) => {
                   style={{ padding: '0.4rem 0.6rem' }}
                 >
                   <img
+                    loading="lazy"
                     src={require('../../assets/img/payssion/pagoefectivo_pe.png')}
                     className="aui-margin-t-15"
                   />

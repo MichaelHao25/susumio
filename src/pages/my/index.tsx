@@ -125,6 +125,7 @@ const index = () => {
           }}
         >
           <img
+            loading="lazy"
             src={
               userInfo.avatar
                 ? userInfo.avatar

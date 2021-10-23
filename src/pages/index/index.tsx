@@ -117,7 +117,7 @@ const Header = () => {
           {bannerList.map((item) => {
             return (
               <SwiperSlide key={item.id}>
-                <img src={item.img} alt="" />
+                <img loading="lazy" src={item.img} alt="" />
               </SwiperSlide>
             );
           })}
@@ -136,6 +136,7 @@ const Header = () => {
                     className="aui-col-xs-3"
                   >
                     <img
+                      loading="lazy"
                       src={item.thum}
                       className="aui-padded-5"
                       style={{ margin: '0px auto', width: '55%' }}
@@ -151,6 +152,7 @@ const Header = () => {
         <div className="aui-flex-col aui-flex-center ">
           <div className="aui-flex-item-12 ">
             <img
+              loading="lazy"
               src={require('../../assets/img/wntj-1.png')}
               className="aui-margin-t-10 aui-margin-b-10"
               style={{ width: '50%', margin: '0px auto' }}

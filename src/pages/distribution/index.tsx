@@ -60,12 +60,18 @@ export default () => {
           }}
         />
         <img
+          loading="lazy"
           src={params.distribution_centre_head_img}
           className="distribution-bg"
         />
         {/* 中间页 */}
         <div className="aui-content aui-text-center aui-text-white">
-          <img src={user?.avatar} className="aui-img-round" id="avatar" />
+          <img
+            loading="lazy"
+            src={user?.avatar}
+            className="aui-img-round"
+            id="avatar"
+          />
           <div>{user?.nick_name || 'Usuario anónimo'}</div>
           <div className="aui-font-size-14">{distributor.level_name}</div>
           <div className="aui-font-size-12">

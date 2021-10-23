@@ -69,7 +69,7 @@ export default (props: Props) => {
       {/*        className="aui-flex-item-6"*/}
       {/*        style={{position: 'relative', padding: '3px'}}*/}
       {/*      >*/}
-      {/*        <img*/}
+      {/*        <img loading="lazy"*/}
       {/*          src="https://www.177pinche.com/public/upload/goods_images/20201127/2eefcac0423b88afb8b05caa17277270.jpg"/>{' '}*/}
       {/*        /!**!/*/}
       {/*        <h5*/}
@@ -91,7 +91,7 @@ export default (props: Props) => {
       {/*        className="aui-flex-item-6"*/}
       {/*        style={{position: 'relative', padding: '3px'}}*/}
       {/*      >*/}
-      {/*        <img*/}
+      {/*        <img loading="lazy"*/}
       {/*          src="https://www.177pinche.com/public/upload/goods_images/20210706/96c6cc95dd2194d7e4ae47792babbb54.jpeg"/>{' '}*/}
       {/*        /!**!/*/}
       {/*        <h5*/}
@@ -112,7 +112,7 @@ export default (props: Props) => {
       {/*        className="aui-flex-item-6"*/}
       {/*        style={{position: 'relative', padding: '3px'}}*/}
       {/*      >*/}
-      {/*        <img*/}
+      {/*        <img loading="lazy"*/}
       {/*          src="https://www.177pinche.com/public/upload/goods_images/20190722/3b72ee27af86e4d3d36d019c24645f4d.JPG"/>{' '}*/}
       {/*        /!**!/*/}
       {/*        <h5*/}
