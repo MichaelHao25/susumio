@@ -36,7 +36,7 @@ export default () => {
     });
     postUserKeyword().then((res) => {
       if (res) {
-        setUserKeyword(res?.data?.keyword || []);
+        setUserKeyword(res?.data?.keywords || []);
       }
     });
   }, []);
