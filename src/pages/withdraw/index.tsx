@@ -78,7 +78,6 @@ export default () => {
             <div className="aui-list-item-input">
               <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
                 <input
-                  className="aui-text-center"
                   type="number"
                   pattern="[0-9]*"
                   style={{ fontSize: '1.8rem', letterSpacing: '.2rem' }}
@@ -90,7 +89,59 @@ export default () => {
               </div>
             </div>
           </li>
-          {/* <span class="aui-padded-l-15 aui-font-size-12">余额:334</span> */}
+          <li
+            className="aui-list-item aui-padded-b-15 aui-bg-white"
+            style={{ backgroundImage: 'none' }}
+          >
+            <span>请输入银行名称</span>
+            <div className="aui-list-item-input">
+              <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
+                <input
+                  type="text"
+                  value={money}
+                  onChange={(e) => {
+                    setMoney(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+          </li>
+
+          <li
+            className="aui-list-item aui-padded-b-15 aui-bg-white"
+            style={{ backgroundImage: 'none' }}
+          >
+            <span>请输入银行账号</span>
+            <div className="aui-list-item-input">
+              <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
+                <input
+                  type="text"
+                  value={money}
+                  onChange={(e) => {
+                    setMoney(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+          </li>
+
+          <li
+            className="aui-list-item aui-padded-b-15 aui-bg-white"
+            style={{ backgroundImage: 'none' }}
+          >
+            <span>请输入姓名</span>
+            <div className="aui-list-item-input">
+              <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
+                <input
+                  type="text"
+                  value={money}
+                  onChange={(e) => {
+                    setMoney(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+          </li>
         </ul>
         <div className="area">
           <div className="submit" onClick={handleSubmit} id="submit">

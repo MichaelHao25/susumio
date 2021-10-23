@@ -378,9 +378,11 @@ const index = (props: Props) => {
           {/*                          href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&src=sdkpreparse"*/}
           {/*                          className="fb-xfbml-parse-ignore"/></div>*/}
         </h1>
-        <h3 className="aui-padded-t-5">{name}</h3>
+        <h3 className="aui-padded-t-5">
+          {name}-"{id}"
+        </h3>
 
-        <div>{id}</div>
+        {/*<div></div>*/}
         <p className="aui-font-size-12 aui-padded-t-5">{intro}</p>
         <p
           className="aui-font-size-12 aui-padded-t-5"

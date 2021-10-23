@@ -1881,8 +1881,6 @@ input[type="search"]::-webkit-search-cancel-button {
 .aui-searchbar .aui-searchbar-btn {
 	font-size: 0.7rem;
 	color: #666666;
-	margin-right: -2.2rem;
-	width: 2.2rem;
 	height: 1.4rem;
 	padding-right: 0.5rem;
 	line-height: 1.4rem;

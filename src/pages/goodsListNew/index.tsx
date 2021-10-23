@@ -100,7 +100,7 @@ export default () => {
                     key={item.id}
                     onClick={() => {
                       history.push(
-                        `/goodsListModel?id=${item.id}&title=Entrada`,
+                        `/goodsListModel?id=${item.id}&title=Categorías`,
                       );
                     }}
                   >

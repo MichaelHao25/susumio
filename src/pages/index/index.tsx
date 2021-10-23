@@ -4,10 +4,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.less';
 import 'swiper/components/pagination/pagination.less';
 import SwiperCore, { Pagination } from 'swiper';
-import { connect, ConnectProps, Dispatch, Link } from 'umi';
-import React, { useEffect } from 'react';
+import { connect, ConnectProps, Dispatch, history, Link } from 'umi';
+import React, { useEffect, useState } from 'react';
 import List from '@/component/List';
 import { AllList } from '@/services/interface';
+import { postBannerList, postGoodsTag } from '@/services/api';
 
 SwiperCore.use([Pagination]);
 
@@ -15,7 +16,49 @@ interface PageProps extends ConnectProps {
   dispatch: Dispatch;
 }
 
+interface BannerItem {
+  alt: string;
+  applet_href: string;
+  create_time: string;
+  href: string;
+  id: number;
+  img: string;
+  is_open_model: boolean;
+  memo: string;
+  model: string;
+  model_id: number;
+  name: string;
+  position: string;
+  status: number;
+  type_id: number;
+  type_name: string;
+  update_time: string;
+}
+
+interface TagItem {
+  create_time: string;
+  id: number;
+  name: string;
+  sort: number;
+  thum: string;
+  update_time: string;
+}
+
 const Header = () => {
+  const [bannerList, setBannerList] = useState<BannerItem[]>([]);
+  const [tags, setTags] = useState<TagItem[]>([]);
+  useEffect(() => {
+    postBannerList().then((res) => {
+      if (res) {
+        setBannerList(res.data || []);
+      }
+    });
+    postGoodsTag().then((res) => {
+      if (res) {
+        setTags(res.data || []);
+      }
+    });
+  }, []);
   return (
     <>
       <div id="top">
@@ -26,8 +69,13 @@ const Header = () => {
           <div className="aui-list-item aui-list-item-middle aui-padded-l-5 aui-padded-r-5">
             <div className="aui-media-list-item-inner">
               <div className="aui-list-item-inner aui-text-center">
-                <div className="aui-searchbar" id="search">
-                  {/*onClick="$util.openWindow('search_page_win')"*/}
+                <div
+                  className="aui-searchbar"
+                  onClick={() => {
+                    history.push('/searchPage');
+                  }}
+                  id="search"
+                >
                   <div
                     className="aui-searchbar-input aui-border-radius "
                     id="search-header"
@@ -66,24 +114,13 @@ const Header = () => {
           loop={true}
           pagination={{ clickable: true }}
         >
-          <SwiperSlide>
-            <img
-              src="https://www.177pinche.com/public/upload/article_images/20210527/e11a217b5b1325a6ede1b0b38a67f259.png"
-              alt=""
-            />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img
-              src="https://www.177pinche.com/public/upload/article_images/20210527/d0c8d9ddf599a2e09e3508db6f7a2d0d.png"
-              alt=""
-            />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img
-              src="https://www.177pinche.com/public/upload/article_images/20210527/e11a217b5b1325a6ede1b0b38a67f259.png"
-              alt=""
-            />
-          </SwiperSlide>
+          {bannerList.map((item) => {
+            return (
+              <SwiperSlide key={item.id}>
+                <img src={item.img} alt="" />
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
         <div className="product-tag aui-padded-t-15 ">
           <section className="aui-grid  aui-margin-l-5 aui-margin-r-5 aui-padded-t-15 aui-padded-b-15">
@@ -91,94 +128,22 @@ const Header = () => {
               className="aui-row aui-padded-t-15 "
               style={{ display: 'flex', flexWrap: 'wrap' }}
             >
-              <Link
-                to={'/goodsListModel?customTag=Envío gratis&title=Envío gratis'}
-                className="aui-col-xs-3"
-              >
-                <img
-                  src="https://www.177pinche.com/public/upload/goods_images/20210317/96184edac14b56a6b9bdd5c0d425ba12.gif"
-                  className="aui-padded-5"
-                  style={{ margin: '0px auto', width: '55%' }}
-                />
-                <div className="aui-grid-label">Envío gratis</div>
-              </Link>
-              <Link
-                to={'/goodsListModel?customTag=USA&title=USA'}
-                className="aui-col-xs-3"
-              >
-                <img
-                  src="https://www.177pinche.com/public/upload/goods_images/20210317/d963afcb3644c4c9522fffe66f6b75cd.png"
-                  className="aui-padded-5"
-                  style={{ margin: '0px auto', width: '55%' }}
-                />
-                <div className="aui-grid-label">USA</div>
-              </Link>
-              <Link
-                to={'/goodsListModel?customTag=MÉXICO&title=MÉXICO'}
-                className="aui-col-xs-3"
-              >
-                <img
-                  src="https://www.177pinche.com/public/upload/goods_images/20201122/1c7cbe0b5b20f603f33c68d329040fe8.png"
-                  className="aui-padded-5"
-                  style={{ margin: '0px auto', width: '55%' }}
-                />
-                <div className="aui-grid-label">MÉXICO</div>
-              </Link>
-              <Link
-                to={'/goodsListModel?customTag=Otros países&title=Otros países'}
-                className="aui-col-xs-3"
-              >
-                <img
-                  src="https://www.177pinche.com/public/upload/goods_images/20210317/a52daf9e04b101dfc7a69941c67a36e1.gif"
-                  className="aui-padded-5"
-                  style={{ margin: '0px auto', width: '55%' }}
-                />
-                <div className="aui-grid-label">Otros países</div>
-              </Link>
-              <Link
-                to={'/goodsListModel?customTag=Bodega&title=Bodega'}
-                className="aui-col-xs-3"
-              >
-                <img
-                  src="https://www.177pinche.com/public/upload/goods_images/20210317/1fdf75f2ec06e2c209599dd5e8f75d19.gif"
-                  className="aui-padded-5"
-                  style={{ margin: '0px auto', width: '55%' }}
-                />
-                <div className="aui-grid-label">Bodega</div>
-              </Link>
-              <Link
-                to={'/goodsListModel?customTag=En México&title=En México'}
-                className="aui-col-xs-3"
-              >
-                <img
-                  src="https://www.177pinche.com/public/upload/goods_images/20201122/b8efd9185685f111913a4a60c9d81350.jpg"
-                  className="aui-padded-5"
-                  style={{ margin: '0px auto', width: '55%' }}
-                />
-                <div className="aui-grid-label">En México</div>
-              </Link>
-              <Link
-                to={'/goodsListModel?customTag=Tienda local&title=Tienda local'}
-                className="aui-col-xs-3"
-              >
-                <img
-                  src="https://www.177pinche.com/public/upload/goods_images/20210527/218e24952a7d82e582f821f17d736d88.jpg"
-                  className="aui-padded-5"
-                  style={{ margin: '0px auto', width: '55%' }}
-                />
-                <div className="aui-grid-label">Tienda local</div>
-              </Link>
-              <Link
-                to={'/goodsListModel?customTag=Ganar&title=Ganar'}
-                className="aui-col-xs-3"
-              >
-                <img
-                  src="https://www.177pinche.com/public/upload/goods_images/20201207/3769d2d8636d4f2ce506a8e8d336c79e.gif"
-                  className="aui-padded-5"
-                  style={{ margin: '0px auto', width: '55%' }}
-                />
-                <div className="aui-grid-label">Ganar</div>
-              </Link>
+              {tags.map((item) => {
+                return (
+                  <Link
+                    to={`/goodsListModel?customTag=${item.name}&title=${item.name}`}
+                    key={item.id}
+                    className="aui-col-xs-3"
+                  >
+                    <img
+                      src={item.thum}
+                      className="aui-padded-5"
+                      style={{ margin: '0px auto', width: '55%' }}
+                    />
+                    <div className="aui-grid-label">{item.name}</div>
+                  </Link>
+                );
+              })}
             </div>
           </section>
         </div>

@@ -2,6 +2,43 @@ import { request } from './core';
 import { RequestOptionsInit } from 'umi-request';
 import { AddressItem } from '@/services/interface';
 
+/**
+ * 热门关键词
+ */
+export const postGoodsKeyword = () => {
+  return request.post('/api_goods/goods_keywords/lists');
+};
+
+/**
+ * 清楚用户搜索的关键词
+ */
+export const postUserKeywordDelete = () => {
+  return request.post('/api_users/user_goods_keywords/delete');
+};
+/**
+ * 获取用户搜过的关键词
+ */
+export const postUserKeyword = () => {
+  return request.post('/api_users/user_goods_keywords/read');
+};
+
+/**
+ * 获取bannerlist
+ */
+export const postBannerList = () => {
+  return request.post('/api_articles/banners/lists', {
+    data: {
+      type_id: 11,
+    },
+  });
+};
+/**
+ * 加载标签
+ */
+export const postGoodsTag = () => {
+  return request.post('/api_goods/goods_tags/index');
+};
+
 export interface PostApplyLists {
   status: number;
   pageLimit: number;

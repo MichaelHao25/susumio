@@ -119,6 +119,42 @@ export default () => {
             Importe minimo para sscar: ${min_drawcash_money}
           </div>
         </div>
+        <div
+          className="aui-bg-white aui-margin-l-15 aui-margin-r-15 aui-padded-l-10 aui-padded-r-10"
+          style={{ borderRadius: '.3rem' }}
+        >
+          <div>请输入银行名称</div>
+          <div
+            style={{ borderBottom: '1px solid #f4f4f4' }}
+            className="aui-margin-b-15"
+          >
+            <input type="text" />
+          </div>
+        </div>
+        <div
+          className="aui-bg-white aui-margin-l-15 aui-margin-r-15 aui-padded-l-10 aui-padded-r-10"
+          style={{ borderRadius: '.3rem' }}
+        >
+          <div>请输入银行账号</div>
+          <div
+            style={{ borderBottom: '1px solid #f4f4f4' }}
+            className="aui-margin-b-15"
+          >
+            <input type="text" />
+          </div>
+        </div>
+        <div
+          className="aui-bg-white aui-margin-l-15 aui-margin-r-15 aui-padded-l-10 aui-padded-r-10"
+          style={{ borderRadius: '.3rem' }}
+        >
+          <div>请输入姓名</div>
+          <div
+            style={{ borderBottom: '1px solid #f4f4f4' }}
+            className="aui-margin-b-15"
+          >
+            <input type="text" />
+          </div>
+        </div>
         <div className="aui-margin-10">
           <div className="distribution-buttons wallet" onClick={handleSubmit}>
             A la billetera
