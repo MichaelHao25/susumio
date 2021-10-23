@@ -5,7 +5,7 @@ import {
   postAddressLists,
   postApiGoodsGoodsLists,
   postApiOrdersLists,
-  postApplyLists,
+  postApplyList,
   postAssetLogsList,
   postCommentsLists,
   postFavorite,
@@ -21,6 +21,7 @@ import {
   LogItem,
   OrderListResponse,
   OrdersListItem,
+  PostApplyList,
 } from '@/services/interface';
 
 export interface ListState {
@@ -113,7 +114,7 @@ export default <ListModel>{
         };
       });
       const { cb, ...req } = payload;
-      const res: ListResponse | undefined = yield call(postApplyLists, req);
+      const res: PostApplyList | undefined = yield call(postApplyList, req);
       debugger;
       if (res) {
         yield put({
@@ -274,12 +275,14 @@ export default <ListModel>{
         cb,
         customTag = '',
         id = '',
+        keyword = '',
       } = payload;
       const res: ListResponse | undefined = yield call(postApiGoodsGoodsLists, {
         pageLimit,
         pageNum,
         customTag,
         id,
+        keyword,
       });
       if (res) {
         yield put({

@@ -39,7 +39,7 @@ export const postGoodsTag = () => {
   return request.post('/api_goods/goods_tags/index');
 };
 
-export interface PostApplyLists {
+export interface PostApplyList {
   status: number;
   pageLimit: number;
   pageNum: number;
@@ -48,7 +48,7 @@ export interface PostApplyLists {
 /**
  * 分销相关接口
  */
-export const postApplyLists = (req: PostApplyLists) => {
+export const postApplyList = (req: PostApplyList) => {
   const { status, pageLimit, pageNum } = req;
   return request.post('/api_drp/commission_applys/lists', {
     headers: {
@@ -869,6 +869,7 @@ export interface ListRequest {
   pageNum: number;
   customTag?: string;
   id?: string;
+  keyword?: string;
 }
 
 /**
@@ -876,7 +877,13 @@ export interface ListRequest {
  * @param data
  */
 export const postApiGoodsGoodsLists = (data: ListRequest) => {
-  const { pageLimit = 10, pageNum = 1, customTag = '', id = '' } = data;
+  const {
+    pageLimit = 10,
+    pageNum = 1,
+    customTag = '',
+    id = '',
+    keyword = '',
+  } = data;
 
   const res: CustomHeader = {
     headers: {
@@ -886,6 +893,7 @@ export const postApiGoodsGoodsLists = (data: ListRequest) => {
     data: {
       custom_tag: customTag,
       goods_cate_id: id,
+      keyword,
     },
   };
   return request.post(`/api_goods/goods/lists`, res);

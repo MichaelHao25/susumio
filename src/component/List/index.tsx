@@ -196,8 +196,6 @@ export default connect(({ list }: { list: ListState }) => {
     function getList() {
       switch (type) {
         case AllList.postApplyList: {
-          debugger;
-
           return (
             <div className="aui-content" style={{ width: '100%' }}>
               {list.postApplyList.length === 0 ? (

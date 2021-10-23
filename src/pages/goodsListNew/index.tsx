@@ -44,23 +44,30 @@ export default () => {
   return (
     <div className="goodsListNew">
       <Header title={'Categorías'} noBack={true} />
-      <div style={{ height: '2.25rem' }}></div>
-      <div className="aui-title" style={{ left: '0rem', right: '0rem' }}>
+      <div style={{ height: '2.25rem' }} />
+      <div
+        className="aui-title"
+        style={{ left: '0rem', right: '0rem' }}
+        onClick={() => {
+          history.push('/searchPage');
+        }}
+      >
         {/*onClick="$util.openWindow('search_page_win')"*/}
         <div className="aui-searchbar aui-bg-white" id="search">
           <div className="aui-searchbar-input aui-border-radius aui-bg-default">
             <i className="aui-iconfont aui-icon-search" />
-            <input
-              type="search"
-              placeholder="Buscar lo que quieres"
-              id="search-input"
-              disabled
-            />
+            <div>Buscar lo que quieres</div>
+            {/*<input*/}
+            {/*  type="search"*/}
+            {/*  placeholder="Buscar lo que quieres"*/}
+            {/*  id="search-input"*/}
+            {/*  disabled*/}
+            {/*/>*/}
             <div className="aui-searchbar-clear-btn">
               <i className="aui-iconfont aui-icon-close" />
             </div>
           </div>
-          <div className="aui-searchbar-btn">Cancelar</div>
+          {/*<div className="aui-searchbar-btn">Cancelar</div>*/}
         </div>
       </div>
 

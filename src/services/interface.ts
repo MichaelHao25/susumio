@@ -1,6 +1,7 @@
 import {
   postAddressLists,
   postApiOrdersLists,
+  postApplyList,
   postAssetLogsList,
   postCommentsLists,
   postUserFootLists,
@@ -16,6 +17,7 @@ export enum AllList {
   postAssetLogsList,
   postApplyList,
 }
+
 export interface LogItem {
   id: number;
   user_id: number;
@@ -34,6 +36,7 @@ export interface LogItem {
     avatar: string;
   };
 }
+
 export interface CommentItem {
   id: number;
   user_id: number;
@@ -76,8 +79,7 @@ export interface CommentItem {
   };
 }
 
-export interface AddressListResponse extends BaseResponse {
-  page: { page_num: string; page_limit: string; data_count: number };
+export interface AddressListResponse extends BaseResponse, Page {
   data: AddressItem[];
 }
 
@@ -223,13 +225,22 @@ export interface OrdersListItem {
   };
 }
 
-export interface ListResponse extends BaseResponse {
+export interface Page {
   page: { page_num: string; page_limit: string; data_count: number };
+}
+
+export interface PostApplyList extends BaseResponse, Page {
+  page: { page_num: string; page_limit: string; data_count: number };
+  data: {
+    applys: string[];
+  };
+}
+
+export interface ListResponse extends BaseResponse, Page {
   data: Details[];
 }
 
-export interface OrderListResponse extends BaseResponse {
-  page: { page_num: string; page_limit: string; data_count: number };
+export interface OrderListResponse extends BaseResponse, Page {
   data: Details[];
 }
 

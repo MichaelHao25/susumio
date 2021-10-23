@@ -9,24 +9,28 @@ interface Props
   extends ConnectProps<
     {},
     {},
-    { customTag: string; title: string; id: string }
+    { customTag: string; title: string; id: string; keyword: string }
   > {}
 
 export default (props: Props) => {
   const {
     location: {
-      query: { customTag = '', title = '', id = '' },
+      query: { customTag = '', title = '', id = '', keyword = '' },
     },
   } = props;
   let params: {
     customTag?: string;
     id?: string;
+    keyword?: string;
   } = {};
   if (customTag) {
     params.customTag = customTag;
   }
   if (id) {
     params.id = id;
+  }
+  if (keyword) {
+    params.keyword = keyword;
   }
   return (
     <div className="goodsListModel">

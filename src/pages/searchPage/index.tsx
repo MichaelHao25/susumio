@@ -1,7 +1,7 @@
 import Header from '@/component/Header';
-import { useSelector } from 'umi';
+import { history, useSelector } from 'umi';
 import { UserinfoState } from '@/pages/login/model';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   postGoodsKeyword,
   postUserKeyword,
@@ -21,9 +21,13 @@ export default () => {
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
     return userinfo;
   });
+  const inputRef = useRef<HTMLInputElement>(null);
   const [goodsKeyword, setGoodsKeyword] = useState<GoodsKeywordItem[]>([]);
   const [userKeyword, setUserKeyword] = useState<string[]>([]);
   const [keyword, setKeyword] = useState<string>('');
+  const [buttonText, setButtonText] = useState<'Búsqueda' | 'Cancelar'>(
+    'Cancelar',
+  );
   useEffect(() => {
     postGoodsKeyword().then((res) => {
       if (res) {
@@ -50,7 +54,17 @@ export default () => {
   };
 
   function searchKeyup(event: React.KeyboardEvent<HTMLInputElement>) {
-    console.log(event);
+    if (event.key === 'Enter') {
+      if (keyword !== '') {
+        // $util.openWindow('goods_list_model_win', {
+        //   keyword: keywords
+        // })
+        history.push(`/goodsListModel?keyword=${keyword}&title=${keyword}`);
+      }
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
+    }
   }
 
   return (
@@ -64,8 +78,16 @@ export default () => {
                 type="text"
                 placeholder="Buscar productos"
                 id="search-input"
+                ref={inputRef}
                 value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
+                onChange={(e) => {
+                  setKeyword(e.target.value);
+                  if (e.target.value) {
+                    setButtonText('Búsqueda');
+                  } else {
+                    setButtonText('Cancelar');
+                  }
+                }}
                 onKeyUp={(event) => searchKeyup(event)}
                 // onKeyUp="searchKeyup(event)"
               />
@@ -73,7 +95,25 @@ export default () => {
                 <i className="aui-iconfont aui-icon-close" />
               </div>
             </div>
-            <div className="aui-searchbar-btn">Cancelar</div>
+            <div
+              className="aui-searchbar-btn"
+              onClick={() => {
+                if (keyword) {
+                  // $util.openWindow('goods_list_model_win', {
+                  //   keyword: keywords
+                  // })
+                  history.push(
+                    `/goodsListModel?keyword=${keyword}&title=${keyword}`,
+                  );
+                }
+              }}
+              style={{
+                transform:
+                  keyword === '' ? 'translateX(100%)' : 'translateX(0)',
+              }}
+            >
+              {buttonText}
+            </div>
           </div>
         }
         titleStyle={{ left: '1.5rem', right: '0rem' }}
