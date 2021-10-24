@@ -1,21 +1,21 @@
-import { history } from 'umi';
-import React, { ReactNode } from 'react';
+import { history } from "umi";
+import React, { ReactNode } from "react";
 
 interface Props {
   title: ReactNode;
   noBack?: boolean;
   right?: ReactNode;
-  left?: string;
+  left?: ReactNode;
   titleStyle?: React.CSSProperties;
 }
 
 export default (props: Props) => {
-  const { title, noBack, right, left = '', titleStyle } = props;
+  const { title, noBack, right, left = "", titleStyle } = props;
   return (
     <header
       className="aui-bar aui-bar-nav aui-bar-light"
       id="header"
-      style={{ backgroundColor: '#ffffff!important' }}
+      style={{ backgroundColor: "#ffffff!important" }}
     >
       {noBack ? (
         <></>
@@ -28,16 +28,16 @@ export default (props: Props) => {
         >
           <span
             className="aui-iconfont aui-icon-left"
-            style={{ color: '#333!important' }}
+            style={{ color: "#333!important" }}
           >
-            {left ? left : ''}
+            {left ? left : ""}
           </span>
         </a>
       )}
 
       <div
         className="aui-title"
-        style={{ color: '#333!important', ...titleStyle }}
+        style={{ color: "#333!important", ...titleStyle }}
         id="title"
       >
         {title}

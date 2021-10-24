@@ -1,17 +1,17 @@
-import React, { useEffect, useRef } from 'react';
-import { connect, Dispatch, history, Link } from 'umi';
-import styles from './index.less';
+import React, { useEffect, useRef } from "react";
+import { connect, Dispatch, history, Link } from "umi";
+import styles from "./index.less";
 // @ts-ignore
-import MiniRefreshTools from 'minirefresh';
-import 'minirefresh/dist/debug/minirefresh.css';
+import MiniRefreshTools from "minirefresh";
+import "minirefresh/dist/debug/minirefresh.css";
 import {
   AddressItem,
   AllList,
   OrderListItemGoodsInfo,
   OrdersListItem,
-} from '@/services/interface';
-import { Action, ListState } from '@/models/list';
-import { Confirm, Notify } from 'notiflix';
+} from "@/services/interface";
+import { Action, ListState } from "@/models/list";
+import { Confirm, Notify } from "notiflix";
 import {
   postAddressDelete,
   postAddressSetDefault,
@@ -21,7 +21,7 @@ import {
   postOrderFinish,
   postPayPrepay,
   postTipDeliver,
-} from '@/services/api';
+} from "@/services/api";
 
 interface PageProps {
   dispatch: Dispatch;
@@ -48,9 +48,9 @@ export default connect(({ list }: { list: ListState }) => {
   React.memo((props: PageProps) => {
     const miniRefresh = useRef<any>();
     const {
-      header = '',
-      top = '',
-      bottom = '',
+      header = "",
+      top = "",
+      bottom = "",
       dispatch,
       type,
       list,
@@ -81,9 +81,20 @@ export default connect(({ list }: { list: ListState }) => {
         page.current.pageNum = 1;
       }
       switch (type) {
+        case AllList.postOrdersList: {
+          dispatch({
+            type: "list/postOrdersList",
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
         case AllList.postApplyList: {
           dispatch({
-            type: 'list/postApplyList',
+            type: "list/postApplyList",
             payload: {
               ...page.current,
               ...global.params,
@@ -94,7 +105,7 @@ export default connect(({ list }: { list: ListState }) => {
         }
         case AllList.postAssetLogsList: {
           dispatch({
-            type: 'list/postAssetLogsList',
+            type: "list/postAssetLogsList",
             payload: {
               ...page.current,
               ...global.params,
@@ -105,7 +116,7 @@ export default connect(({ list }: { list: ListState }) => {
         }
         case AllList.postUserFootLists: {
           dispatch({
-            type: 'list/postUserFootLists',
+            type: "list/postUserFootLists",
             payload: {
               ...page.current,
               ...global.params,
@@ -116,7 +127,7 @@ export default connect(({ list }: { list: ListState }) => {
         }
         case AllList.postCommentsLists: {
           dispatch({
-            type: 'list/postCommentsLists',
+            type: "list/postCommentsLists",
             payload: {
               ...page.current,
               ...global.params,
@@ -127,7 +138,7 @@ export default connect(({ list }: { list: ListState }) => {
         }
         case AllList.postFavorite: {
           dispatch({
-            type: 'list/postFavorite',
+            type: "list/postFavorite",
             payload: {
               ...page.current,
               ...global.params,
@@ -138,7 +149,7 @@ export default connect(({ list }: { list: ListState }) => {
         }
         case AllList.postApiGoodsGoodsLists: {
           dispatch({
-            type: 'list/postApiGoodsGoodsLists',
+            type: "list/postApiGoodsGoodsLists",
             payload: {
               ...page.current,
               ...global.params,
@@ -149,7 +160,7 @@ export default connect(({ list }: { list: ListState }) => {
         }
         case AllList.postApiOrdersLists: {
           dispatch({
-            type: 'list/postApiOrdersLists',
+            type: "list/postApiOrdersLists",
             payload: {
               ...page.current,
               ...global.params,
@@ -159,7 +170,7 @@ export default connect(({ list }: { list: ListState }) => {
         }
         case AllList.postAddressLists: {
           dispatch({
-            type: 'list/postAddressLists',
+            type: "list/postAddressLists",
             payload: {
               ...page.current,
               ...global.params,
@@ -195,28 +206,147 @@ export default connect(({ list }: { list: ListState }) => {
 
     function getList() {
       switch (type) {
-        case AllList.postApplyList: {
+        case AllList.postOrdersList: {
+          const statusFilter = (value: number): string | undefined => {
+            if (value == 1) {
+              return "Pagará";
+            } else if (value == 2) {
+              return "Pagará";
+            } else if (value == 3) {
+              return "Realizado";
+            }
+          };
           return (
-            <div className="aui-content" style={{ width: '100%' }}>
-              {list.postApplyList.length === 0 ? (
+            <div className="aui-content" style={{ width: "100%" }}>
+              {list.postOrdersList.length === 0 ? (
                 <div
                   className="aui-col-xs-12 aui-text-center"
-                  style={{ marginTop: '30%' }}
+                  style={{ marginTop: "30%" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/no_content.png')}
-                    style={{ width: '18%', margin: '0 auto' }}
+                    src={require("../../assets/img/no_content.png")}
+                    style={{ width: "18%", margin: "0 auto" }}
                   />
                   <h5
-                    style={{ marginTop: '1rem' }}
+                    style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
                   >
                     Oh. Aquí no hay nada.
                   </h5>
                 </div>
               ) : (
-                ''
+                ""
+              )}
+              {list.postOrdersList.map((order) => {
+                return (
+                  <div key={order.order_id}>
+                    <div
+                      style={{ height: ".5rem", backgroundColor: "#f4f4f4" }}
+                      className="aui-col-xs-12"
+                    />
+                    <div className="aui-padded-10 aui-font-size-14 aui-bg-white">
+                      <span>
+                        <span>
+                          {order.source_user_info.nick_name ||
+                            order.source_user_info.mobile}
+                        </span>
+                        <span className="aui-font-size-12">
+                          {"(Nivel " + order.level + ")"}
+                        </span>
+                        <span className="aui-margin-l-10 aui-text-pray aui-font-size-12">
+                          {order.order_info && order.order_info.create_time}
+                        </span>
+                      </span>
+                      <span className="aui-pull-right aui-text-info">
+                        {statusFilter(order.order_status)}
+                      </span>
+                    </div>
+                    <div className="aui-padded-l-10 aui-font-size-14 aui-bg-white">
+                      <span>
+                        <span>
+                          {order.order_info && order.order_info.order_no}
+                        </span>
+                      </span>
+                    </div>
+                    <ul className="aui-list aui-media-list">
+                      {order.order_goods_info.map((goods) => {
+                        return (
+                          <li
+                            className="aui-list-item aui-list-item-middle aui-bg-default aui-margin-b-5"
+                            key={goods.id}
+                          >
+                            <div className="aui-media-list-item-inner">
+                              <div
+                                className="aui-list-item-media"
+                                style={{ width: "3rem" }}
+                              >
+                                <img
+                                  src={
+                                    goods.order_goods_info &&
+                                    goods.order_goods_info.thum
+                                  }
+                                  className="aui-list-img-sm"
+                                />
+                              </div>
+                              <div className="aui-list-item-inner">
+                                <div className="aui-list-item-text">
+                                  <div className="aui-list-item-title">
+                                    {goods.order_goods_info &&
+                                      goods.order_goods_info.name}
+                                  </div>
+                                  <div className="aui-list-item-right">
+                                    {order.order_status == 3
+                                      ? "Comisión recibida"
+                                      : "Comisión prevista"}
+                                  </div>
+                                </div>
+                                <div className="aui-list-item-text aui-margin-t-5">
+                                  <div className="aui-list-item-title aui-font-size-14 aui-text-pray">
+                                    x
+                                    {goods.order_goods_info &&
+                                      goods.order_goods_info.num}
+                                  </div>
+                                  <div className="aui-list-item-right  aui-text-pray">
+                                    {order.order_status == 3
+                                      ? "+" + goods.real_money
+                                      : "+" + goods.expect_money}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        }
+        case AllList.postApplyList: {
+          return (
+            <div className="aui-content" style={{ width: "100%" }}>
+              {list.postApplyList.length === 0 ? (
+                <div
+                  className="aui-col-xs-12 aui-text-center"
+                  style={{ marginTop: "30%" }}
+                >
+                  <img
+                    loading="lazy"
+                    src={require("../../assets/img/no_content.png")}
+                    style={{ width: "18%", margin: "0 auto" }}
+                  />
+                  <h5
+                    style={{ marginTop: "1rem" }}
+                    className="aui-font-size-14"
+                  >
+                    Oh. Aquí no hay nada.
+                  </h5>
+                </div>
+              ) : (
+                ""
               )}
               <ul className="aui-list aui-media-list aui-bg-default">
                 {list.postApplyList.map((apply) => {
@@ -245,11 +375,11 @@ export default connect(({ list }: { list: ListState }) => {
                             />
                             <div
                               className="aui-list-item-right  aui-text-pray aui-font-size-18"
-                              style={{ color: '#e95d40!important' }}
+                              style={{ color: "#e95d40!important" }}
                             >
-                              {'{'}
-                              {'{'}apply.status | statusFilter{'}'}
-                              {'}'}
+                              {"{"}
+                              {"{"}apply.status | statusFilter{"}"}
+                              {"}"}
                             </div>
                           </div>
                           <div className="aui-list-item-text aui-margin-t-5">
@@ -269,26 +399,26 @@ export default connect(({ list }: { list: ListState }) => {
         }
         case AllList.postAssetLogsList: {
           return (
-            <div className="aui-content" style={{ width: '100%' }}>
+            <div className="aui-content" style={{ width: "100%" }}>
               {list.postAssetLogsList.length === 0 ? (
                 <div
                   className="aui-col-xs-12 aui-text-center"
-                  style={{ marginTop: '30%' }}
+                  style={{ marginTop: "30%" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/no_content.png')}
-                    style={{ width: '18%', margin: '0 auto' }}
+                    src={require("../../assets/img/no_content.png")}
+                    style={{ width: "18%", margin: "0 auto" }}
                   />
                   <h5
-                    style={{ marginTop: '1rem' }}
+                    style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
                   >
                     Oh. Aquí no hay nada.
                   </h5>
                 </div>
               ) : (
-                ''
+                ""
               )}
               <ul className="wallet-ul">
                 {list.postAssetLogsList.map((log) => {
@@ -316,26 +446,26 @@ export default connect(({ list }: { list: ListState }) => {
         }
         case AllList.postUserFootLists: {
           return (
-            <div className="aui-content" style={{ width: '100%' }}>
+            <div className="aui-content" style={{ width: "100%" }}>
               {list.postUserFootLists.length === 0 ? (
                 <div
                   className="aui-col-xs-12 aui-text-center"
-                  style={{ marginTop: '30%' }}
+                  style={{ marginTop: "30%" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/no_content.png')}
-                    style={{ width: '18%', margin: '0 auto' }}
+                    src={require("../../assets/img/no_content.png")}
+                    style={{ width: "18%", margin: "0 auto" }}
                   />
                   <h5
-                    style={{ marginTop: '1rem' }}
+                    style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
                   >
                     Oh. Aquí no hay nada.
                   </h5>
                 </div>
               ) : (
-                ''
+                ""
               )}
 
               <div className="aui-flex-col aui-flex-center">
@@ -345,12 +475,12 @@ export default connect(({ list }: { list: ListState }) => {
                       return (
                         <div
                           className="aui-flex-item-6"
-                          style={{ position: 'relative', padding: '3px' }}
+                          style={{ position: "relative", padding: "3px" }}
                           key={trace.id}
                         >
                           <img
                             loading="lazy"
-                            style={{ display: 'block' }}
+                            style={{ display: "block" }}
                             src={trace.goods_info.thum}
                             onClick={() => {
                               history.push(
@@ -360,14 +490,14 @@ export default connect(({ list }: { list: ListState }) => {
                           />
                           <h5
                             className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white"
-                            style={{ height: '2.2rem' }}
+                            style={{ height: "2.2rem" }}
                           >
                             {trace.goods_info.name}
                           </h5>
                           <p className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white">
                             <span
                               className="aui-text-price"
-                              style={{ fontSize: '0.5rem' }}
+                              style={{ fontSize: "0.5rem" }}
                             >
                               $
                             </span>
@@ -387,16 +517,16 @@ export default connect(({ list }: { list: ListState }) => {
         case AllList.postCommentsLists: {
           const removeComments = (commentId: number) => {
             Confirm.show(
-              'Confirmar comentarios borrados?',
-              '',
-              'Confirmar',
-              'Cancelar',
+              "Confirmar comentarios borrados?",
+              "",
+              "Confirmar",
+              "Cancelar",
               () => {
                 postCommentsDelete(commentId).then((res) => {
                   if (res) {
                     Notify.success(res.msg);
                     dispatch({
-                      type: 'list/updateComments',
+                      type: "list/updateComments",
                       payload: {
                         type: Action.DeleteItem,
                         commentId,
@@ -408,26 +538,26 @@ export default connect(({ list }: { list: ListState }) => {
             );
           };
           return (
-            <div className="aui-content" style={{ width: '100%' }}>
+            <div className="aui-content" style={{ width: "100%" }}>
               {list.postCommentsLists.length === 0 ? (
                 <div
                   className="aui-col-xs-12 aui-text-center"
-                  style={{ marginTop: '30%' }}
+                  style={{ marginTop: "30%" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/no_content.png')}
-                    style={{ width: '18%', margin: '0 auto' }}
+                    src={require("../../assets/img/no_content.png")}
+                    style={{ width: "18%", margin: "0 auto" }}
                   />
                   <h5
-                    style={{ marginTop: '1rem' }}
+                    style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
                   >
                     Oh. Aquí no hay nada.
                   </h5>
                 </div>
               ) : (
-                ''
+                ""
               )}
 
               {list.postCommentsLists.map((comment) => {
@@ -438,7 +568,7 @@ export default connect(({ list }: { list: ListState }) => {
                   >
                     <div
                       className="aui-bg-white aui-padded-r-15 aui-padded-l-15"
-                      style={{ height: '2rem', lineHeight: '2rem' }}
+                      style={{ height: "2rem", lineHeight: "2rem" }}
                     >
                       <span className="aui-font-size-14 aui-pull-left">
                         {comment.create_time}
@@ -450,12 +580,12 @@ export default connect(({ list }: { list: ListState }) => {
                     </div>
                     <div
                       className="aui-padded-t-5 aui-bg-white"
-                      style={{ backgroundImage: 'none' }}
+                      style={{ backgroundImage: "none" }}
                     >
                       <ul className="aui-list aui-media-list">
                         <li
                           className="aui-list-item aui-margin-b-5 aui-bg-default"
-                          style={{ backgroundImage: 'none' }}
+                          style={{ backgroundImage: "none" }}
                           onClick={() => {
                             history.push(
                               `/goodsDetails?id=${comment.goods_id}`,
@@ -470,7 +600,7 @@ export default connect(({ list }: { list: ListState }) => {
                                   src={comment.order_goods_info.thum}
                                 />
                               ) : (
-                                ''
+                                ""
                               )}
                             </div>
                             <div className="aui-list-item-inner">
@@ -480,14 +610,14 @@ export default connect(({ list }: { list: ListState }) => {
                                     {comment.order_goods_info.name}
                                   </div>
                                 ) : (
-                                  ''
+                                  ""
                                 )}
                               </div>
                               <div className="aui-margin-t-5">
                                 <span
                                   style={{
-                                    fontSize: '0.6rem',
-                                    color: '#757575',
+                                    fontSize: "0.6rem",
+                                    color: "#757575",
                                   }}
                                 >
                                   Especificaciones:
@@ -495,7 +625,7 @@ export default connect(({ list }: { list: ListState }) => {
                                 </span>
                                 <span
                                   className="aui-font-size-14 aui-pull-right aui-font-size-16 aui-margin-r-15"
-                                  style={{ color: '#df0303' }}
+                                  style={{ color: "#df0303" }}
                                 >
                                   {comment.order_goods_info.sell_price}
                                 </span>
@@ -503,8 +633,8 @@ export default connect(({ list }: { list: ListState }) => {
                               <div>
                                 <span
                                   style={{
-                                    fontSize: '0.6rem',
-                                    color: '#757575',
+                                    fontSize: "0.6rem",
+                                    color: "#757575",
                                   }}
                                 >
                                   Cantidad:{comment.order_goods_info.num}
@@ -512,10 +642,10 @@ export default connect(({ list }: { list: ListState }) => {
                                 <span
                                   className="aui-pull-right aui-margin-r-15"
                                   style={{
-                                    color: '#757575',
-                                    fontSize: '0.6rem',
-                                    textDecoration: 'line-through',
-                                    marginTop: '-0.2rem',
+                                    color: "#757575",
+                                    fontSize: "0.6rem",
+                                    textDecoration: "line-through",
+                                    marginTop: "-0.2rem",
                                   }}
                                 >
                                   {comment.order_goods_info.real_price}
@@ -527,19 +657,19 @@ export default connect(({ list }: { list: ListState }) => {
                       </ul>
                     </div>
                     <div>
-                      {'.'
+                      {"."
                         .repeat(5)
-                        .split('')
+                        .split("")
                         .map((_, index) => {
                           return (
                             <i
                               className="aui-iconfont iconfont icon-shoucang aui-margin-5"
                               style={{
-                                fontSize: '1.2rem',
+                                fontSize: "1.2rem",
                                 color:
                                   index + 1 <= parseInt(comment.score)
-                                    ? '#ffc640'
-                                    : '#ccc',
+                                    ? "#ffc640"
+                                    : "#ccc",
                               }}
                             />
                           );
@@ -565,12 +695,12 @@ export default connect(({ list }: { list: ListState }) => {
 
         case AllList.postFavorite: {
           const removeFavorite = (favoriteId: number) => {
-            Confirm.show('¿Cancelar del favorito?', '', 'Sí', 'No', () => {
+            Confirm.show("¿Cancelar del favorito?", "", "Sí", "No", () => {
               postFavoriteDelete(favoriteId).then((res) => {
                 if (res) {
                   Notify.success(res.msg);
                   dispatch({
-                    type: 'list/updateFavorite',
+                    type: "list/updateFavorite",
                     payload: {
                       type: Action.DeleteItem,
                       favoriteId,
@@ -583,20 +713,20 @@ export default connect(({ list }: { list: ListState }) => {
           return (
             <div
               className="aui-content aui-margin-b-10"
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
             >
               {list.postFavorite.length === 0 ? (
                 <div
                   className="aui-col-xs-12 aui-text-center"
-                  style={{ marginTop: '30%' }}
+                  style={{ marginTop: "30%" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/no_content.png')}
-                    style={{ width: '18%', margin: '0 auto' }}
+                    src={require("../../assets/img/no_content.png")}
+                    style={{ width: "18%", margin: "0 auto" }}
                   />
                   <h5
-                    style={{ marginTop: '1rem' }}
+                    style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
                   >
                     Oh. Aquí no hay nada.
@@ -612,12 +742,12 @@ export default connect(({ list }: { list: ListState }) => {
                       return (
                         <div
                           className="aui-flex-item-6"
-                          style={{ position: 'relative', padding: '3px' }}
+                          style={{ position: "relative", padding: "3px" }}
                           key={collection.id}
                         >
                           <img
                             loading="lazy"
-                            style={{ display: 'block' }}
+                            style={{ display: "block" }}
                             src={collection.goods_info.thum}
                             onClick={() => {
                               history.push(
@@ -631,7 +761,7 @@ export default connect(({ list }: { list: ListState }) => {
                           <p className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white">
                             <span
                               className="aui-text-price"
-                              style={{ fontSize: '0.5rem' }}
+                              style={{ fontSize: "0.5rem" }}
                             >
                               $
                             </span>
@@ -662,7 +792,7 @@ export default connect(({ list }: { list: ListState }) => {
               if (res) {
                 Notify.success(res.msg);
                 dispatch({
-                  type: 'list/updateAddress',
+                  type: "list/updateAddress",
                   payload: {
                     type: Action.SetDefault,
                     addressId,
@@ -672,16 +802,16 @@ export default connect(({ list }: { list: ListState }) => {
             });
           };
           const modifyAddress = (addressId: number): void => {
-            history.push('/addressEdit', {
+            history.push("/addressEdit", {
               addressId,
             });
           };
           const deleteAddress = (addressId: number): void => {
             Confirm.show(
-              'waring',
-              '¿Borrar la dirección?',
-              'Confirmar',
-              'Cancelar',
+              "waring",
+              "¿Borrar la dirección?",
+              "Confirmar",
+              "Cancelar",
               () => {
                 postAddressDelete({
                   addressId,
@@ -689,7 +819,7 @@ export default connect(({ list }: { list: ListState }) => {
                   if (res) {
                     Notify.success(res.msg);
                     dispatch({
-                      type: 'list/updateAddress',
+                      type: "list/updateAddress",
                       payload: {
                         type: Action.DeleteItem,
                         addressId,
@@ -703,31 +833,31 @@ export default connect(({ list }: { list: ListState }) => {
           const selectAddress = (address: AddressItem) => {
             const { selectAddress = false } = params === -1 ? {} : params;
             if (selectAddress) {
-              sessionStorage.setItem('address', JSON.stringify(address));
+              sessionStorage.setItem("address", JSON.stringify(address));
               history.goBack();
             }
           };
           return (
-            <section className="aui-content" style={{ width: '100%' }}>
+            <section className="aui-content" style={{ width: "100%" }}>
               {list.postAddressLists.length === 0 ? (
                 <div
                   className="aui-col-xs-12 aui-text-center"
-                  style={{ marginTop: '30%' }}
+                  style={{ marginTop: "30%" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/no_content.png')}
-                    style={{ width: '18%', margin: '0 auto' }}
+                    src={require("../../assets/img/no_content.png")}
+                    style={{ width: "18%", margin: "0 auto" }}
                   />
                   <h5
-                    style={{ marginTop: '1rem' }}
+                    style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
                   >
                     Oh. Aquí no hay nada.
                   </h5>
                 </div>
               ) : (
-                ''
+                ""
               )}
               {list.postAddressLists.map((address: AddressItem) => {
                 return (
@@ -748,7 +878,7 @@ export default connect(({ list }: { list: ListState }) => {
                           <>
                             <i
                               className="aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-15"
-                              style={{ color: '#ccc' }}
+                              style={{ color: "#ccc" }}
                             />
                             Dirección predeterminada
                           </>
@@ -762,14 +892,14 @@ export default connect(({ list }: { list: ListState }) => {
                       <div>
                         <div
                           onClick={() => modifyAddress(address.id)}
-                          style={{ display: 'inline' }}
+                          style={{ display: "inline" }}
                         >
                           <i className="aui-iconfont iconfont icon-icon- aui-margin-r-5 aui-font-size-15" />
                           Edición
                         </div>
                         <div
                           onClick={() => deleteAddress(address.id)}
-                          style={{ display: 'inline' }}
+                          style={{ display: "inline" }}
                         >
                           <i className="aui-iconfont iconfont icon-shanchu aui-margin-r-5 aui-margin-l-15 aui-font-size-15" />
                           Eliminar
@@ -789,12 +919,12 @@ export default connect(({ list }: { list: ListState }) => {
                 to={`/goodsDetails?id=${item.id}`}
                 key={item.id}
                 className="aui-flex-item-6"
-                style={{ position: 'relative', padding: '3px' }}
+                style={{ position: "relative", padding: "3px" }}
               >
                 <img loading="lazy" src={item.thum} /> {/**/}
                 <h5
                   className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-5 aui-padded-r-5 aui-bg-white"
-                  style={{ height: '2rem', marginBottom: 0 }}
+                  style={{ height: "2rem", marginBottom: 0 }}
                 >
                   {item.name}
                 </h5>
@@ -802,7 +932,7 @@ export default connect(({ list }: { list: ListState }) => {
                   style={{ marginBottom: 0 }}
                   className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10 aui-bg-white "
                 >
-                  <span className="aui-text-price aui-font-size-10">$</span>{' '}
+                  <span className="aui-text-price aui-font-size-10">$</span>{" "}
                   <span className="aui-text-price ">{item.sell_price}</span>
                 </p>
               </Link>
@@ -811,17 +941,17 @@ export default connect(({ list }: { list: ListState }) => {
         }
         case AllList.postApiOrdersLists: {
           const orderStatus = (order: OrdersListItem): string => {
-            var str = '';
+            var str = "";
             if (order.status == 1) {
-              str += 'Esperando el pago';
+              str += "Esperando el pago";
             } else if (order.status == 2) {
-              str += 'Esperando la entrega';
+              str += "Esperando la entrega";
             } else if (order.status == 3) {
-              str += 'Mercancías entregadas';
+              str += "Mercancías entregadas";
             } else if (order.status == 4) {
-              str += 'Realizado';
+              str += "Realizado";
             } else if (order.status == 9) {
-              str += 'Orden cancelada';
+              str += "Orden cancelada";
             }
             return str;
           };
@@ -832,21 +962,21 @@ export default connect(({ list }: { list: ListState }) => {
           ) => {
             e.stopPropagation();
             Confirm.show(
-              'Confirm',
-              'Por favor,seleccione la causa de la cancelación?',
-              'Confirmar',
-              'Cancelar',
+              "Confirm",
+              "Por favor,seleccione la causa de la cancelación?",
+              "Confirmar",
+              "Cancelar",
               function () {
                 postCancelOrders({
                   order_id: order.id,
-                  cancel_reason: 'Confirmar',
+                  cancel_reason: "Confirmar",
                 }).then((res) => {
                   if (res) {
                     Notify.success(res.msg);
                     dispatch({
-                      type: 'list/setState',
+                      type: "list/setState",
                       payload: {
-                        key: ['postApiOrdersLists', { id: order.id }],
+                        key: ["postApiOrdersLists", { id: order.id }],
                         value: {
                           status: 9,
                         },
@@ -867,7 +997,7 @@ export default connect(({ list }: { list: ListState }) => {
               order_id: order.id,
             }).then((res) => {
               if (res) {
-                history.push('/paySelect', {
+                history.push("/paySelect", {
                   order_no: order.order_no,
                   total_money: order.total_money,
                 });
@@ -879,7 +1009,7 @@ export default connect(({ list }: { list: ListState }) => {
             goods: OrderListItemGoodsInfo,
           ) => {
             e.stopPropagation();
-            history.push('/refundGoods', {
+            history.push("/refundGoods", {
               goods: goods,
             });
           };
@@ -888,7 +1018,7 @@ export default connect(({ list }: { list: ListState }) => {
             goods: OrderListItemGoodsInfo,
           ) => {
             e.stopPropagation();
-            history.push('/commentAdd', {
+            history.push("/commentAdd", {
               goods: goods,
             });
           };
@@ -897,7 +1027,7 @@ export default connect(({ list }: { list: ListState }) => {
             order: OrdersListItem,
           ) => {
             e.stopPropagation();
-            history.push('/logistics', {
+            history.push("/logistics", {
               order,
             });
           };
@@ -920,10 +1050,10 @@ export default connect(({ list }: { list: ListState }) => {
           ) => {
             e.stopPropagation();
             Confirm.show(
-              'Confirm',
-              'Confirmen la recepción?',
-              'Confirmar',
-              'Cancelar',
+              "Confirm",
+              "Confirmen la recepción?",
+              "Confirmar",
+              "Cancelar",
               function () {
                 postOrderFinish({
                   order_id: order.id,
@@ -931,9 +1061,9 @@ export default connect(({ list }: { list: ListState }) => {
                   if (res) {
                     Notify.success(res.msg);
                     dispatch({
-                      type: 'list/setState',
+                      type: "list/setState",
                       payload: {
-                        key: ['postApiOrdersLists', { id: order.id }],
+                        key: ["postApiOrdersLists", { id: order.id }],
                         value: {
                           status: 4,
                         },
@@ -950,27 +1080,27 @@ export default connect(({ list }: { list: ListState }) => {
             e: React.MouseEvent<HTMLDivElement>,
             order: OrdersListItem,
           ): void => {
-            history.push('/viewHtmlDetails', {
+            history.push("/viewHtmlDetails", {
               order,
             });
           };
 
           return (
-            <div className="aui-content" style={{ width: '100%' }}>
+            <div className="aui-content" style={{ width: "100%" }}>
               {/*什么都没有*/}
               {list.postApiOrdersLists.length === 0 ? (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div style={{ display: "flex", justifyContent: "center" }}>
                   <div
                     className="aui-col-xs-12 aui-text-center"
-                    style={{ marginTop: '30%' }}
+                    style={{ marginTop: "30%" }}
                   >
                     <img
                       loading="lazy"
-                      src={require('../../assets/img/no_content.png')}
-                      style={{ width: '18%', margin: '0 auto' }}
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
                     />
                     <h5
-                      style={{ marginTop: '1rem' }}
+                      style={{ marginTop: "1rem" }}
                       className="aui-font-size-14"
                     >
                       Oh. Aquí no hay nada.
@@ -986,7 +1116,7 @@ export default connect(({ list }: { list: ListState }) => {
                     className="aui-padded-5 aui-bg-white aui-margin-t-10"
                     key={order.id}
                     onClick={() => {
-                      history.push('/orderDetail', {
+                      history.push("/orderDetail", {
                         order,
                       });
                     }}
@@ -1008,7 +1138,7 @@ export default connect(({ list }: { list: ListState }) => {
                             >
                               <div
                                 className="aui-media-list-item-inner"
-                                style={{ width: '100%' }}
+                                style={{ width: "100%" }}
                               >
                                 <Link
                                   className="aui-list-item-media aui-col-4"
@@ -1021,12 +1151,12 @@ export default connect(({ list }: { list: ListState }) => {
                                   <div className="aui-list-item-text aui-col-xs-12">
                                     <div
                                       className="aui-list-item-title aui-ellipsis-2 aui-font-size-14"
-                                      style={{ width: '70%' }}
+                                      style={{ width: "70%" }}
                                     >
                                       {goods.name}
                                     </div>
                                     <div className="aui-list-item-righ aui-text-price">
-                                      <span style={{ fontSize: '0.5rem' }}>
+                                      <span style={{ fontSize: "0.5rem" }}>
                                         $
                                       </span>
                                       <span className="aui-font-size-14">
@@ -1039,15 +1169,15 @@ export default connect(({ list }: { list: ListState }) => {
                                     <div className="aui-list-item-text aui-col-xs-12">
                                       <div
                                         className="aui-list-item-title aui-ellipsis-2 aui-font-size-14"
-                                        style={{ width: '70%' }}
+                                        style={{ width: "70%" }}
                                       />
                                       <div
                                         className="aui-list-item-righ"
                                         style={{
-                                          textDecoration: 'line-through',
+                                          textDecoration: "line-through",
                                         }}
                                       >
-                                        <span style={{ fontSize: '0.4rem' }}>
+                                        <span style={{ fontSize: "0.4rem" }}>
                                           $
                                         </span>
                                         <span className="aui-font-size-12 ">
@@ -1062,11 +1192,11 @@ export default connect(({ list }: { list: ListState }) => {
                                   <div className="aui-list-item-text aui-col-xs-12 aui-text-pray aui-margin-t-5">
                                     <div
                                       className="aui-list-item-title aui-font-size-12 aui-text-pray"
-                                      style={{ width: '70%' }}
+                                      style={{ width: "70%" }}
                                     >
                                       {goods.spec_group_id != 0 ? (
                                         <span>
-                                          Especificaciones:{' '}
+                                          Especificaciones:{" "}
                                           {goods.spec_group_info}
                                         </span>
                                       ) : (
@@ -1083,7 +1213,7 @@ export default connect(({ list }: { list: ListState }) => {
                                   <div className="aui-list-item-text aui-margin-t-5">
                                     <div
                                       className="aui-list-item-title aui-text-pray aui-font-size-12 "
-                                      style={{ width: '70%' }}
+                                      style={{ width: "70%" }}
                                     />
                                     {order.status == 4 &&
                                     goods.is_comment == 0 &&
@@ -1091,7 +1221,7 @@ export default connect(({ list }: { list: ListState }) => {
                                     goods.return_goods_status != 1 ? (
                                       <div
                                         className="aui-list-item-right "
-                                        style={{ width: '30%' }}
+                                        style={{ width: "30%" }}
                                         onClick={(e) => goComment(e, goods)}
                                       >
                                         <div className="order-buttons aui-text-right">
@@ -1108,19 +1238,19 @@ export default connect(({ list }: { list: ListState }) => {
                                   <div className="aui-list-item-text aui-margin-t-10">
                                     <div
                                       className="aui-list-item-title aui-text-pray aui-font-size-12 "
-                                      style={{ width: '70%' }}
+                                      style={{ width: "70%" }}
                                     />
                                     {(order.status == 2 || order.status == 3) &&
                                     goods.return_goods_status == 0 ? (
                                       <div
                                         className="aui-list-item-right"
-                                        style={{ width: '30%' }}
+                                        style={{ width: "30%" }}
                                         onClick={(e) => refund(e, goods)}
                                       >
                                         <div className="order-buttons aui-text-right">
                                           <div
                                             className="mini-button aui-font-size-10"
-                                            style={{ width: '4rem' }}
+                                            style={{ width: "4rem" }}
                                           >
                                             Reembolso
                                           </div>
@@ -1132,7 +1262,7 @@ export default connect(({ list }: { list: ListState }) => {
                                     {goods.return_goods_status == 1 ? (
                                       <div
                                         className="aui-list-item-right aui-text-right"
-                                        style={{ width: '30%' }}
+                                        style={{ width: "30%" }}
                                         onClick={(e) => refund(e, goods)}
                                       >
                                         Solicitud de reembolso
@@ -1143,7 +1273,7 @@ export default connect(({ list }: { list: ListState }) => {
                                     {goods.return_goods_status == 2 ? (
                                       <div
                                         className="aui-list-item-right aui-text-right"
-                                        style={{ width: '30%' }}
+                                        style={{ width: "30%" }}
                                       >
                                         Reembolso denegado
                                       </div>
@@ -1155,7 +1285,7 @@ export default connect(({ list }: { list: ListState }) => {
                                     goods.is_return_money == 0 ? (
                                       <div
                                         className="aui-list-item-right aui-text-right"
-                                        style={{ width: '30%' }}
+                                        style={{ width: "30%" }}
                                       >
                                         Devolución exitosa
                                         <br />
@@ -1168,7 +1298,7 @@ export default connect(({ list }: { list: ListState }) => {
                                     goods.is_return_money == 1 ? (
                                       <div
                                         className="aui-list-item-right aui-text-right"
-                                        style={{ width: '30%' }}
+                                        style={{ width: "30%" }}
                                       >
                                         Devolución exitosa
                                       </div>
@@ -1186,14 +1316,14 @@ export default connect(({ list }: { list: ListState }) => {
                     {/* 小计 */}
                     <div
                       className="aui-padded-t-10 aui-padded-b-10 aui-text-right aui-bg-white aui-font-size-12 "
-                      style={{ width: '100%' }}
+                      style={{ width: "100%" }}
                     >
                       Total
                       <span>{order.order_goods_info.length}</span> Productos
                       Total:
                       <span
                         className="aui-text-price "
-                        style={{ fontSize: '0.5rem' }}
+                        style={{ fontSize: "0.5rem" }}
                       >
                         $
                       </span>
@@ -1201,7 +1331,7 @@ export default connect(({ list }: { list: ListState }) => {
                         {order.total_money}
                       </span>
                       <span>
-                        {' '}
+                        {" "}
                         ( Flete incluido $<span>{order.freight_money}</span> )
                       </span>
                     </div>
@@ -1240,7 +1370,7 @@ export default connect(({ list }: { list: ListState }) => {
                       {order.status == 3 ? (
                         <div
                           className="button active "
-                          style={{ width: '7rem' }}
+                          style={{ width: "7rem" }}
                           onClick={(e) => finish(e, order)}
                         >
                           Confirmar
@@ -1261,7 +1391,7 @@ export default connect(({ list }: { list: ListState }) => {
                       {order.status == 3 ? (
                         <div
                           className="button "
-                          style={{ width: '6rem' }}
+                          style={{ width: "6rem" }}
                           onClick={(e) => viewDetails(e, order)}
                         >
                           Detalles
@@ -1284,7 +1414,7 @@ export default connect(({ list }: { list: ListState }) => {
         <div
           id="minirefresh"
           className="minirefresh-wrap"
-          style={{ top: top ? top : '0', bottom: bottom ? bottom : '0' }}
+          style={{ top: top ? top : "0", bottom: bottom ? bottom : "0" }}
         >
           <div className="minirefresh-scroll">
             {header}

@@ -4,8 +4,13 @@ import {
   postApplyList,
   postAssetLogsList,
   postCommentsLists,
+  postOrdersList,
   postUserFootLists,
-} from '@/services/api';
+} from "@/services/api";
+import {
+  DropOrdersListItem_AutoGender,
+  IOrder_goods_info,
+} from "@/services/autoGenderIterface";
 
 export enum AllList {
   postApiGoodsGoodsLists,
@@ -16,6 +21,7 @@ export enum AllList {
   postUserFootLists,
   postAssetLogsList,
   postApplyList,
+  postOrdersList,
 }
 
 export interface LogItem {
@@ -56,7 +62,7 @@ export interface CommentItem {
     name: string;
     thum: string;
     intro: string;
-    standard: '';
+    standard: "";
     spec_group_id_str: string;
     spec_group_info: string;
     sell_price: number;
@@ -229,8 +235,17 @@ export interface Page {
   page: { page_num: string; page_limit: string; data_count: number };
 }
 
+export interface DropOrdersListItem extends DropOrdersListItem_AutoGender {}
+
+export interface PostOrdersList extends BaseResponse, Page {
+  data: {
+    orders: DropOrdersListItem[];
+    total_except_money: number;
+    total_order_num: number;
+  };
+}
+
 export interface PostApplyList extends BaseResponse, Page {
-  page: { page_num: string; page_limit: string; data_count: number };
   data: {
     applys: string[];
   };

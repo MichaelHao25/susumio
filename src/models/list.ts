@@ -1,4 +1,4 @@
-import { Effect, ImmerReducer } from 'umi';
+import { Effect, ImmerReducer } from "umi";
 
 import {
   OrdersLists,
@@ -9,20 +9,23 @@ import {
   postAssetLogsList,
   postCommentsLists,
   postFavorite,
+  postOrdersList,
   postUserFootLists,
-} from '@/services/api';
+} from "@/services/api";
 import {
   AddressItem,
   AddressListResponse,
   CartList,
   CommentItem,
   Details,
+  DropOrdersListItem,
   ListResponse,
   LogItem,
   OrderListResponse,
   OrdersListItem,
   PostApplyList,
-} from '@/services/interface';
+  PostOrdersList,
+} from "@/services/interface";
 
 export interface ListState {
   postApiGoodsGoodsLists: Details[];
@@ -33,6 +36,11 @@ export interface ListState {
   postUserFootLists: CartList[];
   postAssetLogsList: LogItem[];
   postApplyList: any[];
+  postOrdersList: DropOrdersListItem[];
+  postOrdersListHeaderInfo: {
+    totalExceptMoney: number;
+    totalOrderNum: number;
+  };
 }
 
 export enum Action {
@@ -51,6 +59,7 @@ export interface ListModel {
     postUserFootLists: Effect;
     postAssetLogsList: Effect;
     postApplyList: Effect;
+    postOrdersList: Effect;
   };
   reducers: {
     updateComments: ImmerReducer<
@@ -105,8 +114,41 @@ export default <ListModel>{
     postUserFootLists: [],
     postAssetLogsList: [],
     postApplyList: [],
+    postOrdersList: [],
+    postOrdersListHeaderInfo: {
+      totalExceptMoney: 0,
+      totalOrderNum: 0,
+    },
   },
   effects: {
+    *postOrdersList({ payload }, { call, select, put }) {
+      const { list } = yield select(({ list }: { list: ListState }) => {
+        return {
+          list: list.postOrdersList,
+        };
+      });
+      const { cb, ...req } = payload;
+      const res: PostOrdersList | undefined = yield call(postOrdersList, req);
+      if (res) {
+        yield put({
+          type: "setState",
+          payload: {
+            postOrdersList:
+              req.pageNum === 1
+                ? res.data.orders
+                : list.concat(res.data.orders),
+            postOrdersListHeaderInfo: {
+              totalExceptMoney: res.data.total_except_money,
+              totalOrderNum: res.data.total_order_num,
+            },
+          },
+        });
+        cb(res.data);
+      } else {
+        cb([]);
+      }
+    },
+    // todo 暂时没有接入
     *postApplyList({ payload }, { call, select, put }) {
       const { list } = yield select(({ list }: { list: ListState }) => {
         return {
@@ -118,7 +160,7 @@ export default <ListModel>{
       debugger;
       if (res) {
         yield put({
-          type: 'setState',
+          type: "setState",
           payload: {
             postApplyList:
               req.pageNum === 1
@@ -141,7 +183,7 @@ export default <ListModel>{
       const res: ListResponse | undefined = yield call(postAssetLogsList, req);
       if (res) {
         yield put({
-          type: 'setState',
+          type: "setState",
           payload: {
             postAssetLogsList:
               req.pageNum === 1 ? res.data : list.concat(res.data),
@@ -162,7 +204,7 @@ export default <ListModel>{
       const res: ListResponse | undefined = yield call(postUserFootLists, req);
       if (res) {
         yield put({
-          type: 'setState',
+          type: "setState",
           payload: {
             postUserFootLists:
               req.pageNum === 1 ? res.data : list.concat(res.data),
@@ -183,7 +225,7 @@ export default <ListModel>{
       const res: ListResponse | undefined = yield call(postCommentsLists, req);
       if (res) {
         yield put({
-          type: 'setState',
+          type: "setState",
           payload: {
             postCommentsLists:
               req.pageNum === 1 ? res.data : list.concat(res.data),
@@ -204,7 +246,7 @@ export default <ListModel>{
       const res: ListResponse | undefined = yield call(postFavorite, req);
       if (res) {
         yield put({
-          type: 'setState',
+          type: "setState",
           payload: {
             postFavorite: req.pageNum === 1 ? res.data : list.concat(res.data),
           },
@@ -227,7 +269,7 @@ export default <ListModel>{
       );
       if (res) {
         yield put({
-          type: 'setState',
+          type: "setState",
           payload: {
             postAddressLists:
               req.pageNum === 1 ? res.data : list.concat(res.data),
@@ -251,7 +293,7 @@ export default <ListModel>{
       );
       if (res) {
         yield put({
-          type: 'setState',
+          type: "setState",
           payload: {
             postApiOrdersLists:
               req.pageNum === 1 ? res.data : list.concat(res.data),
@@ -273,9 +315,9 @@ export default <ListModel>{
         pageLimit = 10,
         pageNum = 1,
         cb,
-        customTag = '',
-        id = '',
-        keyword = '',
+        customTag = "",
+        id = "",
+        keyword = "",
       } = payload;
       const res: ListResponse | undefined = yield call(postApiGoodsGoodsLists, {
         pageLimit,
@@ -286,7 +328,7 @@ export default <ListModel>{
       });
       if (res) {
         yield put({
-          type: 'setState',
+          type: "setState",
           payload: {
             postApiGoodsGoodsLists:
               pageNum === 1 ? res.data : list.concat(res.data),
@@ -357,7 +399,7 @@ export default <ListModel>{
       if (key.length !== 0 && Object.values(value).length !== 0) {
         let data: any = state;
         key.forEach((childKey: keyof ListState | []) => {
-          if (typeof childKey === 'string') {
+          if (typeof childKey === "string") {
             data = data[childKey];
           } else {
             const k = Object.keys(childKey)[0];

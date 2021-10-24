@@ -1,32 +1,59 @@
-import { request } from './core';
-import { RequestOptionsInit } from 'umi-request';
-import { AddressItem } from '@/services/interface';
+import { request } from "./core";
+import { RequestOptionsInit } from "umi-request";
+import { AddressItem } from "@/services/interface";
+
+export interface PostOrdersList {
+  status: number;
+  pageLimit: number;
+  pageNum: number;
+}
 
 /**
  * 热门关键词
  */
+export const postOrdersList = (req: PostOrdersList) => {
+  const { status, pageLimit, pageNum } = req;
+  const data: {
+    status?: number;
+  } = {
+    status,
+  };
+  if (status === 0) {
+    delete data.status;
+  }
+  return request.post("/api_drp/drp_orders/lists", {
+    headers: {
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
+    },
+    data,
+  });
+};
+/**
+ * 热门关键词
+ */
 export const postGoodsKeyword = () => {
-  return request.post('/api_goods/goods_keywords/lists');
+  return request.post("/api_goods/goods_keywords/lists");
 };
 
 /**
  * 清楚用户搜索的关键词
  */
 export const postUserKeywordDelete = () => {
-  return request.post('/api_users/user_goods_keywords/delete');
+  return request.post("/api_users/user_goods_keywords/delete");
 };
 /**
  * 获取用户搜过的关键词
  */
 export const postUserKeyword = () => {
-  return request.post('/api_users/user_goods_keywords/read');
+  return request.post("/api_users/user_goods_keywords/read");
 };
 
 /**
  * 获取bannerlist
  */
 export const postBannerList = () => {
-  return request.post('/api_articles/banners/lists', {
+  return request.post("/api_articles/banners/lists", {
     data: {
       type_id: 11,
     },
@@ -36,7 +63,7 @@ export const postBannerList = () => {
  * 加载标签
  */
 export const postGoodsTag = () => {
-  return request.post('/api_goods/goods_tags/index');
+  return request.post("/api_goods/goods_tags/index");
 };
 
 export interface PostApplyList {
@@ -50,10 +77,10 @@ export interface PostApplyList {
  */
 export const postApplyList = (req: PostApplyList) => {
   const { status, pageLimit, pageNum } = req;
-  return request.post('/api_drp/commission_applys/lists', {
+  return request.post("/api_drp/commission_applys/lists", {
     headers: {
-      'page-limit': pageLimit.toString(),
-      'page-num': pageNum.toString(),
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
     },
     data: {
       status,
@@ -73,7 +100,7 @@ export interface PostReturnGoods {
  * 订单评价
  */
 export const postReturnGoods = (req: PostReturnGoods) => {
-  return request.post('/api_orders/return_goods/save', {
+  return request.post("/api_orders/return_goods/save", {
     data: req,
   });
 };
@@ -93,8 +120,8 @@ export const postUpdatePasswordByEmail = (req: PostUpdatePasswordByEmail) => {
   const { type } = req;
   const url =
     type == 2
-      ? '/api_users/user_accounts/reset_password_email'
-      : '/api_users/user_accounts/reset_pay_password_email';
+      ? "/api_users/user_accounts/reset_password_email"
+      : "/api_users/user_accounts/reset_pay_password_email";
   return request.post(url, {
     data: req,
   });
@@ -109,7 +136,7 @@ export interface PostSendEmailCode {
  * 更新用户密码/支付密码
  */
 export const postSendEmailCode = (req: PostSendEmailCode) => {
-  return request.post('/api_systems/helper/send_email_code', {
+  return request.post("/api_systems/helper/send_email_code", {
     data: req,
   });
 };
@@ -130,8 +157,8 @@ export const postUpdatePassword = (req: PostUpdatePassword) => {
   const { type } = req;
   const url =
     type === 1
-      ? '/api_users/user_accounts/reset_password'
-      : '/api_users/user_accounts/reset_pay_password';
+      ? "/api_users/user_accounts/reset_password"
+      : "/api_users/user_accounts/reset_pay_password";
   return request.post(url, {
     data: req,
   });
@@ -221,18 +248,18 @@ export const postAssetLogsList = (req: PostAssetLogsList) => {
   const { pageLimit = 10, pageNum = 1 } = req;
   return request.post(`/api_users/user_asset_logs/lists`, {
     headers: {
-      'page-limit': pageLimit.toString(),
-      'page-num': pageNum.toString(),
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
     },
   });
 };
 
 export interface PostWithdraw {
-  asset_type: 'money';
+  asset_type: "money";
   bank_card_id: 0;
   money: string;
   pay_password: string;
-  type: 'withdrawToBankCard';
+  type: "withdrawToBankCard";
 }
 
 /**
@@ -246,7 +273,7 @@ export const postWithdraw = (req: PostWithdraw) => {
 
 export interface PostRecharges {
   money: string;
-  asset_type: 'money';
+  asset_type: "money";
   type: 1;
 }
 
@@ -286,8 +313,8 @@ export const postUserFootLists = (req: PostUserFootLists) => {
   const { pageLimit = 10, pageNum = 1 } = req;
   return request.post(`/api_users/user_foot/lists`, {
     headers: {
-      'page-limit': pageLimit.toString(),
-      'page-num': pageNum.toString(),
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
     },
   });
 };
@@ -314,8 +341,8 @@ export const postCommentsLists = (req: PostCommentsLists) => {
   const { pageLimit = 10, pageNum = 1 } = req;
   return request.post(`/api_goods/goods_comments/lists`, {
     headers: {
-      'page-limit': pageLimit.toString(),
-      'page-num': pageNum.toString(),
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
     },
   });
 };
@@ -343,8 +370,8 @@ export const postFavorite = (req: PostFavorite) => {
   const { pageLimit = 10, pageNum = 1 } = req;
   return request.post(`/api_goods/goods_collections/lists`, {
     headers: {
-      'page-limit': pageLimit.toString(),
-      'page-num': pageNum.toString(),
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
     },
   });
 };
@@ -352,7 +379,7 @@ export const postFavorite = (req: PostFavorite) => {
 /**
  * 获取版本信息等
  */
-export const postGetParams = (type: string = 'basic') => {
+export const postGetParams = (type: string = "basic") => {
   return request.post(`/api_systems/Params/getParams`, {
     data: {
       type: type,
@@ -364,7 +391,7 @@ export const postGetParams = (type: string = 'basic') => {
  */
 export const postAddressesCreate = (req: AddressItem) => {
   const url =
-    req.id !== 0 ? `/api_users/addresses/update` : '/api_users/addresses/save';
+    req.id !== 0 ? `/api_users/addresses/update` : "/api_users/addresses/save";
 
   return request.post(url, {
     data: req,
@@ -401,8 +428,8 @@ export const postAddressLists = (req: PostAddressLists) => {
   const { pageLimit = 10, pageNum = 1 } = req;
   return request.post(`/api_users/addresses/lists`, {
     headers: {
-      'page-limit': pageLimit.toString(),
-      'page-num': pageNum.toString(),
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
     },
   });
 };
@@ -794,8 +821,8 @@ export const postApiGoodsGoodsCollectionsSave = (
 
 interface CustomHeader extends RequestOptionsInit {
   headers: {
-    'page-limit': string;
-    'page-num': string;
+    "page-limit": string;
+    "page-num": string;
   };
 }
 
@@ -811,8 +838,8 @@ export const postApiGoodsGoodsComments = (data: PostApiGoodsGoodsRead) => {
   const { id } = data;
   const req: CustomHeader = {
     headers: {
-      'page-limit': '100',
-      'page-num': '1',
+      "page-limit": "100",
+      "page-num": "1",
     },
     data: {
       goods_id: id,
@@ -880,15 +907,15 @@ export const postApiGoodsGoodsLists = (data: ListRequest) => {
   const {
     pageLimit = 10,
     pageNum = 1,
-    customTag = '',
-    id = '',
-    keyword = '',
+    customTag = "",
+    id = "",
+    keyword = "",
   } = data;
 
   const res: CustomHeader = {
     headers: {
-      'page-limit': pageLimit.toString(),
-      'page-num': pageNum.toString(),
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
     },
     data: {
       custom_tag: customTag,
@@ -919,8 +946,8 @@ export const postApiOrdersLists = (data: OrdersLists) => {
 
   const res: CustomHeader = {
     headers: {
-      'page-limit': pageLimit.toString(),
-      'page-num': pageNum.toString(),
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
     },
     data: req,
   };
