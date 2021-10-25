@@ -1,45 +1,67 @@
-import Header from '@/component/Header';
-import { useState } from 'react';
-import Notiflix, { Notify } from 'notiflix';
+import Header from "@/component/Header";
+import { useState } from "react";
+import Notiflix, { Notify } from "notiflix";
 import {
   postPayMoney,
   postQueryPayPassword,
   postWithdraw,
-} from '@/services/api';
-import { history } from 'umi';
+} from "@/services/api";
+import { history } from "umi";
 
 export default () => {
-  const [money, setMoney] = useState<string>('');
+  const [req, setReq] = useState<{
+    money: string;
+    bank_name: string;
+    bank_no: string;
+    user_name: string;
+  }>({
+    money: "",
+    bank_name: "",
+    bank_no: "",
+    user_name: "",
+  });
   const handleSubmit = () => {
-    if (!money) {
-      Notify.failure('Por favor,introduzca la cantidad correcta de efectivo');
+    if (!req.money) {
+      Notify.failure("Por favor,introduzca la cantidad correcta de efectivo");
+      return;
+    }
+    if (!req.bank_name) {
+      Notify.failure("银行名称不能为空!");
+      return;
+    }
+    if (!req.bank_no) {
+      Notify.failure("银行卡号不能为空!");
+      return;
+    }
+    if (!req.user_name) {
+      Notify.failure("用户名称不能为空!");
       return;
     }
     postQueryPayPassword().then((res) => {
       if (res.data.is_set_pay_password === 0) {
-        Notify.failure('Establezca la contraseña de pago');
+        Notify.failure("Establezca la contraseña de pago");
         // todo 需要修改密码等
         // history.push('/initPayPassword')
         return;
       }
 
       Notiflix.Confirm.show(
-        'Introduzca el Código de transacción.',
+        "Introduzca el Código de transacción.",
         `<input type="password" class="confirm_password"/>`,
-        'Confirmar',
-        'Cancelar',
+        "Confirmar",
+        "Cancelar",
         function () {
           const input: HTMLInputElement | null =
-            document.querySelector('.confirm_password');
+            document.querySelector(".confirm_password");
           if (input) {
             const value = input.value;
-            if (value !== '') {
+            if (value !== "") {
               postWithdraw({
-                asset_type: 'money',
+                asset_type: "money",
                 bank_card_id: 0,
-                money: money,
+                ...req,
                 pay_password: value,
-                type: 'withdrawToBankCard',
+                type: "withdrawToBankCard",
               }).then((res) => {
                 if (res) {
                   Notify.success(res.msg);
@@ -55,16 +77,16 @@ export default () => {
   };
   return (
     <div>
-      <Header title={'Sacar dinero'} />
+      <Header title={"Sacar dinero"} />
       <div className="aui-content">
         <ul
           className="aui-list aui-list aui-media-list aui-bg-default"
-          style={{ backgroundImage: 'none' }}
+          style={{ backgroundImage: "none" }}
         >
           {/* 提现金额 */}
           <li
             className="aui-list-item aui-margin-t-10 aui-bg-white"
-            style={{ backgroundImage: 'none' }}
+            style={{ backgroundImage: "none" }}
           >
             <div className="aui-list-item-inner">
               <div className="aui-list-item-label">Importe</div>
@@ -72,7 +94,7 @@ export default () => {
           </li>
           <li
             className="aui-list-item aui-padded-b-15 aui-bg-white"
-            style={{ backgroundImage: 'none' }}
+            style={{ backgroundImage: "none" }}
           >
             <span>$</span>
             <div className="aui-list-item-input">
@@ -80,10 +102,13 @@ export default () => {
                 <input
                   type="number"
                   pattern="[0-9]*"
-                  style={{ fontSize: '1.8rem', letterSpacing: '.2rem' }}
-                  value={money}
+                  style={{ fontSize: "1.8rem", letterSpacing: ".2rem" }}
+                  value={req.money}
                   onChange={(e) => {
-                    setMoney(e.target.value);
+                    setReq((req) => ({
+                      ...req,
+                      money: e.target.value,
+                    }));
                   }}
                 />
               </div>
@@ -91,16 +116,19 @@ export default () => {
           </li>
           <li
             className="aui-list-item aui-padded-b-15 aui-bg-white"
-            style={{ backgroundImage: 'none' }}
+            style={{ backgroundImage: "none" }}
           >
             <span>请输入银行名称</span>
             <div className="aui-list-item-input">
               <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
                 <input
                   type="text"
-                  value={money}
+                  value={req.bank_name}
                   onChange={(e) => {
-                    setMoney(e.target.value);
+                    setReq((req) => ({
+                      ...req,
+                      bank_name: e.target.value,
+                    }));
                   }}
                 />
               </div>
@@ -109,16 +137,19 @@ export default () => {
 
           <li
             className="aui-list-item aui-padded-b-15 aui-bg-white"
-            style={{ backgroundImage: 'none' }}
+            style={{ backgroundImage: "none" }}
           >
             <span>请输入银行账号</span>
             <div className="aui-list-item-input">
               <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
                 <input
                   type="text"
-                  value={money}
+                  value={req.bank_no}
                   onChange={(e) => {
-                    setMoney(e.target.value);
+                    setReq((req) => ({
+                      ...req,
+                      bank_no: e.target.value,
+                    }));
                   }}
                 />
               </div>
@@ -127,16 +158,19 @@ export default () => {
 
           <li
             className="aui-list-item aui-padded-b-15 aui-bg-white"
-            style={{ backgroundImage: 'none' }}
+            style={{ backgroundImage: "none" }}
           >
             <span>请输入姓名</span>
             <div className="aui-list-item-input">
               <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
                 <input
                   type="text"
-                  value={money}
+                  value={req.user_name}
                   onChange={(e) => {
-                    setMoney(e.target.value);
+                    setReq((req) => ({
+                      ...req,
+                      user_name: e.target.value,
+                    }));
                   }}
                 />
               </div>

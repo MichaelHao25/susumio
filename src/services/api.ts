@@ -208,13 +208,18 @@ export const postUsersUpdate = (req: PostUsersUpdate) => {
 export interface PostCommissionApply {
   receipt_type: string;
   pay_password: string;
+  bank_name: string;
+  bank_no: string;
+  user_name: string;
 }
 
 /**
  * 提现
  */
 export const postCommissionApply = (req: PostCommissionApply) => {
-  return request.post(`/api_drp/commission_applys/save`);
+  return request.post(`/api_drp/commission_applys/save`, {
+    data: req,
+  });
 };
 /**
  * 分销相关
@@ -258,12 +263,15 @@ export interface PostWithdraw {
   asset_type: "money";
   bank_card_id: 0;
   money: string;
+  bank_name: string;
+  bank_no: string;
+  user_name: string;
   pay_password: string;
   type: "withdrawToBankCard";
 }
 
 /**
- * 充值
+ * 提现
  */
 export const postWithdraw = (req: PostWithdraw) => {
   return request.post(`/api_users/user_drawcashs/save`, {
