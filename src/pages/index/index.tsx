@@ -1,14 +1,14 @@
-import Tab from '@/component/Tab';
-import './index.less';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper.less';
-import 'swiper/components/pagination/pagination.less';
-import SwiperCore, { Pagination } from 'swiper';
-import { connect, ConnectProps, Dispatch, history, Link } from 'umi';
-import React, { useEffect, useState } from 'react';
-import List from '@/component/List';
-import { AllList } from '@/services/interface';
-import { postBannerList, postGoodsTag } from '@/services/api';
+import Tab from "@/component/Tab";
+import "./index.less";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper.less";
+import "swiper/components/pagination/pagination.less";
+import SwiperCore, { Pagination } from "swiper";
+import { connect, ConnectProps, Dispatch, history, Link } from "umi";
+import React, { useEffect, useState } from "react";
+import List from "@/component/List";
+import { AllList } from "@/services/interface";
+import { postBannerList, postGoodsTag } from "@/services/api";
 
 SwiperCore.use([Pagination]);
 
@@ -25,7 +25,7 @@ interface BannerItem {
   img: string;
   is_open_model: boolean;
   memo: string;
-  model: string;
+  model: "goods" | "article" | "goods_cate";
   model_id: number;
   name: string;
   position: string;
@@ -64,7 +64,7 @@ const Header = () => {
       <div id="top">
         <div
           className="aui-list aui-media-list aui-list-noborder"
-          style={{ backgroundColor: 'rgba(0,0,0,0)' }}
+          style={{ backgroundColor: "rgba(0,0,0,0)" }}
         >
           <div className="aui-list-item aui-list-item-middle aui-padded-l-5 aui-padded-r-5">
             <div className="aui-media-list-item-inner">
@@ -72,7 +72,7 @@ const Header = () => {
                 <div
                   className="aui-searchbar"
                   onClick={() => {
-                    history.push('/searchPage');
+                    history.push("/searchPage");
                   }}
                   id="search"
                 >
@@ -83,8 +83,8 @@ const Header = () => {
                     <i
                       className="aui-iconfont aui-icon-search"
                       style={{
-                        color: '#666666!important',
-                        marginRight: '-12.25rem',
+                        color: "#666666!important",
+                        marginRight: "-12.25rem",
                       }}
                     />
                     <input
@@ -93,9 +93,9 @@ const Header = () => {
                       className="aui-text-center"
                       id="search-input"
                       style={{
-                        color: '#666666!important',
-                        backgroundColor: '#fafafa!important: #fff!important',
-                        width: '100%',
+                        color: "#666666!important",
+                        backgroundColor: "#fafafa!important: #fff!important",
+                        width: "100%",
                       }}
                       readOnly
                     />
@@ -117,7 +117,27 @@ const Header = () => {
           {bannerList.map((item) => {
             return (
               <SwiperSlide key={item.id}>
-                <img loading="lazy" src={item.img} alt="" />
+                <img
+                  loading="lazy"
+                  src={item.img}
+                  alt=""
+                  onClick={() => {
+                    if (item.is_open_model) {
+                      if (item.model === "goods") {
+                        history.push(`/goodsDetails?id=${item.model_id}`);
+                      }
+                      if (item.model === "goods_cate") {
+                        history.push(
+                          `/goodsListModel?id=${item.model_id}&title=Categorías`,
+                        );
+                      }
+                    } else {
+                      if (item.href) {
+                        window.location.href = item.href;
+                      }
+                    }
+                  }}
+                />
               </SwiperSlide>
             );
           })}
@@ -126,7 +146,7 @@ const Header = () => {
           <section className="aui-grid  aui-margin-l-5 aui-margin-r-5 aui-padded-t-15 aui-padded-b-15">
             <div
               className="aui-row aui-padded-t-15 "
-              style={{ display: 'flex', flexWrap: 'wrap' }}
+              style={{ display: "flex", flexWrap: "wrap" }}
             >
               {tags.map((item) => {
                 return (
@@ -139,7 +159,7 @@ const Header = () => {
                       loading="lazy"
                       src={item.thum}
                       className="aui-padded-5"
-                      style={{ margin: '0px auto', width: '55%' }}
+                      style={{ margin: "0px auto", width: "55%" }}
                     />
                     <div className="aui-grid-label">{item.name}</div>
                   </Link>
@@ -153,9 +173,9 @@ const Header = () => {
           <div className="aui-flex-item-12 ">
             <img
               loading="lazy"
-              src={require('../../assets/img/wntj-1.png')}
+              src={require("../../assets/img/wntj-1.png")}
               className="aui-margin-t-10 aui-margin-b-10"
-              style={{ width: '50%', margin: '0px auto' }}
+              style={{ width: "50%", margin: "0px auto" }}
             />
           </div>
         </div>
@@ -173,10 +193,10 @@ export default connect(({}: {}) => ({}))(
         <List
           header={<Header />}
           params={{}}
-          bottom={'2.5rem'}
+          bottom={"2.5rem"}
           type={AllList.postApiGoodsGoodsLists}
         />
-        <div style={{ height: '2.5rem' }}></div>
+        <div style={{ height: "2.5rem" }}></div>
         <Tab />
       </div>
     );
