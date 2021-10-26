@@ -1,13 +1,13 @@
-import Header from '@/component/Header';
-import { history, useSelector } from 'umi';
-import { UserinfoState } from '@/pages/login/model';
-import React, { useEffect, useRef, useState } from 'react';
+import Header from "@/component/Header";
+import { history, Link, useSelector } from "umi";
+import { UserinfoState } from "@/pages/login/model";
+import React, { useEffect, useRef, useState } from "react";
 import {
   postGoodsKeyword,
   postUserKeyword,
   postUserKeywordDelete,
-} from '@/services/api';
-import './index.less';
+} from "@/services/api";
+import "./index.less";
 
 interface GoodsKeywordItem {
   create_time: string;
@@ -24,9 +24,9 @@ export default () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [goodsKeyword, setGoodsKeyword] = useState<GoodsKeywordItem[]>([]);
   const [userKeyword, setUserKeyword] = useState<string[]>([]);
-  const [keyword, setKeyword] = useState<string>('');
-  const [buttonText, setButtonText] = useState<'Búsqueda' | 'Cancelar'>(
-    'Cancelar',
+  const [keyword, setKeyword] = useState<string>("");
+  const [buttonText, setButtonText] = useState<"Búsqueda" | "Cancelar">(
+    "Cancelar",
   );
   useEffect(() => {
     postGoodsKeyword().then((res) => {
@@ -54,8 +54,8 @@ export default () => {
   };
 
   function searchKeyup(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Enter') {
-      if (keyword !== '') {
+    if (event.key === "Enter") {
+      if (keyword !== "") {
         // $util.openWindow('goods_list_model_win', {
         //   keyword: keywords
         // })
@@ -68,7 +68,7 @@ export default () => {
   }
 
   return (
-    <div className={'searchPage'}>
+    <div className={"searchPage"}>
       <Header
         title={
           <div className="aui-searchbar aui-bg-white" id="search">
@@ -83,9 +83,9 @@ export default () => {
                 onChange={(e) => {
                   setKeyword(e.target.value);
                   if (e.target.value) {
-                    setButtonText('Búsqueda');
+                    setButtonText("Búsqueda");
                   } else {
-                    setButtonText('Cancelar');
+                    setButtonText("Cancelar");
                   }
                 }}
                 onKeyUp={(event) => searchKeyup(event)}
@@ -109,18 +109,18 @@ export default () => {
               }}
               style={{
                 transform:
-                  keyword === '' ? 'translateX(100%)' : 'translateX(0)',
+                  keyword === "" ? "translateX(100%)" : "translateX(0)",
               }}
             >
               {buttonText}
             </div>
           </div>
         }
-        titleStyle={{ left: '1.5rem', right: '0rem' }}
+        titleStyle={{ left: "1.5rem", right: "0rem" }}
       />
       <div
         className="aui-content aui-bg-white aui-padded-t-10"
-        style={{ padding: '0 1.5rem' }}
+        style={{ padding: "0 1.5rem" }}
       >
         {user.mobile ? (
           <>
@@ -134,19 +134,20 @@ export default () => {
             <div className="search-div">
               {userKeyword.map((item, index) => {
                 return (
-                  <div
+                  <Link
+                    to={`/goodsListModel?keyword=${item}&title=${item}`}
                     className="search-key aui-font-size-12"
                     key={index}
-                    data-click="search(keyword)"
+                    // data-click="search(keyword)"
                   >
                     {item}
-                  </div>
+                  </Link>
                 );
               })}
             </div>
           </>
         ) : (
-          ''
+          ""
         )}
         <div className="aui-text-pray aui-padded-t-10">
           <span className="aui-font-size-14">Búsqueda avanzada</span>
@@ -154,13 +155,14 @@ export default () => {
         <div className="search-div">
           {goodsKeyword.map((item, index) => {
             return (
-              <div
+              <Link
                 className="search-key aui-font-size-12"
                 key={item.id}
-                data-click="search(keyword)"
+                to={`/goodsListModel?keyword=${item.keyword}&title=${item.keyword}`}
+                // data-click="search(keyword)"
               >
                 {item.keyword}
-              </div>
+              </Link>
             );
           })}
         </div>
