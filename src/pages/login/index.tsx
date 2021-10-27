@@ -1,7 +1,7 @@
 import Header from "@/component/Header";
 import "./index.less";
 import { history, useDispatch } from "umi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function goodsListNewPage() {
   const [mobile, setMobile] = useState<string>("13968066530");
@@ -122,6 +122,18 @@ export default function goodsListNewPage() {
         >
           Registro Email
         </div>
+        <div
+          onClick={() => {
+            window.FB.login(function (response) {
+              console.log(response);
+            });
+          }}
+          className="rigster"
+          style={{ backgroundColor: "#fff" }}
+        >
+          使用Facebook登陆
+        </div>
+
         {/*onclick="$util.openWindow('register_email_win')"*/}
       </div>
     </div>

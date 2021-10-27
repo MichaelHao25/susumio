@@ -1,7 +1,7 @@
-declare module '*.css';
-declare module '*.less';
-declare module '*.png';
-declare module '*.svg' {
+declare module "*.css";
+declare module "*.less";
+declare module "*.png";
+declare module "*.svg" {
   export function ReactComponent(
     props: React.SVGProps<SVGSVGElement>,
   ): React.ReactElement;
@@ -22,6 +22,11 @@ declare global {
     };
     paypal: {
       Buttons: (props: { [key: string]: any }) => (className: string) => void;
+    };
+    FB: {
+      init: (a: any) => void;
+      login: (a: any) => void;
+      getLoginStatus: (a: any) => void;
     };
   }
 }

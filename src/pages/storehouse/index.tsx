@@ -26,6 +26,7 @@ export default () => {
         slidesPerView={1}
         loop={true}
         pagination={{ clickable: true }}
+        style={{ width: "100%" }}
       >
         {bannerList.map((item) => {
           return (
@@ -48,6 +49,7 @@ export default () => {
             <img
               src="https://www.177pinche.com/public/upload/article_images/20210527/d68369529cf278c20117f0d5f86b5709.png"
               alt=""
+              className={styles.thumbnail}
             />
             <div className={styles.content}>
               <div className={styles.title}>1元代金券</div>
