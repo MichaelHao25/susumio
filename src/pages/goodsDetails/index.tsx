@@ -1,9 +1,9 @@
-import './index.less';
-import React, { useEffect, useState } from 'react';
-import { ConnectProps } from 'umi';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper.less';
-import 'swiper/components/pagination/pagination.less';
+import "./index.less";
+import React, { useEffect, useState } from "react";
+import { ConnectProps } from "umi";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper.less";
+import "swiper/components/pagination/pagination.less";
 import {
   postApiGoodsCartsSave,
   postApiGoodsGoodsCollectionsCancel,
@@ -11,11 +11,11 @@ import {
   postApiGoodsGoodsComments,
   postApiGoodsGoodsIsCollect,
   postApiGoodsGoodsRead,
-} from '@/services/api';
-import { Details } from '@/services/interface';
-import { history } from '@@/core/umiExports';
-import Notiflix, { Notify } from 'notiflix';
-import SpecInfoSelect from '@/pages/goodsDetails/SpecInfoSelect';
+} from "@/services/api";
+import { Details } from "@/services/interface";
+import { history } from "@@/core/umiExports";
+import Notiflix, { Notify } from "notiflix";
+import SpecInfoSelect from "@/pages/goodsDetails/SpecInfoSelect";
 
 interface Props
   extends ConnectProps<{}, {}, { id: string; isDiscountGoods: string }> {}
@@ -76,7 +76,7 @@ export enum LayoutType {
 const index = (props: Props) => {
   const {
     location: {
-      query: { id = '' },
+      query: { id = "" },
       // isDiscountGoods: urlIsDiscountGoods = ''
     },
   } = props;
@@ -122,14 +122,14 @@ const index = (props: Props) => {
   const {
     imgs = [],
     sell_price = 0,
-    name = '',
-    intro = '',
+    name = "",
+    intro = "",
     stock = 0,
     sell_num = 0,
     attr_info = [],
-    desc = '',
+    desc = "",
     thums = [],
-    thum = '',
+    thum = "",
   } = goods || {};
 
   function getTabComment() {
@@ -140,16 +140,16 @@ const index = (props: Props) => {
             <div
               className="aui-col-xs-12 aui-text-center"
               style={{
-                marginTop: '20%',
-                marginBottom: '4rem',
+                marginTop: "20%",
+                marginBottom: "4rem",
               }}
             >
               <img
                 loading="lazy"
-                src={require('../../assets/img/no_content.png')}
-                style={{ width: '18%', margin: '0 auto' }}
+                src={require("../../assets/img/no_content.png")}
+                style={{ width: "18%", margin: "0 auto" }}
               />
-              <h5 style={{ marginTop: '1rem' }} className="aui-font-size-14">
+              <h5 style={{ marginTop: "1rem" }} className="aui-font-size-14">
                 Oh. Aquí no hay nada.
               </h5>
             </div>
@@ -165,19 +165,19 @@ const index = (props: Props) => {
                       <div
                         className="aui-img-round"
                         style={{
-                          overflow: 'hidden',
-                          width: '1.5rem',
-                          height: '1.5rem',
-                          borderRadius: '1.5rem',
+                          overflow: "hidden",
+                          width: "1.5rem",
+                          height: "1.5rem",
+                          borderRadius: "1.5rem",
                         }}
                       >
                         <img
                           loading="lazy"
                           src={
                             item.user_info.avatar ||
-                            require('../../assets/img/avatar.png')
+                            require("../../assets/img/avatar.png")
                           }
-                          style={{ maxWidth: '100%' }}
+                          style={{ maxWidth: "100%" }}
                         />
                       </div>
                       <span className="aui-margin-l-5">
@@ -189,30 +189,30 @@ const index = (props: Props) => {
                     </div>
                   </div>
                   <div>
-                    {'1'
+                    {"1"
                       .repeat(5)
-                      .split('')
+                      .split("")
                       .map((_, index) => (
                         <i
                           className="aui-iconfont iconfont icon-shoucang aui-margin-5"
                           key={index}
                           style={{
                             color:
-                              index + 1 <= ~~item.score ? '#ffc640' : '#ccc',
+                              index + 1 <= ~~item.score ? "#ffc640" : "#ccc",
                           }}
                         />
                       ))}
-                    <span style={{ marginLeft: '6rem', color: '#757575' }}>
+                    <span style={{ marginLeft: "6rem", color: "#757575" }}>
                       {~~item.score >= 4
-                        ? 'Bien'
+                        ? "Bien"
                         : ~~item.score === 3
-                        ? 'Evaluación central'
-                        : 'Evaluación diferencial'}
+                        ? "Evaluación central"
+                        : "Evaluación diferencial"}
                     </span>
                   </div>
                   <div
                     className="aui-list-item-text aui-padded-t-5 aui-padded-b-5"
-                    style={{ wordBreak: 'break-all' }}
+                    style={{ wordBreak: "break-all" }}
                   >
                     {item.content}
                   </div>
@@ -222,11 +222,11 @@ const index = (props: Props) => {
                         <div
                           className="aui-col-xs-3"
                           key={index}
-                          style={{ height: '5rem' }}
+                          style={{ height: "5rem" }}
                         >
                           <img
                             loading="lazy"
-                            style={{ width: '100%', height: '100%' }}
+                            style={{ width: "100%", height: "100%" }}
                             src={item}
                           />
                         </div>
@@ -286,7 +286,7 @@ const index = (props: Props) => {
   function addCart(type: LayoutType) {
     const { free_shipping = false, spec_info = [], id = 0 } = goods || {};
     if (free_shipping) {
-      Notify.failure('Package items cannot be added to shopping cart');
+      Notify.failure("Package items cannot be added to shopping cart");
       return;
     }
     // 如果没有分类信息的话
@@ -307,9 +307,9 @@ const index = (props: Props) => {
   }
 
   function buy(type: LayoutType) {
-    const token = window.localStorage.getItem('token');
+    const token = window.localStorage.getItem("token");
     if (!token) {
-      history.replace('/login');
+      history.replace("/login");
       return;
     }
     if (goods) {
@@ -318,7 +318,7 @@ const index = (props: Props) => {
       } else {
         // 不知道有那些没有分类
         // 先搁置
-        Notify.failure('请联系管理员');
+        Notify.failure("请联系管理员");
         // history.push('/orderConfirm', {
         //   goodsList: {
         //     thum: goods.thum,
@@ -389,7 +389,7 @@ const index = (props: Props) => {
         <p className="aui-font-size-12 aui-padded-t-5">{intro}</p>
         <p
           className="aui-font-size-12 aui-padded-t-5"
-          style={{ color: '#b3b3b3' }}
+          style={{ color: "#b3b3b3" }}
         >
           <span className="aui-pull-left">Existencias{stock}</span>
 
@@ -417,7 +417,7 @@ const index = (props: Props) => {
 
       <div className="aui-tab" id="tab">
         <div
-          className={`aui-tab-item ${tab === Tab.Details ? 'aui-active' : ''}`}
+          className={`aui-tab-item ${tab === Tab.Details ? "aui-active" : ""}`}
           onClick={() => {
             setTab(Tab.Details);
           }}
@@ -425,7 +425,7 @@ const index = (props: Props) => {
           Detalles
         </div>
         <div
-          className={`aui-tab-item ${tab === Tab.Comment ? 'aui-active' : ''}`}
+          className={`aui-tab-item ${tab === Tab.Comment ? "aui-active" : ""}`}
           onClick={() => {
             setTab(Tab.Comment);
           }}
@@ -452,19 +452,19 @@ const index = (props: Props) => {
       {/*  </div>*/}
       {/*</div>*/}
 
-      <div style={{ height: '2.25rem' }} />
+      <div style={{ height: "2.25rem" }} />
       <footer className="aui-bar aui-bar-tab aui-margin-t-15" id="footer">
         <div
           className="aui-bar-tab-item"
-          style={{ width: '3rem' }}
+          style={{ width: "3rem" }}
           onClick={toggleCollect}
         >
           {/*@click="addCollection()"*/}
           <span
             className={`aui-iconfont iconfont icon-shoucang`}
-            style={{ color: isCollect ? '#ffc640' : '' }}
+            style={{ color: isCollect ? "#ffc640" : "" }}
           />
-          <div className="aui-bar-tab-label" style={{ color: '#777' }}>
+          <div className="aui-bar-tab-label" style={{ color: "#777" }}>
             Favorito
           </div>
         </div>
@@ -472,9 +472,9 @@ const index = (props: Props) => {
           className="aui-bar-tab-item aui-text-white"
           onClick={() => addCart(LayoutType.AddCart)}
           style={{
-            width: 'auto',
-            backgroundColor: '#6bcfc4',
-            fontSize: '0.8rem',
+            width: "auto",
+            backgroundColor: "#6bcfc4",
+            fontSize: "0.8rem",
           }}
         >
           Añadir a carro
@@ -482,9 +482,9 @@ const index = (props: Props) => {
         <div
           className="aui-bar-tab-item aui-text-white"
           style={{
-            width: 'auto',
-            backgroundColor: '#06a995',
-            fontSize: '0.8rem',
+            width: "auto",
+            backgroundColor: "#06a995",
+            fontSize: "0.8rem",
           }}
           onClick={() => buy(LayoutType.Shop)}
         >
@@ -511,5 +511,5 @@ const index = (props: Props) => {
   );
 };
 
-index.wrappers = ['@/wrappers/auth'];
+// index.wrappers = ['@/wrappers/auth'];
 export default index;

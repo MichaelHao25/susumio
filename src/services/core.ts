@@ -26,7 +26,11 @@ const errorHandler = function (error: Error) {
   if (msg) {
     console.log("res:", data);
     if ([100400, 100401].includes(code)) {
-      history.replace("/login");
+      // 添加白名单如果在这里面的话就不跳转
+      if (["/api_query/goods/is_collect"].includes(url)) {
+      } else {
+        history.replace("/login");
+      }
     } else {
       Notify.failure(msg);
     }
