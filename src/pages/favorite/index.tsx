@@ -1,13 +1,12 @@
-import Header from '@/component/Header';
-import List from '@/component/List';
-import { AllList } from '@/services/interface';
+import Header from "@/component/Header";
+import List from "@/component/List";
+import { AllList } from "@/services/interface";
 
 export default () => {
   return (
     <>
       <List
-        header={<Header title={'Favorito'} />}
-        params={{}}
+        header={<Header title={"Favorito"} />}
         type={AllList.postFavorite}
       />
     </>

@@ -14,12 +14,12 @@ export interface PostOrdersList {
 export const postOrdersList = (req: PostOrdersList) => {
   const { status, pageLimit, pageNum } = req;
   const data: {
-    status?: number;
+    order_status?: number;
   } = {
-    status,
+    order_status: status,
   };
   if (status === 0) {
-    delete data.status;
+    delete data.order_status;
   }
   return request.post("/api_drp/drp_orders/lists", {
     headers: {
@@ -64,6 +64,53 @@ export const postBannerList = () => {
  */
 export const postGoodsTag = () => {
   return request.post("/api_goods/goods_tags/index");
+};
+
+/**
+ * 获取分销登记
+ */
+export const postRuleIndex = () => {
+  return request.post("/api_drp/rules/index");
+};
+
+export interface PostTeamUsers {
+  pageLimit: number;
+  pageNum: number;
+  status: number;
+}
+
+/**
+ * 我的下级1级2级3级
+ */
+export const postTeamUsers = (req: PostTeamUsers) => {
+  const { pageLimit, pageNum, status } = req;
+  return request.post("/api_drp/team/team_users", {
+    headers: {
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
+    },
+    data: {
+      team_type: status,
+    },
+  });
+};
+
+export interface PostTeamChildUsers {
+  pageLimit: number;
+  pageNum: number;
+}
+
+/**
+ * 我的下级
+ */
+export const postTeamChildUsers = (req: PostTeamChildUsers) => {
+  const { pageLimit, pageNum } = req;
+  return request.post("/api_drp/team/child_users", {
+    headers: {
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
+    },
+  });
 };
 
 export interface PostApplyList {

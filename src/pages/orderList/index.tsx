@@ -1,9 +1,9 @@
-import Header from '@/component/Header';
-import React, { useEffect, useState } from 'react';
-import { AllList } from '@/services/interface';
-import List from '@/component/List';
-import { OrdersData } from '@/services/api';
-import { ConnectProps } from 'umi';
+import Header from "@/component/Header";
+import React, { useEffect, useState } from "react";
+import { AllList } from "@/services/interface";
+import List from "@/component/List";
+import { OrdersData } from "@/services/api";
+import { ConnectProps } from "umi";
 
 interface Props extends ConnectProps<{}, { status: number }, {}> {}
 
@@ -11,7 +11,7 @@ export default (props: Props) => {
   const [activeStatus, setActiveStatus] = useState<number>(() => {
     return props.location.state.status;
   });
-  const [params, setParams] = useState<OrdersData | -1>(-1);
+  const [params, setParams] = useState<OrdersData>({});
   useEffect(() => {
     if (activeStatus == 1 || activeStatus == 2 || activeStatus == 3) {
       // 待付款 待发货 待签收
@@ -36,54 +36,49 @@ export default (props: Props) => {
   const header = (
     <>
       <Header
-        title={activeStatus !== -1 ? 'Mi pedido' : 'Reembolso/devolución'}
+        title={activeStatus !== -1 ? "Mi pedido" : "Reembolso/devolución"}
       />
       {activeStatus !== -1 ? (
         <div className="aui-tab" id="tab">
           <div
-            className={`aui-tab-item ${activeStatus == 0 ? 'aui-active' : ''}`}
+            className={`aui-tab-item ${activeStatus == 0 ? "aui-active" : ""}`}
             onClick={() => setActiveStatus(0)}
           >
             Total
           </div>
           <div
-            className={`aui-tab-item ${activeStatus == 1 ? 'aui-active' : ''}`}
+            className={`aui-tab-item ${activeStatus == 1 ? "aui-active" : ""}`}
             onClick={() => setActiveStatus(1)}
           >
             pagará
           </div>
           <div
-            className={`aui-tab-item ${activeStatus == 2 ? 'aui-active' : ''}`}
+            className={`aui-tab-item ${activeStatus == 2 ? "aui-active" : ""}`}
             onClick={() => setActiveStatus(2)}
           >
             Despachará
           </div>
           <div
-            className={`aui-tab-item ${activeStatus == 3 ? 'aui-active' : ''}`}
+            className={`aui-tab-item ${activeStatus == 3 ? "aui-active" : ""}`}
             onClick={() => setActiveStatus(3)}
           >
             Recibirá
           </div>
           <div
-            className={`aui-tab-item ${activeStatus == 4 ? 'aui-active' : ''}`}
+            className={`aui-tab-item ${activeStatus == 4 ? "aui-active" : ""}`}
             onClick={() => setActiveStatus(4)}
           >
             Comentará
           </div>
         </div>
       ) : (
-        ''
+        ""
       )}
     </>
   );
   return (
     <div>
-      <List
-        header={header}
-        // @ts-ignore
-        params={params}
-        type={AllList.postApiOrdersLists}
-      />
+      <List header={header} params={params} type={AllList.postApiOrdersLists} />
     </div>
   );
 };

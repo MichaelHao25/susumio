@@ -179,6 +179,7 @@ export default () => {
                 className="aui-col-xs-4"
                 onClick={() => {
                   //"$util.openWindow('distribution_custs_win')"
+                  history.push("/distribution/custs");
                 }}
               >
                 <i
@@ -196,6 +197,7 @@ export default () => {
                 className="aui-col-xs-4"
                 onClick={() => {
                   //"$util.openWindow('distribution_team_win')"
+                  history.push("/distribution/team");
                 }}
               >
                 <i

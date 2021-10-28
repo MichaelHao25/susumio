@@ -10,6 +10,8 @@ import {
   postCommentsLists,
   postFavorite,
   postOrdersList,
+  postTeamChildUsers,
+  postTeamUsers,
   postUserFootLists,
 } from "@/services/api";
 import {
@@ -25,6 +27,9 @@ import {
   OrdersListItem,
   PostApplyList,
   PostOrdersList,
+  PostTeamChildUsers,
+  PostTeamChildUsersList,
+  PostTeamUsers,
 } from "@/services/interface";
 
 export interface ListState {
@@ -40,6 +45,17 @@ export interface ListState {
   postOrdersListHeaderInfo: {
     totalExceptMoney: number;
     totalOrderNum: number;
+  };
+  postTeamChildUsers: PostTeamChildUsers[];
+  postTeamChildUsersHeaderInfo: {
+    dataCount: number;
+  };
+  postTeamUsers: PostTeamChildUsers[];
+  postTeamUsersHeaderInfo: {
+    level1Num: number;
+    level2Num: number;
+    level3Num: number;
+    totalNum: number;
   };
 }
 
@@ -60,6 +76,8 @@ export interface ListModel {
     postAssetLogsList: Effect;
     postApplyList: Effect;
     postOrdersList: Effect;
+    postTeamChildUsers: Effect;
+    postTeamUsers: Effect;
   };
   reducers: {
     updateComments: ImmerReducer<
@@ -119,8 +137,75 @@ export default <ListModel>{
       totalExceptMoney: 0,
       totalOrderNum: 0,
     },
+    postTeamChildUsers: [],
+    postTeamChildUsersHeaderInfo: {
+      dataCount: 0,
+    },
+    postTeamUsers: [],
+    postTeamUsersHeaderInfo: {
+      level1Num: 0,
+      level2Num: 0,
+      level3Num: 0,
+      totalNum: 0,
+    },
   },
   effects: {
+    *postTeamUsers({ payload }, { call, select, put }) {
+      const { list } = yield select(({ list }: { list: ListState }) => {
+        return {
+          list: list.postTeamUsers,
+        };
+      });
+      const { cb, ...req } = payload;
+      const res: PostTeamUsers | undefined = yield call(postTeamUsers, req);
+      if (res) {
+        yield put({
+          type: "setState",
+          payload: {
+            postTeamUsers:
+              req.pageNum === 1
+                ? res.data.team_users
+                : list.concat(res.data.team_users),
+            postTeamUsersHeaderInfo: {
+              level1Num: res.data.team_info.level_1_num,
+              level2Num: res.data.team_info.level_2_num,
+              level3Num: res.data.team_info.level_3_num,
+              totalNum: res.data.team_info.total_num,
+            },
+          },
+        });
+        cb(res.data);
+      } else {
+        cb([]);
+      }
+    },
+    *postTeamChildUsers({ payload }, { call, select, put }) {
+      const { list } = yield select(({ list }: { list: ListState }) => {
+        return {
+          list: list.postTeamChildUsers,
+        };
+      });
+      const { cb, ...req } = payload;
+      const res: PostTeamChildUsersList | undefined = yield call(
+        postTeamChildUsers,
+        req,
+      );
+      if (res) {
+        yield put({
+          type: "setState",
+          payload: {
+            postTeamChildUsers:
+              req.pageNum === 1 ? res.data : list.concat(res.data),
+            postTeamChildUsersHeaderInfo: {
+              dataCount: res.page.data_count,
+            },
+          },
+        });
+        cb(res.data);
+      } else {
+        cb([]);
+      }
+    },
     *postOrdersList({ payload }, { call, select, put }) {
       const { list } = yield select(({ list }: { list: ListState }) => {
         return {

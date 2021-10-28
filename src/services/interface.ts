@@ -5,6 +5,7 @@ import {
   postAssetLogsList,
   postCommentsLists,
   postOrdersList,
+  postTeamChildUsers,
   postUserFootLists,
 } from "@/services/api";
 import {
@@ -22,6 +23,8 @@ export enum AllList {
   postAssetLogsList,
   postApplyList,
   postOrdersList,
+  postTeamChildUsers,
+  postTeamUsers,
 }
 
 export interface LogItem {
@@ -233,6 +236,78 @@ export interface OrdersListItem {
 
 export interface Page {
   page: { page_num: string; page_limit: string; data_count: number };
+}
+
+export interface PostTeamChildUsers {
+  team_num: number;
+  area: null;
+  area_code: string;
+  avatar: string;
+  become_bonus_time: null;
+  become_distributor_time: null;
+  bonus_level_id: number;
+  city: null;
+  city_code: string;
+  create_time: string;
+  distributor_level_id: number;
+  email: null;
+  gender: number;
+  id: number;
+  is_bonus: boolean;
+  is_customer: boolean;
+  is_distributor: boolean;
+  is_shopkeeper: number;
+  keep_sign_in_num: number;
+  last_sign_in_time: null;
+  memo: null;
+  mobile: string;
+  nick_name: string;
+  parent_id: number;
+  parent_ids: string;
+  province: null;
+  province_code: string;
+  qq: null;
+  role_ids: number[];
+  status: number;
+  telephone: null;
+  total_sign_in_num: number;
+  update_time: string;
+  user_info: {
+    already_drawcash_bonus_money: number;
+    already_drawcash_commission_money: number;
+    create_time: string;
+    order_money: number;
+    order_num: number;
+    shop_goods: null;
+    total_expect_bonus_money: number;
+    total_expect_commission_money: number;
+    total_real_bonus_money: number;
+    total_real_commission_money: number;
+    update_time: string;
+    user_id: number;
+    wait_pay_bonus_money: number;
+    wait_pay_commission_money: number;
+  };
+  user_level: string;
+  user_level_id: number;
+  user_name: null;
+  wechat: null;
+}
+
+export interface PostTeamChildUsersList extends BaseResponse, Page {
+  data: PostTeamChildUsers[];
+}
+
+export interface PostTeamUsers extends BaseResponse, Page {
+  data: {
+    team_users: PostTeamChildUsers[];
+    team_info: {
+      level_1_num: number;
+      level_2_num: number;
+      level_3_num: number;
+      total_num: number;
+    };
+  };
 }
 
 export interface DropOrdersListItem extends DropOrdersListItem_AutoGender {}

@@ -192,7 +192,6 @@ export default connect(({}: {}) => ({}))(
       <div className="indexPage">
         <List
           header={<Header />}
-          params={{}}
           bottom={"2.5rem"}
           type={AllList.postApiGoodsGoodsLists}
         />

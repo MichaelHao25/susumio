@@ -28,11 +28,9 @@ interface PageProps {
   header?: React.ReactNode;
   top?: string;
   bottom?: string;
-  params:
-    | {
-        [key: string]: string | number | boolean;
-      }
-    | -1;
+  params?: {
+    [key: string]: any;
+  };
   type: AllList;
   list: ListState;
 }
@@ -54,7 +52,7 @@ export default connect(({ list }: { list: ListState }) => {
       dispatch,
       type,
       list,
-      params,
+      params = {},
     } = props;
     // 解决闭包问题
     global.params = params;
@@ -81,6 +79,28 @@ export default connect(({ list }: { list: ListState }) => {
         page.current.pageNum = 1;
       }
       switch (type) {
+        case AllList.postTeamUsers: {
+          dispatch({
+            type: "list/postTeamUsers",
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
+        case AllList.postTeamChildUsers: {
+          dispatch({
+            type: "list/postTeamChildUsers",
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
         case AllList.postOrdersList: {
           dispatch({
             type: "list/postOrdersList",
@@ -199,13 +219,160 @@ export default connect(({ list }: { list: ListState }) => {
     }, []);
     useEffect(() => {
       page.current.pageNum = 1;
-      if (params !== -1) {
-        loadData(false);
-      }
+      loadData(false);
     }, [params]);
 
     function getList() {
       switch (type) {
+        case AllList.postTeamUsers: {
+          return (
+            <div className="aui-content" style={{ width: "100%" }}>
+              {list.postTeamUsers.length === 0 ? (
+                <div
+                  className="aui-col-xs-12 aui-text-center"
+                  style={{ marginTop: "30%" }}
+                >
+                  <img
+                    loading="lazy"
+                    src={require("../../assets/img/no_content.png")}
+                    style={{ width: "18%", margin: "0 auto" }}
+                  />
+                  <h5
+                    style={{ marginTop: "1rem" }}
+                    className="aui-font-size-14"
+                  >
+                    Oh. Aquí no hay nada.
+                  </h5>
+                </div>
+              ) : (
+                ""
+              )}
+              <ul className="aui-list aui-media-list aui-bg-default">
+                {list.postTeamUsers.map((team) => {
+                  return (
+                    <li
+                      className="aui-list-item aui-list-item-middle aui-bg-white aui-margin-b-10"
+                      key={team.id}
+                    >
+                      <div className="aui-media-list-item-inner">
+                        <div
+                          className="aui-list-item-media"
+                          style={{ width: "3rem" }}
+                        >
+                          <img
+                            src={
+                              team.avatar
+                                ? team.avatar
+                                : require("../../assets/img/avatar.png")
+                            }
+                            className="aui-img-round aui-list-img-sm"
+                          />
+                        </div>
+                        <div className="aui-list-item-inner">
+                          <div className="aui-list-item-text">
+                            <div className="aui-list-item-title">
+                              {team.nick_name || team.mobile}
+                            </div>
+                            <div className="aui-list-item-right aui-text-info">
+                              +
+                              {team.user_info.already_drawcash_commission_money}
+                            </div>
+                          </div>
+                          <div className="aui-list-item-text aui-margin-t-5">
+                            <div className="aui-list-item-title aui-font-size-14 aui-text-pray">
+                              Fecha de inscripción:
+                              {team.become_distributor_time}
+                            </div>
+                            <div className="aui-list-item-right  aui-text-pray">
+                              {team.team_num || 0}成员
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        }
+        case AllList.postTeamChildUsers: {
+          return (
+            <div className="aui-content" style={{ width: "100%" }}>
+              {list.postTeamChildUsers.length === 0 ? (
+                <div
+                  className="aui-col-xs-12 aui-text-center"
+                  style={{ marginTop: "30%" }}
+                >
+                  <img
+                    loading="lazy"
+                    src={require("../../assets/img/no_content.png")}
+                    style={{ width: "18%", margin: "0 auto" }}
+                  />
+                  <h5
+                    style={{ marginTop: "1rem" }}
+                    className="aui-font-size-14"
+                  >
+                    Oh. Aquí no hay nada.
+                  </h5>
+                </div>
+              ) : (
+                ""
+              )}
+              <ul className="aui-list aui-media-list aui-bg-default">
+                {list.postTeamChildUsers.map((cust) => {
+                  return (
+                    <li
+                      className="aui-list-item aui-list-item-middle aui-bg-white aui-margin-b-10"
+                      key={cust.id}
+                    >
+                      <div className="aui-media-list-item-inner">
+                        <div
+                          className="aui-list-item-media"
+                          style={{ width: "3rem" }}
+                        >
+                          <img
+                            src={
+                              cust.avatar
+                                ? cust.avatar
+                                : require("../../assets/img/avatar.png")
+                            }
+                            className="aui-img-round aui-list-img-sm"
+                          />
+                        </div>
+                        <div className="aui-list-item-inner">
+                          <div
+                            className="aui-list-item-text"
+                            style={{ display: "flex" }}
+                          >
+                            <div className="aui-list-item-title">
+                              {cust.mobile}
+                            </div>
+                            <div className="aui-list-item-right aui-text-info">
+                              {cust.user_info.order_money}
+                            </div>
+                          </div>
+                          <div
+                            className="aui-list-item-text aui-margin-t-5"
+                            style={{ display: "flex" }}
+                          >
+                            <div className="aui-list-item-title aui-font-size-14 aui-text-pray">
+                              Fecha de inscripción: <br />
+                              {cust.create_time}
+                            </div>
+                            <div className="aui-list-item-right  aui-text-pray">
+                              {cust.user_info.order_num}Pedido
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        }
         case AllList.postOrdersList: {
           const statusFilter = (value: number): string | undefined => {
             if (value == 1) {
@@ -831,7 +998,7 @@ export default connect(({ list }: { list: ListState }) => {
             );
           };
           const selectAddress = (address: AddressItem) => {
-            const { selectAddress = false } = params === -1 ? {} : params;
+            const { selectAddress = false } = params ? {} : params;
             if (selectAddress) {
               sessionStorage.setItem("address", JSON.stringify(address));
               history.goBack();
