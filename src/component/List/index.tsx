@@ -220,7 +220,7 @@ export default connect(({ list }: { list: ListState }) => {
     useEffect(() => {
       page.current.pageNum = 1;
       loadData(false);
-    }, [params]);
+    }, [props.params]);
 
     function getList() {
       switch (type) {

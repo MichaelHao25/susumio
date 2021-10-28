@@ -37,15 +37,14 @@ document.body.appendChild(script2);
 const facebooklogin = document.createElement("script");
 facebooklogin.async = true;
 facebooklogin.defer = true;
-facebooklogin.crossOrigin = "anonymous";
-facebooklogin.nonce = "aiC80b1D";
+facebooklogin.id = "facebook-jssdk";
 facebooklogin.src = "https://connect.facebook.net/en_US/sdk.js";
 facebooklogin.onload = () => {
   window.FB.init({
-    appId: "{app-id}",
+    appId: "168851405444737",
     cookie: true, // Enable cookies to allow the server to access the session.
     xfbml: true, // Parse social plugins on this webpage.
-    version: "{api-version}", // Use this Graph API version for this call.
+    version: "v12.0", // Use this Graph API version for this call.
   });
   window.FB.getLoginStatus(function (response) {
     console.log(response);
