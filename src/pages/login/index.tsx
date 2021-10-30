@@ -124,9 +124,12 @@ export default function goodsListNewPage() {
         </div>
         <div
           onClick={() => {
-            window.FB.login(function (response) {
-              console.log(response);
-            });
+            window.FB.login(
+              function (response) {
+                console.log(response);
+              },
+              { scope: "public_profile,email" },
+            );
           }}
           className="rigster"
           style={{ backgroundColor: "#fff" }}

@@ -48,6 +48,14 @@ facebooklogin.onload = () => {
   });
   window.FB.getLoginStatus(function (response) {
     console.log(response);
+    window.FB.api(
+      "/me",
+      "GET",
+      { fields: "id,name,email,picture" },
+      function (response) {
+        console.log(response);
+      },
+    );
   });
 };
 document.body.appendChild(facebooklogin);
