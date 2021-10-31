@@ -55,7 +55,9 @@ const errorHandler = function (error: Error) {
   return undefined;
 };
 const stack: number[] = [];
-export const origin = "https://www.177pinche.com/index.php";
+// export const origin = "https://www.177pinche.com/index.php";
+export const origin = "http://api.lictic.com:88/index.php";
+
 export const request = extend({
   // prefix: 'https://f26a70c7-44b4-4d49-9e65-2fd7e41553cf.mock.pstmn.io/api',
   prefix: origin,
@@ -64,7 +66,7 @@ export const request = extend({
     // 'X-Requested-With': 'XMLHttpRequest',
     // lang: 'zh_CN',
     // 'x-mock-match-request-body': 'true',
-    "content-type": "application/json;charset=UTF-8",
+    // "content-type": "application/json;charset=UTF-8",
     "client-type": "app",
     auth: "Basic_Ivj6eZRxMTx2yiyunZvnG8R67",
   },

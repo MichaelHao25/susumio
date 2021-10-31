@@ -316,9 +316,25 @@ const index = (props: Props) => {
       if (goods.spec_info.length > 0) {
         setShowLayout(type);
       } else {
+        history.push("/orderConfirm", {
+          goodsList: [
+            {
+              thum: goods.thum,
+              name: goods.name,
+              intro: goods.intro,
+              spec_option_group: "",
+              sell_price: goods.sell_price,
+              num: 1,
+              id: goods.id,
+              goods_id: goods.id,
+              goods_id_str: "",
+            },
+          ],
+        });
+
         // 不知道有那些没有分类
         // 先搁置
-        Notify.failure("请联系管理员");
+        // Notify.failure("请联系管理员");
         // history.push('/orderConfirm', {
         //   goodsList: {
         //     thum: goods.thum,
@@ -330,7 +346,6 @@ const index = (props: Props) => {
         //     id: goods.id,
         //     goods_id: goods.goods_id,
         //     goods_id_str: goods.spec_group_id_str,
-        //
         //   },
         // });
       }

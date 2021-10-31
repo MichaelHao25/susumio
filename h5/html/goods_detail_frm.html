@@ -436,6 +436,7 @@
                     if (this.goods.spec_info.length > 0 && !this.select_spec_group_info.id_str) {
                         this.selectSpec('buy');
                     } else {
+                        debugger
                         if (api.pageParam.isDiscountGoods) {
                             //   localStorage.setItem('order_confirm_win', JSON.stringify())
                             $util.openWindow('order_confirm_win', {

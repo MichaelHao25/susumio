@@ -16,7 +16,7 @@ interface PageProps extends ConnectProps {
   dispatch: Dispatch;
 }
 
-interface BannerItem {
+export interface BannerItem {
   alt: string;
   applet_href: string;
   create_time: string;

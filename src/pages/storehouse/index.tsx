@@ -6,18 +6,32 @@ import "swiper/swiper.less";
 import "swiper/components/pagination/pagination.less";
 import { history } from "umi";
 import React, { useEffect, useState } from "react";
-import { postBannerList } from "@/services/api";
+import { postApiGoodsGoodsLists, postBannerList } from "@/services/api";
 import Tab from "@/component/Tab";
+import { Details } from "@/services/interface";
+import { BannerItem } from "../index";
 
 export default () => {
-  const [bannerList, setBannerList] = useState<any[]>([]);
+  const [bannerList, setBannerList] = useState<BannerItem[]>([]);
+  const [list, setList] = useState<Details[]>([]);
   useEffect(() => {
     postBannerList().then((res) => {
       if (res) {
         setBannerList(res.data || []);
       }
     });
+    postApiGoodsGoodsLists({
+      shoperId: 59,
+      pageLimit: 100,
+      pageNum: 1,
+    }).then((res) => {
+      console.log(res);
+      if (res) {
+        setList(res.data);
+      }
+    });
   }, []);
+
   return (
     <div className={styles.storehouse}>
       <Header title={"XXX的小店"} noBack={true} />
@@ -45,20 +59,31 @@ export default () => {
           <div className={styles.right_title}>
             <span>人气Top</span>
           </div>
-          <div className={styles.item}>
-            <img
-              src="https://www.177pinche.com/public/upload/article_images/20210527/d68369529cf278c20117f0d5f86b5709.png"
-              alt=""
-              className={styles.thumbnail}
-            />
-            <div className={styles.content}>
-              <div className={styles.title}>1元代金券</div>
-              <div className={styles.cost}>¥ 1</div>
-              <div className={styles.add}>
-                <img src={require("../../assets/img/add.svg")} alt="" />
+          {list.map((item) => {
+            return (
+              <div
+                className={styles.item}
+                key={item.id}
+                onClick={() => {
+                  history.push(`/goodsDetails?id=${item.id}`);
+                }}
+              >
+                <img src={item.thum} alt="" className={styles.thumbnail} />
+                <div className={styles.content}>
+                  <div className={styles.title}>{item.name}</div>
+                  <div className={styles.cost}>¥ {item.sell_price}</div>
+                  <div
+                    className={styles.add}
+                    onClick={() => {
+                      console.log("item.id", item.id);
+                    }}
+                  >
+                    <img src={require("../../assets/img/add.svg")} alt="" />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
       <div style={{ height: "2.5rem" }} />

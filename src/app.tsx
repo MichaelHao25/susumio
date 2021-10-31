@@ -33,29 +33,29 @@ const script2 = document.createElement("script");
 script2.src = "https://www.17track.net/externalcall.js";
 document.body.appendChild(script2);
 
-// 物流
-const facebooklogin = document.createElement("script");
-facebooklogin.async = true;
-facebooklogin.defer = true;
-facebooklogin.id = "facebook-jssdk";
-facebooklogin.src = "https://connect.facebook.net/en_US/sdk.js";
-facebooklogin.onload = () => {
-  window.FB.init({
-    appId: "168851405444737",
-    cookie: true, // Enable cookies to allow the server to access the session.
-    xfbml: true, // Parse social plugins on this webpage.
-    version: "v12.0", // Use this Graph API version for this call.
-  });
-  window.FB.getLoginStatus(function (response) {
-    console.log(response);
-    window.FB.api(
-      "/me",
-      "GET",
-      { fields: "id,name,email,picture" },
-      function (response) {
-        console.log(response);
-      },
-    );
-  });
-};
-document.body.appendChild(facebooklogin);
+// // 物流
+// const facebooklogin = document.createElement("script");
+// facebooklogin.async = true;
+// facebooklogin.defer = true;
+// facebooklogin.id = "facebook-jssdk";
+// facebooklogin.src = "https://connect.facebook.net/en_US/sdk.js";
+// facebooklogin.onload = () => {
+//   window.FB.init({
+//     appId: "168851405444737",
+//     cookie: true, // Enable cookies to allow the server to access the session.
+//     xfbml: true, // Parse social plugins on this webpage.
+//     version: "v12.0", // Use this Graph API version for this call.
+//   });
+//   window.FB.getLoginStatus(function (response) {
+//     console.log(response);
+//     window.FB.api(
+//       "/me",
+//       "GET",
+//       { fields: "id,name,email,picture" },
+//       function (response) {
+//         console.log(response);
+//       },
+//     );
+//   });
+// };
+// document.body.appendChild(facebooklogin);

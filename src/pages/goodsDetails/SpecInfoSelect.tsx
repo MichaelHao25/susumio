@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Details } from '@/services/interface';
-import { Notify } from 'notiflix';
-import { CartInfo, postApiGoodsCartsBatchSave } from '@/services/api';
-import { LayoutType } from '@/pages/goodsDetails/index';
-import { history } from 'umi';
+import React, { useEffect, useState } from "react";
+import { Details } from "@/services/interface";
+import { Notify } from "notiflix";
+import { CartInfo, postApiGoodsCartsBatchSave } from "@/services/api";
+import { LayoutType } from "@/pages/goodsDetails/index";
+import { history } from "umi";
 
 export interface GoodsList {
   thum: string;
@@ -11,7 +11,7 @@ export interface GoodsList {
   intro: string;
   spec_option_group: string;
   sell_price: number;
-  num: string;
+  num: number;
   id: number;
   goods_id: number;
   goods_id_str: string;
@@ -37,13 +37,13 @@ interface List {
 
 export default (props: Props) => {
   const { goods, handleCloseLayout, type } = props;
-  const { thum = '', sell_price = 0, stock = 0 } = goods || {};
+  const { thum = "", sell_price = 0, stock = 0 } = goods || {};
   const [data, setData] = useState<List[]>([]);
   const [typeOneIndex, setTypeOneIndex] = useState<number>(0);
   const [selectList, setSelectList] = useState<{
     [key: string]: {
       id: number;
-      num: string;
+      num: number;
       stock: number;
       spec_group_id_str: string;
     }[];
@@ -69,7 +69,7 @@ export default (props: Props) => {
           const res = spec_group_info.find(
             (item) => item.spec_option_group === `${type}_${cType}`,
           );
-          const { id = 0, stock = 0, id_str = '' } = res || {};
+          const { id = 0, stock = 0, id_str = "" } = res || {};
           return {
             id,
             stock,
@@ -97,14 +97,14 @@ export default (props: Props) => {
     setTotalMoney(Number((totalNum * sell_price).toFixed(2)));
   }, [selectList]);
 
-  function getValue(id: number): string {
+  function getValue(id: number): number {
     const res = (selectList[typeOneIndex] || []).find((item) => item.id === id);
-    return res ? res.num : '0';
+    return res ? res.num : 0;
   }
 
   function getCount(index: number): React.ReactNode {
     const total = (selectList[index] || []).reduce((a, b) => {
-      return a + parseInt(b.num);
+      return a + b.num;
     }, 0);
     if (total) {
       return <div className="num-icon">{total}</div>;
@@ -116,51 +116,51 @@ export default (props: Props) => {
   function handleChangeNum(
     id: number,
     action: {
-      type: 'add' | 'remove' | 'set';
+      type: "add" | "remove" | "set";
       num?: string;
       stock: number;
       spec_group_id_str: string;
     },
   ) {
     const { type, num, stock, spec_group_id_str } = action;
-    let value = parseInt(num ? num : '0');
+    let value = parseInt(num ? num : "0");
     if (value < 0 || value > stock) {
       return;
     }
     let res = selectList[typeOneIndex] || [];
     const index = res.findIndex((item) => {
       if (item.id === id) {
-        const numberNUm = parseInt(item.num);
-        if (type === 'add') {
+        const numberNUm = item.num;
+        if (type === "add") {
           if (numberNUm + 1 >= stock) {
-            item.num = stock.toString();
+            item.num = stock;
           } else {
-            item.num = (numberNUm + 1).toString();
+            item.num = numberNUm + 1;
           }
         }
-        if (type === 'remove') {
+        if (type === "remove") {
           if (numberNUm > 0) {
-            item.num = (numberNUm - 1).toString();
+            item.num = numberNUm - 1;
           }
         }
-        if (type === 'set') {
-          item.num = value.toString();
+        if (type === "set") {
+          item.num = value;
         }
         return true;
       }
     });
     if (index === -1) {
-      if (type === 'remove' || type === 'add') {
+      if (type === "remove" || type === "add") {
         res.push({
           id,
-          num: '1',
+          num: 1,
           stock: stock,
           spec_group_id_str,
         });
       } else {
         res.push({
           id,
-          num: value.toString(),
+          num: value,
           stock,
           spec_group_id_str,
         });
@@ -173,11 +173,11 @@ export default (props: Props) => {
 
   function handleSubmit() {
     if (totalNum === 0) {
-      Notify.failure('Seleccione el producto que desea comprar.');
+      Notify.failure("Seleccione el producto que desea comprar.");
       return;
     }
     if (goods.minimum > totalNum) {
-      Notify.failure(goods.name + 'La mínima cantidad es ' + goods.minimum);
+      Notify.failure(goods.name + "La mínima cantidad es " + goods.minimum);
       return;
     }
 
@@ -187,7 +187,7 @@ export default (props: Props) => {
         return {
           goods_id: item.id,
           spec_group_id_str: item.spec_group_id_str,
-          num: parseInt(item.num),
+          num: item.num,
         };
       });
       postApiGoodsCartsBatchSave({
@@ -202,7 +202,7 @@ export default (props: Props) => {
       const goodsList: GoodsList[] = list.map((item) => {
         const info = goods.spec_group_info.find((a) => a.id === item.id);
         if (!info) {
-          throw new Error('没有找到');
+          throw new Error("没有找到");
         }
         return {
           thum: info.thum ? info.thum : goods.thum,
@@ -216,8 +216,8 @@ export default (props: Props) => {
           goods_id_str: item.spec_group_id_str,
         };
       });
-      history.push('/orderConfirm', {
-        goodsList: goodsList.filter((item) => parseInt(item.num) !== 0),
+      history.push("/orderConfirm", {
+        goodsList: goodsList.filter((item) => item.num !== 0),
       });
     }
   }
@@ -225,21 +225,21 @@ export default (props: Props) => {
   return (
     <div
       style={{
-        position: 'fixed',
+        position: "fixed",
         bottom: 0,
         left: 0,
         right: 0,
         zIndex: 11,
-        background: '#fff',
-        maxHeight: '70vh',
-        overflow: 'scroll',
+        background: "#fff",
+        maxHeight: "70vh",
+        overflow: "scroll",
       }}
     >
       <header
         className="aui-bar aui-bar-nav aui-bar-light"
-        style={{ position: 'sticky' }}
+        style={{ position: "sticky" }}
       >
-        <a className="aui-pull-left aui-btn" style={{ color: '#333' }}>
+        <a className="aui-pull-left aui-btn" style={{ color: "#333" }}>
           Seleccionar especificaciones
         </a>
         <div className="aui-title" />
@@ -260,10 +260,10 @@ export default (props: Props) => {
         {/* 价格和库存 */}
         <div className="aui-col-xs-6 aui-padded-10">
           <h2 className="aui-text-price">
-            <span style={{ fontSize: '0.6rem' }}>$</span>
+            <span style={{ fontSize: "0.6rem" }}>$</span>
             <span
               className="aui-font-size-20"
-              style={{ letterSpacing: '.1rem' }}
+              style={{ letterSpacing: ".1rem" }}
             >
               {sell_price}
             </span>
@@ -291,7 +291,7 @@ export default (props: Props) => {
                   aui-border
                   aui-margin-r-10
                   ${
-                    typeOneIndex === index ? 'aui-bg-info aui-text-white' : ''
+                    typeOneIndex === index ? "aui-bg-info aui-text-white" : ""
                   }`}
                   onClick={() => {
                     setTypeOneIndex(index);
@@ -327,7 +327,7 @@ export default (props: Props) => {
                   <i
                     onClick={() =>
                       handleChangeNum(id, {
-                        type: 'remove',
+                        type: "remove",
                         stock,
                         spec_group_id_str,
                       })
@@ -337,14 +337,14 @@ export default (props: Props) => {
                   <input
                     className="aui-padded-l-5 aui-padded-r-5 aui-font-size-14 aui-text-center"
                     type="text"
-                    style={{ marginTop: '-0.25rem' }}
+                    style={{ marginTop: "-0.25rem" }}
                     pattern="[0-9]*"
                     onChange={(e) => {
                       const {
                         target: { value },
                       } = e;
                       handleChangeNum(id, {
-                        type: 'set',
+                        type: "set",
                         num: value,
                         stock,
                         spec_group_id_str,
@@ -356,7 +356,7 @@ export default (props: Props) => {
                   <i
                     onClick={() =>
                       handleChangeNum(id, {
-                        type: 'add',
+                        type: "add",
                         stock,
                         spec_group_id_str,
                       })
@@ -372,11 +372,11 @@ export default (props: Props) => {
 
       <footer
         className="aui-bar aui-bar-tab"
-        style={{ position: 'sticky', bottom: 0 }}
+        style={{ position: "sticky", bottom: 0 }}
       >
         <div
           className="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15 aui-font-size-12"
-          style={{ minWidth: '8rem' }}
+          style={{ minWidth: "8rem" }}
         >
           <div>
             Total:

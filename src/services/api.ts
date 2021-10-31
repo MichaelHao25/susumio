@@ -2,6 +2,131 @@ import { request } from "./core";
 import { RequestOptionsInit } from "umi-request";
 import { AddressItem } from "@/services/interface";
 
+/**
+ * 店中店删除商品
+ */
+export const postGoodsDelete = (id: number) => {
+  return request.post("/api_goods/goods/deletebyshoper", {
+    data: {
+      id,
+    },
+  });
+};
+
+interface PostApiGoodsSave {
+  thum: string[];
+  img: string[];
+  desc: string;
+  name: string;
+  sellPrice: string;
+  shoperId: number;
+  id?: number;
+}
+/**
+ * 店中店更新商品
+ * @param data
+ * @returns
+ */
+export const postApiGoodsUpdate = (data: PostApiGoodsSave) => {
+  const { thum, img, desc, name, sellPrice, shoperId, id } = data;
+  return request.post(`/api_goods/goods/update`, {
+    data: {
+      id,
+      name: name,
+      intro: "代金券",
+      status: 1,
+      goods_cate_id: 83,
+      sell_price: sellPrice,
+      shoper_id: shoperId,
+      stock: "9999",
+      weight: 0,
+      sell_num: 0,
+      minimum: 1,
+      buy_get_score: 0,
+      click_num: 0,
+      collect_num: 0,
+      sort: 0,
+      free_shipping: true,
+      is_top: false,
+      is_virtual: true,
+      shared: false,
+      share_rate: "5550",
+      tags: [],
+      tag_ids: [],
+      thum: thum[0],
+      imgs: img,
+      thums: [],
+      attr_info: [],
+      spec_info: [],
+      spec_group_info: [],
+      freight_template_id: 0,
+      desc: desc,
+    },
+  });
+};
+
+/**
+ * 店中店添加商品
+ */
+export const postApiGoodsSave = (data: PostApiGoodsSave) => {
+  const { thum, img, desc, name, sellPrice, shoperId } = data;
+  return request.post(`/api_goods/goods/save`, {
+    data: {
+      name: name,
+      intro: "代金券",
+      status: 1,
+      goods_cate_id: 83,
+      sell_price: sellPrice,
+      shoper_id: shoperId,
+      stock: "9999",
+      weight: 0,
+      sell_num: 0,
+      minimum: 1,
+      buy_get_score: 0,
+      click_num: 0,
+      collect_num: 0,
+      sort: 0,
+      free_shipping: true,
+      is_top: false,
+      is_virtual: true,
+      shared: false,
+      share_rate: "5550",
+      tags: [],
+      tag_ids: [],
+      thum: thum[0],
+      imgs: img,
+      thums: [],
+      attr_info: [],
+      spec_info: [],
+      spec_group_info: [],
+      freight_template_id: 0,
+      desc: desc,
+    },
+  });
+};
+
+export interface PostUploadFile {
+  save_path: string;
+  is_rename: 1;
+  file: File;
+}
+
+/**
+ * 上传文件
+ */
+export const postUploadFile = (req: PostUploadFile) => {
+  const formData = new FormData();
+  Object.entries(req).forEach(([key, value]) => {
+    formData.append(key, value);
+  });
+  return request.post("/api_systems/helper/upload_file", {
+    //   headers: {
+    //     "content-type": "multipart/form-data;",
+    //   },
+    requestType: "form",
+    data: formData,
+  });
+};
 export interface PostOrdersList {
   status: number;
   pageLimit: number;
@@ -952,6 +1077,7 @@ export interface ListRequest {
   customTag?: string;
   id?: string;
   keyword?: string;
+  shoperId?: number;
 }
 
 /**
@@ -964,6 +1090,7 @@ export const postApiGoodsGoodsLists = (data: ListRequest) => {
     pageNum = 1,
     customTag = "",
     id = "",
+    shoperId = "",
     keyword = "",
   } = data;
 
@@ -976,6 +1103,7 @@ export const postApiGoodsGoodsLists = (data: ListRequest) => {
       custom_tag: customTag,
       goods_cate_id: id,
       keyword,
+      shoper_id: shoperId,
     },
   };
   return request.post(`/api_goods/goods/lists`, res);
