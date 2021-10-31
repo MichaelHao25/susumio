@@ -32,15 +32,6 @@ export default () => {
     team_user_num: 0,
     total_money: 0,
   });
-  const [req, setReq] = useState<{
-    bank_name: string;
-    bank_no: string;
-    user_name: string;
-  }>({
-    bank_name: "",
-    bank_no: "",
-    user_name: "",
-  });
   const [min_drawcash_money, setMin_drawcash_money] = useState<string>("");
   useEffect(() => {
     postDistributorInfo().then((res) => {
@@ -56,18 +47,6 @@ export default () => {
   }, []);
 
   function handleSubmit() {
-    if (!req.bank_name) {
-      Notify.failure("银行名称不能为空!");
-      return;
-    }
-    if (!req.bank_no) {
-      Notify.failure("银行卡号不能为空!");
-      return;
-    }
-    if (!req.user_name) {
-      Notify.failure("用户名称不能为空!");
-      return;
-    }
     postQueryPayPassword().then((res) => {
       if (res.data.is_set_pay_password === 0) {
         Notify.failure("Establezca la contraseña de pago");
@@ -90,7 +69,6 @@ export default () => {
               postCommissionApply({
                 pay_password: value,
                 receipt_type: "money",
-                ...req,
               }).then((res) => {
                 if (res) {
                   Notify.success(res.msg);
@@ -141,72 +119,7 @@ export default () => {
             Importe minimo para sscar: ${min_drawcash_money}
           </div>
         </div>
-        <div
-          className="aui-bg-white aui-margin-l-15 aui-margin-r-15 aui-padded-l-10 aui-padded-r-10"
-          style={{ borderRadius: ".3rem" }}
-        >
-          <div>请输入银行名称</div>
-          <div
-            style={{ borderBottom: "1px solid #f4f4f4" }}
-            className="aui-margin-b-15"
-          >
-            {/*bank_name*/}
-            {/*bank_no*/}
-            {/*user_name*/}
-            <input
-              type="text"
-              value={req.bank_name}
-              onChange={(e) => {
-                setReq((req) => ({
-                  ...req,
-                  bank_name: e.target.value,
-                }));
-              }}
-            />
-          </div>
-        </div>
-        <div
-          className="aui-bg-white aui-margin-l-15 aui-margin-r-15 aui-padded-l-10 aui-padded-r-10"
-          style={{ borderRadius: ".3rem" }}
-        >
-          <div>请输入银行账号</div>
-          <div
-            style={{ borderBottom: "1px solid #f4f4f4" }}
-            className="aui-margin-b-15"
-          >
-            <input
-              type="text"
-              value={req.bank_no}
-              onChange={(e) => {
-                setReq((req) => ({
-                  ...req,
-                  bank_no: e.target.value,
-                }));
-              }}
-            />
-          </div>
-        </div>
-        <div
-          className="aui-bg-white aui-margin-l-15 aui-margin-r-15 aui-padded-l-10 aui-padded-r-10"
-          style={{ borderRadius: ".3rem" }}
-        >
-          <div>请输入姓名</div>
-          <div
-            style={{ borderBottom: "1px solid #f4f4f4" }}
-            className="aui-margin-b-15"
-          >
-            <input
-              type="text"
-              value={req.user_name}
-              onChange={(e) => {
-                setReq((req) => ({
-                  ...req,
-                  user_name: e.target.value,
-                }));
-              }}
-            />
-          </div>
-        </div>
+
         <div className="aui-margin-10">
           <div className="distribution-buttons wallet" onClick={handleSubmit}>
             A la billetera

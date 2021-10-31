@@ -403,14 +403,18 @@ export default <ListModel>{
         customTag = "",
         id = "",
         keyword = "",
+        shoperId = "0",
       } = payload;
+
       const res: ListResponse | undefined = yield call(postApiGoodsGoodsLists, {
         pageLimit,
         pageNum,
         customTag,
         id,
         keyword,
+        shoperId,
       });
+
       if (res) {
         yield put({
           type: "setState",

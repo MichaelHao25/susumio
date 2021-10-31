@@ -1,24 +1,24 @@
-import Header from '@/component/Header';
-import { useEffect, useState } from 'react';
+import Header from "@/component/Header";
+import { useEffect, useState } from "react";
 import {
   postGetParams,
   postUpdateEmail,
   postUpdateMobile,
-} from '@/services/api';
-import { Notify } from 'notiflix';
-import { history, useSelector } from 'umi';
-import { UserinfoState } from '@/pages/login/model';
+} from "@/services/api";
+import { Notify } from "notiflix";
+import { history, useSelector } from "umi";
+import { UserinfoState } from "@/pages/login/model";
 
 export default () => {
   const [params, setParams] = useState<{
     wap_login_logo: string;
   }>({
-    wap_login_logo: '',
+    wap_login_logo: "",
   });
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
     return userinfo;
   });
-  const [mobile, setMobile] = useState<string>('');
+  const [mobile, setMobile] = useState<string>("");
   useEffect(() => {
     postGetParams().then((res) => {
       console.log(res);
@@ -30,7 +30,7 @@ export default () => {
 
   function handleSubmit() {
     if (!mobile) {
-      Notify.failure('Por favor,introduzca el número correcto');
+      Notify.failure("Por favor,introduzca el número correcto");
       return;
     }
     postUpdateMobile({
@@ -40,14 +40,14 @@ export default () => {
       if (res) {
         Notify.success(res.msg);
         window.localStorage.clear();
-        history.push('/');
+        history.push("/");
       }
     });
   }
 
   return (
     <>
-      <Header title={'Modificar número de teléfono'} />
+      <Header title={"Modificar número de teléfono"} />
       <div id="app">
         {/* 中间页 */}
         <div className="aui-content aui-text-center">
@@ -55,9 +55,9 @@ export default () => {
             loading="lazy"
             src={params.wap_login_logo}
             style={{
-              width: '65%',
-              margin: '2.5rem auto 0 auto',
-              marginBottom: '2rem',
+              width: "65%",
+              margin: "2.5rem auto 0 auto",
+              marginBottom: "2rem",
             }}
           />
           <div className="area">
@@ -66,7 +66,7 @@ export default () => {
               <input
                 type="text"
                 className="input short"
-                placeholder="Correo electrónico"
+                placeholder="Nuevo número"
                 value={mobile}
                 pattern="[0-9]*"
                 onChange={(e) => {

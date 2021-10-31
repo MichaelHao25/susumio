@@ -118,7 +118,7 @@ export default () => {
             className="aui-list-item aui-padded-b-15 aui-bg-white"
             style={{ backgroundImage: "none" }}
           >
-            <span>请输入银行名称</span>
+            <span>Banco</span>
             <div className="aui-list-item-input">
               <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
                 <input
@@ -139,7 +139,7 @@ export default () => {
             className="aui-list-item aui-padded-b-15 aui-bg-white"
             style={{ backgroundImage: "none" }}
           >
-            <span>请输入银行账号</span>
+            <span>Cuenta</span>
             <div className="aui-list-item-input">
               <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
                 <input
@@ -160,7 +160,7 @@ export default () => {
             className="aui-list-item aui-padded-b-15 aui-bg-white"
             style={{ backgroundImage: "none" }}
           >
-            <span>请输入姓名</span>
+            <span>Beneficiario</span>
             <div className="aui-list-item-input">
               <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
                 <input

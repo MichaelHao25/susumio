@@ -18,7 +18,11 @@ import Notiflix, { Notify } from "notiflix";
 import SpecInfoSelect from "@/pages/goodsDetails/SpecInfoSelect";
 
 interface Props
-  extends ConnectProps<{}, {}, { id: string; isDiscountGoods: string }> {}
+  extends ConnectProps<
+    {},
+    {},
+    { id: string; isDiscountGoods: string; shoperId?: string }
+  > {}
 
 enum Tab {
   Details,
@@ -76,7 +80,7 @@ export enum LayoutType {
 const index = (props: Props) => {
   const {
     location: {
-      query: { id = "" },
+      query: { id = "", shoperId = "" },
       // isDiscountGoods: urlIsDiscountGoods = ''
     },
   } = props;
@@ -316,7 +320,9 @@ const index = (props: Props) => {
       if (goods.spec_info.length > 0) {
         setShowLayout(type);
       } else {
+        // 因为店中店没有规格肯定是在这个里面，所以在这里面加上店中店需要带的额外的id
         history.push("/orderConfirm", {
+          shoperId,
           goodsList: [
             {
               thum: goods.thum,

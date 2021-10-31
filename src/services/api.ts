@@ -380,9 +380,6 @@ export const postUsersUpdate = (req: PostUsersUpdate) => {
 export interface PostCommissionApply {
   receipt_type: string;
   pay_password: string;
-  bank_name: string;
-  bank_no: string;
-  user_name: string;
 }
 
 /**
@@ -1121,7 +1118,7 @@ export interface OrdersLists extends OrdersData {
 }
 
 /**
- * 列表接口可以使用标签查询和id查询
+ * 我的订单
  * @param data
  */
 export const postApiOrdersLists = (data: OrdersLists) => {

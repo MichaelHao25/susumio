@@ -4,7 +4,7 @@ import styles from "./index.less";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper.less";
 import "swiper/components/pagination/pagination.less";
-import { history } from "umi";
+import { history, UserinfoState, useSelector } from "umi";
 import React, { useEffect, useState } from "react";
 import { postApiGoodsGoodsLists, postBannerList } from "@/services/api";
 import Tab from "@/component/Tab";
@@ -14,6 +14,9 @@ import { BannerItem } from "../index";
 export default () => {
   const [bannerList, setBannerList] = useState<BannerItem[]>([]);
   const [list, setList] = useState<Details[]>([]);
+  const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
+    return userinfo;
+  });
   useEffect(() => {
     postBannerList().then((res) => {
       if (res) {
@@ -21,7 +24,7 @@ export default () => {
       }
     });
     postApiGoodsGoodsLists({
-      shoperId: 59,
+      shoperId: user.id,
       pageLimit: 100,
       pageNum: 1,
     }).then((res) => {
@@ -65,7 +68,9 @@ export default () => {
                 className={styles.item}
                 key={item.id}
                 onClick={() => {
-                  history.push(`/goodsDetails?id=${item.id}`);
+                  history.push(
+                    `/goodsDetails?id=${item.id}&shoperId=${user.id}`,
+                  );
                 }}
               >
                 <img src={item.thum} alt="" className={styles.thumbnail} />

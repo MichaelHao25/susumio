@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { connect, Dispatch, history, Link } from "umi";
 import styles from "./index.less";
+import storehouse from "../../pages/storehouse/index.less";
 // @ts-ignore
 import MiniRefreshTools from "minirefresh";
 import "minirefresh/dist/debug/minirefresh.css";
@@ -167,9 +168,21 @@ export default connect(({ list }: { list: ListState }) => {
           });
           break;
         }
+
         case AllList.postApiGoodsGoodsLists: {
           dispatch({
             type: "list/postApiGoodsGoodsLists",
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
+        case AllList.postApiOrdersListsForStorehouse: {
+          dispatch({
+            type: "list/postApiOrdersLists",
             payload: {
               ...page.current,
               ...global.params,
@@ -1079,6 +1092,7 @@ export default connect(({ list }: { list: ListState }) => {
             </section>
           );
         }
+
         case AllList.postApiGoodsGoodsLists: {
           return list.postApiGoodsGoodsLists.map((item) => {
             return (
@@ -1096,15 +1110,93 @@ export default connect(({ list }: { list: ListState }) => {
                   {item.name}
                 </h5>
                 <p
-                  style={{ marginBottom: 0 }}
+                  style={{ marginBottom: 0, position: "relative" }}
                   className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10 aui-bg-white "
                 >
                   <span className="aui-text-price aui-font-size-10">$</span>{" "}
                   <span className="aui-text-price ">{item.sell_price}</span>
+                  <div
+                    style={{
+                      position: "absolute",
+                      right: ".5rem",
+                      bottom: ".25rem",
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {item.free_shipping ? (
+                      <img
+                        src={require("../../assets/img/label/tag1.png")}
+                        alt=""
+                        style={{
+                          width: "24px",
+                          height: "24px",
+                          marginLeft: "5px",
+                        }}
+                      />
+                    ) : (
+                      ""
+                    )}
+                    {item.tag_ids.includes(7) ? (
+                      <img
+                        src={require("../../assets/img/label/tag2.png")}
+                        alt=""
+                        style={{
+                          width: "24px",
+                          height: "24px",
+                          marginLeft: "5px",
+                        }}
+                      />
+                    ) : (
+                      ""
+                    )}
+                    {item.shared ? (
+                      <img
+                        src={require("../../assets/img/label/tag3.png")}
+                        alt=""
+                        style={{
+                          width: "24px",
+                          height: "24px",
+                          marginLeft: "5px",
+                        }}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </p>
               </Link>
             );
           });
+        }
+        case AllList.postApiOrdersListsForStorehouse: {
+          return (
+            <div className={storehouse.order_list}>
+              {list.postApiGoodsGoodsLists.map((item) => {
+                return (
+                  <div className={storehouse.item} key={item.id}>
+                    <div className={storehouse.header}>
+                      <div className={storehouse.sn}>
+                        订单号：23847563928174
+                      </div>
+                      <div className={storehouse.status}>待发货</div>
+                    </div>
+                    <div className={storehouse.content}>
+                      <div className={storehouse.df_ai}>
+                        <div className={storehouse.name}>1元代金券</div>
+                        <div className={storehouse.time}>2019-01-08 09:05</div>
+                      </div>
+                      <div className={storehouse.form}>付款人：Momo</div>
+                      <div className={storehouse.df_ai}>
+                        <div className={storehouse.money}>¥1*100件=¥100</div>
+                        <div className={storehouse.button}>去发货</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
         }
         case AllList.postApiOrdersLists: {
           const orderStatus = (order: OrdersListItem): string => {

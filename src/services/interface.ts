@@ -25,6 +25,8 @@ export enum AllList {
   postOrdersList,
   postTeamChildUsers,
   postTeamUsers,
+  // 店中店和订单公用一个列表
+  postApiOrdersListsForStorehouse,
 }
 
 export interface LogItem {

@@ -12,7 +12,8 @@ import {
 import Notiflix, { Notify } from "notiflix";
 import { history } from "umi";
 
-interface Props extends ConnectProps<{}, { goodsList: GoodsList[] }, {}> {}
+interface Props
+  extends ConnectProps<{}, { goodsList: GoodsList[]; shoperId: string }, {}> {}
 
 enum Action {
   Add,
@@ -34,6 +35,7 @@ interface Cost {
 }
 
 export default (props: Props) => {
+  const { location: { state: { shoperId = "" } = {} } = {} } = props;
   const [goodsList, setGoodsList] = useState<GoodsList[]>(() => {
     const { location: { state: { goodsList = [] } = {} } = {} } = props;
     if (goodsList.length === 0) {
@@ -115,6 +117,7 @@ export default (props: Props) => {
       market_activity_type: 0,
       market_activity_id: 0,
       memo,
+      shoper_id: shoperId,
     };
     postQuerySave(req).then((res) => {
       console.log(res);
