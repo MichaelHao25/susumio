@@ -907,11 +907,11 @@ export const postQueryPayPassword = () => {
 /**
  * 加载用户信息
  */
-export const postUsersInfoRead = (id: string) => {
+export const postUsersInfoRead = () => {
   return request.post(`/api_users/users/read`, {
-    data: {
-      id,
-    },
+    // data: {
+    //   id,
+    // },
   });
 };
 

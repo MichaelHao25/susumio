@@ -4,7 +4,7 @@ import styles from "./index.less";
 import { history, UserinfoState, useSelector } from "umi";
 import React, { useEffect, useState } from "react";
 import { OrdersData, postBannerList } from "@/services/api";
-import Tab from "@/component/Tab";
+import Tab from "./tab";
 import List from "@/component/List";
 import { AllList } from "@/services/interface";
 

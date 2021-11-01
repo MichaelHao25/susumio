@@ -2,12 +2,12 @@ import styles from "./index.less";
 import Header from "@/component/Header";
 
 import React, { useEffect, useState } from "react";
-import Tab from "@/component/Tab";
+import Tab from "./tab";
 import Upload from "@/component/Upload";
 import { postApiGoodsSave, postApiGoodsUpdate } from "@/services/api";
 import { Notify } from "notiflix";
 import { ConnectProps } from "@/.umi/plugin-dva/connect";
-import { history } from "@/.umi/core/history";
+import { history } from "umi";
 
 interface Props
   extends ConnectProps<
@@ -233,7 +233,7 @@ export default (props: Props) => {
         </div>
       </div>
 
-      <div style={{ height: "2.5rem" }} />
+      <div style={{ height: "3.5rem" }} />
       <Tab />
     </div>
   );

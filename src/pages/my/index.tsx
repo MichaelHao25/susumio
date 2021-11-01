@@ -76,7 +76,7 @@ const index = () => {
         setIsPassword(is_set_pay_password);
       }
     });
-    postUsersInfoRead("5314").then((res) => {
+    postUsersInfoRead().then((res) => {
       console.log(res);
       if (res) {
         const { data } = res;
@@ -513,7 +513,7 @@ const index = () => {
             ) : (
               <></>
             )}
-            <Link to={"/storehouse"} className="aui-col-xs-3">
+            <Link to={"/storehouse/manage"} className="aui-col-xs-3">
               <img
                 src={require("../../assets/img/storehouse.svg")}
                 alt=""
@@ -525,7 +525,7 @@ const index = () => {
                 }}
               />
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
-                店中店
+                Mi tienda
               </div>
             </Link>
           </div>

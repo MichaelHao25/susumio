@@ -83,7 +83,7 @@ const Header = () => {
                       className="aui-iconfont aui-icon-search"
                       style={{
                         color: "#666666!important",
-                        marginRight: "-12.25rem",
+                        marginRight: "-11.5rem",
                       }}
                     />
                     <input
@@ -101,6 +101,11 @@ const Header = () => {
                   </div>
                 </div>
               </div>
+              <img
+                src={require("../../assets/img/money.svg")}
+                alt=""
+                style={{ width: "30px", height: "30px" }}
+              />
             </div>
           </div>
         </div>

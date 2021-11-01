@@ -1,14 +1,14 @@
 import Header from "@/component/Header";
 import styles from "./index.less";
 
-import { history } from "umi";
+import { history, NavLink } from "umi";
 import React, { useEffect, useState } from "react";
 import {
   postApiGoodsGoodsLists,
   postBannerList,
   postGoodsDelete,
 } from "@/services/api";
-import Tab from "@/component/Tab";
+import Tab from "./tab";
 import { Details } from "@/services/interface";
 import Notiflix, { Confirm, Notify } from "notiflix";
 
