@@ -9,7 +9,8 @@ import {
 } from "@/services/api";
 import Tab from "@/component/Tab";
 import { history } from "@@/core/history";
-import { Link } from "umi";
+import { Link, useDispatch, UserinfoState, useSelector } from "umi";
+import QRCode from "qrcode.react";
 
 interface OrdersCount {
   return_goods_num: number;
@@ -25,21 +26,17 @@ interface UsersAsset {
   money: number;
 }
 
-interface UserInfo {
-  mobile: string;
-  avatar: string;
-  is_bonus: boolean;
-  is_customer: boolean;
-  is_distributor: boolean;
-  nick_name: string;
-}
-
 interface DrpDbStatus {
   is_open_bonus: boolean;
   is_open_drp: boolean;
 }
 
 const index = () => {
+  const { user: userInfo } = useSelector(
+    ({ userinfo }: { userinfo: UserinfoState }) => {
+      return userinfo;
+    },
+  );
   const [openWallet, setOpenWallet] = useState<boolean>(false);
   const [ordersCount, setOrderCount] = useState<OrdersCount>({
     return_goods_num: 0,
@@ -53,20 +50,17 @@ const index = () => {
     score: 0,
     money: 0,
   });
+  const [openQrcode, setOpenQrcode] = useState<boolean>(false);
+  const [qrcodeUrl, setQrcodeUrl] = useState<string>("");
   const [isPassword, setIsPassword] = useState<0 | 1>(0);
   const [drpDbStatus, setDrpDbStatus] = useState<DrpDbStatus>({
     is_open_bonus: false,
     is_open_drp: false,
   });
-  const [userInfo, setUserInfo] = useState<UserInfo>({
-    mobile: "",
-    avatar: "",
-    is_bonus: false,
-    is_customer: false,
-    is_distributor: false,
-    nick_name: "",
-  });
+  const dispatch = useDispatch();
   useEffect(() => {
+    setQrcodeUrl(`${window.location.origin}/storehouse?id=${userInfo.id}`);
+
     postQueryPayPassword().then((res) => {
       console.log(res);
       if (res) {
@@ -80,7 +74,13 @@ const index = () => {
       console.log(res);
       if (res) {
         const { data } = res;
-        setUserInfo(data);
+        // setUserInfo(data);
+        dispatch({
+          type: "userinfo/setState",
+          payload: {
+            user: data,
+          },
+        });
       }
     });
     postDrpDbStatus().then((res) => {
@@ -114,6 +114,11 @@ const index = () => {
       }
     });
   }, []);
+  const handleToggleQrcode = () => {
+    console.log("店中店地址", qrcodeUrl);
+
+    setOpenQrcode((prev) => !prev);
+  };
   return (
     <div className="my">
       <section id="header" className="aui-content aui-bg-white">
@@ -513,21 +518,44 @@ const index = () => {
             ) : (
               <></>
             )}
-            <Link to={"/storehouse/manage"} className="aui-col-xs-3">
-              <img
-                src={require("../../assets/img/storehouse.svg")}
-                alt=""
-                style={{
-                  width: "30px",
-                  height: "30px",
-                  color: "rgb(67, 67, 67)",
-                  margin: "0 auto",
-                }}
-              />
-              <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
-                Mi tienda
-              </div>
-            </Link>
+            {userInfo.is_shopkeeper ? (
+              <Link to={"/storehouse/manage"} className="aui-col-xs-3">
+                <img
+                  src={require("../../assets/img/storehouse.svg")}
+                  alt=""
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    color: "rgb(67, 67, 67)",
+                    margin: "0 auto",
+                  }}
+                />
+                <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
+                  Mi tienda
+                </div>
+              </Link>
+            ) : (
+              ""
+            )}
+            {userInfo.is_shopkeeper ? (
+              <a onClick={handleToggleQrcode} className="aui-col-xs-3">
+                <img
+                  src={require("../../assets/img/qrcode.svg")}
+                  alt=""
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    color: "rgb(67, 67, 67)",
+                    margin: "0 auto",
+                  }}
+                />
+                <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
+                  店中店二维码
+                </div>
+              </a>
+            ) : (
+              ""
+            )}
           </div>
         </section>
       </div>
@@ -590,6 +618,43 @@ const index = () => {
           </div>
         </div>
       </div>
+      {openQrcode ? (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: "rgba(0,0,0,0.3)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+          }}
+          onClick={handleToggleQrcode}
+        >
+          <div
+            style={{
+              width: "250px",
+              height: "250px",
+              background: "#fff",
+              borderRadius: "5px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <QRCode
+              value={qrcodeUrl}
+              className={"qrcode"}
+              style={{ width: "200px", height: "200px" }}
+            />
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
       <div style={{ height: "2.5rem" }} />
       <Tab />
     </div>

@@ -6,26 +6,39 @@ import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
 import "swiper/swiper.less";
 import "swiper/modules/pagination/pagination.less";
 import "swiper/modules/autoplay/autoplay.less";
-import { history, UserinfoState, useSelector } from "umi";
+import { ConnectProps, history, UserinfoState, useSelector } from "umi";
 import { postApiGoodsGoodsLists, postBannerList } from "@/services/api";
 import Tab from "@/component/Tab";
 import { Details } from "@/services/interface";
 import { BannerItem } from "../index";
 
-export default () => {
+interface Props extends ConnectProps<{}, {}, { id: string }> {}
+export default (props: Props) => {
   const [bannerList, setBannerList] = useState<BannerItem[]>([]);
   const [list, setList] = useState<Details[]>([]);
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
     return userinfo;
   });
   useEffect(() => {
+    const { id } = props.location.query;
+    if (parseInt(id) === user.id) {
+      history.replace("/storehouse/manage");
+    } else if (id) {
+      history.replace("/");
+    }
+  }, [props.location.query]);
+  useEffect(() => {
+    const { id } = props.location.query;
+    if (id) {
+      history.replace("/");
+    }
     postBannerList().then((res) => {
       if (res) {
         setBannerList(res.data || []);
       }
     });
     postApiGoodsGoodsLists({
-      shoperId: user.id,
+      shoperId: parseInt(id),
       pageLimit: 100,
       pageNum: 1,
     }).then((res) => {

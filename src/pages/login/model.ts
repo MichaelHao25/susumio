@@ -1,10 +1,10 @@
-import { postApiUsersUserAccountsLogin } from '@/services/api';
-import { Details } from '@/services/interface';
-import { Notify, Report } from 'notiflix';
-import { EffectsCommandMap } from 'dva';
-import { ImmerReducer, Subscription } from '@@/plugin-dva/connect';
+import { postApiUsersUserAccountsLogin } from "@/services/api";
+import { Details } from "@/services/interface";
+import { Notify, Report } from "notiflix";
+import { EffectsCommandMap } from "dva";
+import { ImmerReducer, Subscription } from "@@/plugin-dva/connect";
 
-import { history } from 'umi';
+import { history } from "umi";
 
 export interface ListState {
   postApiGoodsGoodsLists: Details[];
@@ -60,11 +60,12 @@ export interface UserinfoState {
     user_level_id: number;
     is_set_pwd: number;
     guid: string;
+    is_shopkeeper: boolean;
   };
 }
 
 export interface UserinfoModel {
-  namespace: 'userinfo';
+  namespace: "userinfo";
   state: UserinfoState;
   effects: {
     postApiUsersUserAccountsLogin: (
@@ -93,64 +94,65 @@ export interface UserinfoModel {
 }
 
 const userinfoModel: UserinfoModel = {
-  namespace: 'userinfo',
+  namespace: "userinfo",
   state: {
     token: {
       id: 0,
       user_account_id: 0,
       user_id: 0,
-      client_type: '',
-      token: '',
-      refresh_token: '',
+      client_type: "",
+      token: "",
+      refresh_token: "",
       expire_time: 0,
-      create_time: '',
-      update_time: '',
+      create_time: "",
+      update_time: "",
     },
     user: {
       id: 0,
-      mobile: '',
-      user_name: '',
-      nick_name: '',
-      avatar: '',
+      mobile: "",
+      user_name: "",
+      nick_name: "",
+      avatar: "",
       is_customer: false,
       gender: 0,
-      telephone: '',
-      qq: '',
-      wechat: '',
-      email: '',
-      province: '',
-      province_code: '',
-      city: '',
-      city_code: '',
-      area: '',
-      area_code: '',
-      memo: '',
+      telephone: "",
+      qq: "",
+      wechat: "",
+      email: "",
+      province: "",
+      province_code: "",
+      city: "",
+      city_code: "",
+      area: "",
+      area_code: "",
+      memo: "",
       role_ids: [],
-      become_distributor_time: '',
+      become_distributor_time: "",
       is_distributor: false,
       distributor_level_id: 0,
-      parent_id: '',
-      parent_ids: '',
-      become_bonus_time: '',
+      parent_id: "",
+      parent_ids: "",
+      become_bonus_time: "",
       is_bonus: false,
       bonus_level_id: 0,
       status: 0,
       keep_sign_in_num: 0,
       total_sign_in_num: 0,
-      last_sign_in_time: '',
-      create_time: '',
-      update_time: '',
-      user_level: '',
+      last_sign_in_time: "",
+      create_time: "",
+      update_time: "",
+      user_level: "",
       user_level_id: 0,
       is_set_pwd: 0,
-      guid: '',
+      guid: "",
+      is_shopkeeper: false,
     },
   },
   effects: {
     *postApiUsersUserAccountsLogin({ payload }, { call, select, put }) {
       const { mobile, password } = payload;
       if (!(mobile && password)) {
-        Notify.failure('请输入用户名或者密码！');
+        Notify.failure("请输入用户名或者密码！");
         return;
       }
       const res = yield call(postApiUsersUserAccountsLogin, {
@@ -159,14 +161,14 @@ const userinfoModel: UserinfoModel = {
       });
       if (res) {
         const { data } = res;
-        window.localStorage.setItem('userinfo', JSON.stringify(data));
-        window.localStorage.setItem('token', data.token.token);
+        window.localStorage.setItem("userinfo", JSON.stringify(data));
+        window.localStorage.setItem("token", data.token.token);
         yield put({
-          type: 'setState',
+          type: "setState",
           payload: data,
         });
-        Report.success('ok', res.msg, 'OK', () => {
-          history.push('/');
+        Report.success("ok", res.msg, "OK", () => {
+          history.push("/");
         });
       }
     },
@@ -192,11 +194,11 @@ const userinfoModel: UserinfoModel = {
   },
   subscriptions: {
     onload({ dispatch, history }) {
-      const userInfo = window.localStorage.getItem('userinfo');
+      const userInfo = window.localStorage.getItem("userinfo");
       if (userInfo) {
         const parseUserInfo = JSON.parse(userInfo);
         dispatch({
-          type: 'setState',
+          type: "setState",
           payload: parseUserInfo,
         });
       }

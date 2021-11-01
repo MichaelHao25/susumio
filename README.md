@@ -24,6 +24,8 @@
 
 1. 美元，欧元，墨西哥比索，秘鲁，哥伦比亚
 货币转换
+
+富文本编辑器
 http://lictic.com/storehouse
 http://lictic.com/storehouse/add
 http://lictic.com/storehouse/add
