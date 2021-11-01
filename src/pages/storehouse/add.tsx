@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import Tab from "./tab";
 import Upload from "@/component/Upload";
 import { postApiGoodsSave, postApiGoodsUpdate } from "@/services/api";
-import { Notify } from "notiflix";
+import { Confirm, Notify } from "notiflix";
 import { ConnectProps } from "@/.umi/plugin-dva/connect";
 import { history } from "umi";
 
@@ -100,7 +100,12 @@ export default (props: Props) => {
   };
   return (
     <div className={styles.storehouse}>
-      <Header title={"添加商品"} />
+      <Header
+        title={"添加商品"}
+        leftOnClick={() => {
+          history.push("/my");
+        }}
+      />
 
       <div className={styles.add_container}>
         <div className={styles.img_title}>封面图</div>
@@ -110,7 +115,15 @@ export default (props: Props) => {
               <div
                 className={styles.img}
                 onClick={() => {
-                  setThum([]);
+                  Confirm.show(
+                    "删除图片",
+                    "确定是否删除图片？",
+                    "删除",
+                    "取消",
+                    () => {
+                      setThum([]);
+                    },
+                  );
                 }}
                 key={index}
               >
@@ -118,7 +131,7 @@ export default (props: Props) => {
               </div>
             );
           })}
-          {thum.length > 1 ? (
+          {thum.length >= 1 ? (
             ""
           ) : (
             <Upload
@@ -142,10 +155,18 @@ export default (props: Props) => {
                 className={styles.img}
                 key={index}
                 onClick={() => {
-                  setImg((img) => {
-                    img.slice(index, 1);
-                    return [...img];
-                  });
+                  Confirm.show(
+                    "删除图片",
+                    "确定是否删除图片？",
+                    "删除",
+                    "取消",
+                    () => {
+                      setImg((img) => {
+                        img.slice(index, 1);
+                        return [...img];
+                      });
+                    },
+                  );
                 }}
               >
                 <img src={item} alt="" />

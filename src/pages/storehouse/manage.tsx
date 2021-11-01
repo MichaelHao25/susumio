@@ -28,7 +28,12 @@ export default () => {
 
   return (
     <div className={styles.storehouse}>
-      <Header title={"XXX的小店"} noBack={true} />
+      <Header
+        title={"XXX的小店"}
+        leftOnClick={() => {
+          history.push("/my");
+        }}
+      />
       <div className={styles.list}>
         <div className={styles.left}>
           <div className={`${styles.item} ${styles.active}`}>人气Top</div>

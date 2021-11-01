@@ -45,7 +45,12 @@ export default () => {
 
   const header = (
     <div>
-      <Header title={"订单列表"} noBack={true} />
+      <Header
+        title={"订单列表"}
+        leftOnClick={() => {
+          history.push("/my");
+        }}
+      />
       <div className="aui-tab" id="tab">
         <div
           className={`aui-tab-item ${activeStatus == 0 ? "aui-active" : ""}`}

@@ -7,10 +7,11 @@ interface Props {
   right?: ReactNode;
   left?: ReactNode;
   titleStyle?: React.CSSProperties;
+  leftOnClick?: () => void;
 }
 
 export default (props: Props) => {
-  const { title, noBack, right, left = "", titleStyle } = props;
+  const { title, noBack, right, left = "", titleStyle, leftOnClick } = props;
   return (
     <header
       className="aui-bar aui-bar-nav aui-bar-light"
@@ -22,7 +23,11 @@ export default (props: Props) => {
       ) : (
         <a
           onClick={() => {
-            history.goBack();
+            if (leftOnClick) {
+              leftOnClick();
+            } else {
+              history.goBack();
+            }
           }}
           className="aui-pull-left aui-btn"
         >

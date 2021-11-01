@@ -33,7 +33,7 @@ const script2 = document.createElement("script");
 script2.src = "https://www.17track.net/externalcall.js";
 document.body.appendChild(script2);
 
-// // 物流
+// Facebook登陆
 // const facebooklogin = document.createElement("script");
 // facebooklogin.async = true;
 // facebooklogin.defer = true;
