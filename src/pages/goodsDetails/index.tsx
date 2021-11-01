@@ -1,9 +1,6 @@
 import "./index.less";
 import React, { useEffect, useState } from "react";
 import { ConnectProps } from "umi";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper.less";
-import "swiper/components/pagination/pagination.less";
 import {
   postApiGoodsCartsSave,
   postApiGoodsGoodsCollectionsCancel,
@@ -370,8 +367,10 @@ const index = (props: Props) => {
       />
       {/*轮播*/}
       <Swiper
-        spaceBetween={0}
-        slidesPerView={1}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+        }}
         loop={true}
         pagination={{ clickable: true }}
       >

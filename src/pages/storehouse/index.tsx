@@ -1,11 +1,12 @@
 import Header from "@/component/Header";
-import styles from "./index.less";
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper.less";
-import "swiper/components/pagination/pagination.less";
-import { history, UserinfoState, useSelector } from "umi";
 import React, { useEffect, useState } from "react";
+import styles from "./index.less";
+import { Pagination, Autoplay } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
+import "swiper/swiper.less";
+import "swiper/modules/pagination/pagination.less";
+import "swiper/modules/autoplay/autoplay.less";
+import { history, UserinfoState, useSelector } from "umi";
 import { postApiGoodsGoodsLists, postBannerList } from "@/services/api";
 import Tab from "@/component/Tab";
 import { Details } from "@/services/interface";
@@ -39,8 +40,11 @@ export default () => {
     <div className={styles.storehouse}>
       <Header title={"XXX的小店"} noBack={true} />
       <Swiper
-        spaceBetween={0}
-        slidesPerView={1}
+        modules={[Pagination, Autoplay]}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+        }}
         loop={true}
         pagination={{ clickable: true }}
         style={{ width: "100%" }}

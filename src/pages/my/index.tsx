@@ -1,15 +1,15 @@
-import './index.less';
-import React, { useEffect, useState } from 'react';
+import "./index.less";
+import React, { useEffect, useState } from "react";
 import {
   postDrpDbStatus,
   postQueryOrdersCount,
   postQueryPayPassword,
   postUsersAsset,
   postUsersInfoRead,
-} from '@/services/api';
-import Tab from '@/component/Tab';
-import { history } from '@@/core/history';
-import { Link } from 'umi';
+} from "@/services/api";
+import Tab from "@/component/Tab";
+import { history } from "@@/core/history";
+import { Link } from "umi";
 
 interface OrdersCount {
   return_goods_num: number;
@@ -49,7 +49,7 @@ const index = () => {
     wait_ship_num: 0,
   });
   const [usersAsset, setUsersAsset] = useState<UsersAsset>({
-    level: '',
+    level: "",
     score: 0,
     money: 0,
   });
@@ -59,12 +59,12 @@ const index = () => {
     is_open_drp: false,
   });
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    mobile: '',
-    avatar: '',
+    mobile: "",
+    avatar: "",
     is_bonus: false,
     is_customer: false,
     is_distributor: false,
-    nick_name: '',
+    nick_name: "",
   });
   useEffect(() => {
     postQueryPayPassword().then((res) => {
@@ -76,7 +76,7 @@ const index = () => {
         setIsPassword(is_set_pay_password);
       }
     });
-    postUsersInfoRead('5314').then((res) => {
+    postUsersInfoRead("5314").then((res) => {
       console.log(res);
       if (res) {
         const { data } = res;
@@ -129,22 +129,22 @@ const index = () => {
             src={
               userInfo.avatar
                 ? userInfo.avatar
-                : require('../../assets/img/avatar.png')
+                : require("../../assets/img/avatar.png")
             }
             id="avatar"
             className="aui-img-round"
-            style={{ height: '80px' }}
+            style={{ height: "80px" }}
           />
           <div
             className="aui-text-white aui-margin-l-15"
-            style={{ marginTop: '-1.5rem' }}
+            style={{ marginTop: "-1.5rem" }}
           >
             <div
               className="aui-margin-b-5"
-              style={{ display: 'flex', alignItems: 'center' }}
+              style={{ display: "flex", alignItems: "center" }}
             >
               <div className="aui-font-size-18 aui-margin-r-10">
-                {userInfo.nick_name ? userInfo.nick_name : 'Usuario anónimo'}
+                {userInfo.nick_name ? userInfo.nick_name : "Usuario anónimo"}
               </div>
               <div className="level aui-font-size-12">{usersAsset.level}</div>
             </div>
@@ -157,14 +157,14 @@ const index = () => {
                 <span className="aui-font-size-12">
                   Integral:
                   <span>{usersAsset.score}</span>
-                </span>{' '}
+                </span>{" "}
                 <i className="aui-iconfont aui-icon-right aui-font-size-10" />
               </span>
             </div>
           </div>
           <i
             id="setting"
-            onClick={() => history.push('/set')}
+            onClick={() => history.push("/set")}
             className="iconfont icon-shezhishedingpeizhichilun aui-text-white"
           />
         </div>
@@ -173,16 +173,16 @@ const index = () => {
         <div className="order">
           <div
             style={{
-              borderBottom: '0.025rem solid rgb(238, 238, 238)',
-              height: '2.4rem',
-              lineHeight: '2.4rem',
+              borderBottom: "0.025rem solid rgb(238, 238, 238)",
+              height: "2.4rem",
+              lineHeight: "2.4rem",
             }}
           >
-            <ul className="aui-list" style={{ backgroundImage: 'none' }}>
+            <ul className="aui-list" style={{ backgroundImage: "none" }}>
               <li
                 className="aui-list-item"
                 onClick={() => {
-                  history.push('/orderList', {
+                  history.push("/orderList", {
                     status: 0,
                   });
                 }}
@@ -190,7 +190,7 @@ const index = () => {
                 <div className="aui-list-item-inner aui-list-item-arrow">
                   <div className="aui-list-item-title">Mi pedido</div>
                   <div className="aui-list-item-right">
-                    <div style={{ fontSize: '0.7rem' }}>Total</div>
+                    <div style={{ fontSize: "0.7rem" }}>Total</div>
                   </div>
                 </div>
               </li>
@@ -200,7 +200,7 @@ const index = () => {
             <div className="aui-row">
               <div
                 onClick={() => {
-                  history.push('/orderList', {
+                  history.push("/orderList", {
                     status: 1,
                   });
                 }}
@@ -208,7 +208,7 @@ const index = () => {
               >
                 <i
                   className="aui-iconfont iconfont icon-daifukuan"
-                  style={{ fontSize: '1.4rem' }}
+                  style={{ fontSize: "1.4rem" }}
                 />
                 <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                   Pagará
@@ -222,7 +222,7 @@ const index = () => {
               <div
                 // data-onclick="$util.openWindow('order_list_win', {status: 2})"
                 onClick={() => {
-                  history.push('/orderList', {
+                  history.push("/orderList", {
                     status: 2,
                   });
                 }}
@@ -230,7 +230,7 @@ const index = () => {
               >
                 <i
                   className="aui-iconfont iconfont icon-daifahuo"
-                  style={{ fontSize: '1.4rem' }}
+                  style={{ fontSize: "1.4rem" }}
                 />
                 <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                   Despachará
@@ -243,7 +243,7 @@ const index = () => {
               </div>
               <div
                 onClick={() => {
-                  history.push('/orderList', {
+                  history.push("/orderList", {
                     status: 3,
                   });
                 }}
@@ -251,7 +251,7 @@ const index = () => {
               >
                 <i
                   className="aui-iconfont iconfont icon-yifahuo"
-                  style={{ fontSize: '1.4rem' }}
+                  style={{ fontSize: "1.4rem" }}
                 />
                 <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                   Recibirá
@@ -265,7 +265,7 @@ const index = () => {
               <div
                 // data-onclick="$util.openWindow('order_list_win', {status: 4})"
                 onClick={() => {
-                  history.push('/orderList', {
+                  history.push("/orderList", {
                     status: 4,
                   });
                 }}
@@ -273,7 +273,7 @@ const index = () => {
               >
                 <i
                   className="aui-iconfont iconfont icon-daipingjia"
-                  style={{ fontSize: '1.4rem' }}
+                  style={{ fontSize: "1.4rem" }}
                 />
                 <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                   Comentará
@@ -288,7 +288,7 @@ const index = () => {
               </div>
               <div
                 onClick={() => {
-                  history.push('/orderList', {
+                  history.push("/orderList", {
                     status: -1,
                   });
                 }}
@@ -296,7 +296,7 @@ const index = () => {
               >
                 <i
                   className="aui-iconfont iconfont icon-shouhou"
-                  style={{ fontSize: '1.4rem' }}
+                  style={{ fontSize: "1.4rem" }}
                 />
                 <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                   Posventa
@@ -317,7 +317,7 @@ const index = () => {
         <div className="wallet1">
           <div className="wallet-into">
             <div className="aui-font-weight aui-margin-l-15">Mi cartera</div>
-            <Link className="aui-margin-r-15" to={'/wallet'}>
+            <Link className="aui-margin-r-15" to={"/wallet"}>
               <p>
                 Entrar a mi cartera
                 <i className="aui-iconfont aui-icon-right" />
@@ -326,24 +326,24 @@ const index = () => {
           </div>
           <div className="wallet-price">
             <div
-              style={{ display: 'flex', alignItems: 'center', width: '50%' }}
+              style={{ display: "flex", alignItems: "center", width: "50%" }}
               className="aui-margin-l-15"
             >
               <p>Saldo:</p>
               <div
                 className="aui-font-size-20 aui-font-weight"
-                style={{ color: '#f03b3b', marginTop: '-0.2rem' }}
+                style={{ color: "#f03b3b", marginTop: "-0.2rem" }}
               >
                 ${usersAsset.money}
               </div>
             </div>
-            <Link className="recharge" to={'/recharge'}>
+            <Link className="recharge" to={"/recharge"}>
               Recargar
             </Link>
             <Link
               className="recharge aui-margin-r-5"
-              to={'/withdraw'}
-              style={{ marginLeft: '3rem', width: '7rem' }}
+              to={"/withdraw"}
+              style={{ marginLeft: "3rem", width: "7rem" }}
             >
               Sacar dinero
             </Link>
@@ -369,39 +369,39 @@ const index = () => {
         <div className="title aui-font-weight aui-margin-l-15 aui-margin-r-15">
           Administración
         </div>
-        <section className="aui-grid" style={{ marginTop: '0.5rem' }}>
+        <section className="aui-grid" style={{ marginTop: "0.5rem" }}>
           <div className="aui-row">
-            <Link to={'/cartLIst'} className="aui-col-xs-3">
+            <Link to={"/cartLIst"} className="aui-col-xs-3">
               <i
                 className="aui-iconfont iconfont icon-gouwuche2"
-                style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
               />
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Carro
               </div>
             </Link>
-            <Link to={'/favorite'} className="aui-col-xs-3">
+            <Link to={"/favorite"} className="aui-col-xs-3">
               <i
                 className="aui-iconfont iconfont icon-star"
-                style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
               />
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Mi favorito
               </div>
             </Link>
-            <Link to={'/addressList'} className="aui-col-xs-3">
+            <Link to={"/addressList"} className="aui-col-xs-3">
               <i
                 className="aui-iconfont iconfont icon-dizhi-01"
-                style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
               />
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Mi dirección
               </div>
             </Link>
-            <Link to={'/commentList'} className="aui-col-xs-3">
+            <Link to={"/commentList"} className="aui-col-xs-3">
               <i
                 className="aui-iconfont iconfont icon-dingdan1"
-                style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
               />
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Mi comentario
@@ -414,16 +414,16 @@ const index = () => {
             >
               <i
                 className="aui-iconfont iconfont icon-youhuiquan"
-                style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
               />
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Mi cupón
               </div>
             </div>
-            <Link to={'/traceList'} className="aui-col-xs-3">
+            <Link to={"/traceList"} className="aui-col-xs-3">
               <i
                 className="aui-iconfont iconfont icon-zuji1"
-                style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
               />
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Mis huellas
@@ -435,7 +435,7 @@ const index = () => {
             >
               <i
                 className="aui-iconfont iconfont icon-custom-service"
-                style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
               />
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Servicios
@@ -448,7 +448,7 @@ const index = () => {
         <div className="title aui-font-weight aui-margin-l-15 aui-margin-r-15">
           Integral/Grupal
         </div>
-        <section className="aui-grid" style={{ marginTop: '0.5rem' }}>
+        <section className="aui-grid" style={{ marginTop: "0.5rem" }}>
           <div className="aui-row">
             <div
               data-onclick="$util.openWindow('score_shop_win')"
@@ -456,7 +456,7 @@ const index = () => {
             >
               <i
                 className="aui-iconfont iconfont icon-jifenshangcheng"
-                style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
               />
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Integral
@@ -468,7 +468,7 @@ const index = () => {
             >
               <i
                 className="aui-iconfont iconfont icon-tuandui"
-                style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
               />
               <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                 Grupal
@@ -483,14 +483,14 @@ const index = () => {
         </div>
         <section
           className="aui-grid"
-          style={{ marginTop: '0.5rem', marginBottom: '0.8rem' }}
+          style={{ marginTop: "0.5rem", marginBottom: "0.8rem" }}
         >
           <div className="aui-row">
             {drpDbStatus.is_open_drp ? (
-              <Link className="aui-col-xs-3" to={'/distribution'}>
+              <Link className="aui-col-xs-3" to={"/distribution"}>
                 <i
                   className="aui-iconfont iconfont icon-daifahuo"
-                  style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                  style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
                 />
                 <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                   Centro de distribución
@@ -501,10 +501,10 @@ const index = () => {
             )}
             {(userInfo.is_bonus || userInfo.is_distributor) &&
             (drpDbStatus.is_open_drp || drpDbStatus.is_open_bonus) ? (
-              <Link to={'/myQrcode'} className="aui-col-xs-3">
+              <Link to={"/myQrcode"} className="aui-col-xs-3">
                 <i
                   className="aui-iconfont iconfont icon-qr-code"
-                  style={{ fontSize: '1.4rem', color: 'rgb(67, 67, 67)' }}
+                  style={{ fontSize: "1.4rem", color: "rgb(67, 67, 67)" }}
                 />
                 <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
                   Invitación a código binario
@@ -513,13 +513,28 @@ const index = () => {
             ) : (
               <></>
             )}
+            <Link to={"/storehouse"} className="aui-col-xs-3">
+              <img
+                src={require("../../assets/img/storehouse.svg")}
+                alt=""
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  color: "rgb(67, 67, 67)",
+                  margin: "0 auto",
+                }}
+              />
+              <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
+                店中店
+              </div>
+            </Link>
           </div>
         </section>
       </div>
       <div
         style={{
-          backgroundColor: '#fff',
-          display: openWallet ? 'block' : 'none',
+          backgroundColor: "#fff",
+          display: openWallet ? "block" : "none",
         }}
         className="openWallet-layout"
       >
@@ -527,7 +542,7 @@ const index = () => {
           <div className="wallet">
             <i
               className="aui-iconfont iconfont icon-qianbao1"
-              style={{ fontSize: '2rem', color: '#80ddff' }}
+              style={{ fontSize: "2rem", color: "#80ddff" }}
             />
           </div>
           <div className="openWallet-text">Activar la billetera</div>
@@ -535,21 +550,21 @@ const index = () => {
         </div>
         <div
           style={{
-            borderTop: '0.025rem solid #eee',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            height: '3rem',
+            borderTop: "0.025rem solid #eee",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-around",
+            height: "3rem",
           }}
         >
           <div
             style={{
-              borderRight: '0.025rem solid #eee',
-              color: '#707070',
-              height: '3rem',
-              width: '6.25rem',
-              textAlign: 'center',
-              lineHeight: '3rem',
+              borderRight: "0.025rem solid #eee",
+              color: "#707070",
+              height: "3rem",
+              width: "6.25rem",
+              textAlign: "center",
+              lineHeight: "3rem",
             }}
             onClick={() => {
               setOpenWallet(false);
@@ -559,15 +574,15 @@ const index = () => {
           </div>
           <div
             style={{
-              color: '#0083df',
-              height: '3rem',
-              width: '6.25rem',
-              textAlign: 'center',
-              lineHeight: '3rem',
+              color: "#0083df",
+              height: "3rem",
+              width: "6.25rem",
+              textAlign: "center",
+              lineHeight: "3rem",
             }}
             className="aui-font-weight aui-font-size-16"
             onClick={() => {
-              history.push('/initPayPassword');
+              history.push("/initPayPassword");
               setOpenWallet(false);
             }}
           >
@@ -575,11 +590,11 @@ const index = () => {
           </div>
         </div>
       </div>
-      <div style={{ height: '2.5rem' }} />
+      <div style={{ height: "2.5rem" }} />
       <Tab />
     </div>
   );
 };
 
-index.wrappers = ['@/wrappers/auth'];
+index.wrappers = ["@/wrappers/auth"];
 export default index;

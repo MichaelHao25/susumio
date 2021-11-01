@@ -1,16 +1,15 @@
 import Tab from "@/component/Tab";
 import "./index.less";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper.less";
-import "swiper/components/pagination/pagination.less";
-import SwiperCore, { Pagination } from "swiper";
-import { connect, ConnectProps, Dispatch, history, Link } from "umi";
 import React, { useEffect, useState } from "react";
+import { Pagination, Autoplay } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
+import "swiper/swiper.less";
+import "swiper/modules/pagination/pagination.less";
+import "swiper/modules/autoplay/autoplay.less";
+import { connect, ConnectProps, Dispatch, history, Link } from "umi";
 import List from "@/component/List";
 import { AllList } from "@/services/interface";
 import { postBannerList, postGoodsTag } from "@/services/api";
-
-SwiperCore.use([Pagination]);
 
 interface PageProps extends ConnectProps {
   dispatch: Dispatch;
@@ -109,8 +108,11 @@ const Header = () => {
 
       <div className="aui-content">
         <Swiper
-          spaceBetween={0}
-          slidesPerView={1}
+          modules={[Pagination, Autoplay]}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
           loop={true}
           pagination={{ clickable: true }}
         >

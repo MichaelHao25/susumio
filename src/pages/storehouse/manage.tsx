@@ -1,9 +1,6 @@
 import Header from "@/component/Header";
 import styles from "./index.less";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper.less";
-import "swiper/components/pagination/pagination.less";
 import { history } from "umi";
 import React, { useEffect, useState } from "react";
 import {

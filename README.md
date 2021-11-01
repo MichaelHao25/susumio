@@ -22,6 +22,15 @@
 9. 分销系统详情没有数据
 
 
+1. 美元，欧元，墨西哥比索，秘鲁，哥伦比亚
+货币转换
+http://lictic.com/storehouse
+http://lictic.com/storehouse/add
+http://lictic.com/storehouse/add
+http://lictic.com/storehouse/manage
+
+
+
 1. ~~修改支付密码和密码修改有问题待测试~~
 2. ~~余额提现新增银行信息~~
 3. ~~产品编号更改显示形式~~
