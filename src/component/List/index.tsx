@@ -19,6 +19,7 @@ import {
   postCancelOrders,
   postCommentsDelete,
   postFavoriteDelete,
+  postGoodsSend,
   postOrderFinish,
   postPayPrepay,
   postTipDeliver,
@@ -1011,7 +1012,8 @@ export default connect(({ list }: { list: ListState }) => {
             );
           };
           const selectAddress = (address: AddressItem) => {
-            const { selectAddress = false } = params ? {} : params;
+            const { selectAddress = false } = params ? params : {};
+
             if (selectAddress) {
               sessionStorage.setItem("address", JSON.stringify(address));
               history.goBack();
@@ -1169,28 +1171,533 @@ export default connect(({ list }: { list: ListState }) => {
             );
           });
         }
+        // todo 暂时先用下面的列表
+        // case AllList.postApiOrdersListsForStorehouse: {
+        //   return (
+        //     <div className={storehouse.order_list}>
+        //       {list.postApiOrdersLists.map((item) => {
+        //         return (
+        //           <div className={storehouse.item} key={item.id}>
+        //             <div className={storehouse.header}>
+        //               <div className={storehouse.sn}>
+        //                 订单号：23847563928174
+        //               </div>
+        //               <div className={storehouse.status}>待发货</div>
+        //             </div>
+        //             <div className={storehouse.content}>
+        //               <div className={storehouse.df_ai}>
+        //                 <div className={storehouse.name}>1元代金券</div>
+        //                 <div className={storehouse.time}>2019-01-08 09:05</div>
+        //               </div>
+        //               <div className={storehouse.form}>付款人：Momo</div>
+        //               <div className={storehouse.df_ai}>
+        //                 <div className={storehouse.money}>¥1*100件=¥100</div>
+        //                 <div className={storehouse.button}>去发货</div>
+        //               </div>
+        //             </div>
+        //           </div>
+        //         );
+        //       })}
+
+        //     </div>
+        //   );
+        // }
+        // 店中店的详情页
         case AllList.postApiOrdersListsForStorehouse: {
+          const orderStatus = (order: OrdersListItem): string => {
+            var str = "";
+            if (order.status == 1) {
+              str += "Esperando el pago";
+            } else if (order.status == 2) {
+              str += "Esperando la entrega";
+            } else if (order.status == 3) {
+              str += "Mercancías entregadas";
+            } else if (order.status == 4) {
+              str += "Realizado";
+            } else if (order.status == 9) {
+              str += "Orden cancelada";
+            }
+            return str;
+          };
+
+          const cancelOrder = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ) => {
+            e.stopPropagation();
+            Confirm.show(
+              "Confirm",
+              "Por favor,seleccione la causa de la cancelación?",
+              "Confirmar",
+              "Cancelar",
+              function () {
+                postCancelOrders({
+                  order_id: order.id,
+                  cancel_reason: "Confirmar",
+                }).then((res) => {
+                  if (res) {
+                    Notify.success(res.msg);
+                    dispatch({
+                      type: "list/setState",
+                      payload: {
+                        key: ["postApiOrdersLists", { id: order.id }],
+                        value: {
+                          status: 9,
+                        },
+                      },
+                    });
+                  }
+                });
+              },
+              function () {},
+            );
+          };
+          const orderPay = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ) => {
+            e.stopPropagation();
+            postPayPrepay({
+              order_id: order.id,
+            }).then((res) => {
+              if (res) {
+                history.push("/paySelect", {
+                  order_no: order.order_no,
+                  total_money: order.total_money,
+                });
+              }
+            });
+          };
+          const refund = (
+            e: React.MouseEvent<HTMLDivElement>,
+            goods: OrderListItemGoodsInfo,
+          ) => {
+            e.stopPropagation();
+            history.push("/refundGoods", {
+              goods: goods,
+            });
+          };
+          const goComment = (
+            e: React.MouseEvent<HTMLDivElement>,
+            goods: OrderListItemGoodsInfo,
+          ) => {
+            e.stopPropagation();
+            history.push("/commentAdd", {
+              goods: goods,
+            });
+          };
+          const goLogistics = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ) => {
+            e.stopPropagation();
+            history.push("/logistics", {
+              order,
+            });
+          };
+          const remind = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ) => {
+            e.stopPropagation();
+            postTipDeliver({
+              order_id: order.id,
+            }).then((res) => {
+              if (res) {
+                Notify.success(res.msg);
+              }
+            });
+          };
+          /**
+           * 店中店发货
+           * @param e
+           * @param order
+           */
+          function sendGoods(
+            e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+            order: OrdersListItem,
+          ): void {
+            e.stopPropagation();
+            postGoodsSend(order.id).then((res) => {
+              if (res) {
+                Notify.success(res.msg);
+                dispatch({
+                  type: "list/setState",
+                  payload: {
+                    key: ["postApiOrdersLists", { id: order.id }],
+                    value: {
+                      status: 4,
+                    },
+                  },
+                });
+              }
+            });
+          }
+          const finish = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ) => {
+            e.stopPropagation();
+            Confirm.show(
+              "Confirm",
+              "Confirmen la recepción?",
+              "Confirmar",
+              "Cancelar",
+              function () {
+                postOrderFinish({
+                  order_id: order.id,
+                }).then((res) => {
+                  if (res) {
+                    Notify.success(res.msg);
+                    dispatch({
+                      type: "list/setState",
+                      payload: {
+                        key: ["postApiOrdersLists", { id: order.id }],
+                        value: {
+                          status: 4,
+                        },
+                      },
+                    });
+                  }
+                });
+              },
+              function () {},
+            );
+          };
+          // 显示html详情
+          const viewDetails = (
+            e: React.MouseEvent<HTMLDivElement>,
+            order: OrdersListItem,
+          ): void => {
+            history.push("/viewHtmlDetails", {
+              order,
+            });
+          };
+
           return (
-            <div className={storehouse.order_list}>
-              {list.postApiGoodsGoodsLists.map((item) => {
+            <div className="aui-content" style={{ width: "100%" }}>
+              {/*什么都没有*/}
+              {list.postApiOrdersLists.length === 0 ? (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <div
+                    className="aui-col-xs-12 aui-text-center"
+                    style={{ marginTop: "30%" }}
+                  >
+                    <img
+                      loading="lazy"
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
+                    />
+                    <h5
+                      style={{ marginTop: "1rem" }}
+                      className="aui-font-size-14"
+                    >
+                      Oh. Aquí no hay nada.
+                    </h5>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+              {list.postApiOrdersLists.map((order) => {
                 return (
-                  <div className={storehouse.item} key={item.id}>
-                    <div className={storehouse.header}>
-                      <div className={storehouse.sn}>
-                        订单号：23847563928174
-                      </div>
-                      <div className={storehouse.status}>待发货</div>
+                  <div
+                    className="aui-padded-5 aui-bg-white aui-margin-t-10"
+                    key={order.id}
+                    onClick={() => {
+                      history.push("/orderDetail", {
+                        order,
+                      });
+                    }}
+                  >
+                    <div className="aui-padded-5 aui-font-size-12">
+                      <span>{order.cancel_time}</span>
+                      {order.order_no}
+                      <span className="aui-pull-right aui-text-info">
+                        {orderStatus(order)}
+                      </span>
                     </div>
-                    <div className={storehouse.content}>
-                      <div className={storehouse.df_ai}>
-                        <div className={storehouse.name}>1元代金券</div>
-                        <div className={storehouse.time}>2019-01-08 09:05</div>
-                      </div>
-                      <div className={storehouse.form}>付款人：Momo</div>
-                      <div className={storehouse.df_ai}>
-                        <div className={storehouse.money}>¥1*100件=¥100</div>
-                        <div className={storehouse.button}>去发货</div>
-                      </div>
+                    <div className=" aui-padded-l-5 aui-padded-r-5 aui-bg-white">
+                      <ul className="aui-list aui-media-list">
+                        {order.order_goods_info.map((goods) => {
+                          return (
+                            <li
+                              className="aui-list-item aui-margin-b-5 aui-bg-default"
+                              key={goods.id}
+                            >
+                              <div
+                                className="aui-media-list-item-inner"
+                                style={{ width: "100%" }}
+                              >
+                                <Link
+                                  className="aui-list-item-media aui-col-4"
+                                  to={`/goodsDetails?id=${goods.goods_id}`}
+                                >
+                                  <img loading="lazy" src={goods.thum} />
+                                </Link>
+
+                                <div className="aui-list-item-inner aui-col-8">
+                                  <div className="aui-list-item-text aui-col-xs-12">
+                                    <div
+                                      className="aui-list-item-title aui-ellipsis-2 aui-font-size-14"
+                                      style={{ width: "70%" }}
+                                    >
+                                      {goods.name}
+                                    </div>
+                                    <div className="aui-list-item-righ aui-text-price">
+                                      <span style={{ fontSize: "0.5rem" }}>
+                                        $
+                                      </span>
+                                      <span className="aui-font-size-14">
+                                        {goods.real_price}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {order.market_activity_id !== 0 ? (
+                                    <div className="aui-list-item-text aui-col-xs-12">
+                                      <div
+                                        className="aui-list-item-title aui-ellipsis-2 aui-font-size-14"
+                                        style={{ width: "70%" }}
+                                      />
+                                      <div
+                                        className="aui-list-item-righ"
+                                        style={{
+                                          textDecoration: "line-through",
+                                        }}
+                                      >
+                                        <span style={{ fontSize: "0.4rem" }}>
+                                          $
+                                        </span>
+                                        <span className="aui-font-size-12 ">
+                                          {goods.sell_price}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <></>
+                                  )}
+
+                                  <div className="aui-list-item-text aui-col-xs-12 aui-text-pray aui-margin-t-5">
+                                    <div
+                                      className="aui-list-item-title aui-font-size-12 aui-text-pray"
+                                      style={{ width: "70%" }}
+                                    >
+                                      {goods.spec_group_id != 0 ? (
+                                        <span>
+                                          Especificaciones:{" "}
+                                          {goods.spec_group_info}
+                                        </span>
+                                      ) : (
+                                        <></>
+                                      )}
+                                    </div>
+                                    <div className="aui-list-item-righ aui-text-pray">
+                                      <span className="aui-padded-5">
+                                        x{goods.num}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <div className="aui-list-item-text aui-margin-t-5">
+                                    <div
+                                      className="aui-list-item-title aui-text-pray aui-font-size-12 "
+                                      style={{ width: "70%" }}
+                                    />
+                                    {order.status == 4 &&
+                                    goods.is_comment == 0 &&
+                                    goods.return_goods_status != 3 &&
+                                    goods.return_goods_status != 1 ? (
+                                      <div
+                                        className="aui-list-item-right "
+                                        style={{ width: "30%" }}
+                                        onClick={(e) => goComment(e, goods)}
+                                      >
+                                        <div className="order-buttons aui-text-right">
+                                          <div className="mini-button aui-font-size-10">
+                                            comentar
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </div>
+
+                                  <div className="aui-list-item-text aui-margin-t-10">
+                                    <div
+                                      className="aui-list-item-title aui-text-pray aui-font-size-12 "
+                                      style={{ width: "70%" }}
+                                    />
+                                    {(order.status == 2 || order.status == 3) &&
+                                    goods.return_goods_status == 0 ? (
+                                      <div
+                                        className="aui-list-item-right"
+                                        style={{ width: "30%" }}
+                                        onClick={(e) => refund(e, goods)}
+                                      >
+                                        <div className="order-buttons aui-text-right">
+                                          <div
+                                            className="mini-button aui-font-size-10"
+                                            style={{ width: "4rem" }}
+                                          >
+                                            Reembolso
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <></>
+                                    )}
+                                    {goods.return_goods_status == 1 ? (
+                                      <div
+                                        className="aui-list-item-right aui-text-right"
+                                        style={{ width: "30%" }}
+                                        onClick={(e) => refund(e, goods)}
+                                      >
+                                        Solicitud de reembolso
+                                      </div>
+                                    ) : (
+                                      <></>
+                                    )}
+                                    {goods.return_goods_status == 2 ? (
+                                      <div
+                                        className="aui-list-item-right aui-text-right"
+                                        style={{ width: "30%" }}
+                                      >
+                                        Reembolso denegado
+                                      </div>
+                                    ) : (
+                                      <></>
+                                    )}
+
+                                    {goods.return_goods_status == 3 &&
+                                    goods.is_return_money == 0 ? (
+                                      <div
+                                        className="aui-list-item-right aui-text-right"
+                                        style={{ width: "30%" }}
+                                      >
+                                        Devolución exitosa
+                                        <br />
+                                        Pendiente de reembolso
+                                      </div>
+                                    ) : (
+                                      <></>
+                                    )}
+                                    {goods.return_goods_status == 3 &&
+                                    goods.is_return_money == 1 ? (
+                                      <div
+                                        className="aui-list-item-right aui-text-right"
+                                        style={{ width: "30%" }}
+                                      >
+                                        Devolución exitosa
+                                      </div>
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                    {/* 小计 */}
+                    <div
+                      className="aui-padded-t-10 aui-padded-b-10 aui-text-right aui-bg-white aui-font-size-12 "
+                      style={{ width: "100%" }}
+                    >
+                      Total
+                      <span>{order.order_goods_info.length}</span> Productos
+                      Total:
+                      <span
+                        className="aui-text-price "
+                        style={{ fontSize: "0.5rem" }}
+                      >
+                        $
+                      </span>
+                      <span className="aui-text-price aui-font-size-14 ">
+                        {order.total_money}
+                      </span>
+                      <span>
+                        {" "}
+                        ( Flete incluido $<span>{order.freight_money}</span> )
+                      </span>
+                    </div>
+                    {/* 按钮组 */}
+                    <div className="order-buttons aui-padded-b-5 ">
+                      {order.status == 2 || order.status == 3 ? (
+                        <div
+                          className="button active "
+                          onClick={(e) => sendGoods(e, order)}
+                        >
+                          核销
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {order.status == 1 ? (
+                        <div
+                          className="button active "
+                          onClick={(e) => orderPay(e, order)}
+                        >
+                          Pagar
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {order.status == 1 ? (
+                        <div
+                          className="button "
+                          onClick={(e) => cancelOrder(e, order)}
+                        >
+                          Cancelar
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {order.status == 2 ? (
+                        <div
+                          className="button "
+                          onClick={(e) => remind(e, order)}
+                        >
+                          Recordatorio
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {order.status == 3 ? (
+                        <div
+                          className="button active "
+                          style={{ width: "7rem" }}
+                          onClick={(e) => finish(e, order)}
+                        >
+                          Confirmar
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {order.status >= 3 && order.status != 9 ? (
+                        <div
+                          className="button "
+                          onClick={(e) => goLogistics(e, order)}
+                        >
+                          Logística
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                      {order.status == 3 ? (
+                        <div
+                          className="button "
+                          style={{ width: "6rem" }}
+                          onClick={(e) => viewDetails(e, order)}
+                        >
+                          Detalles
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </div>
                 );
@@ -1198,6 +1705,7 @@ export default connect(({ list }: { list: ListState }) => {
             </div>
           );
         }
+        // 我的订单详情页
         case AllList.postApiOrdersLists: {
           const orderStatus = (order: OrdersListItem): string => {
             var str = "";

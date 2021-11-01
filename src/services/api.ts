@@ -3,6 +3,17 @@ import { RequestOptionsInit } from "umi-request";
 import { AddressItem } from "@/services/interface";
 
 /**
+ * 店中店发货
+ */
+export const postGoodsSend = (orderId: number) => {
+  return request.post("/api_orders/sign_orders/shoper_sign", {
+    data: {
+      order_id: orderId,
+    },
+  });
+};
+
+/**
  * 店中店删除商品
  */
 export const postGoodsDelete = (id: number) => {

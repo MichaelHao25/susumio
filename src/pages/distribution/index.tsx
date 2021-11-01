@@ -172,7 +172,7 @@ export default () => {
                   className=" aui-font-size-10 aui-text-pray"
                   style={{ color: "transparent!important" }}
                 >
-                  Desglose de Comisiones
+                  Pendiente No aprobado Fondos
                 </span>
               </div>
               <div

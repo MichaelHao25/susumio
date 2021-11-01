@@ -46,7 +46,7 @@ export default () => {
       }
 
       Notiflix.Confirm.show(
-        "Introduzca el Código de transacción.",
+        "Introduzca la contraseña de pago",
         `<input type="password" class="confirm_password"/>`,
         "Confirmar",
         "Cancelar",
