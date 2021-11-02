@@ -9,6 +9,11 @@ import {
   postApiGoodsGoodsIsCollect,
   postApiGoodsGoodsRead,
 } from "@/services/api";
+import { Pagination, Autoplay } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
+import "swiper/swiper.less";
+import "swiper/modules/pagination/pagination.less";
+import "swiper/modules/autoplay/autoplay.less";
 import { Details } from "@/services/interface";
 import { history } from "@@/core/umiExports";
 import Notiflix, { Notify } from "notiflix";
@@ -367,6 +372,7 @@ const index = (props: Props) => {
       />
       {/*轮播*/}
       <Swiper
+        modules={[Pagination, Autoplay]}
         autoplay={{
           delay: 3000,
           disableOnInteraction: false,

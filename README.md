@@ -22,14 +22,20 @@
 9. 分销系统详情没有数据
 
 
-1. 美元，欧元，墨西哥比索，秘鲁，哥伦比亚
-货币转换
 
+1. 美元，欧元，墨西哥比索，秘鲁，哥伦比亚
+
+货币转换
+https://www.free-api.com/doc/407
 富文本编辑器
-http://lictic.com/storehouse
-http://lictic.com/storehouse/add
-http://lictic.com/storehouse/add
-http://lictic.com/storehouse/manage
+不能加入购物车 不能收藏 店中店 
+
+
+
+~~http://lictic.com/storehouse~~
+~~http://lictic.com/storehouse/add~~
+~~http://lictic.com/storehouse/add~~
+~~http://lictic.com/storehouse/manage~~
 
 
 
