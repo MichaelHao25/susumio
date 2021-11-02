@@ -165,7 +165,7 @@ export default (props: Props) => {
                     "取消",
                     () => {
                       setImg((img) => {
-                        img.slice(index, 1);
+                        img.splice(index, 1);
                         return [...img];
                       });
                     },

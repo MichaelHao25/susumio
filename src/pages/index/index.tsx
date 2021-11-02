@@ -10,6 +10,7 @@ import { connect, ConnectProps, Dispatch, history, Link } from "umi";
 import List from "@/component/List";
 import { AllList } from "@/services/interface";
 import { postBannerList, postGoodsTag } from "@/services/api";
+import useCurrencyManage from "@/hooks/useCurrencyManage";
 
 interface PageProps extends ConnectProps {
   dispatch: Dispatch;
@@ -46,6 +47,13 @@ interface TagItem {
 const Header = () => {
   const [bannerList, setBannerList] = useState<BannerItem[]>([]);
   const [tags, setTags] = useState<TagItem[]>([]);
+  const {
+    CurrencyType,
+    currentCurrency,
+    setCurrentCurrency,
+    changeCurrencyType,
+    sethangeCurrencyType,
+  } = useCurrencyManage();
   useEffect(() => {
     postBannerList().then((res) => {
       if (res) {
@@ -102,6 +110,9 @@ const Header = () => {
                 </div>
               </div>
               <img
+                onClick={() => {
+                  sethangeCurrencyType(true);
+                }}
                 src={require("../../assets/img/money.svg")}
                 alt=""
                 style={{ width: "30px", height: "30px" }}
@@ -110,7 +121,31 @@ const Header = () => {
           </div>
         </div>
       </div>
-
+      {changeCurrencyType && (
+        <div className={"money_every"}>
+          {Object.keys(CurrencyType).map((item) => {
+            return (
+              <div
+                className={`item ${currentCurrency === item && "active"}`}
+                key={item}
+                onClick={() => {
+                  // @ts-ignore
+                  setCurrentCurrency(item);
+                  sethangeCurrencyType(false);
+                }}
+              >
+                {item}
+              </div>
+            );
+          })}
+          {/* <div className="item active">USD</div>
+        <div className="item">EUR</div>
+        <div className="item">MXN</div>
+        <div className="item">PEN</div>
+        <div className="item">CLP</div>
+        <div className="item">COP</div> */}
+        </div>
+      )}
       <div className="aui-content">
         <Swiper
           modules={[Pagination, Autoplay]}
