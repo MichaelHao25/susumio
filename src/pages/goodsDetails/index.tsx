@@ -480,31 +480,35 @@ const index = (props: Props) => {
 
       <div style={{ height: "2.25rem" }} />
       <footer className="aui-bar aui-bar-tab aui-margin-t-15" id="footer">
-        <div
-          className="aui-bar-tab-item"
-          style={{ width: "3rem" }}
-          onClick={toggleCollect}
-        >
-          {/*@click="addCollection()"*/}
-          <span
-            className={`aui-iconfont iconfont icon-shoucang`}
-            style={{ color: isCollect ? "#ffc640" : "" }}
-          />
-          <div className="aui-bar-tab-label" style={{ color: "#777" }}>
-            Favorito
+        {!shoperId && (
+          <div
+            className="aui-bar-tab-item"
+            style={{ width: "3rem" }}
+            onClick={toggleCollect}
+          >
+            {/*@click="addCollection()"*/}
+            <span
+              className={`aui-iconfont iconfont icon-shoucang`}
+              style={{ color: isCollect ? "#ffc640" : "" }}
+            />
+            <div className="aui-bar-tab-label" style={{ color: "#777" }}>
+              Favorito
+            </div>
           </div>
-        </div>
-        <div
-          className="aui-bar-tab-item aui-text-white"
-          onClick={() => addCart(LayoutType.AddCart)}
-          style={{
-            width: "auto",
-            backgroundColor: "#6bcfc4",
-            fontSize: "0.8rem",
-          }}
-        >
-          Añadir a carro
-        </div>
+        )}
+        {!shoperId && (
+          <div
+            className="aui-bar-tab-item aui-text-white"
+            onClick={() => addCart(LayoutType.AddCart)}
+            style={{
+              width: "auto",
+              backgroundColor: "#6bcfc4",
+              fontSize: "0.8rem",
+            }}
+          >
+            Añadir a carro
+          </div>
+        )}
         <div
           className="aui-bar-tab-item aui-text-white"
           style={{

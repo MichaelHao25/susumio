@@ -1,7 +1,7 @@
 import Header from "@/component/Header";
 import styles from "./index.less";
 
-import { history, NavLink } from "umi";
+import { history, NavLink, UserinfoState, useSelector } from "umi";
 import React, { useEffect, useState } from "react";
 import {
   postApiGoodsGoodsLists,
@@ -14,9 +14,12 @@ import Notiflix, { Confirm, Notify } from "notiflix";
 
 export default () => {
   const [list, setList] = useState<Details[]>([]);
+  const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
+    return userinfo;
+  });
   useEffect(() => {
     postApiGoodsGoodsLists({
-      shoperId: 59,
+      shoperId: user.id,
       pageLimit: 100,
       pageNum: 1,
     }).then((res) => {
