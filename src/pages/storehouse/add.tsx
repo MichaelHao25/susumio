@@ -6,8 +6,8 @@ import Tab from "./tab";
 import Upload from "@/component/Upload";
 import { postApiGoodsSave, postApiGoodsUpdate } from "@/services/api";
 import { Confirm, Notify } from "notiflix";
-import { ConnectProps } from "@/.umi/plugin-dva/connect";
-import { history } from "umi";
+import { ConnectProps, UserinfoState } from "@/.umi/plugin-dva/connect";
+import { history, useSelector } from "umi";
 
 interface Props
   extends ConnectProps<
@@ -29,6 +29,9 @@ export default (props: Props) => {
   const [desc, setDesc] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [sellPrice, setSellPrice] = useState<string>("");
+  const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
+    return userinfo;
+  });
   useEffect(() => {
     if (props.location.state) {
       const { id, thum, img, desc, name, sellPrice } = props.location.state;
@@ -59,7 +62,7 @@ export default (props: Props) => {
           thum,
           img,
           desc,
-          shoperId: 59,
+          shoperId: user.id,
           name,
           sellPrice,
         }).then((res) => {
@@ -79,7 +82,7 @@ export default (props: Props) => {
           thum,
           img,
           desc,
-          shoperId: 59,
+          shoperId: user.id,
           name,
           sellPrice,
         }).then((res) => {
