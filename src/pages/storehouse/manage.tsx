@@ -53,7 +53,7 @@ export default () => {
                 <div className={styles.content}>
                   <div className={styles.title}>{item.name}</div>
 
-                  <div className={styles.cost}>¥ {item.sell_price}</div>
+                  <div className={styles.cost}>$ {item.sell_price}</div>
                   <div className={styles.control}>
                     {/* <div className={styles.button}>
                       <img src={require("../../assets/img/up.svg")} alt="" />

@@ -93,7 +93,7 @@ export default (props: Props) => {
                 <img src={item.thum} alt="" className={styles.thumbnail} />
                 <div className={styles.content}>
                   <div className={styles.title}>{item.name}</div>
-                  <div className={styles.cost}>¥ {item.sell_price}</div>
+                  <div className={styles.cost}>$ {item.sell_price}</div>
                   <div
                     className={styles.add}
                     onClick={() => {
