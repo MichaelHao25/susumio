@@ -10,7 +10,7 @@ export default () => {
         activeClassName={"aui-active"}
       >
         <i className="aui-iconfont iconfont icon-shouye" />
-        <div className="aui-bar-tab-label">管理商品</div>
+        <div className="aui-bar-tab-label">Productos</div>
       </NavLink>
       <NavLink
         to={"/storehouse/add"}
@@ -18,7 +18,7 @@ export default () => {
         activeClassName={"aui-active"}
       >
         {/* <i className="aui-iconfont iconfont icon-leimupinleifenleileibie" style={{opacity:0}}/>
-        <div className="aui-bar-tab-label"  style={{opacity:0}}>添加商品</div> */}
+        <div className="aui-bar-tab-label"  style={{opacity:0}}>Subir producto</div> */}
         <div
           style={{
             position: "absolute",
@@ -44,7 +44,7 @@ export default () => {
         activeClassName={"aui-active"}
       >
         <i className="aui-iconfont iconfont icon-people" />
-        <div className="aui-bar-tab-label">我的订单</div>
+        <div className="aui-bar-tab-label">Pedidos</div>
       </NavLink>
     </footer>
   );

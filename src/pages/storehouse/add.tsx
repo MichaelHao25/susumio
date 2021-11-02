@@ -104,14 +104,14 @@ export default (props: Props) => {
   return (
     <div className={styles.storehouse}>
       <Header
-        title={"添加商品"}
+        title={"Subir producto"}
         leftOnClick={() => {
           history.push("/my");
         }}
       />
 
       <div className={styles.add_container}>
-        <div className={styles.img_title}>封面图</div>
+        <div className={styles.img_title}>Portada</div>
         <div className={styles.img_list}>
           {thum.map((item, index) => {
             return (
@@ -150,7 +150,7 @@ export default (props: Props) => {
             </Upload>
           )}
         </div>
-        <div className={styles.img_title}>多图</div>
+        <div className={styles.img_title}>Fotos</div>
         <div className={styles.img_list}>
           {img.map((item, index) => {
             return (

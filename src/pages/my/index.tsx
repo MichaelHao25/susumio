@@ -550,7 +550,7 @@ const index = () => {
                   }}
                 />
                 <div className="aui-bar-tab-label aui-font-size-12 aui-text-default">
-                  店中店二维码
+                  Tienda código
                 </div>
               </a>
             ) : (

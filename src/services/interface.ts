@@ -175,6 +175,7 @@ export interface OrdersListItem {
   order_no: string;
   content: string;
   type: number;
+  shoper_id?: number;
   market_activity_type: string;
   market_activity_id: number;
   market_reduce_money: number;

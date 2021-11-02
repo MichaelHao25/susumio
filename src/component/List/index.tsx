@@ -1,5 +1,12 @@
 import React, { useEffect, useRef } from "react";
-import { connect, Dispatch, history, Link } from "umi";
+import {
+  connect,
+  Dispatch,
+  history,
+  Link,
+  UserinfoState,
+  useSelector,
+} from "umi";
 import styles from "./index.less";
 import storehouse from "../../pages/storehouse/index.less";
 // @ts-ignore
@@ -47,6 +54,11 @@ export default connect(({ list }: { list: ListState }) => {
 })(
   React.memo((props: PageProps) => {
     const miniRefresh = useRef<any>();
+    const { user } = useSelector(
+      ({ userinfo }: { userinfo: UserinfoState }) => {
+        return userinfo;
+      },
+    );
     const {
       header = "",
       top = "",
@@ -1626,16 +1638,15 @@ export default connect(({ list }: { list: ListState }) => {
                     </div>
                     {/* 按钮组 */}
                     <div className="order-buttons aui-padded-b-5 ">
-                      {order.status == 2 || order.status == 3 ? (
-                        <div
-                          className="button active "
-                          onClick={(e) => sendGoods(e, order)}
-                        >
-                          核销
-                        </div>
-                      ) : (
-                        <></>
-                      )}
+                      {(order.status == 2 || order.status == 3) &&
+                        order.shoper_id === user.id && (
+                          <div
+                            className="button active "
+                            onClick={(e) => sendGoods(e, order)}
+                          >
+                            Verificar
+                          </div>
+                        )}
                       {order.status == 1 ? (
                         <div
                           className="button active "
