@@ -23,7 +23,7 @@ export default (props: Props) => {
     const { id } = props.location.query;
     if (parseInt(id) === user.id) {
       history.replace("/storehouse/manage");
-    } else if (id) {
+    } else if (!id) {
       history.replace("/");
     }
   }, [props.location.query]);
