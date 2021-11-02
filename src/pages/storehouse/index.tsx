@@ -29,7 +29,7 @@ export default (props: Props) => {
   }, [props.location.query]);
   useEffect(() => {
     const { id } = props.location.query;
-    if (id) {
+    if (!id) {
       history.replace("/");
     }
     postBannerList().then((res) => {
