@@ -11,7 +11,6 @@ import List from "@/component/List";
 import { AllList } from "@/services/interface";
 import { postBannerList, postGoodsTag } from "@/services/api";
 import useCurrencyManage from "@/hooks/useCurrencyManage";
-
 interface PageProps extends ConnectProps {
   dispatch: Dispatch;
 }

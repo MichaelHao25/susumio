@@ -25,7 +25,6 @@
     "@better-scroll/pull-down": "^2.4.2",
     "@better-scroll/pull-up": "^2.4.2",
     "@types/qrcode.react": "^1.0.2",
-    "gatsby-plugin-paypal": "^1.1.6",
     "lottie-web": "^5.7.13",
     "minirefresh": "^2.0.2",
     "moment": "^2.29.1",
