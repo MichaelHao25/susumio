@@ -185,7 +185,7 @@ export default (props: Props) => {
     if (type === LayoutType.AddCart) {
       const cart_info: CartInfo[] = list.map((item) => {
         return {
-          goods_id: item.id,
+          goods_id: goods.id,
           spec_group_id_str: item.spec_group_id_str,
           num: item.num,
         };

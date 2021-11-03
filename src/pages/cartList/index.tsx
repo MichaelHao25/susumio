@@ -1,11 +1,15 @@
-import './index.less';
-import { CartList } from '@/services/interface';
-import React, { useEffect, useState } from 'react';
-import { ConnectProps, history, Link } from 'umi';
-import Tab from '@/component/Tab';
-import { postCartsLists } from '@/services/api';
-import Notiflix, { Notify } from 'notiflix';
-import { GoodsList } from '@/pages/goodsDetails/SpecInfoSelect';
+import "./index.less";
+import { CartList } from "@/services/interface";
+import React, { useEffect, useState } from "react";
+import { ConnectProps, history, Link } from "umi";
+import Tab from "@/component/Tab";
+import {
+  postCartsBatchDelete,
+  postCartsLists,
+  postCollectionsBatchDelete,
+} from "@/services/api";
+import Notiflix, { Confirm, Notify } from "notiflix";
+import { GoodsList } from "@/pages/goodsDetails/SpecInfoSelect";
 
 interface Props extends ConnectProps<{}, {}, {}> {}
 
@@ -44,32 +48,70 @@ const index = (props: Props) => {
           intro: item.goods_info.intro,
           spec_option_group: item.spec_group_info.spec_option_group,
           sell_price: item.goods_info.sell_price,
-          num: item.num.toString(10),
+          num: item.num,
           id: item.id,
           goods_id: item.goods_id,
           goods_id_str: item.spec_group_id_str,
         };
       });
     if (goodsList.length == 0) {
-      Notify.failure('No se ha seleccionado nada artículo.');
+      Notify.failure("No se ha seleccionado nada artículo.");
     } else {
-      history.push('/orderConfirm', {
+      history.push("/orderConfirm", {
         goodsList: goodsList,
       });
     }
   }
+  const removeCart = () => {
+    if (selectList.length == 0) {
+      Notify.failure("Seleccione los artículos que quiere quitar del carro");
+      return;
+    }
+    Confirm.show(
+      "警告",
+      "Confirmar el cancel del producto seleccionado del carro.?",
+      "Sí",
+      "No",
+      () => {
+        postCartsBatchDelete(selectList).then((res) => {
+          if (res) {
+            Notify.success(res.msg);
+            setList((list) => {
+              return [...list.filter((item) => !selectList.includes(item.id))];
+            });
+            setSelectList([]);
+          }
+        });
+      },
+    );
+  };
+  const addFavorite = () => {
+    if (selectList.length == 0) {
+      Notify.failure("Seleccione los productos que quiere añadir al favorito.");
+      return;
+    }
 
+    postCollectionsBatchDelete(selectList).then((res) => {
+      if (res) {
+        Notify.success(res.msg);
+        setList((list) => {
+          return [...list.filter((item) => !selectList.includes(item.id))];
+        });
+        setSelectList([]);
+      }
+    });
+  };
   return (
     <div className="carList">
       <header
         className="aui-bar aui-bar-nav aui-bar-light"
         id="header"
-        style={{ backgroundImage: 'none' }}
+        style={{ backgroundImage: "none" }}
       >
         <div className="aui-title">Carro</div>
         <a
           className="aui-pull-right aui-btn"
-          style={{ color: '#358cff' }}
+          style={{ color: "#358cff" }}
           onClick={() => {
             setMenu((e) => !e);
           }}
@@ -83,11 +125,17 @@ const index = (props: Props) => {
           <li>
             <div className="aui-list-item">
               <div className="aui-list-item-inner aui-text-right">
-                <div className="aui-btn aui-btn-info  aui-btn-outlined aui-font-size-12 aui-margin-r-10">
+                <div
+                  className="aui-btn aui-btn-info  aui-btn-outlined aui-font-size-12 aui-margin-r-10"
+                  onClick={removeCart}
+                >
                   Eliminar
                   {/*  移除购物车*/}
                 </div>
-                <div className="aui-btn aui-btn-info aui-btn-outlined aui-font-size-12">
+                <div
+                  className="aui-btn aui-btn-info aui-btn-outlined aui-font-size-12"
+                  onClick={addFavorite}
+                >
                   Añadir a favorito
                   {/*  添加收藏*/}
                 </div>
@@ -105,8 +153,8 @@ const index = (props: Props) => {
                 <div
                   className="aui-list-item-media"
                   style={{
-                    width: '1.7rem',
-                    alignItems: 'center',
+                    width: "1.7rem",
+                    alignItems: "center",
                   }}
                   onClick={() => {
                     const newSelectList = [...selectList];
@@ -127,7 +175,7 @@ const index = (props: Props) => {
                 <Link
                   className="aui-list-item-media"
                   style={{
-                    width: '5rem',
+                    width: "5rem",
                   }}
                   to={`/goodsDetails?id=${cart.goods_id}`}
                 >
@@ -136,7 +184,7 @@ const index = (props: Props) => {
                     loading="lazy"
                     src={cart.spec_group_info.thum || cart.goods_info.thum}
                     className="aui-list-img-sm"
-                    style={{ border: '1px solid #f4f4f4' }}
+                    style={{ border: "1px solid #f4f4f4" }}
                   />
                 </Link>
                 {/* 查看购物车详情 */}
@@ -144,8 +192,8 @@ const index = (props: Props) => {
                   <div
                     className="aui-list-item-inner"
                     style={{
-                      alignItems: 'flex-start',
-                      margin: '0 0.2rem',
+                      alignItems: "flex-start",
+                      margin: "0 0.2rem",
                     }}
                   >
                     <div className="aui-list-item-text aui-margin-t-10">
@@ -172,13 +220,13 @@ const index = (props: Props) => {
                     <div
                       className="aui-list-item-text aui-margin-t-10"
                       style={{
-                        border: '1px solid #dedede',
-                        borderRadius: '2px',
-                        paddingLeft: '0.5rem',
+                        border: "1px solid #dedede",
+                        borderRadius: "2px",
+                        paddingLeft: "0.5rem",
                       }}
                     >
                       <div className="aui-list-item-title aui-font-size-12 aui-padded-t-5 aui-padded-b-5 aui-text-pray">
-                        Especificaciones:{' '}
+                        Especificaciones:{" "}
                         {cart.spec_group_info.spec_option_group}
                       </div>
                       <i className="aui-iconfont aui-icon-down aui-pull-right aui-font-size-12 aui-padded-r-5" />
@@ -188,7 +236,7 @@ const index = (props: Props) => {
                   <div
                     className="aui-list-item-inner"
                     style={{
-                      alignItems: 'flex-start',
+                      alignItems: "flex-start",
                     }}
                   >
                     <div className="aui-list-item-text">
@@ -211,7 +259,7 @@ const index = (props: Props) => {
                       <span className="aui-text-price aui-font-size-14">
                         <span
                           className="aui-text-price"
-                          style={{ fontSize: '0.5rem' }}
+                          style={{ fontSize: "0.5rem" }}
                         >
                           $
                         </span>
@@ -229,7 +277,7 @@ const index = (props: Props) => {
                   <div
                     className=" aui-wanch"
                     style={{
-                      width: '4rem',
+                      width: "4rem",
                     }}
                     onClick={() => setEdit(0)}
                   >
@@ -239,7 +287,7 @@ const index = (props: Props) => {
                   <div
                     className="aui-list-item-media"
                     style={{
-                      width: '1.7rem',
+                      width: "1.7rem",
                     }}
                   >
                     {/*购物车的编辑按钮*/}
@@ -248,7 +296,7 @@ const index = (props: Props) => {
                     {/*</a>*/}
                     <i
                       className="aui-iconfont aui-icon-close aui-font-size-12"
-                      style={{ position: 'absolute', bottom: '0.5rem' }}
+                      style={{ position: "absolute", bottom: "0.5rem" }}
                     >
                       {cart.num}
                     </i>
@@ -278,7 +326,7 @@ const index = (props: Props) => {
           ) : (
             <i
               className="aui-iconfont iconfont icon-yuanxingweixuanzhong aui-font-size-18"
-              style={{ color: '#777' }}
+              style={{ color: "#777" }}
             />
           )}
           <span>Todo</span>
@@ -294,12 +342,12 @@ const index = (props: Props) => {
           Pagar
         </div>
       </footer>
-      <div style={{ height: '2.25rem' }}></div>
-      <div style={{ height: '2.5rem' }}></div>
+      <div style={{ height: "2.25rem" }}></div>
+      <div style={{ height: "2.5rem" }}></div>
       <Tab />
     </div>
   );
 };
 
-index.wrappers = ['@/wrappers/auth'];
+index.wrappers = ["@/wrappers/auth"];
 export default index;

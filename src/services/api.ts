@@ -3,6 +3,26 @@ import { RequestOptionsInit } from "umi-request";
 import { AddressItem } from "@/services/interface";
 
 /**
+ * 从购物车添加收藏
+ */
+export const postCollectionsBatchDelete = (id: number[]) => {
+  return request.post("/api_goods/goods_collections/batch_save", {
+    data: {
+      goods_ids: id,
+    },
+  });
+};
+/**
+ * 从购物车删除商品
+ */
+export const postCartsBatchDelete = (id: number[]) => {
+  return request.post("/api_goods/carts/batch_delete", {
+    data: {
+      id,
+    },
+  });
+};
+/**
  * 店中店发货
  */
 export const postGoodsSend = (orderId: number) => {

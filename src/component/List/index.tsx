@@ -932,6 +932,23 @@ export default connect(({ list }: { list: ListState }) => {
                 <div className="aui-flex-item-12">
                   <div className="aui-flex-col">
                     {list.postFavorite.map((collection) => {
+                      if (!collection.goods_info) {
+                        return (
+                          <div
+                            className="aui-flex-item-6"
+                            style={{ position: "relative", padding: "3px" }}
+                            key={collection.id}
+                          >
+                            商品不存在
+                            <span
+                              className="aui-iconfont iconfont icon-shanchu aui-pull-right"
+                              onClick={() => {
+                                removeFavorite(collection.id);
+                              }}
+                            />
+                          </div>
+                        );
+                      }
                       return (
                         <div
                           className="aui-flex-item-6"
