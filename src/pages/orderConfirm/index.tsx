@@ -155,8 +155,6 @@ export default (props: Props) => {
           } else {
             item.num--;
           }
-
-          return true;
         }
         /**
          * 更新传过来的参数属性
@@ -165,7 +163,9 @@ export default (props: Props) => {
         if (goodsList.length !== 0) {
           goodsList[index].num = item.num;
         }
-        return true;
+        if (item.id === id) {
+          return true;
+        }
         /**
          * 结束
          */

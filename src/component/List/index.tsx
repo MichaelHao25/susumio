@@ -668,6 +668,9 @@ export default connect(({ list }: { list: ListState }) => {
                 <div className="aui-flex-item-12">
                   <div className="aui-flex-col">
                     {list.postUserFootLists.map((trace) => {
+                      if (trace.goods_info === null) {
+                        return "";
+                      }
                       return (
                         <div
                           className="aui-flex-item-6"

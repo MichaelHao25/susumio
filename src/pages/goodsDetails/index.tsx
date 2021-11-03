@@ -92,6 +92,7 @@ const index = (props: Props) => {
   const [tab, setTab] = useState<Tab>(Tab.Details);
   const [isCollect, setIsCollect] = useState<0 | 1>(0);
   const [showLayout, setShowLayout] = useState<LayoutType>(LayoutType.None);
+  const [showAttr, setShowAttr] = useState<boolean>(false);
   // // 是否是折扣商品
   // const [isDiscountGoods, setIsDiscountGoods] = useState<string>('')
   // useEffect(() => {
@@ -422,12 +423,52 @@ const index = (props: Props) => {
           <span className="aui-pull-right">Ventas{sell_num}</span>
         </p>
       </div>
-      {attr_info.length > 0 ? (
+      {showAttr && (
+        <div
+          onClick={() => setShowAttr(false)}
+          style={{
+            position: "fixed",
+            bottom: "0",
+            top: 0,
+            backgroundColor: "rgba(0,0,0,.3)",
+            left: "0",
+            right: "0",
+            zIndex: 100,
+          }}
+        >
+          <ul
+            className="aui-list aui-list-in"
+            style={{
+              position: "fixed",
+              bottom: "0",
+              left: "0",
+              right: "0",
+              zIndex: 100,
+              marginBottom: 0,
+            }}
+          >
+            {goods &&
+              goods.attr_info.map((attr, index) => {
+                return (
+                  <li className="aui-list-item" key={index}>
+                    <div className="aui-list-item-inner">
+                      <div className="aui-list-item-title aui-font-size-14">
+                        {attr.name}
+                      </div>
+                      <div className="aui-list-item-right">{attr.value}</div>
+                    </div>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+      )}
+      {attr_info.length > 0 && (
         <div className="aui-content aui-margin-b-10">
           {/* 规格 */}
           <ul className="aui-list aui-list-in">
             {/* 属性 */}
-            <li className="aui-list-item" dada-click="viewAttr()">
+            <li className="aui-list-item" onClick={() => setShowAttr(true)}>
               <div className="aui-list-item-inner aui-list-item-arrow">
                 <div className="aui-list-item-title aui-font-size-14">
                   Propiedades
@@ -436,8 +477,6 @@ const index = (props: Props) => {
             </li>
           </ul>
         </div>
-      ) : (
-        <></>
       )}
       {/* 选项卡切换 */}
 

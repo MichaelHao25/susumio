@@ -291,9 +291,9 @@ const index = (props: Props) => {
                     }}
                   >
                     {/*购物车的编辑按钮*/}
-                    {/*<a className="aui-pull-right" onClick={() => setEdit(id)}>*/}
-                    {/*  <span className="aui-iconfont iconfont icon-icon-" />*/}
-                    {/*</a>*/}
+                    {/* <a className="aui-pull-right" onClick={() => setEdit(id)}>
+                    <span className="aui-iconfont iconfont icon-icon-" />
+                    </a> */}
                     <i
                       className="aui-iconfont aui-icon-close aui-font-size-12"
                       style={{ position: "absolute", bottom: "0.5rem" }}

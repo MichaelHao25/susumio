@@ -340,7 +340,7 @@ export interface OrderListResponse extends BaseResponse, Page {
 export type DetailsAttrInfo = {
   name: string;
   options: string[];
-  // value: string;
+  value: string;
 };
 export type DetailsGroupInfo = {
   id: number;
