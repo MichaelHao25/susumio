@@ -1,11 +1,12 @@
-import Header from '@/component/Header';
-import './index.less';
-import { ConnectProps } from 'umi';
-import { OrderListItemGoodsInfo } from '@/services/interface';
-import { useState } from 'react';
-import { Notify } from 'notiflix';
-import { postOrderCommentsSave } from '@/services/api';
-import { history } from '@@/core/umiExports';
+import Header from "@/component/Header";
+import "./index.less";
+import { ConnectProps } from "umi";
+import { OrderListItemGoodsInfo } from "@/services/interface";
+import { useState } from "react";
+import { Confirm, Notify } from "notiflix";
+import { postOrderCommentsSave } from "@/services/api";
+import { history } from "@@/core/umiExports";
+import Upload from "@/component/Upload";
 
 interface Props
   extends ConnectProps<
@@ -23,17 +24,17 @@ export default (props: Props) => {
     },
   } = props;
 
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage] = useState<string>("");
   const [imgs, setImgs] = useState<string[]>([]);
   const [starLevel, setStarLevel] = useState<number>(0);
 
   function submit() {
     if (!starLevel) {
-      Notify.failure('Seleccione una estrella.');
+      Notify.failure("Seleccione una estrella.");
       return;
     }
     if (!message) {
-      Notify.failure('Por favor,introduzca el comentario');
+      Notify.failure("Por favor,introduzca el comentario");
       return;
     }
     postOrderCommentsSave({
@@ -51,13 +52,9 @@ export default (props: Props) => {
     });
   }
 
-  function fileClick() {
-    Notify.failure('error');
-  }
-
   return (
-    <div className={'commentAdd'}>
-      <Header title={'Comentario'} />
+    <div className={"commentAdd"}>
+      <Header title={"Comentario"} />
       <div id="app">
         {/* 中间页 */}
         <div className="aui-content">
@@ -78,39 +75,61 @@ export default (props: Props) => {
           </div>
           <div className="comment">
             <div className="imgs" id="imgs">
-              {imgs.map((img) => {
+              {imgs.map((img, index) => {
                 return (
                   <img
                     loading="lazy"
+                    key={index}
                     src={img}
                     className="photo"
+                    onClick={() => {
+                      Confirm.show(
+                        "删除图片",
+                        "确定是否删除图片？",
+                        "删除",
+                        "取消",
+                        () => {
+                          setImgs((img) => {
+                            img.splice(index, 1);
+                            return [...img];
+                          });
+                        },
+                      );
+                    }}
                     style={{
-                      padding: '5px',
-                      width: '24%',
-                      height: '4.4rem',
+                      padding: "5px",
+                      width: "24%",
+                      height: "4.4rem",
                     }}
                   />
                 );
               })}
-              <img
-                loading="lazy"
-                src={require('../../assets/img/add_photo.png')}
-                onClick={fileClick}
-              />
+              <Upload
+                uploadSuccessCallback={(e) => {
+                  console.log(e);
+
+                  setImgs((img) => [...img, e.host_file_path]);
+                }}
+              >
+                <img
+                  loading="lazy"
+                  src={require("../../assets/img/add_photo.png")}
+                />
+              </Upload>
             </div>
             <div className="star">
               <div className="text">Publicar comentarios</div>
               <div className="stars">
-                {'.'
+                {"."
                   .repeat(5)
-                  .split('')
+                  .split("")
                   .map((_, index) => {
                     return (
                       <i
                         className="aui-iconfont iconfont icon-shoucang aui-margin-5"
                         style={{
-                          fontSize: '1.2rem',
-                          color: index + 1 <= starLevel ? '#ffc640' : '#ccc',
+                          fontSize: "1.2rem",
+                          color: index + 1 <= starLevel ? "#ffc640" : "#ccc",
                         }}
                         onClick={() => {
                           setStarLevel(index + 1);

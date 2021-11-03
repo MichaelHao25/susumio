@@ -116,7 +116,7 @@ const index = (props: Props) => {
             setMenu((e) => !e);
           }}
         >
-          Edición Completar
+          {menu ? "Completar" : "Edición"}
         </a>
       </header>
 

@@ -46,7 +46,7 @@ export default () => {
   const header = (
     <div>
       <Header
-        title={"订单列表"}
+        title={"Lista de pedido"}
         leftOnClick={() => {
           history.push("/my");
         }}
@@ -86,7 +86,7 @@ export default () => {
           className={`aui-tab-item ${activeStatus == -1 ? "aui-active" : ""}`}
           onClick={() => setActiveStatus(-1)}
         >
-          售后
+          Posventa
         </div>
       </div>
     </div>

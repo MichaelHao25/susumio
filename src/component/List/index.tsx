@@ -69,6 +69,7 @@ export default connect(({ list }: { list: ListState }) => {
       params = {},
     } = props;
     // 解决闭包问题
+
     global.params = params;
     const page = useRef({
       pageLimit: 10,
@@ -213,6 +214,7 @@ export default connect(({ list }: { list: ListState }) => {
               cb: cb(reload),
             },
           });
+          break;
         }
         case AllList.postAddressLists: {
           dispatch({
@@ -223,6 +225,7 @@ export default connect(({ list }: { list: ListState }) => {
               cb: cb(reload),
             },
           });
+          break;
         }
       }
     };

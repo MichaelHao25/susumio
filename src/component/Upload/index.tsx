@@ -4,17 +4,33 @@ import { useEffect } from "react";
 import { postUploadFile } from "@/services/api";
 
 type UploadSuccessCallback = {
+  /**
+   * 图片的扩展名
+   */
   ext: string;
+  /**
+   * 图片的文件名
+   */
   file_name: string;
+  /**
+   * 图片的文件路径
+   */
   file_path: string;
+  /**
+   * 图片的完整访问地址
+   */
   host_file_path: string;
 };
 interface Props {
+  /**
+   * 图片上传成功后的回调函数
+   */
   uploadSuccessCallback?: (args: UploadSuccessCallback) => void;
 }
 
 const index: React.FC<Props> = (props) => {
   const { uploadSuccessCallback } = props;
+
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 

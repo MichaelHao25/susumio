@@ -51,7 +51,10 @@ export default (props: Props) => {
 
   return (
     <div className={styles.storehouse}>
-      <Header title={"XXX的小店"} noBack={true} />
+      <Header
+        title={`Tienda de MIO+${props.location.query.id}`}
+        noBack={true}
+      />
       <Swiper
         modules={[Pagination, Autoplay]}
         autoplay={{

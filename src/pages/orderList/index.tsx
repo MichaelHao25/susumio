@@ -12,6 +12,7 @@ export default (props: Props) => {
     return props.location.state.status;
   });
   const [params, setParams] = useState<OrdersData>({});
+  const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     if (activeStatus == 1 || activeStatus == 2 || activeStatus == 3) {
       // 待付款 待发货 待签收
@@ -32,6 +33,7 @@ export default (props: Props) => {
     } else {
       setParams({});
     }
+    setLoading(false);
   }, [activeStatus]);
   const header = (
     <>
@@ -78,7 +80,13 @@ export default (props: Props) => {
   );
   return (
     <div>
-      <List header={header} params={params} type={AllList.postApiOrdersLists} />
+      {loading === false && (
+        <List
+          header={header}
+          params={params}
+          type={AllList.postApiOrdersLists}
+        />
+      )}
     </div>
   );
 };

@@ -1,22 +1,23 @@
-import Header from '@/component/Header';
-import React, { useEffect, useState } from 'react';
-import Notiflix, { Confirm, Notify } from 'notiflix';
-import { history, useDispatch, useSelector } from 'umi';
+import Header from "@/component/Header";
+import React, { useEffect, useState } from "react";
+import Notiflix, { Confirm, Notify } from "notiflix";
+import { history, useDispatch, useSelector } from "umi";
 import {
   postCommissionApply,
   postGetParams,
   postQueryPayPassword,
   PostUsersUpdate,
   postUsersUpdate,
-} from '@/services/api';
-import { UserinfoState } from '@/pages/login/model';
-import './index.less';
+} from "@/services/api";
+import { UserinfoState } from "@/pages/login/model";
+import "./index.less";
+import Upload from "@/component/Upload";
 
 export default () => {
   const [params, setParams] = useState<{
     version: string;
   }>({
-    version: '0',
+    version: "0",
   });
   const [isCloseWallet, setIsCloseWallet] = useState<boolean>(true);
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
@@ -24,7 +25,7 @@ export default () => {
   });
   const dispatch = useDispatch();
   if (!user) {
-    throw 'user error';
+    throw "user error";
   }
   useEffect(() => {
     postGetParams().then((res) => {
@@ -45,16 +46,16 @@ export default () => {
     });
   }, []);
   const logout = () => {
-    Confirm.show('warning', '¿Va a salir?', 'Sí', 'No', () => {
+    Confirm.show("warning", "¿Va a salir?", "Sí", "No", () => {
       window.localStorage.clear();
-      history.push('/');
+      history.push("/");
     });
   };
   const updateUserInfo = (req: PostUsersUpdate) => {
     postUsersUpdate(req).then((res) => {
       if (res) {
         dispatch({
-          type: 'userinfo/setState',
+          type: "userinfo/setState",
           payload: {
             user: res.data,
           },
@@ -64,16 +65,16 @@ export default () => {
   };
   const handleModifyName = () => {
     Notiflix.Confirm.show(
-      'Introduzca un nuevo apodo',
+      "Introduzca un nuevo apodo",
       `<input type="text" class="confirm_password"/>`,
-      'OK',
-      'Cancelar',
+      "OK",
+      "Cancelar",
       function () {
         const input: HTMLInputElement | null =
-          document.querySelector('.confirm_password');
+          document.querySelector(".confirm_password");
         if (input) {
           const value = input.value;
-          if (value !== '') {
+          if (value !== "") {
             updateUserInfo({
               nick_name: value,
             });
@@ -87,19 +88,19 @@ export default () => {
     if (isCloseWallet) {
       // 已经设置了支付密码
       Notiflix.Confirm.show(
-        'Elige',
+        "Elige",
         `${[
-          'Cambiar contraseña',
-          'Restablecer contraseña',
-          'Cambiar contraseña de pago',
-          'Restablecer contraseña de pago',
+          "Cambiar contraseña",
+          "Restablecer contraseña",
+          "Cambiar contraseña de pago",
+          "Restablecer contraseña de pago",
         ]
           .map((item, index) => {
             return `<button class="layout_button">${item}</button>`;
           })
-          .join('')}`,
-        'Ok',
-        'Cancelar',
+          .join("")}`,
+        "Ok",
+        "Cancelar",
         () => {},
         () => {},
         {
@@ -108,32 +109,32 @@ export default () => {
       );
       const handleClick = (index: number) => () => {
         document
-          .querySelector<HTMLDivElement>('div#NotiflixConfirmWrap')
+          .querySelector<HTMLDivElement>("div#NotiflixConfirmWrap")
           ?.remove();
         if (index === 1 || index === 3) {
-          history.push('/resetPassword', {
+          history.push("/resetPassword", {
             type: index,
           });
         }
         if (index === 2 || index === 4) {
-          history.push('/restPasswordEmail', {
+          history.push("/restPasswordEmail", {
             type: index,
           });
         }
       };
       document
-        .querySelectorAll<HTMLButtonElement>('.layout_button')
+        .querySelectorAll<HTMLButtonElement>(".layout_button")
         .forEach((element, index) => {
-          element.addEventListener('click', handleClick(index + 1));
+          element.addEventListener("click", handleClick(index + 1));
         });
     } else {
       Notiflix.Confirm.show(
-        'Elige',
-        '',
-        'Cambiar contraseña',
-        'Cancelar',
+        "Elige",
+        "",
+        "Cambiar contraseña",
+        "Cancelar",
         () => {
-          history.push('/resetPassword', {
+          history.push("/resetPassword", {
             type: 1,
           });
         },
@@ -143,43 +144,52 @@ export default () => {
   };
   return (
     <div>
-      <Header title={'Configuración'} />
+      <Header title={"Configuración"} />
       <div className="aui-content aui-margin-b-10">
         <ul className="aui-list aui-list-in aui-margin-b-5">
-          <li className="aui-list-item" data-click="injectUplpadFile();">
-            <div className="aui-list-item-media">
-              <img
-                loading="lazy"
-                src={user.avatar}
-                className="aui-img-round aui-list-img-sm"
-                id="avatar"
-              />
-            </div>
-            <div
-              className="aui-list-item-inner aui-list-item-arrow"
-              style={{ width: '100%' }}
-            >
-              <div
-                className="aui-list-item-right aui-text-right"
-                style={{
-                  fontSize: '0.8rem',
-                  color: '#999',
-                  width: '100%',
-                  maxWidth: '100%',
-                }}
-              >
-                Cambiar imagen
+          {/* data-click="injectUplpadFile();" */}
+          <Upload
+            uploadSuccessCallback={(e) => {
+              updateUserInfo({
+                avatar: e.host_file_path,
+              });
+            }}
+          >
+            <li className="aui-list-item">
+              <div className="aui-list-item-media">
+                <img
+                  loading="lazy"
+                  src={user.avatar}
+                  className="aui-img-round aui-list-img-sm"
+                  id="avatar"
+                />
               </div>
-            </div>
-          </li>
+              <div
+                className="aui-list-item-inner aui-list-item-arrow"
+                style={{ width: "100%" }}
+              >
+                <div
+                  className="aui-list-item-right aui-text-right"
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "#999",
+                    width: "100%",
+                    maxWidth: "100%",
+                  }}
+                >
+                  Cambiar imagen
+                </div>
+              </div>
+            </li>
+          </Upload>
           <li className="aui-list-item" onClick={handleModifyName}>
             <div className="aui-list-item-inner aui-list-item-arrow">
               <div className="aui-list-item-title">Apodo</div>
               <div
                 className="aui-list-item-right"
-                style={{ fontSize: '0.8rem', color: '#999' }}
+                style={{ fontSize: "0.8rem", color: "#999" }}
               >
-                {user.nick_name ? user.nick_name : 'Usuario anónimo'}
+                {user.nick_name ? user.nick_name : "Usuario anónimo"}
               </div>
             </div>
           </li>
@@ -187,14 +197,14 @@ export default () => {
             className="aui-list-item"
             // data-click="modify('email')"
             onClick={() => {
-              history.push('/modifyEmail');
+              history.push("/modifyEmail");
             }}
           >
             <div className="aui-list-item-inner aui-list-item-arrow">
               <div className="aui-list-item-title">Correo electrónico</div>
               <div
                 className="aui-list-item-right"
-                style={{ fontSize: '0.8rem', color: '#999' }}
+                style={{ fontSize: "0.8rem", color: "#999" }}
               >
                 {user.email}
               </div>
@@ -204,14 +214,14 @@ export default () => {
             className="aui-list-item"
             // data-click="modify('mobile')"
             onClick={() => {
-              history.push('/modifyMobile');
+              history.push("/modifyMobile");
             }}
           >
             <div className="aui-list-item-inner aui-list-item-arrow">
               <div className="aui-list-item-title">Número de teléfono</div>
               <div
                 className="aui-list-item-right"
-                style={{ fontSize: '0.8rem', color: '#999' }}
+                style={{ fontSize: "0.8rem", color: "#999" }}
               >
                 {user.mobile}
               </div>
@@ -253,12 +263,12 @@ export default () => {
           </li>
           <li className="aui-list-item">
             <div className="aui-list-item-inner">
-              <div className="aui-list-item-title" style={{ width: '75%' }}>
+              <div className="aui-list-item-title" style={{ width: "75%" }}>
                 Network Technology
               </div>
               <div
                 className="aui-list-item-right"
-                style={{ fontSize: '0.8rem', color: '#999' }}
+                style={{ fontSize: "0.8rem", color: "#999" }}
               >
                 {params.version}
               </div>
@@ -269,7 +279,7 @@ export default () => {
           <div
             className="submit"
             onClick={logout}
-            style={{ backgroundColor: 'rgb(53, 140, 255)' }}
+            style={{ backgroundColor: "rgb(53, 140, 255)" }}
           >
             Desconectar
           </div>

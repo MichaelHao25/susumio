@@ -32,7 +32,7 @@ export default () => {
   return (
     <div className={styles.storehouse}>
       <Header
-        title={"XXX的小店"}
+        title={`Tienda de MIO+${user.id}`}
         leftOnClick={() => {
           history.push("/my");
         }}
