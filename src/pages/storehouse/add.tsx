@@ -94,6 +94,7 @@ export default (props: Props) => {
             setDesc("");
             setName("");
             setSellPrice("");
+            history.goBack();
           }
         });
       }
@@ -103,12 +104,7 @@ export default (props: Props) => {
   };
   return (
     <div className={styles.storehouse}>
-      <Header
-        title={"Subir producto"}
-        leftOnClick={() => {
-          history.push("/my");
-        }}
-      />
+      <Header title={"Subir producto"} />
 
       <div className={styles.add_container}>
         <div className={styles.img_title}>Portada</div>
@@ -257,8 +253,8 @@ export default (props: Props) => {
         </div>
       </div>
 
-      <div style={{ height: "3.5rem" }} />
-      <Tab />
+      {/* <div style={{ height: "3.5rem" }} />
+      <Tab /> */}
     </div>
   );
 };

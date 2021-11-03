@@ -28,6 +28,7 @@
     "gatsby-plugin-paypal": "^1.1.6",
     "lottie-web": "^5.7.13",
     "minirefresh": "^2.0.2",
+    "moment": "^2.29.1",
     "notiflix": "^3.0.1",
     "qrcode.react": "^1.0.1",
     "react": "17.x",

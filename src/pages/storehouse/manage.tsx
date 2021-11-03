@@ -92,7 +92,7 @@ export default () => {
                                 Notify.success(res.msg);
                                 setList((list) => {
                                   return [
-                                    ...list.filter(({ id }) => item.id === id),
+                                    ...list.filter(({ id }) => item.id !== id),
                                   ];
                                 });
                               }
