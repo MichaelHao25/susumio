@@ -38,7 +38,7 @@ const index: React.FC<Props> = (props) => {
   });
   useEffect(() => {}, []);
   const { children } = props;
-  if (rate === 0) {
+  if (rate === 0 || currentCurrency === CurrencyType.USD) {
     return (
       <>
         {MoneySymbol[currentCurrency]}
