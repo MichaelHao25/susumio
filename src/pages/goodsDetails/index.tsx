@@ -18,6 +18,9 @@ import { Details } from "@/services/interface";
 import { history } from "@@/core/umiExports";
 import Notiflix, { Notify } from "notiflix";
 import SpecInfoSelect from "@/pages/goodsDetails/SpecInfoSelect";
+import { PhotoProvider, PhotoConsumer } from "react-photo-view";
+import "react-photo-view/dist/index.css";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 interface Props
   extends ConnectProps<
@@ -224,7 +227,24 @@ const index = (props: Props) => {
                     {item.content}
                   </div>
                   <div className="aui-row aui-row-padded">
-                    {(item.imgs || []).map((item, index) => {
+                    <PhotoProvider>
+                      {(item.imgs || []).map((item, index) => (
+                        <PhotoConsumer key={index} src={item} intro={false}>
+                          <div
+                            className="aui-col-xs-3"
+                            key={index}
+                            style={{ height: "5rem" }}
+                          >
+                            <img
+                              loading="lazy"
+                              style={{ width: "100%", height: "100%" }}
+                              src={item}
+                            />
+                          </div>
+                        </PhotoConsumer>
+                      ))}
+                    </PhotoProvider>
+                    {/* {(item.imgs || []).map((item, index) => {
                       return (
                         <div
                           className="aui-col-xs-3"
@@ -238,7 +258,7 @@ const index = (props: Props) => {
                           />
                         </div>
                       );
-                    })}
+                    })} */}
                   </div>
                 </div>
               );
@@ -393,8 +413,10 @@ const index = (props: Props) => {
       {/*商品信息*/}
       <div className="aui-content aui-padded-10 aui-bg-white">
         <h1 className="aui-text-price">
-          <span className="aui-font-size-14">$</span>
-          <span>{sell_price}</span>
+          {/* <span className="aui-font-size-14">$</span> */}
+          <span>
+            <MoneyValueUnitRender>{sell_price}</MoneyValueUnitRender>
+          </span>
           {/*facebook share*/}
           {/*<div style={{float: 'right', fontSize: '24px'}}*/}
           {/*     v-if="isShare"*/}

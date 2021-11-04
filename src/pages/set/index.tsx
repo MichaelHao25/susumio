@@ -47,6 +47,7 @@ export default () => {
   }, []);
   const logout = () => {
     Confirm.show("warning", "¿Va a salir?", "Sí", "No", () => {
+      FB.logout();
       window.localStorage.clear();
       history.push("/");
     });

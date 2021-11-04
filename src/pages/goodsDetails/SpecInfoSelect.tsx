@@ -4,6 +4,7 @@ import { Notify } from "notiflix";
 import { CartInfo, postApiGoodsCartsBatchSave } from "@/services/api";
 import { LayoutType } from "@/pages/goodsDetails/index";
 import { history } from "umi";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 export interface GoodsList {
   thum: string;
@@ -260,12 +261,12 @@ export default (props: Props) => {
         {/* 价格和库存 */}
         <div className="aui-col-xs-6 aui-padded-10">
           <h2 className="aui-text-price">
-            <span style={{ fontSize: "0.6rem" }}>$</span>
+            {/* <span style={{ fontSize: "0.6rem" }}>$</span> */}
             <span
               className="aui-font-size-20"
               style={{ letterSpacing: ".1rem" }}
             >
-              {sell_price}
+              <MoneyValueUnitRender>{sell_price}</MoneyValueUnitRender>
             </span>
           </h2>
           <h4 className="aui-text-default">Existencias: {stock}</h4>
@@ -385,7 +386,8 @@ export default (props: Props) => {
           <div>
             Importe：
             <span className="aui-font-size-14 aui-text-danger">
-              ${totalMoney}
+              {/* $ */}
+              <MoneyValueUnitRender>{totalMoney}</MoneyValueUnitRender>
             </span>
           </div>
         </div>

@@ -10,6 +10,7 @@ import {
 } from "@/services/api";
 import Notiflix, { Confirm, Notify } from "notiflix";
 import { GoodsList } from "@/pages/goodsDetails/SpecInfoSelect";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 interface Props extends ConnectProps<{}, {}, {}> {}
 
@@ -257,15 +258,17 @@ const index = (props: Props) => {
                     </div>
                     <div className="aui-list-item-text aui-margin-t-10">
                       <span className="aui-text-price aui-font-size-14">
-                        <span
+                        {/* <span
                           className="aui-text-price"
                           style={{ fontSize: "0.5rem" }}
                         >
                           $
-                        </span>
+                        </span> */}
                         <span>
                           {/* 规格价格 */}
-                          {cart.spec_group_info.sell_price}
+                          <MoneyValueUnitRender>
+                            {cart.spec_group_info.sell_price}
+                          </MoneyValueUnitRender>
                           {/* 商品价格 */}
                         </span>
                       </span>
@@ -333,9 +336,9 @@ const index = (props: Props) => {
         </div>
         <div className="price">
           Total:
-          <span className="aui-font-size-14 aui-text-price">$</span>
+          {/* <span className="aui-font-size-14 aui-text-price">$</span> */}
           <span className="aui-text-price aui-font-size-20">
-            {getTotalMoney()}
+            <MoneyValueUnitRender>{getTotalMoney()}</MoneyValueUnitRender>
           </span>
         </div>
         <div className="submit" onClick={handleSubmit}>

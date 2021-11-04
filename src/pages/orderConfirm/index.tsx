@@ -11,6 +11,7 @@ import {
 } from "@/services/api";
 import Notiflix, { Notify } from "notiflix";
 import { history } from "umi";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 interface Props
   extends ConnectProps<{}, { goodsList: GoodsList[]; shoperId: string }, {}> {}
@@ -255,8 +256,12 @@ export default (props: Props) => {
                     </div>
                     <div className="aui-list-item-text aui-margin-t-5">
                       <div className="aui-list-item-title aui-text-price aui-font-size-14">
-                        <span style={{ fontSize: "0.5rem" }}>$</span>
-                        <span className="aui-font-size-14">{sell_price}</span>
+                        {/* <span style={{ fontSize: "0.5rem" }}>$</span> */}
+                        <span className="aui-font-size-14">
+                          <MoneyValueUnitRender>
+                            {sell_price}
+                          </MoneyValueUnitRender>
+                        </span>
                       </div>
                       <div
                         className="aui-list-item-right aui-text-price aui-margin-t-5"
@@ -301,8 +306,12 @@ export default (props: Props) => {
           <div className="aui-list-item-inner">
             <div className="aui-list-item-title aui-font-size-14">Flete</div>
             <div className="aui-list-item-right aui-font-size-14">
-              <span className="aui-font-size-12">$</span>
-              <span>{cost.freight_money}</span>
+              {/* <span className="aui-font-size-12">$</span> */}
+              <span>
+                <MoneyValueUnitRender>
+                  {cost.freight_money}
+                </MoneyValueUnitRender>
+              </span>
             </div>
           </div>
         </li>
@@ -338,9 +347,9 @@ export default (props: Props) => {
         <div className="price" style={{ backgroundColor: "#a0a0a0" }}>
           <span style={{ color: "#dedddd" }}>
             Total:
-            <span className="aui-text-white aui-font-size-12">$</span>
+            {/* <span className="aui-text-white aui-font-size-12">$</span> */}
             <span className="aui-text-white aui-font-size-18" id="totalPrice">
-              {cost.total_money}
+              <MoneyValueUnitRender>{cost.total_money}</MoneyValueUnitRender>
             </span>
           </span>
         </div>

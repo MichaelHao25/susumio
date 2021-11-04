@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import moment from "moment";
+import { postExchangeRate } from "@/services/api";
+import { BaseResponse } from "@/services/interface";
+import Notiflix from "notiflix";
+import { useRef } from "react";
 
 export enum CurrencyType {
   USD = "USD",
@@ -10,7 +14,7 @@ export enum CurrencyType {
   CLP = "CLP",
   COP = "COP",
 }
-export interface Response {
+export interface CurrencyData {
   status: 0;
   msg: "ok" | string;
   result: {
@@ -20,31 +24,39 @@ export interface Response {
     toname: string;
     updatetime: string;
     rate: string;
-    camount: number;
+    camount: string;
   };
 }
+export interface Response extends BaseResponse {
+  data: CurrencyData;
+}
 // 获取汇率
-function fetchRate(currencyType: CurrencyType): Promise<Response> {
-  const myHeaders = new Headers();
-  myHeaders.append("Authorization", "APPCODE a49fd2bf1c7e475f9e7e2b6a5fe816ab");
-
-  const requestOptions: RequestInit = {
-    method: "GET",
-    // headers: myHeaders,
-    redirect: "follow",
-  };
-  return new Promise((resolve, reject) => {
-    fetch(
-      `https://jisuhuilv.market.alicloudapi.com/exchange/convert?AppCode=a49fd2bf1c7e475f9e7e2b6a5fe816ab&amount=10&from=USD&to=${currencyType}`,
-      requestOptions,
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        resolve(result);
-      });
-    //   .catch((error) => console.log("error", error));
-  });
+function fetchRate(
+  currencyType: CurrencyType,
+  prevCurrency: CurrencyType,
+): void {
+  postExchangeRate({
+    from: CurrencyType.USD,
+    to: currencyType,
+  })
+    .then((res: Response) => {
+      if (res) {
+        window.localStorage.setItem(
+          "currentCurrencyResponse",
+          JSON.stringify(res.data),
+        );
+      }
+      if (prevCurrency !== currencyType) {
+        window.location.reload();
+      }
+    })
+    .catch((res) => {
+      Notiflix.Report.failure(
+        "警告",
+        "使用了过期的汇率价格计算可能不准确请刷新页面",
+        "好的",
+      );
+    });
 }
 export default () => {
   const [currentCurrency, setCurrentCurrency] = useState<CurrencyType>(() => {
@@ -53,44 +65,53 @@ export default () => {
       CurrencyType.USD
     );
   });
+  const prevCurrency = useRef<CurrencyType>(currentCurrency);
 
-  const [changeCurrencyType, sethangeCurrencyType] = useState<boolean>(false);
+  const [changeCurrencyType, setChangeCurrencyType] = useState<boolean>(false);
   useEffect(() => {
     // 找到当前交易的币种默认是美元
-    const currentCurrency =
-      window.localStorage.getItem("currentCurrency") || CurrencyType.USD;
     // 找到从接口取到的汇率
     const oldCurrencyResponseString = window.localStorage.getItem(
       "currentCurrencyResponse",
     );
     if (currentCurrency === CurrencyType.USD) {
       // 如果货币是美元的话就不用处理，因为默认就是美元
-      return;
-    }
-    // 如果本地存储没有response的话就重新请求接口
-    if (oldCurrencyResponseString) {
-      const oldCurrencyResponse: Response = JSON.parse(
-        oldCurrencyResponseString,
-      );
-      const diff = moment(oldCurrencyResponse.result.updatetime).diff(
-        moment(new Date()),
-        "hours",
-      );
-      console.log(diff);
+      if (prevCurrency.current !== currentCurrency) {
+        window.location.reload();
+      }
     } else {
-      fetchRate(currentCurrency as CurrencyType).then((res) => {
-        console.log(res);
-      });
+      // 如果本地存储没有response的话就重新请求接口
+      if (oldCurrencyResponseString) {
+        const oldCurrencyResponse: CurrencyData = JSON.parse(
+          oldCurrencyResponseString,
+        );
+        const diff = moment(new Date()).diff(
+          moment(oldCurrencyResponse.result.updatetime),
+          "hours",
+        );
+        // 如果过去了20小时就清除这个数据，下次打开的时候重新查询
+        // 或者本次存储的币种发生了变化
+        if (diff > 20 || oldCurrencyResponse.result.to !== currentCurrency) {
+          fetchRate(currentCurrency as CurrencyType, prevCurrency.current);
+        } else {
+          if (prevCurrency.current !== currentCurrency) {
+            window.location.reload();
+          }
+        }
+      } else {
+        fetchRate(currentCurrency as CurrencyType, prevCurrency.current);
+      }
     }
-  }, []);
+  }, [currentCurrency]);
   useEffect(() => {
     window.localStorage.setItem("currentCurrency", currentCurrency);
   }, [currentCurrency]);
+
   return {
     CurrencyType,
     currentCurrency,
     setCurrentCurrency,
     changeCurrencyType,
-    sethangeCurrencyType,
+    setChangeCurrencyType,
   };
 };

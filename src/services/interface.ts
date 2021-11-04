@@ -28,7 +28,14 @@ export enum AllList {
   // 店中店和订单公用一个列表
   postApiOrdersListsForStorehouse,
 }
-
+export interface FBAPPID extends BaseResponse {
+  data: {
+    appId: string;
+    cookie: boolean;
+    version: string;
+    xfbml: boolean;
+  };
+}
 export interface LogItem {
   id: number;
   user_id: number;

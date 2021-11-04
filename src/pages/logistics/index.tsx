@@ -1,7 +1,7 @@
-import Header from '@/component/Header';
-import { ConnectProps } from 'umi';
-import { OrdersListItem } from '@/services/interface';
-import { useEffect } from 'react';
+import Header from "@/component/Header";
+import { ConnectProps } from "umi";
+import { OrdersListItem } from "@/services/interface";
+import { useEffect } from "react";
 
 interface Props
   extends ConnectProps<
@@ -19,49 +19,48 @@ export default (props: Props) => {
     },
   } = props;
   useEffect(() => {
-    // @ts-ignore
-    window.YQV5.trackSingle({
+    YQV5.trackSingle({
       //必须，指定承载内容的容器ID。
-      YQ_ContainerId: 'YQContainer',
+      YQ_ContainerId: "YQContainer",
       //可选，指定查询结果高度，最大为800px，默认为560px。
       YQ_Height: 560,
       //可选，指定运输商，默认为自动识别。
-      YQ_Fc: '0',
+      YQ_Fc: "0",
       //可选，指定UI语言，默认根据浏览器自动识别。
-      YQ_Lang: 'en',
+      YQ_Lang: "en",
       //必须，指定要查询的单号。
       YQ_Num: order.express_no,
     });
   });
   const logisticsMap = {
-    HTKY: 'Megatone universal',
-    EMS: 'EMS',
-    STO: 'Correo urgente',
-    SF: 'Otros Express',
-    HHTT: 'Entrega diaria',
-    YTO: '¡Otros!',
-    YD: '¡Merda!',
-    ZTO: 'Mensajería',
-    ZJS: 'Mansión',
-    YZPY: 'Correo urgente',
-    AJ: 'Entrega rápida',
+    HTKY: "Megatone universal",
+    EMS: "EMS",
+    STO: "Correo urgente",
+    SF: "Otros Express",
+    HHTT: "Entrega diaria",
+    YTO: "¡Otros!",
+    YD: "¡Merda!",
+    ZTO: "Mensajería",
+    ZJS: "Mansión",
+    YZPY: "Correo urgente",
+    AJ: "Entrega rápida",
   };
   const expressTypeFilter = (str: any) => {
     if (str) {
       // @ts-ignore
-      str = (logisticsMap[str] || 'Otros envíos').concat(
-        ': ',
+      str = (logisticsMap[str] || "Otros envíos").concat(
+        ": ",
         order.express_no,
       );
       return str;
     } else {
-      return '';
+      return "";
     }
-    return '';
+    return "";
   };
   return (
     <>
-      <Header title={'Información logística'} />
+      <Header title={"Información logística"} />
       <div id="app">
         {/* 中间页 */}
         {/* 商品信息 */}

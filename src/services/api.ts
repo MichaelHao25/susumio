@@ -1,9 +1,45 @@
 import { request } from "./core";
 import { RequestOptionsInit } from "umi-request";
 import { AddressItem } from "@/services/interface";
+import { CurrencyType } from "@/hooks/useCurrencyManage";
 
+interface ExchangeRate {
+  amount?: number;
+  from?: CurrencyType;
+  to?: CurrencyType;
+}
+/**
+ * 汇率调整
+ */
+export const postExchangeRate = (req: ExchangeRate) => {
+  const mergeReq = {
+    amount: 1,
+    from: CurrencyType.USD,
+    to: CurrencyType.EUR,
+    ...req,
+  };
+  return request.post("/api_articles/banners/exchange_rate", {
+    data: mergeReq,
+  });
+};
+/**
+ * fb登陆
+ */
+export const postFacebookLogin = (code: string) => {
+  return request.post("/api_users/user_accounts/facebook_login", {
+    data: { code },
+  });
+};
+/**
+ * fb登陆基础信息获取
+ */
+export const postFacebookLoginBaseInfoGet = () => {
+  return request.post("/api_users/user_accounts/facebook");
+};
 /**
  * 从购物车添加收藏
+ * @param id
+ * @returns
  */
 export const postCollectionsBatchDelete = (id: number[]) => {
   return request.post("/api_goods/goods_collections/batch_save", {

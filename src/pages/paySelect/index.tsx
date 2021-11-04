@@ -1,17 +1,18 @@
-import Header from '@/component/Header';
-import './index.less';
-import '../../assets/img/payssion/flag.less';
-import { ConnectProps } from '@@/plugin-dva/connect';
-import { useEffect, useState } from 'react';
+import Header from "@/component/Header";
+import "./index.less";
+import "../../assets/img/payssion/flag.less";
+import { ConnectProps } from "@@/plugin-dva/connect";
+import { useEffect, useState } from "react";
 import {
   postPayMoney,
   postPayPaypal,
   postPayssionPay,
   postQueryPayPassword,
-} from '@/services/api';
-import Notiflix, { Notify } from 'notiflix';
-import { history } from 'umi';
-import Paypal from '@/component/Paypal';
+} from "@/services/api";
+import Notiflix, { Notify } from "notiflix";
+import { history } from "umi";
+import Paypal from "@/component/Paypal";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 interface Props
   extends ConnectProps<
@@ -53,16 +54,16 @@ export default (props: Props) => {
     setIsBalance(true);
 
     Notiflix.Confirm.show(
-      'Introduzca la contraseña de pago',
+      "Introduzca la contraseña de pago",
       `<input type="password" class="confirm_password"/>`,
-      'Confirmar',
-      'Cancelar',
+      "Confirmar",
+      "Cancelar",
       function () {
         const input: HTMLInputElement | null =
-          document.querySelector('.confirm_password');
+          document.querySelector(".confirm_password");
         if (input) {
           const value = input.value;
-          if (value !== '') {
+          if (value !== "") {
             postPayMoney({
               pay_password: value,
               order_no,
@@ -71,7 +72,7 @@ export default (props: Props) => {
               if (res) {
                 Notify.success(res.msg);
               }
-              history.push('/orderList', {
+              history.push("/orderList", {
                 status: 0,
               });
             });
@@ -91,7 +92,7 @@ export default (props: Props) => {
     }).then((res) => {
       console.log(res);
       if (res) {
-        history.push('/payssion', {
+        history.push("/payssion", {
           paylink: res.data,
           pm_id,
         });
@@ -100,18 +101,18 @@ export default (props: Props) => {
   }
 
   return (
-    <div className={'paySelect'}>
-      <Header title={'Elija el modo de pago'} />
+    <div className={"paySelect"}>
+      <Header title={"Elija el modo de pago"} />
       <div className="aui-content">
         <div className="aui-bg-white aui-padded-15 aui-margin-t-10 aui-margin-b-10">
           <h3>
             Número de pedido:<span>{order_no}</span>
           </h3>
           <h3 className="aui-padded-t-10">
-            Importe del pedido：{' '}
-            <span className="aui-text-price aui-font-size-12">$</span>
+            Importe del pedido：{" "}
+            {/* <span className="aui-text-price aui-font-size-12">$</span> */}
             <span className="aui-text-price aui-font-size-18">
-              {total_money}
+              <MoneyValueUnitRender>{total_money}</MoneyValueUnitRender>
             </span>
           </h3>
         </div>
@@ -120,13 +121,13 @@ export default (props: Props) => {
             <div className="aui-margin-b-15">
               <ul
                 className="aui-list aui-list-in"
-                style={{ backgroundImage: 'none' }}
+                style={{ backgroundImage: "none" }}
               >
-                <li className="aui-list-item" style={{ height: '3rem' }}>
+                <li className="aui-list-item" style={{ height: "3rem" }}>
                   <div className="aui-list-item-label-icon">
                     <i
                       className="aui-iconfont iconfont icon-yue"
-                      style={{ fontSize: '1.5rem', color: '#eb661b' }}
+                      style={{ fontSize: "1.5rem", color: "#eb661b" }}
                     />
                   </div>
                   <div
@@ -137,9 +138,9 @@ export default (props: Props) => {
                     <div className="aui-list-item-right">
                       <i
                         className={`aui-iconfont iconfont icon-roundcheckfill aui-margin-r-5 aui-font-size-20 ${
-                          isBalance ? 'aui-text-info' : ''
+                          isBalance ? "aui-text-info" : ""
                         }`}
-                        style={{ color: isBalance ? '#ccc' : '' }}
+                        style={{ color: isBalance ? "#ccc" : "" }}
                       />
                     </div>
                   </div>
@@ -149,11 +150,14 @@ export default (props: Props) => {
             <div className="area">
               <div
                 className="submit"
-                style={{ letterSpacing: '0rem' }}
+                style={{ letterSpacing: "0rem" }}
                 onClick={handlePayBalance}
               >
                 Confirmar
-                <span>${total_money}</span>
+                <span>
+                  {/* $ */}
+                  <MoneyValueUnitRender>{total_money}</MoneyValueUnitRender>
+                </span>
               </div>
             </div>
           </>
@@ -165,9 +169,9 @@ export default (props: Props) => {
       <div id="paypal-button-container" className="aui-margin-t-15">
         <Paypal
           style={{
-            shape: 'rect',
-            layout: 'horizontal',
-            label: 'paypal',
+            shape: "rect",
+            layout: "horizontal",
+            label: "paypal",
           }}
           createOrder={(data: any, actions: any) => {
             return actions.order.create({
@@ -175,7 +179,7 @@ export default (props: Props) => {
                 {
                   amount: {
                     value: total_money,
-                    currency_code: 'USD',
+                    currency_code: "USD",
                     invoice_id: order_no,
                   },
                 },
@@ -185,17 +189,17 @@ export default (props: Props) => {
           onApprove={(data, actions) => {
             return actions.order.capture().then(function (details: any) {
               alert(
-                'Transaction completed by ' + details.payer.name.given_name,
+                "Transaction completed by " + details.payer.name.given_name,
               );
 
-              if (details.status == 'COMPLETED') {
+              if (details.status == "COMPLETED") {
                 postPayPaypal({
                   order_no,
                 }).then((res) => {
                   if (res) {
                     Notify.success(res.msg);
                   }
-                  history.push('/orderList', {
+                  history.push("/orderList", {
                     status: 0,
                   });
                 });
@@ -216,15 +220,15 @@ export default (props: Props) => {
         <div>
           <img
             loading="lazy"
-            src={require('../../assets/img/payssion/logo.png')}
+            src={require("../../assets/img/payssion/logo.png")}
             className="aui-margin-t-15"
-            style={{ height: '2rem', margin: '0 auto' }}
+            style={{ height: "2rem", margin: "0 auto" }}
           />
         </div>
         <div className="aui-tab" id="tab">
           <div
             className={`aui-tab-item ${
-              paySessionType === PaySessionType.mx ? 'aui-active' : ''
+              paySessionType === PaySessionType.mx ? "aui-active" : ""
             }`}
             onClick={() => setPaySessionType(PaySessionType.mx)}
           >
@@ -235,7 +239,7 @@ export default (props: Props) => {
           </div>
           <div
             className={`aui-tab-item ${
-              paySessionType === PaySessionType.co ? 'aui-active' : ''
+              paySessionType === PaySessionType.co ? "aui-active" : ""
             }`}
             onClick={() => setPaySessionType(PaySessionType.co)}
           >
@@ -246,7 +250,7 @@ export default (props: Props) => {
           </div>
           <div
             className={`aui-tab-item ${
-              paySessionType === PaySessionType.pe ? 'aui-active' : ''
+              paySessionType === PaySessionType.pe ? "aui-active" : ""
             }`}
             onClick={() => setPaySessionType(PaySessionType.pe)}
           >
@@ -259,7 +263,7 @@ export default (props: Props) => {
         <div id="tab1-con">
           <div
             className={`${
-              paySessionType === PaySessionType.mx ? '' : 'aui-hide'
+              paySessionType === PaySessionType.mx ? "" : "aui-hide"
             }`}
             id="tab1-con1"
           >
@@ -267,22 +271,22 @@ export default (props: Props) => {
               <div className="aui-row">
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('spei_mx')}
-                  style={{ padding: '0.4rem 0.6rem' }}
+                  onClick={() => payByPayssion("spei_mx")}
+                  style={{ padding: "0.4rem 0.6rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/spei_mx.png')}
+                    src={require("../../assets/img/payssion/spei_mx.png")}
                   />
                 </div>
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('oxxo_mx')}
-                  style={{ padding: '0.4rem 0.6rem' }}
+                  onClick={() => payByPayssion("oxxo_mx")}
+                  style={{ padding: "0.4rem 0.6rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/oxxo_mx.png')}
+                    src={require("../../assets/img/payssion/oxxo_mx.png")}
                   />
                 </div>
               </div>
@@ -291,23 +295,23 @@ export default (props: Props) => {
               <div className="aui-row">
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('bancomer_mx')}
-                  style={{ padding: '0.4rem 0.6rem' }}
+                  onClick={() => payByPayssion("bancomer_mx")}
+                  style={{ padding: "0.4rem 0.6rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/bancomer_mx.png')}
+                    src={require("../../assets/img/payssion/bancomer_mx.png")}
                     className="aui-margin-t-15"
                   />
                 </div>
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('santander_mx')}
-                  style={{ padding: '0.4rem 0.6rem' }}
+                  onClick={() => payByPayssion("santander_mx")}
+                  style={{ padding: "0.4rem 0.6rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/santander_mx.png')}
+                    src={require("../../assets/img/payssion/santander_mx.png")}
                     className="aui-margin-t-15"
                   />
                 </div>
@@ -316,7 +320,7 @@ export default (props: Props) => {
           </div>
           <div
             className={`${
-              paySessionType === PaySessionType.co ? '' : 'aui-hide'
+              paySessionType === PaySessionType.co ? "" : "aui-hide"
             }`}
             id="tab1-con2"
           >
@@ -324,22 +328,22 @@ export default (props: Props) => {
               <div className="aui-row">
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('efecty_co')}
-                  style={{ padding: '0.4rem 2rem' }}
+                  onClick={() => payByPayssion("efecty_co")}
+                  style={{ padding: "0.4rem 2rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/efecty_co.png')}
+                    src={require("../../assets/img/payssion/efecty_co.png")}
                   />
                 </div>
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('baloto_co')}
-                  style={{ padding: '0.4rem 2rem' }}
+                  onClick={() => payByPayssion("baloto_co")}
+                  style={{ padding: "0.4rem 2rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/baloto_co.png')}
+                    src={require("../../assets/img/payssion/baloto_co.png")}
                   />
                 </div>
               </div>
@@ -348,23 +352,23 @@ export default (props: Props) => {
               <div className="aui-row">
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('pse_co')}
-                  style={{ padding: '0.4rem 2.5rem' }}
+                  onClick={() => payByPayssion("pse_co")}
+                  style={{ padding: "0.4rem 2.5rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/pse_co.png')}
+                    src={require("../../assets/img/payssion/pse_co.png")}
                     className="aui-margin-t-15"
                   />
                 </div>
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('exito_co')}
-                  style={{ padding: '0.4rem 2.5rem' }}
+                  onClick={() => payByPayssion("exito_co")}
+                  style={{ padding: "0.4rem 2.5rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/exito_co.png')}
+                    src={require("../../assets/img/payssion/exito_co.png")}
                     className="aui-margin-t-15"
                   />
                 </div>
@@ -373,7 +377,7 @@ export default (props: Props) => {
           </div>
           <div
             className={`${
-              paySessionType === PaySessionType.pe ? '' : 'aui-hide'
+              paySessionType === PaySessionType.pe ? "" : "aui-hide"
             }`}
             id="tab1-con3"
           >
@@ -381,22 +385,22 @@ export default (props: Props) => {
               <div className="aui-row">
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('bcp_pe')}
-                  style={{ padding: '0.4rem 0.6rem' }}
+                  onClick={() => payByPayssion("bcp_pe")}
+                  style={{ padding: "0.4rem 0.6rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/bcp_pe.png')}
+                    src={require("../../assets/img/payssion/bcp_pe.png")}
                   />
                 </div>
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('interbank_pe')}
-                  style={{ padding: '0.4rem 0.6rem' }}
+                  onClick={() => payByPayssion("interbank_pe")}
+                  style={{ padding: "0.4rem 0.6rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/interbank_pe.png')}
+                    src={require("../../assets/img/payssion/interbank_pe.png")}
                   />
                 </div>
               </div>
@@ -405,23 +409,23 @@ export default (props: Props) => {
               <div className="aui-row">
                 <div
                   className=" aui-col-10"
-                  onClick={() => payByPayssion('bbva_pe')}
-                  style={{ padding: '0.4rem 0.6rem' }}
+                  onClick={() => payByPayssion("bbva_pe")}
+                  style={{ padding: "0.4rem 0.6rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/bbva_pe.png')}
+                    src={require("../../assets/img/payssion/bbva_pe.png")}
                     className="aui-margin-t-15"
                   />
                 </div>
                 <div
                   className="aui-col-10"
-                  onClick={() => payByPayssion('pagoefectivo_pe')}
-                  style={{ padding: '0.4rem 0.6rem' }}
+                  onClick={() => payByPayssion("pagoefectivo_pe")}
+                  style={{ padding: "0.4rem 0.6rem" }}
                 >
                   <img
                     loading="lazy"
-                    src={require('../../assets/img/payssion/pagoefectivo_pe.png')}
+                    src={require("../../assets/img/payssion/pagoefectivo_pe.png")}
                     className="aui-margin-t-15"
                   />
                 </div>

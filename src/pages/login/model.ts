@@ -1,7 +1,11 @@
-import { postApiUsersUserAccountsLogin } from "@/services/api";
-import { Details } from "@/services/interface";
+import {
+  postApiUsersUserAccountsLogin,
+  postFacebookLogin,
+  postFacebookLoginBaseInfoGet,
+} from "@/services/api";
+import { Details, FBAPPID } from "@/services/interface";
 import { Notify, Report } from "notiflix";
-import { EffectsCommandMap } from "dva";
+import { Effect, EffectsCommandMap } from "dva";
 import { ImmerReducer, Subscription } from "@@/plugin-dva/connect";
 
 import { history } from "umi";
@@ -78,6 +82,7 @@ export interface UserinfoModel {
       },
       effects: EffectsCommandMap,
     ) => void;
+    login: Effect;
   };
   reducers: {
     setState: ImmerReducer<
@@ -159,6 +164,13 @@ const userinfoModel: UserinfoModel = {
         mobile,
         password,
       });
+      yield put({
+        type: "login",
+        payload: { res },
+      });
+    },
+    *login({ payload }, { call, select, put }) {
+      const { res, autoLogin = false } = payload;
       if (res) {
         const { data } = res;
         window.localStorage.setItem("userinfo", JSON.stringify(data));
@@ -167,9 +179,11 @@ const userinfoModel: UserinfoModel = {
           type: "setState",
           payload: data,
         });
-        Report.success("ok", res.msg, "OK", () => {
-          history.push("/");
-        });
+        if (autoLogin === false) {
+          Report.success("ok", res.msg, "OK", () => {
+            history.push("/");
+          });
+        }
       }
     },
   },
@@ -194,14 +208,59 @@ const userinfoModel: UserinfoModel = {
   },
   subscriptions: {
     onload({ dispatch, history }) {
-      const userInfo = window.localStorage.getItem("userinfo");
-      if (userInfo) {
-        const parseUserInfo = JSON.parse(userInfo);
-        dispatch({
-          type: "setState",
-          payload: parseUserInfo,
+      // Facebook登陆
+      const facebooklogin = document.createElement("script");
+      facebooklogin.async = true;
+      facebooklogin.defer = true;
+      facebooklogin.id = "facebook-jssdk";
+      facebooklogin.src = "https://connect.facebook.net/en_US/sdk.js";
+      facebooklogin.onload = () => {
+        postFacebookLoginBaseInfoGet().then((res: FBAPPID) => {
+          console.log(res);
+          if (res) {
+            const { data } = res;
+            FB.init(data);
+            FB.getLoginStatus(function (response = {}) {
+              // 如果从fb获取到信息的话就调用fb的登陆
+              if (response.authResponse) {
+                console.log(response);
+                const { authResponse: { accessToken = "" } = {} } = response;
+                postFacebookLogin(accessToken).then((res) => {
+                  dispatch({
+                    type: "login",
+                    payload: { res, autoLogin: true },
+                  });
+                });
+              } else {
+                // 否则就从本地获取信息
+                console.log("从本地获取登陆信息");
+                const userInfo = window.localStorage.getItem("userinfo");
+                if (userInfo) {
+                  const parseUserInfo = JSON.parse(userInfo);
+                  dispatch({
+                    type: "setState",
+                    payload: parseUserInfo,
+                  });
+                }
+              }
+            });
+          }
         });
-      }
+      };
+      document.body.appendChild(facebooklogin);
+
+      // paypal
+      const clientId = `AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi`;
+      const currency = `USD`;
+      const src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}`;
+      const script = document.createElement("script");
+      script.src = src;
+      document.body.appendChild(script);
+
+      // 物流
+      const script2 = document.createElement("script");
+      script2.src = "https://www.17track.net/externalcall.js";
+      document.body.appendChild(script2);
     },
   },
 };

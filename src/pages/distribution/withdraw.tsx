@@ -9,6 +9,7 @@ import {
 import Header from "@/component/Header";
 import Notiflix, { Notify } from "notiflix";
 import { history } from "@@/core/history";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 export default () => {
   const [distributor, setDistributor] = useState<{
@@ -109,14 +110,18 @@ export default () => {
             style={{ borderBottom: "1px solid #f4f4f4" }}
             className="aui-padded-b-5 aui-margin-b-15 aui-margin-t-10"
           >
-            <span>$</span>
+            {/* <span>$</span> */}
             <span className="aui-padded-l-10" style={{ fontSize: "1.5rem" }}>
-              {distributor.can_drawcash_money}
+              <MoneyValueUnitRender>
+                {distributor.can_drawcash_money}
+              </MoneyValueUnitRender>
             </span>
             {/* <input type="number" style="letter-spacing: 1px;width: 90%; display: inline;"> */}
           </div>
           <div className="aui-text-pray aui-font-size-12">
-            Importe minimo para sscar: ${min_drawcash_money}
+            Importe minimo para sscar:{" "}
+            <MoneyValueUnitRender>{min_drawcash_money}</MoneyValueUnitRender>
+            {/* $ */}
           </div>
         </div>
 

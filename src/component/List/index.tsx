@@ -31,6 +31,7 @@ import {
   postPayPrepay,
   postTipDeliver,
 } from "@/services/api";
+import MoneyValueUnitRender from "../MoneyValueUnitRender";
 
 interface PageProps {
   dispatch: Dispatch;
@@ -694,14 +695,16 @@ export default connect(({ list }: { list: ListState }) => {
                             {trace.goods_info.name}
                           </h5>
                           <p className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white">
-                            <span
+                            {/* <span
                               className="aui-text-price"
                               style={{ fontSize: "0.5rem" }}
                             >
                               $
-                            </span>
+                            </span> */}
                             <span className="aui-text-price aui-font-size-14">
-                              {trace.goods_info.sell_price}
+                              <MoneyValueUnitRender>
+                                {trace.goods_info.sell_price}
+                              </MoneyValueUnitRender>
                             </span>
                           </p>
                         </div>
@@ -826,7 +829,9 @@ export default connect(({ list }: { list: ListState }) => {
                                   className="aui-font-size-14 aui-pull-right aui-font-size-16 aui-margin-r-15"
                                   style={{ color: "#df0303" }}
                                 >
-                                  {comment.order_goods_info.sell_price}
+                                  <MoneyValueUnitRender>
+                                    {comment.order_goods_info.sell_price}
+                                  </MoneyValueUnitRender>
                                 </span>
                               </div>
                               <div>
@@ -975,14 +980,16 @@ export default connect(({ list }: { list: ListState }) => {
                             {collection.goods_info.name}
                           </h5>
                           <p className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white">
-                            <span
+                            {/* <span
                               className="aui-text-price"
                               style={{ fontSize: "0.5rem" }}
                             >
                               $
-                            </span>
+                            </span> */}
                             <span className="aui-text-price aui-font-size-14">
-                              {collection.goods_info.sell_price}
+                              <MoneyValueUnitRender>
+                                {collection.goods_info.sell_price}
+                              </MoneyValueUnitRender>
                             </span>
                             <span
                               className="aui-iconfont iconfont icon-shanchu aui-pull-right"
@@ -1146,12 +1153,16 @@ export default connect(({ list }: { list: ListState }) => {
                 >
                   {item.name}
                 </h5>
-                <p
+                <div
                   style={{ marginBottom: 0, position: "relative" }}
                   className="aui-padded-b-5 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10 aui-bg-white "
                 >
-                  <span className="aui-text-price aui-font-size-10">$</span>{" "}
-                  <span className="aui-text-price ">{item.sell_price}</span>
+                  {/* <span className="aui-text-price aui-font-size-10">$</span>{" "} */}
+                  <span className="aui-text-price ">
+                    <MoneyValueUnitRender>
+                      {item.sell_price}
+                    </MoneyValueUnitRender>
+                  </span>
                   <div
                     style={{
                       position: "absolute",
@@ -1201,7 +1212,7 @@ export default connect(({ list }: { list: ListState }) => {
                       ""
                     )}
                   </div>
-                </p>
+                </div>
               </Link>
             );
           });
@@ -1480,11 +1491,13 @@ export default connect(({ list }: { list: ListState }) => {
                                       {goods.name}
                                     </div>
                                     <div className="aui-list-item-righ aui-text-price">
-                                      <span style={{ fontSize: "0.5rem" }}>
+                                      {/* <span style={{ fontSize: "0.5rem" }}>
                                         $
-                                      </span>
+                                      </span> */}
                                       <span className="aui-font-size-14">
-                                        {goods.real_price}
+                                        <MoneyValueUnitRender>
+                                          {goods.real_price}
+                                        </MoneyValueUnitRender>
                                       </span>
                                     </div>
                                   </div>
@@ -1501,11 +1514,14 @@ export default connect(({ list }: { list: ListState }) => {
                                           textDecoration: "line-through",
                                         }}
                                       >
-                                        <span style={{ fontSize: "0.4rem" }}>
+                                        {/* <span style={{ fontSize: "0.4rem" }}>
                                           $
-                                        </span>
+                                        </span> */}
                                         <span className="aui-font-size-12 ">
-                                          {goods.sell_price}
+                                          {/* {goods.sell_price} */}
+                                          <MoneyValueUnitRender>
+                                            {goods.sell_price}
+                                          </MoneyValueUnitRender>
                                         </span>
                                       </div>
                                     </div>
@@ -1645,18 +1661,26 @@ export default connect(({ list }: { list: ListState }) => {
                       Total
                       <span>{order.order_goods_info.length}</span> Productos
                       Total:
-                      <span
+                      {/* <span
                         className="aui-text-price "
                         style={{ fontSize: "0.5rem" }}
                       >
                         $
-                      </span>
+                      </span> */}
                       <span className="aui-text-price aui-font-size-14 ">
-                        {order.total_money}
+                        <MoneyValueUnitRender>
+                          {order.total_money}
+                        </MoneyValueUnitRender>
                       </span>
                       <span>
                         {" "}
-                        ( Flete incluido $<span>{order.freight_money}</span> )
+                        {/* $ */}( Flete incluido{" "}
+                        <span>
+                          <MoneyValueUnitRender>
+                            {order.freight_money}
+                          </MoneyValueUnitRender>
+                        </span>{" "}
+                        )
                       </span>
                     </div>
                     {/* 按钮组 */}
@@ -1957,11 +1981,13 @@ export default connect(({ list }: { list: ListState }) => {
                                       {goods.name}
                                     </div>
                                     <div className="aui-list-item-righ aui-text-price">
-                                      <span style={{ fontSize: "0.5rem" }}>
+                                      {/* <span style={{ fontSize: "0.5rem" }}>
                                         $
-                                      </span>
+                                      </span> */}
                                       <span className="aui-font-size-14">
-                                        {goods.real_price}
+                                        <MoneyValueUnitRender>
+                                          {goods.real_price}
+                                        </MoneyValueUnitRender>
                                       </span>
                                     </div>
                                   </div>
@@ -1978,11 +2004,13 @@ export default connect(({ list }: { list: ListState }) => {
                                           textDecoration: "line-through",
                                         }}
                                       >
-                                        <span style={{ fontSize: "0.4rem" }}>
+                                        {/* <span style={{ fontSize: "0.4rem" }}>
                                           $
-                                        </span>
+                                        </span> */}
                                         <span className="aui-font-size-12 ">
-                                          {goods.sell_price}
+                                          <MoneyValueUnitRender>
+                                            {goods.sell_price}
+                                          </MoneyValueUnitRender>
                                         </span>
                                       </div>
                                     </div>
@@ -2122,18 +2150,26 @@ export default connect(({ list }: { list: ListState }) => {
                       Total
                       <span>{order.order_goods_info.length}</span> Productos
                       Total:
-                      <span
+                      {/* <span
                         className="aui-text-price "
                         style={{ fontSize: "0.5rem" }}
                       >
                         $
-                      </span>
+                      </span> */}
                       <span className="aui-text-price aui-font-size-14 ">
-                        {order.total_money}
+                        <MoneyValueUnitRender>
+                          {order.total_money}
+                        </MoneyValueUnitRender>
                       </span>
                       <span>
                         {" "}
-                        ( Flete incluido $<span>{order.freight_money}</span> )
+                        {/* $ */}( Flete incluido{" "}
+                        <span>
+                          <MoneyValueUnitRender>
+                            {order.freight_money}
+                          </MoneyValueUnitRender>
+                        </span>{" "}
+                        )
                       </span>
                     </div>
                     {/* 按钮组 */}

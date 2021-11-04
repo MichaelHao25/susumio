@@ -3,6 +3,7 @@ import { history, useSelector } from "umi";
 import { useEffect, useState } from "react";
 import { postDistributorInfo, postGetParams } from "@/services/api";
 import { UserinfoState } from "@/pages/login/model";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 export default () => {
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
@@ -133,7 +134,9 @@ export default () => {
                   Comisión
                 </div>
                 <span className=" aui-font-size-10 aui-text-pray">
-                  {distributor.total_money}$
+                  <MoneyValueUnitRender>
+                    {distributor.total_money}
+                  </MoneyValueUnitRender>
                 </span>
               </div>
               <div

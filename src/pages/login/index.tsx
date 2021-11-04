@@ -2,6 +2,7 @@ import Header from "@/component/Header";
 import "./index.less";
 import { history, useDispatch } from "umi";
 import { useEffect, useState } from "react";
+import { postFacebookLogin } from "@/services/api";
 
 export default function goodsListNewPage() {
   const [mobile, setMobile] = useState<string>("13968066530");
@@ -124,12 +125,26 @@ export default function goodsListNewPage() {
         </div>
         <div
           onClick={() => {
-            window.FB.login(
-              function (response) {
-                console.log(response);
-              },
-              { scope: "public_profile,email" },
-            );
+            try {
+              FB.login(
+                function (response = {}) {
+                  if (response.authResponse) {
+                    const { authResponse: { accessToken = "" } = {} } =
+                      response;
+                    console.log(accessToken);
+                    postFacebookLogin(accessToken).then((res) => {
+                      dispatch({
+                        type: "userinfo/login",
+                        payload: { res },
+                      });
+                    });
+                  }
+                },
+                { scope: "public_profile,email" },
+              );
+            } catch (error) {
+              console.log(error);
+            }
           }}
           className="rigster"
           style={{ backgroundColor: "#fff" }}

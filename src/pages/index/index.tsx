@@ -51,7 +51,7 @@ const Header = () => {
     currentCurrency,
     setCurrentCurrency,
     changeCurrencyType,
-    sethangeCurrencyType,
+    setChangeCurrencyType,
   } = useCurrencyManage();
   useEffect(() => {
     postBannerList().then((res) => {
@@ -110,7 +110,7 @@ const Header = () => {
               </div>
               <img
                 onClick={() => {
-                  sethangeCurrencyType(true);
+                  setChangeCurrencyType(true);
                 }}
                 src={require("../../assets/img/money.svg")}
                 alt=""
@@ -130,7 +130,7 @@ const Header = () => {
                 onClick={() => {
                   // @ts-ignore
                   setCurrentCurrency(item);
-                  sethangeCurrencyType(false);
+                  setChangeCurrencyType(false);
                 }}
               >
                 {item}

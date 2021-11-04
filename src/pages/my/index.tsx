@@ -11,6 +11,7 @@ import Tab from "@/component/Tab";
 import { history } from "@@/core/history";
 import { Link, useDispatch, UserinfoState, useSelector } from "umi";
 import QRCode from "qrcode.react";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 interface OrdersCount {
   return_goods_num: number;
@@ -339,7 +340,8 @@ const index = () => {
                 className="aui-font-size-20 aui-font-weight"
                 style={{ color: "#f03b3b", marginTop: "-0.2rem" }}
               >
-                ${usersAsset.money}
+                {/* ${usersAsset.money} */}
+                <MoneyValueUnitRender>{usersAsset.money}</MoneyValueUnitRender>
               </div>
             </div>
             <Link className="recharge" to={"/recharge"}>

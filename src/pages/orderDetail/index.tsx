@@ -1,14 +1,15 @@
-import Header from '@/component/Header';
-import React, { useEffect, useState } from 'react';
-import { ConnectProps, history, Link } from 'umi';
-import { OrderListItemGoodsInfo, OrdersListItem } from '@/services/interface';
-import { Confirm, Notify } from 'notiflix';
+import Header from "@/component/Header";
+import React, { useEffect, useState } from "react";
+import { ConnectProps, history, Link } from "umi";
+import { OrderListItemGoodsInfo, OrdersListItem } from "@/services/interface";
+import { Confirm, Notify } from "notiflix";
 import {
   postCancelOrders,
   postOrderFinish,
   postPayPrepay,
   postTipDeliver,
-} from '@/services/api';
+} from "@/services/api";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 interface Props extends ConnectProps<{}, { order: OrdersListItem }, {}> {}
 
@@ -22,62 +23,62 @@ export default (props: Props) => {
     return propsOrder;
   });
   const orderStatus = (order: OrdersListItem): string => {
-    var str = '';
+    var str = "";
     if (order.status == 1) {
-      str += 'Pagará';
+      str += "Pagará";
     } else if (order.status == 2) {
-      str += 'Esperando la entrega';
+      str += "Esperando la entrega";
     } else if (order.status == 3) {
-      str += 'Mercancías entregadas';
+      str += "Mercancías entregadas";
     } else if (order.status == 4) {
-      str += 'El pedido está realizado';
+      str += "El pedido está realizado";
     } else if (order.status == 9) {
-      str += 'Orden cancelada';
+      str += "Orden cancelada";
     }
     return str;
   };
   const orderStatusSecond = (order: OrdersListItem): string => {
     if (order.return_status == 1) {
-      return '';
+      return "";
     } else if (order.return_status == 2) {
-      return '';
+      return "";
     } else if (order.return_status == 3) {
     } else if (order.return_status == 0) {
       if (order.status == 1) {
-        return '';
+        return "";
       } else if (order.status == 2) {
-        return 'El Jefe del almacén estáen camino.Por favor,espere.';
+        return "El Jefe del almacén estáen camino.Por favor,espere.";
       } else if (order.status == 3) {
-        return '';
+        return "";
       } else if (order.status == 4 || order.status == 9) {
-        return '';
+        return "";
       }
     }
-    return '';
+    return "";
   };
   const orderStatusIconObject = (order: OrdersListItem): string => {
     if (order.status == 1) {
-      return 'icon-daifukuan';
+      return "icon-daifukuan";
     } else if (order.status == 2) {
-      return 'icon-daifahuo';
+      return "icon-daifahuo";
     } else if (order.status == 3) {
-      return 'icon-yifahuo';
+      return "icon-yifahuo";
     } else if (order.status == 4 || order.status == 9) {
-      return 'icon-iconwxz';
+      return "icon-iconwxz";
     }
-    return '';
+    return "";
   };
   const cancelOrder: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.stopPropagation();
     Confirm.show(
-      'Confirm',
-      'Por favor,seleccione la causa de la cancelación?',
-      'Confirmar',
-      'Cancelar',
+      "Confirm",
+      "Por favor,seleccione la causa de la cancelación?",
+      "Confirmar",
+      "Cancelar",
       function () {
         postCancelOrders({
           order_id: order.id,
-          cancel_reason: 'Confirmar',
+          cancel_reason: "Confirmar",
         }).then((res) => {
           if (res) {
             Notify.success(res.msg);
@@ -99,7 +100,7 @@ export default (props: Props) => {
       order_id: order.id,
     }).then((res) => {
       if (res) {
-        history.push('/paySelect', {
+        history.push("/paySelect", {
           order_no: order.order_no,
           total_money: order.total_money,
         });
@@ -111,7 +112,7 @@ export default (props: Props) => {
     goods: OrderListItemGoodsInfo,
   ) => {
     e.stopPropagation();
-    history.push('/refundGoods', {
+    history.push("/refundGoods", {
       goods: goods,
     });
   };
@@ -120,13 +121,13 @@ export default (props: Props) => {
     goods: OrderListItemGoodsInfo,
   ) => {
     e.stopPropagation();
-    history.push('/commentAdd', {
+    history.push("/commentAdd", {
       goods: goods,
     });
   };
   const goLogistics: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.stopPropagation();
-    history.push('/logistics', {
+    history.push("/logistics", {
       order,
     });
   };
@@ -143,10 +144,10 @@ export default (props: Props) => {
   const finish: React.MouseEventHandler<HTMLDivElement> = (e) => {
     e.stopPropagation();
     Confirm.show(
-      'Confirm',
-      'Confirmen la recepción?',
-      'Confirmar',
-      'Cancelar',
+      "Confirm",
+      "Confirmen la recepción?",
+      "Confirmar",
+      "Cancelar",
       function () {
         postOrderFinish({
           order_id: order.id,
@@ -168,29 +169,29 @@ export default (props: Props) => {
   };
   return (
     <>
-      <Header title={'Detalles del pedido'} />
+      <Header title={"Detalles del pedido"} />
 
       <div className="aui-content">
         <div className="order-status aui-b aui-bg-info">
           <ul
             className="aui-list aui-media-list"
             id="order-status"
-            style={{ backgroundImage: 'none' }}
+            style={{ backgroundImage: "none" }}
           >
-            <li className="aui-list-item" style={{ backgroundImage: 'none' }}>
+            <li className="aui-list-item" style={{ backgroundImage: "none" }}>
               <div className="aui-media-list-item-inner">
                 <div className="aui-list-item-media">
                   <span
                     className={`aui-iconfont iconfont aui-text-white ${orderStatusIconObject(
                       order,
                     )}`}
-                    style={{ fontSize: '2.2rem' }}
+                    style={{ fontSize: "2.2rem" }}
                   />
                 </div>
                 <div className="aui-list-item-inner">
                   <div
                     className="aui-list-item-text aui-text-white aui-font-size-12"
-                    style={{ lineHeight: '2.3rem' }}
+                    style={{ lineHeight: "2.3rem" }}
                   >
                     <h2>{orderStatus(order)}</h2>
                   </div>
@@ -206,9 +207,9 @@ export default (props: Props) => {
         </div>
         <ul
           className="aui-list aui-media-list aui-margin-t-5"
-          style={{ backgroundImage: 'none' }}
+          style={{ backgroundImage: "none" }}
         >
-          <li className="aui-list-item" style={{ backgroundImage: 'none' }}>
+          <li className="aui-list-item" style={{ backgroundImage: "none" }}>
             <div className="aui-media-list-item-inner">
               <div className="aui-list-item-label-icon">
                 <i className="aui-iconfont iconfont icon-dizhi1 aui-font-size-20 aui-text-info" />
@@ -245,13 +246,13 @@ export default (props: Props) => {
           {/* 商品列表 */}
           <ul
             className="aui-list aui-media-list"
-            style={{ backgroundImage: 'none' }}
+            style={{ backgroundImage: "none" }}
           >
             {order.order_goods_info.map((goods) => {
               return (
                 <li
                   className="aui-list-item aui-margin-b-5 aui-bg-default"
-                  style={{ backgroundImage: 'none' }}
+                  style={{ backgroundImage: "none" }}
                   key={goods.id}
                 >
                   <div className="aui-media-list-item-inner">
@@ -267,14 +268,16 @@ export default (props: Props) => {
                       <div className="aui-list-item-text">
                         <div
                           className="aui-list-item-title aui-ellipsis-2 aui-font-size-14"
-                          style={{ width: '70%' }}
+                          style={{ width: "70%" }}
                         >
                           {goods.name}
                         </div>
                         <div className="aui-list-item-righ aui-text-price">
-                          <span style={{ fontSize: '0.5rem' }}>$</span>
+                          {/* <span style={{ fontSize: '0.5rem' }}>$</span> */}
                           <span className="aui-font-size-14 ">
-                            {goods.real_price}
+                            <MoneyValueUnitRender>
+                              {goods.real_price}
+                            </MoneyValueUnitRender>
                           </span>
                         </div>
                       </div>
@@ -283,15 +286,17 @@ export default (props: Props) => {
                         <div className="aui-list-item-text">
                           <div
                             className="aui-list-item-title aui-ellipsis-2 aui-font-size-14"
-                            style={{ width: '70%' }}
+                            style={{ width: "70%" }}
                           />
                           <div
                             className="aui-list-item-righ"
-                            style={{ textDecoration: 'line-through' }}
+                            style={{ textDecoration: "line-through" }}
                           >
-                            <span style={{ fontSize: '0.4rem' }}>$</span>
+                            {/* <span style={{ fontSize: '0.4rem' }}>$</span> */}
                             <span className="aui-font-size-12 ">
-                              goods.sell_price
+                              <MoneyValueUnitRender>
+                                {goods.sell_price}
+                              </MoneyValueUnitRender>
                             </span>
                           </div>
                         </div>
@@ -302,7 +307,7 @@ export default (props: Props) => {
                       <div className="aui-list-item-text aui-text-pray aui-margin-t-5">
                         <div
                           className="aui-list-item-title aui-font-size-12 aui-text-pray"
-                          style={{ width: '70%' }}
+                          style={{ width: "70%" }}
                         >
                           {goods.spec_group_id != 0 ? (
                             <span>
@@ -320,7 +325,7 @@ export default (props: Props) => {
                       <div className="aui-list-item-text aui-margin-t-5">
                         <div
                           className="aui-list-item-title aui-text-pray aui-font-size-12 "
-                          style={{ width: '70%' }}
+                          style={{ width: "70%" }}
                         />
                         {order.status == 4 &&
                         goods.is_comment == 0 &&
@@ -328,7 +333,7 @@ export default (props: Props) => {
                         goods.return_goods_status != 1 ? (
                           <div
                             className="aui-list-item-right "
-                            style={{ width: '30%' }}
+                            style={{ width: "30%" }}
                           >
                             <div
                               className="order-buttons aui-text-right"
@@ -347,19 +352,19 @@ export default (props: Props) => {
                       <div className="aui-list-item-text aui-margin-t-10">
                         <div
                           className="aui-list-item-title aui-text-pray aui-font-size-12 "
-                          style={{ width: '70%' }}
+                          style={{ width: "70%" }}
                         />
                         {(order.status == 2 || order.status == 3) &&
                         goods.return_goods_status == 0 ? (
                           <div
                             className="aui-list-item-right"
-                            style={{ width: '30%' }}
+                            style={{ width: "30%" }}
                             onClick={(e) => refund(e, goods)}
                           >
                             <div className="order-buttons aui-text-right">
                               <div
                                 className="mini-button aui-font-size-10"
-                                style={{ width: '5rem' }}
+                                style={{ width: "5rem" }}
                               >
                                 Reembolso
                               </div>
@@ -371,7 +376,7 @@ export default (props: Props) => {
                         {goods.return_goods_status == 1 ? (
                           <div
                             className="aui-list-item-right aui-text-right"
-                            style={{ width: '30%' }}
+                            style={{ width: "30%" }}
                             onClick={(e) => refund(e, goods)}
                           >
                             Solicitud de reembolso
@@ -382,7 +387,7 @@ export default (props: Props) => {
                         {goods.return_goods_status == 2 ? (
                           <div
                             className="aui-list-item-right aui-text-right"
-                            style={{ width: '30%' }}
+                            style={{ width: "30%" }}
                           >
                             Reembolso denegado
                           </div>
@@ -393,7 +398,7 @@ export default (props: Props) => {
                         goods.is_return_money == 0 ? (
                           <div
                             className="aui-list-item-right aui-text-right"
-                            style={{ width: '30%' }}
+                            style={{ width: "30%" }}
                           >
                             Devolución exitosa
                             <br />
@@ -406,7 +411,7 @@ export default (props: Props) => {
                         goods.is_return_money == 1 ? (
                           <div
                             className="aui-list-item-right aui-text-right"
-                            style={{ width: '30%' }}
+                            style={{ width: "30%" }}
                           >
                             Devolución exitosa
                           </div>
@@ -428,7 +433,10 @@ export default (props: Props) => {
                   Flete
                 </div>
                 <div className="aui-list-item-right">
-                  ${order.freight_money}
+                  {/* $ */}
+                  <MoneyValueUnitRender>
+                    {order.freight_money}
+                  </MoneyValueUnitRender>
                 </div>
               </div>
             </li>
@@ -439,7 +447,10 @@ export default (props: Props) => {
                     Preferencias operacionales
                   </div>
                   <div className="aui-list-item-right">
-                    ${order.market_reduce_money}
+                    {/* $ */}
+                    <MoneyValueUnitRender>
+                      {order.market_reduce_money}
+                    </MoneyValueUnitRender>
                   </div>
                 </div>
               </li>
@@ -453,9 +464,11 @@ export default (props: Props) => {
                     Precio total(Flete incluido)
                   </div>
                   <div className="aui-list-item-right aui-text-price">
-                    <span className="aui-font-size-12">$</span>
+                    {/* <span className="aui-font-size-12">$</span> */}
                     <span className="aui-font-size-16">
-                      {order.total_money}
+                      <MoneyValueUnitRender>
+                        {order.total_money}
+                      </MoneyValueUnitRender>
                     </span>
                   </div>
                 </div>
@@ -468,7 +481,7 @@ export default (props: Props) => {
 
         <div
           className="aui-padded-10 aui-bg-white aui-margin-t-5"
-          style={{ paddingBottom: '1.8rem !important' }}
+          style={{ paddingBottom: "1.8rem !important" }}
         >
           <h5 className="aui-padded-t-5 aui-font-size-12">{order.order_no}</h5>
           <h5 className="aui-padded-t-5 aui-font-size-12">
@@ -532,7 +545,7 @@ export default (props: Props) => {
           )}
         </div>
       </div>
-      <div style={{ minHeight: '2.25rem' }} />
+      <div style={{ minHeight: "2.25rem" }} />
       <footer className="aui-bar aui-bar-tab" id="footer">
         <div className="order-buttons aui-padded-b-5 ">
           {order.status == 1 ? (
