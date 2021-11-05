@@ -41,7 +41,7 @@ export default () => {
         shoper_id: user.id,
       });
     }
-  }, [activeStatus]);
+  }, [activeStatus, user]);
 
   const header = (
     <div>

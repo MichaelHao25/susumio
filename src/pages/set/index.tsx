@@ -24,9 +24,6 @@ export default () => {
     return userinfo;
   });
   const dispatch = useDispatch();
-  if (!user) {
-    throw "user error";
-  }
   useEffect(() => {
     postGetParams().then((res) => {
       console.log(res);
@@ -100,10 +97,10 @@ export default () => {
       Notiflix.Confirm.show(
         "Elige",
         `${[
-          "Cambiar contraseña",
-          "Restablecer contraseña",
-          "Cambiar contraseña de pago",
-          "Restablecer contraseña de pago",
+          "重置密码",
+          "修改密码使用邮箱",
+          "重置支付密码",
+          "修改支付密码使用邮箱",
         ]
           .map((item, index) => {
             return `<button class="layout_button">${item}</button>`;

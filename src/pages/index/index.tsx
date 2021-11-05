@@ -24,7 +24,7 @@ export interface BannerItem {
   img: string;
   is_open_model: boolean;
   memo: string;
-  model: "goods" | "article" | "goods_cate";
+  model: "goods" | "article" | "goods_cate" | "tag";
   model_id: number;
   name: string;
   position: string;
@@ -168,6 +168,12 @@ const Header = () => {
                         history.push(`/goodsDetails?id=${item.model_id}`);
                       }
                       if (item.model === "goods_cate") {
+                        history.push(
+                          `/goodsListModel?id=${item.model_id}&title=Categorías`,
+                        );
+                      }
+
+                      if (item.model === "tag") {
                         history.push(
                           `/goodsListModel?id=${item.model_id}&title=Categorías`,
                         );

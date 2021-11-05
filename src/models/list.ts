@@ -403,7 +403,7 @@ export default <ListModel>{
         customTag = "",
         id = "",
         keyword = "",
-        shoperId = "0",
+        shoperId = "",
       } = payload;
 
       const res: ListResponse | undefined = yield call(postApiGoodsGoodsLists, {

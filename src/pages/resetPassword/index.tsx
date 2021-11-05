@@ -1,13 +1,13 @@
-import Header from '@/component/Header';
-import { ConnectProps, history, useSelector } from 'umi';
-import { useEffect, useState } from 'react';
+import Header from "@/component/Header";
+import { ConnectProps, history, useSelector } from "umi";
+import { useEffect, useState } from "react";
 import {
   postGetParams,
   PostUpdatePassword,
   postUpdatePassword,
-} from '@/services/api';
-import { UserinfoState } from '@/pages/login/model';
-import Notiflix, { Notify } from 'notiflix';
+} from "@/services/api";
+import { UserinfoState } from "@/pages/login/model";
+import Notiflix, { Notify } from "notiflix";
 
 interface Props extends ConnectProps<{}, { type: number }, {}> {}
 
@@ -24,16 +24,15 @@ export default (props: Props) => {
   const [params, setParams] = useState<{
     wap_login_logo: string;
   }>({
-    wap_login_logo: '',
+    wap_login_logo: "",
   });
-  const [mobile, setMobile] = useState<string>(() => {
+  const [mobile, setMobile] = useState<string>("");
+  useEffect(() => {
     if (user.mobile) {
-      return user.mobile;
-    } else {
-      return '';
+      setMobile(user.mobile);
     }
-  });
-  const [password, setPassword] = useState<string>('');
+  }, [user]);
+  const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
     postGetParams().then((res) => {
@@ -46,16 +45,16 @@ export default (props: Props) => {
 
   function handleSubmit() {
     if (!/^1\d{10}$/.test(mobile)) {
-      Notify.failure('Por favor,escriba el número correcto');
+      Notify.failure("Por favor,escriba el número correcto");
       return;
     }
-    if (password == '') {
-      Notify.failure('Rellene la contraseña');
+    if (password == "") {
+      Notify.failure("Rellene la contraseña");
       return;
     }
     if (!/^[A-Za-z0-9]{6,20}$/.test(password)) {
       Notify.failure(
-        'La combinación de letras y números se limita a 6 a 20 bits',
+        "La combinación de letras y números se limita a 6 a 20 bits",
       );
       return;
     }
@@ -67,7 +66,7 @@ export default (props: Props) => {
     if (type == 1) {
       req.password = password;
       req.password_confirm = password;
-    } else if (type == 2) {
+    } else if (type == 3) {
       req.pay_password = password;
       req.pay_password_confirm = password;
     }
@@ -75,7 +74,7 @@ export default (props: Props) => {
       if (res) {
         Notify.success(res.msg);
         window.localStorage.clear();
-        history.push('/login');
+        history.push("/login");
       }
     });
   }
@@ -83,30 +82,30 @@ export default (props: Props) => {
   return (
     <div>
       <Header
-        title={type === 1 ? 'Cambiar contraseña' : 'Restablecer la contraseña'}
+        title={type === 1 ? "Cambiar contraseña" : "Restablecer la contraseña"}
       />
 
-      <div id="app" style={{ height: '26rem', backgroundColor: '#fff' }}>
+      <div id="app" style={{ height: "26rem", backgroundColor: "#fff" }}>
         <div className="area aui-text-center">
           <div
             style={{
-              height: '7.5rem',
-              backgroundColor: '#fff',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              height: "7.5rem",
+              backgroundColor: "#fff",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <img
               loading="lazy"
               src={params.wap_login_logo}
-              style={{ width: '60%' }}
+              style={{ width: "60%" }}
             />
           </div>
           <div className="mix">
             <i
               className="iconfont icon-shouji"
-              style={{ color: '#3fa0f9', fontSize: '20px' }}
+              style={{ color: "#3fa0f9", fontSize: "20px" }}
             />
             <input
               type="number"
@@ -117,13 +116,13 @@ export default (props: Props) => {
                 setMobile(e.target.value);
               }}
               value={mobile}
-              disabled={user.mobile !== ''}
+              disabled={user.mobile !== ""}
             />
           </div>
           <div className="mix">
             <i
               className="iconfont icon-mima"
-              style={{ color: '#3fa0f9', fontSize: '20px' }}
+              style={{ color: "#3fa0f9", fontSize: "20px" }}
             />
             <input
               type="password"
@@ -139,7 +138,7 @@ export default (props: Props) => {
           <div
             className="submit1"
             onClick={handleSubmit}
-            style={{ backgroundColor: '#3fa0f9' }}
+            style={{ backgroundColor: "#3fa0f9" }}
           >
             Listo
           </div>

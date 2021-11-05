@@ -19,16 +19,18 @@ export default () => {
     return userinfo;
   });
   useEffect(() => {
-    postApiGoodsGoodsLists({
-      shoperId: user.id,
-      pageLimit: 100,
-      pageNum: 1,
-    }).then((res) => {
-      if (res) {
-        setList(res.data);
-      }
-    });
-  }, []);
+    if (user.id) {
+      postApiGoodsGoodsLists({
+        shoperId: user.id,
+        pageLimit: 100,
+        pageNum: 1,
+      }).then((res) => {
+        if (res) {
+          setList(res.data);
+        }
+      });
+    }
+  }, [user]);
 
   return (
     <div className={styles.storehouse}>
@@ -87,10 +89,10 @@ export default () => {
                       className={styles.icon}
                       onClick={() => {
                         Confirm.show(
-                          "是否删除",
-                          "是否删除？",
-                          "好的",
-                          "取消",
+                          "Cancel",
+                          "Quieres cancelarlo？",
+                          "Ok",
+                          "No",
                           () => {
                             postGoodsDelete(item.id).then((res) => {
                               if (res) {
