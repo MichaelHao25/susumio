@@ -5,8 +5,20 @@ import { useEffect, useState } from "react";
 import { postFacebookLogin } from "@/services/api";
 
 export default function goodsListNewPage() {
-  const [mobile, setMobile] = useState<string>("13968066530");
-  const [password, setPassword] = useState<string>("954321");
+  const [mobile, setMobile] = useState<string>(() => {
+    if (process.env.NODE_ENV === "development") {
+      return "13968066530";
+    } else {
+      return "";
+    }
+  });
+  const [password, setPassword] = useState<string>(() => {
+    if (process.env.NODE_ENV === "development") {
+      return "954321";
+    } else {
+      return "";
+    }
+  });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const dispatch = useDispatch();
 

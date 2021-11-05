@@ -3,6 +3,12 @@ import { RequestOptionsInit } from "umi-request";
 import { AddressItem } from "@/services/interface";
 import { CurrencyType } from "@/hooks/useCurrencyManage";
 
+/**
+ * fb登陆
+ */
+export const postFreightTemplate = () => {
+  return request.post("/api_goods/freight_templates/lists");
+};
 interface ExchangeRate {
   amount?: number;
   from?: CurrencyType;

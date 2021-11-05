@@ -1,13 +1,14 @@
-import Header from '@/component/Header';
-import { ConnectProps, history } from 'umi';
-import { useEffect, useState } from 'react';
+import Header from "@/component/Header";
+import { ConnectProps, history } from "umi";
+import { useEffect, useState } from "react";
 import {
   postAddressesCreate,
+  postFreightTemplate,
   postQueryAddressById,
   postRegions,
-} from '@/services/api';
-import { AddressItem } from '@/services/interface';
-import { Notify } from 'notiflix';
+} from "@/services/api";
+import { AddressItem } from "@/services/interface";
+import { Notify } from "notiflix";
 
 interface Props
   extends ConnectProps<
@@ -37,35 +38,63 @@ interface Address {
   province_code: string;
   zip_code: string;
 }
+interface FreightTemplate {
+  country: string;
+  country_code: string;
+  express: string;
+}
+interface ProvincesList {
+  [key: string]: string;
+}
 
 export default (props: Props) => {
   const {
-    location: { state: { addressId = '' } = {} },
+    location: { state: { addressId = "" } = {} },
   } = props;
-  const [provinces, setProvinces] = useState<Provinces[]>([]);
+  const [provinces, setProvinces] = useState<ProvincesList>({});
+  const [freightTemplate, setFreightTemplate] = useState<FreightTemplate[]>([]);
   const [address, setAddress] = useState<Address>({
     id: 0,
-    address: '',
-    area_code: '',
-    city_code: '',
-    consignee_name: '',
-    express_type: '',
+    address: "",
+    area_code: "",
+    city_code: "",
+    consignee_name: "",
+    express_type: "",
     is_default: 1,
-    mobile: '',
-    province: '',
-    province_code: '',
-    zip_code: '',
+    mobile: "",
+    province: "",
+    province_code: "",
+    zip_code: "",
   });
   useEffect(() => {
-    postRegions().then((res) => {
+    // postRegions().then((res) => {
+    //   if (res) {
+    //     setProvinces(res.data);
+    //   }
+    // });
+    postFreightTemplate().then((res) => {
       if (res) {
-        setProvinces(res.data);
+        console.log(res);
+        const {
+          data,
+        }: {
+          data: FreightTemplate[];
+        } = res;
+        const list: ProvincesList = {};
+
+        data.forEach((item) => {
+          list[item.country_code] = item.country;
+        });
+        console.log(list);
+        setProvinces(list);
+
+        setFreightTemplate(res.data);
       }
     });
   }, []);
   useEffect(() => {
     if (addressId) {
-      if (provinces.length !== 0) {
+      if (Object.keys(provinces).length !== 0) {
         postQueryAddressById(addressId).then((res) => {
           if (res) {
             console.log(res);
@@ -83,7 +112,7 @@ export default (props: Props) => {
       !address.mobile ||
       !address.address
     ) {
-      Notify.failure('Por favor rellene la información completa.');
+      Notify.failure("Por favor rellene la información completa.");
       return;
     }
     postAddressesCreate(address as AddressItem).then((res) => {
@@ -97,7 +126,7 @@ export default (props: Props) => {
 
   return (
     <>
-      <Header title={'Mi dirección'} />
+      <Header title={"Mi dirección"} />
       <div className="aui-content aui-margin-b-15">
         <ul className="aui-list aui-form-list">
           <li>
@@ -172,15 +201,16 @@ export default (props: Props) => {
                       return {
                         ...address,
                         province_code: e.target.value,
+                        express_type: "",
                       };
                     });
                   }}
                 >
-                  <option value={''}>Seleccione la País</option>
-                  {provinces.map((item) => {
+                  <option value={""}>Seleccione la País</option>
+                  {Object.entries(provinces).map(([key, value]) => {
                     return (
-                      <option value={item.id} key={item.id}>
-                        {item.name}
+                      <option value={key} key={key}>
+                        {value}
                       </option>
                     );
                   })}
@@ -203,16 +233,26 @@ export default (props: Props) => {
                     });
                   }}
                 >
-                  <option value="Express 4-9días">Express 4-9días</option>
-                  <option value="Express 9-14días">Express 9-14días</option>
-                  <option value="Barco 20-25días">Barco 20-25días</option>
+                  <option value="">Seleccione la Envio</option>
+                  {freightTemplate
+                    .filter(
+                      (item) => item.country_code === address.province_code,
+                    )
+                    .map((item) => {
+                      return (
+                        <option value={item.express}>{item.express}</option>
+                      );
+                    })}
+
+                  {/* <option value="Express 9-14días">Express 9-14días</option>
+                  <option value="Barco 20-25días">Barco 20-25días</option> */}
                 </select>
               </div>
             </div>
           </li>
           <li>
             <div className="aui-margin-l-15">
-              <div className="aui-list-item-label" style={{ width: '65%' }}>
+              <div className="aui-list-item-label" style={{ width: "65%" }}>
                 Dirección detallada
               </div>
               <div className="aui-margin-l-15 aui-list-item-input">
@@ -251,7 +291,7 @@ export default (props: Props) => {
                   />
                   Sí
                 </label>
-                <label style={{ marginLeft: '1rem' }}>
+                <label style={{ marginLeft: "1rem" }}>
                   <input
                     className="aui-radio"
                     type="radio"
@@ -272,7 +312,7 @@ export default (props: Props) => {
           </li>
         </ul>
       </div>
-      <div style={{ height: '2.5rem' }} />
+      <div style={{ height: "2.5rem" }} />
       <footer className="aui-bar aui-bar-tab">
         <div
           className="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15"

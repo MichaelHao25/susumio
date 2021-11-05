@@ -22,7 +22,7 @@ export interface IOrder_goods_info {
   expect_money: number;
   real_commisson_money: void /* 未知类型 */;
   real_commission_rate: number;
-  real_money: void /* 未知类型 */;
+  real_money: number | string /* 未知类型 */;
   already_drawcash_money: number;
   source_user_id: number;
   order_status: number;

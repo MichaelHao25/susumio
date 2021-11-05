@@ -6,6 +6,7 @@ import { postOrdersList } from "@/services/api";
 import { useSelector } from "umi";
 import { UserinfoState } from "@/pages/login/model";
 import { ListState } from "@/models/list";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 const HeaderCurrent = (props: {
   activeStatus: number;
@@ -29,7 +30,10 @@ const HeaderCurrent = (props: {
               className="aui-iconfont"
               style={{ fontSize: ".7rem", color: "#2a8ee8" }}
             >
-              Importe:{postOrdersListHeaderInfo.totalExceptMoney}
+              Importe:
+              <MoneyValueUnitRender>
+                {postOrdersListHeaderInfo.totalExceptMoney}
+              </MoneyValueUnitRender>
             </span>
           </a>
         }

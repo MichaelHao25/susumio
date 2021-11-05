@@ -5,6 +5,7 @@ import { useState } from "react";
 import Big from "big.js";
 interface Props {
   children: number | string;
+  afterSymbol?: string;
 }
 
 const MoneySymbol = {
@@ -16,6 +17,7 @@ const MoneySymbol = {
   [CurrencyType.COP]: "COP",
 };
 const index: React.FC<Props> = (props) => {
+  const { children, afterSymbol } = props;
   const [rate] = useState<number>(() => {
     const res = window.localStorage.getItem("currentCurrencyResponse");
     if (res) {
@@ -36,20 +38,27 @@ const index: React.FC<Props> = (props) => {
       CurrencyType.USD
     );
   });
-  useEffect(() => {}, []);
-  const { children } = props;
+  let returnString: React.ReactNode = "";
   if (rate === 0 || currentCurrency === CurrencyType.USD) {
-    return (
+    returnString = (
       <>
         {MoneySymbol[currentCurrency]}
         {children}
       </>
     );
+  } else {
+    returnString = (
+      <>
+        {MoneySymbol[currentCurrency]}
+        {new Big(children).times(rate).toFixed(2)}
+      </>
+    );
   }
+
   return (
     <>
-      {MoneySymbol[currentCurrency]}
-      {new Big(children).times(rate).toFixed(2)}
+      {afterSymbol || ""}
+      {returnString}
     </>
   );
 };

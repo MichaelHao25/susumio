@@ -11,6 +11,7 @@ import {
 import Tab from "./tab";
 import { Details } from "@/services/interface";
 import Notiflix, { Confirm, Notify } from "notiflix";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 export default () => {
   const [list, setList] = useState<Details[]>([]);
@@ -53,7 +54,11 @@ export default () => {
                 <div className={styles.content}>
                   <div className={styles.title}>{item.name}</div>
 
-                  <div className={styles.cost}>$ {item.sell_price}</div>
+                  <div className={styles.cost}>
+                    <MoneyValueUnitRender>
+                      {item.sell_price}
+                    </MoneyValueUnitRender>
+                  </div>
                   <div className={styles.control}>
                     {/* <div className={styles.button}>
                       <img src={require("../../assets/img/up.svg")} alt="" />

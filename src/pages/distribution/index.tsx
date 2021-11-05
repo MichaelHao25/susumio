@@ -84,7 +84,11 @@ export default () => {
             style={{ borderRadius: ".3rem", boxShadow: "0 5px 10px 0 #f3fbff" }}
           >
             <div className="aui-col-xs-6 aui-border-r">
-              <div className="aui-font-size-20">{distributor.total_money}</div>
+              <div className="aui-font-size-20">
+                <MoneyValueUnitRender>
+                  {distributor.total_money}
+                </MoneyValueUnitRender>
+              </div>
               <div className="aui-font-size-14 aui-text-pray">
                 Comisión acumulada
               </div>
@@ -100,7 +104,9 @@ export default () => {
             </div>
             <div className="aui-col-xs-6">
               <div className="aui-font-size-20">
-                {distributor.can_drawcash_money}
+                <MoneyValueUnitRender>
+                  {distributor.can_drawcash_money}
+                </MoneyValueUnitRender>
               </div>
               <div className="aui-font-size-14 aui-text-pray">
                 Camisión disponible

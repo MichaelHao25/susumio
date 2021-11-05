@@ -11,6 +11,7 @@ import { postApiGoodsGoodsLists, postBannerList } from "@/services/api";
 import Tab from "@/component/Tab";
 import { Details } from "@/services/interface";
 import { BannerItem } from "../index";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 interface Props extends ConnectProps<{}, {}, { id: string }> {}
 export default (props: Props) => {
@@ -96,7 +97,11 @@ export default (props: Props) => {
                 <img src={item.thum} alt="" className={styles.thumbnail} />
                 <div className={styles.content}>
                   <div className={styles.title}>{item.name}</div>
-                  <div className={styles.cost}>$ {item.sell_price}</div>
+                  <div className={styles.cost}>
+                    <MoneyValueUnitRender>
+                      {item.sell_price}
+                    </MoneyValueUnitRender>
+                  </div>
                   <div
                     className={styles.add}
                     onClick={() => {

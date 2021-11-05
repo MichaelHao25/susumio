@@ -505,9 +505,15 @@ export default connect(({ list }: { list: ListState }) => {
                                       goods.order_goods_info.num}
                                   </div>
                                   <div className="aui-list-item-right  aui-text-pray">
-                                    {order.order_status == 3
-                                      ? "+" + goods.real_money
-                                      : "+" + goods.expect_money}
+                                    {order.order_status == 3 ? (
+                                      <MoneyValueUnitRender afterSymbol="+">
+                                        {goods.real_money}
+                                      </MoneyValueUnitRender>
+                                    ) : (
+                                      <MoneyValueUnitRender afterSymbol="+">
+                                        {goods.expect_money}
+                                      </MoneyValueUnitRender>
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -625,7 +631,9 @@ export default connect(({ list }: { list: ListState }) => {
                         <div className="wallet-text-left">{log.intro}</div>
                         <div className="wallet-text-right">
                           {log.symbol}
-                          {log.change_money}
+                          <MoneyValueUnitRender>
+                            {log.change_money}
+                          </MoneyValueUnitRender>
                         </div>
                       </div>
                       <div className="wallet-text text-two aui-font-size-12">

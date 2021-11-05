@@ -47,9 +47,18 @@ export default () => {
   }, []);
   const logout = () => {
     Confirm.show("warning", "¿Va a salir?", "Sí", "No", () => {
-      FB.logout();
       window.localStorage.clear();
       history.push("/");
+      try {
+        FB.getLoginStatus(function (response = {}) {
+          // 如果从fb获取到信息的话就调用fb的登陆
+          if (response.authResponse) {
+            FB.logout();
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
     });
   };
   const updateUserInfo = (req: PostUsersUpdate) => {
