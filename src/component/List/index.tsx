@@ -1558,101 +1558,11 @@ export default connect(({ list }: { list: ListState }) => {
                                     </div>
                                   </div>
 
-                                  <div className="aui-list-item-text aui-margin-t-5">
-                                    <div
-                                      className="aui-list-item-title aui-text-pray aui-font-size-12 "
-                                      style={{ width: "70%" }}
-                                    />
-                                    {order.status == 4 &&
-                                    goods.is_comment == 0 &&
-                                    goods.return_goods_status != 3 &&
-                                    goods.return_goods_status != 1 ? (
-                                      <div
-                                        className="aui-list-item-right "
-                                        style={{ width: "30%" }}
-                                        onClick={(e) => goComment(e, goods)}
-                                      >
-                                        <div className="order-buttons aui-text-right">
-                                          <div className="mini-button aui-font-size-10">
-                                            comentar
-                                          </div>
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <></>
-                                    )}
-                                  </div>
-
                                   <div className="aui-list-item-text aui-margin-t-10">
                                     <div
                                       className="aui-list-item-title aui-text-pray aui-font-size-12 "
                                       style={{ width: "70%" }}
                                     />
-                                    {(order.status == 2 || order.status == 3) &&
-                                    goods.return_goods_status == 0 ? (
-                                      <div
-                                        className="aui-list-item-right"
-                                        style={{ width: "30%" }}
-                                        onClick={(e) => refund(e, goods)}
-                                      >
-                                        <div className="order-buttons aui-text-right">
-                                          <div
-                                            className="mini-button aui-font-size-10"
-                                            style={{ width: "4rem" }}
-                                          >
-                                            Reembolso
-                                          </div>
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <></>
-                                    )}
-                                    {goods.return_goods_status == 1 ? (
-                                      <div
-                                        className="aui-list-item-right aui-text-right"
-                                        style={{ width: "30%" }}
-                                        onClick={(e) => refund(e, goods)}
-                                      >
-                                        Solicitud de reembolso
-                                      </div>
-                                    ) : (
-                                      <></>
-                                    )}
-                                    {goods.return_goods_status == 2 ? (
-                                      <div
-                                        className="aui-list-item-right aui-text-right"
-                                        style={{ width: "30%" }}
-                                      >
-                                        Reembolso denegado
-                                      </div>
-                                    ) : (
-                                      <></>
-                                    )}
-
-                                    {goods.return_goods_status == 3 &&
-                                    goods.is_return_money == 0 ? (
-                                      <div
-                                        className="aui-list-item-right aui-text-right"
-                                        style={{ width: "30%" }}
-                                      >
-                                        Devolución exitosa
-                                        <br />
-                                        Pendiente de reembolso
-                                      </div>
-                                    ) : (
-                                      <></>
-                                    )}
-                                    {goods.return_goods_status == 3 &&
-                                    goods.is_return_money == 1 ? (
-                                      <div
-                                        className="aui-list-item-right aui-text-right"
-                                        style={{ width: "30%" }}
-                                      >
-                                        Devolución exitosa
-                                      </div>
-                                    ) : (
-                                      <></>
-                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -1681,7 +1591,6 @@ export default connect(({ list }: { list: ListState }) => {
                         </MoneyValueUnitRender>
                       </span>
                       <span>
-                        {" "}
                         {/* $ */}( Flete incluido{" "}
                         <span>
                           <MoneyValueUnitRender>
@@ -1702,57 +1611,6 @@ export default connect(({ list }: { list: ListState }) => {
                             Verificar
                           </div>
                         )}
-                      {order.status == 1 ? (
-                        <div
-                          className="button active "
-                          onClick={(e) => orderPay(e, order)}
-                        >
-                          Pagar
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                      {order.status == 1 ? (
-                        <div
-                          className="button "
-                          onClick={(e) => cancelOrder(e, order)}
-                        >
-                          Cancelar
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                      {order.status == 2 ? (
-                        <div
-                          className="button "
-                          onClick={(e) => remind(e, order)}
-                        >
-                          Recordatorio
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                      {order.status == 3 ? (
-                        <div
-                          className="button active "
-                          style={{ width: "7rem" }}
-                          onClick={(e) => finish(e, order)}
-                        >
-                          Confirmar
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                      {order.status >= 3 && order.status != 9 ? (
-                        <div
-                          className="button "
-                          onClick={(e) => goLogistics(e, order)}
-                        >
-                          Logística
-                        </div>
-                      ) : (
-                        <></>
-                      )}
                       {order.status == 3 ? (
                         <div
                           className="button "

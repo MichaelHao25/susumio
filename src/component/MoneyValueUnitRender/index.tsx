@@ -10,9 +10,10 @@ import { Notify } from "notiflix";
 interface Props {
   children?: number | string;
   afterSymbol?: string;
-  // 标签模式，如果是标签的话就必须要value参数
+  // 标签模式，如果是标签的话就必须要children参数
   labelMode?: boolean;
 }
+
 const MoneySymbol = {
   [CurrencyType.USD]: "$",
   [CurrencyType.EUR]: "€",
@@ -23,7 +24,7 @@ const MoneySymbol = {
 };
 
 const index: React.FC<Props> & {
-  getMoney: (value: string) => string;
+  getMoney: (value: string) => { type: CurrencyType; value: string };
 } = (props) => {
   const { children: value, afterSymbol, labelMode } = props;
   useCurrencyManage();
@@ -82,30 +83,34 @@ index.getMoney = (value) => {
   const currentCurrencyResponse = window.localStorage.getItem(
     "currentCurrencyResponse",
   );
+  const currentCurrency: CurrencyType =
+    (window.localStorage.getItem("currentCurrency") as CurrencyType) ||
+    CurrencyType.USD;
   if (isNaN(parseFloat(value))) {
     Notify.failure("请输入正确的提现金额");
-    return "0";
+    return { type: currentCurrency, value: "0" };
   }
   if (!currentCurrencyResponse) {
     Notify.failure("汇率缺失，请重新加载app");
-    return "0";
+    return { type: currentCurrency, value: "0" };
   } else {
     const parseCurrencyResponse: CurrencyData = JSON.parse(
       currentCurrencyResponse,
     );
-    const currentCurrency: CurrencyType =
-      (window.localStorage.getItem("currentCurrency") as CurrencyType) ||
-      CurrencyType.USD;
+
     // 如果当前的货币是美元的就不转换
     if (currentCurrency === CurrencyType.USD) {
-      return value;
+      return { type: currentCurrency, value };
     } else {
       let camount = parseCurrencyResponse?.result?.camount;
       let rate = 0;
       if (camount) {
         rate = parseFloat(camount);
       }
-      return new Big(value).div(rate).toFixed(2);
+      return {
+        type: currentCurrency,
+        value: new Big(value).div(rate).toFixed(2),
+      };
     }
   }
 };

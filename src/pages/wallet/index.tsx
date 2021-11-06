@@ -33,7 +33,6 @@ export default () => {
             }}
             style={{ color: "#000" }}
           >
-            {" "}
             Detalle
           </a>
         }

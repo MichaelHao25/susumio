@@ -181,7 +181,7 @@ const userinfoModel: UserinfoModel = {
         });
         if (autoLogin === false) {
           Report.success("ok", res.msg, "OK", () => {
-            history.push("/");
+            history.goBack();
           });
         }
       }

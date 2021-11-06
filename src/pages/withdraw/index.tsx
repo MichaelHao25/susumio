@@ -27,15 +27,15 @@ export default () => {
       return;
     }
     if (!req.bank_name) {
-      Notify.failure("银行名称不能为空!");
+      Notify.failure("Falta la información del banco!");
       return;
     }
     if (!req.bank_no) {
-      Notify.failure("银行卡号不能为空!");
+      Notify.failure("Falta la cuenta bancaria!");
       return;
     }
     if (!req.user_name) {
-      Notify.failure("用户名称不能为空!");
+      Notify.failure("Falta el beneficiario!");
       return;
     }
     postQueryPayPassword().then((res) => {
@@ -57,7 +57,7 @@ export default () => {
           if (input) {
             const value = input.value;
             const money = MoneyValueUnitRender.getMoney(req.money);
-            if (money === "0") {
+            if (money.value === "0") {
               return;
             }
             if (value !== "") {
@@ -65,7 +65,8 @@ export default () => {
                 asset_type: "money",
                 bank_card_id: 0,
                 ...req,
-                money,
+                bank_name: `${req.bank_name}_${money.type}_${req.money}`,
+                money: money.value,
                 pay_password: value,
                 type: "withdrawToBankCard",
               }).then((res) => {

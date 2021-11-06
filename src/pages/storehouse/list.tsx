@@ -59,34 +59,10 @@ export default () => {
           Total
         </div>
         <div
-          className={`aui-tab-item ${activeStatus == 1 ? "aui-active" : ""}`}
-          onClick={() => setActiveStatus(1)}
-        >
-          pagará
-        </div>
-        <div
           className={`aui-tab-item ${activeStatus == 2 ? "aui-active" : ""}`}
           onClick={() => setActiveStatus(2)}
         >
           Despachará
-        </div>
-        <div
-          className={`aui-tab-item ${activeStatus == 3 ? "aui-active" : ""}`}
-          onClick={() => setActiveStatus(3)}
-        >
-          Recibirá
-        </div>
-        <div
-          className={`aui-tab-item ${activeStatus == 4 ? "aui-active" : ""}`}
-          onClick={() => setActiveStatus(4)}
-        >
-          Comentará
-        </div>
-        <div
-          className={`aui-tab-item ${activeStatus == -1 ? "aui-active" : ""}`}
-          onClick={() => setActiveStatus(-1)}
-        >
-          Posventa
         </div>
       </div>
     </div>
