@@ -65,6 +65,7 @@ export default () => {
       CurrencyType.USD
     );
   });
+
   const prevCurrency = useRef<CurrencyType>(currentCurrency);
 
   const [changeCurrencyType, setChangeCurrencyType] = useState<boolean>(false);

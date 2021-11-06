@@ -3,6 +3,7 @@ import { history, Link } from "umi";
 import { useEffect, useState } from "react";
 import { postGetParams, postUsersAsset } from "@/services/api";
 import "./index.less";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 export default () => {
   const [money, setMoney] = useState<number>(0);
@@ -43,9 +44,13 @@ export default () => {
           style={{ background: `url(${bgHeader}) no-repeat center center` }}
         >
           <div className="wallet-left">
-            <div style={{ marginRight: "4.5rem" }}>Saldo de cartera(Dólar)</div>
+            <div style={{ marginRight: "4.5rem" }}>Saldo de cartera</div>
             <div style={{ marginTop: "0.5rem", marginRight: "4.5rem" }}>
-              $<span style={{ fontSize: "1.3rem" }}>{money}</span>
+              {/* $ */}
+              <span style={{ fontSize: "1.3rem" }}>
+                {" "}
+                <MoneyValueUnitRender>{money}</MoneyValueUnitRender>{" "}
+              </span>
             </div>
           </div>
           <div className="wallet-right">

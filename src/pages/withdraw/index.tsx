@@ -7,6 +7,7 @@ import {
   postWithdraw,
 } from "@/services/api";
 import { history } from "umi";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 export default () => {
   const [req, setReq] = useState<{
@@ -55,11 +56,16 @@ export default () => {
             document.querySelector(".confirm_password");
           if (input) {
             const value = input.value;
+            const money = MoneyValueUnitRender.getMoney(req.money);
+            if (money === "0") {
+              return;
+            }
             if (value !== "") {
               postWithdraw({
                 asset_type: "money",
                 bank_card_id: 0,
                 ...req,
+                money,
                 pay_password: value,
                 type: "withdrawToBankCard",
               }).then((res) => {
@@ -96,7 +102,7 @@ export default () => {
             className="aui-list-item aui-padded-b-15 aui-bg-white"
             style={{ backgroundImage: "none" }}
           >
-            <span>$</span>
+            <MoneyValueUnitRender></MoneyValueUnitRender>
             <div className="aui-list-item-input">
               <div className="aui-list-item-input aui-padded-b-10 aui-border-b">
                 <input
@@ -113,6 +119,7 @@ export default () => {
                 />
               </div>
             </div>
+            {/* <MoneyValueUnitRender labelMode>{req.money}</MoneyValueUnitRender> */}
           </li>
           <li
             className="aui-list-item aui-padded-b-15 aui-bg-white"

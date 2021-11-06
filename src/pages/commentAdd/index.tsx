@@ -106,8 +106,6 @@ export default (props: Props) => {
               })}
               <Upload
                 uploadSuccessCallback={(e) => {
-                  console.log(e);
-
                   setImgs((img) => [...img, e.host_file_path]);
                 }}
               >
@@ -126,6 +124,7 @@ export default (props: Props) => {
                   .map((_, index) => {
                     return (
                       <i
+                        key={index}
                         className="aui-iconfont iconfont icon-shoucang aui-margin-5"
                         style={{
                           fontSize: "1.2rem",

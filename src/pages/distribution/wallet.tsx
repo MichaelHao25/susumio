@@ -75,11 +75,11 @@ export default () => {
                   {params.total_money}
                 </MoneyValueUnitRender>
               </div>
-              <div className="aui-font-size-14 aui-text-pray aui-padded-t-5">
+              <div className="aui-font-size-14  aui-text-pray aui-padded-t-5">
                 Acumulada
               </div>
             </div>
-            <div className="aui-col-xs-4">
+            <div className="aui-col-xs-4 aui-border-r">
               <div className="aui-font-size-20">
                 <MoneyValueUnitRender>
                   {params.can_drawcash_money}

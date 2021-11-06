@@ -69,7 +69,7 @@ const index = (props: Props) => {
       return;
     }
     Confirm.show(
-      "警告",
+      "ster",
       "Confirmar el cancel del producto seleccionado del carro.?",
       "Sí",
       "No",
