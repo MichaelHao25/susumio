@@ -57,6 +57,7 @@ export default (props: Props) => {
     total_money: 0,
   });
   const [memo, setMemo] = useState<string>("");
+
   useEffect(() => {
     postQueryUsersDefaultAddress().then((res) => {
       if (res) {

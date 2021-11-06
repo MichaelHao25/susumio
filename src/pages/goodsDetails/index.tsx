@@ -23,11 +23,7 @@ import "react-photo-view/dist/index.css";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 interface Props
-  extends ConnectProps<
-    {},
-    {},
-    { id: string; isDiscountGoods: string; shoperId?: string }
-  > {}
+  extends ConnectProps<{}, {}, { id: string; isDiscountGoods: string }> {}
 
 enum Tab {
   Details,
@@ -85,7 +81,7 @@ export enum LayoutType {
 const index = (props: Props) => {
   const {
     location: {
-      query: { id = "", shoperId = "" },
+      query: { id = "" },
       // isDiscountGoods: urlIsDiscountGoods = ''
     },
   } = props;
@@ -140,6 +136,7 @@ const index = (props: Props) => {
     desc = "",
     thums = [],
     thum = "",
+    shoper_id = 0,
   } = goods || {};
 
   function getTabComment() {
@@ -345,7 +342,7 @@ const index = (props: Props) => {
       } else {
         // 因为店中店没有规格肯定是在这个里面，所以在这里面加上店中店需要带的额外的id
         history.push("/orderConfirm", {
-          shoperId,
+          shoperId: goods.shoper_id,
           goodsList: [
             {
               thum: goods.thum,
@@ -541,7 +538,7 @@ const index = (props: Props) => {
 
       <div style={{ height: "2.25rem" }} />
       <footer className="aui-bar aui-bar-tab aui-margin-t-15" id="footer">
-        {!shoperId && (
+        {shoper_id === 0 && (
           <div
             className="aui-bar-tab-item"
             style={{ width: "3rem" }}
@@ -557,7 +554,7 @@ const index = (props: Props) => {
             </div>
           </div>
         )}
-        {!shoperId && (
+        {shoper_id === 0 && (
           <div
             className="aui-bar-tab-item aui-text-white"
             onClick={() => addCart(LayoutType.AddCart)}

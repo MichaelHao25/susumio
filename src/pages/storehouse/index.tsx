@@ -89,9 +89,7 @@ export default (props: Props) => {
                 className={styles.item}
                 key={item.id}
                 onClick={() => {
-                  history.push(
-                    `/goodsDetails?id=${item.id}&shoperId=${user.id}`,
-                  );
+                  history.push(`/goodsDetails?id=${item.id}`);
                 }}
               >
                 <img src={item.thum} alt="" className={styles.thumbnail} />

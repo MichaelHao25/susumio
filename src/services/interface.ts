@@ -409,6 +409,7 @@ export interface Details {
   name: string;
   thum: string;
   imgs: string[];
+  shoper_id: number;
   intro: string;
   desc: string;
   standard: string;
