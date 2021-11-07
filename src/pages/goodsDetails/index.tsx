@@ -21,6 +21,9 @@ import SpecInfoSelect from "@/pages/goodsDetails/SpecInfoSelect";
 import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import "react-photo-view/dist/index.css";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import Quill from "quill";
+import { useRef } from "react";
+import "quill/dist/quill.snow.css";
 
 interface Props
   extends ConnectProps<
@@ -104,11 +107,14 @@ const index = (props: Props) => {
   const [isCollect, setIsCollect] = useState<0 | 1>(0);
   const [showLayout, setShowLayout] = useState<LayoutType>(LayoutType.None);
   const [showAttr, setShowAttr] = useState<boolean>(false);
+  const refEditorElement = useRef<HTMLDivElement>(null);
+  const refQuillHandler = useRef<any>(null);
   // // 是否是折扣商品
   // const [isDiscountGoods, setIsDiscountGoods] = useState<string>('')
   // useEffect(() => {
   //   setIsDiscountGoods(isDiscountGoods)
   // }, [urlIsDiscountGoods])
+
   useEffect(() => {
     const {
       location: {
@@ -125,6 +131,23 @@ const index = (props: Props) => {
       );
     }
   }, []);
+
+  useEffect(() => {
+    if (refEditorElement.current) {
+      if (!refQuillHandler.current) {
+        refQuillHandler.current = new Quill(refEditorElement.current, {
+          readOnly: true,
+          //   theme: "snow",
+          modules: {
+            toolbar: false,
+          },
+        });
+      }
+    }
+    if (goods && refQuillHandler.current) {
+      refQuillHandler.current.setContents(JSON.parse(goods.desc));
+    }
+  }, [goods, refEditorElement.current]);
   useEffect(() => {
     postApiGoodsGoodsRead({
       id,
@@ -306,18 +329,22 @@ const index = (props: Props) => {
 
   function getTabDetails() {
     if (Tab.Details === tab) {
-      return (
-        <div className="aui-padded-5" id="detail">
-          <div dangerouslySetInnerHTML={{ __html: desc }} />
-          {thums.map((item, index) => {
-            return (
-              <div key={index}>
-                <img loading="lazy" src={item} />
-              </div>
-            );
-          })}
-        </div>
-      );
+      if (shoper_id !== 0) {
+        return <div ref={refEditorElement}></div>;
+      } else {
+        return (
+          <div className="aui-padded-5" id="detail">
+            <div dangerouslySetInnerHTML={{ __html: desc }} />
+            {thums.map((item, index) => {
+              return (
+                <div key={index}>
+                  <img loading="lazy" src={item} />
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
     } else {
       return <></>;
     }
