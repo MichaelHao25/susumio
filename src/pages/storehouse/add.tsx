@@ -11,6 +11,7 @@ import { history, useSelector } from "umi";
 import Quill from "quill";
 import { useRef } from "react";
 import "quill/dist/quill.snow.css";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 interface Props
   extends ConnectProps<
@@ -50,45 +51,47 @@ export default (props: Props) => {
   }, [props.location.state]);
   useEffect(() => {
     if (refEditorElement.current) {
-      refQuillHandler.current = new Quill(refEditorElement.current, {
-        debug: "info",
-        modules: {
-          toolbar: [
-            [
-              { font: [] },
-              { header: [1, 2, 3, 4, 5, 6, false] },
-              { align: [] },
-              "clean",
-            ],
-            [
-              "bold",
-              "italic",
-              "underline",
-              "strike",
-              "link",
-              "blockquote",
-              "image",
-              "video",
-              { list: "ordered" },
-              { list: "bullet" },
-              "code-block",
-            ],
-            [{ script: "sub" }, { script: "super" }], // superscript/subscript
-            [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+      if (!refQuillHandler.current) {
+        refQuillHandler.current = new Quill(refEditorElement.current, {
+          debug: "info",
+          modules: {
+            toolbar: [
+              [
+                { font: [] },
+                { header: [1, 2, 3, 4, 5, 6, false] },
+                { align: [] },
+                "clean",
+              ],
+              [
+                "bold",
+                "italic",
+                "underline",
+                "strike",
+                "link",
+                "blockquote",
+                "image",
+                "video",
+                { list: "ordered" },
+                { list: "bullet" },
+                "code-block",
+              ],
+              [{ script: "sub" }, { script: "super" }], // superscript/subscript
+              [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
 
-            [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-            [{ direction: "rtl" }], // text direction
-          ],
-          history: {
-            delay: 2000,
-            maxStack: 500,
-            userOnly: true,
+              [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+              [{ direction: "rtl" }], // text direction
+            ],
+            history: {
+              delay: 2000,
+              maxStack: 500,
+              userOnly: true,
+            },
           },
-        },
-        placeholder: "Por favor ingrese una descripción del artículo",
-        readOnly: false,
-        theme: "snow",
-      });
+          placeholder: "Por favor ingrese una descripción del artículo",
+          readOnly: false,
+          theme: "snow",
+        });
+      }
     }
   }, [refEditorElement]);
   useEffect(() => {
@@ -114,6 +117,10 @@ export default (props: Props) => {
       sellPrice !== ""
     ) {
       const desc = JSON.stringify(refQuillHandler.current.getContents());
+      const money = MoneyValueUnitRender.getMoney(sellPrice);
+      if (money.value === "0") {
+        return;
+      }
       if (id) {
         postApiGoodsUpdate({
           id,
@@ -122,7 +129,7 @@ export default (props: Props) => {
           desc,
           shoperId: user.id,
           name,
-          sellPrice,
+          sellPrice: money.value,
         }).then((res) => {
           console.log(res);
           if (res) {
@@ -142,7 +149,7 @@ export default (props: Props) => {
           desc,
           shoperId: user.id,
           name,
-          sellPrice,
+          sellPrice: money.value,
         }).then((res) => {
           console.log(res);
           if (res) {
@@ -268,7 +275,7 @@ export default (props: Props) => {
               alt=""
               className={styles.w24}
             />{" "}
-            Precio
+            Precio <MoneyValueUnitRender />
           </div>
 
           <input
