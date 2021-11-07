@@ -7,6 +7,7 @@ import {
   postUserAccountsRegister,
   PostUserAccountsRegister,
 } from "@/services/api";
+import fbShareCheck from "@/utils/fbShareCheck";
 
 export default () => {
   const [mobile, setMobile] = useState<string>(() => {
@@ -49,7 +50,7 @@ export default () => {
         Notify.success(res.msg);
         window.localStorage.setItem("userinfo", JSON.stringify(res.data));
         window.localStorage.setItem("token", res.data.token.token);
-        history.push("/");
+        fbShareCheck({});
       }
     });
   }

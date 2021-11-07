@@ -9,6 +9,7 @@ import { Effect, EffectsCommandMap } from "dva";
 import { ImmerReducer, Subscription } from "@@/plugin-dva/connect";
 
 import { history } from "umi";
+import fbShareCheck from "@/utils/fbShareCheck";
 
 export interface ListState {
   postApiGoodsGoodsLists: Details[];
@@ -179,11 +180,16 @@ const userinfoModel: UserinfoModel = {
           type: "setState",
           payload: data,
         });
-        if (autoLogin === false) {
-          Report.success("ok", res.msg, "OK", () => {
-            history.goBack();
-          });
-        }
+        fbShareCheck({
+          normalCallBack() {
+            // Facebook的自动登陆的话就不弹窗了
+            if (autoLogin === false) {
+              Report.success("ok", res.msg, "OK", () => {
+                history.goBack();
+              });
+            }
+          },
+        });
       }
     },
   },

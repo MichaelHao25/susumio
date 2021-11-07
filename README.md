@@ -1,5 +1,21 @@
 
+ const global_shareInfo = localStorage.getItem('global_shareInfo')
+        // 登陆成功后如果有分享信息的话就直接跳转到详情页面
+        if (global_shareInfo) {
+            // localStorage.removeItem('global_shareInfo')
+            const parse_global_shareInfo = JSON.parse(global_shareInfo);
+            history.push(`/goodsDetails?id=${parse_global_shareInfo.id}&shareCode=${parse_global_shareInfo.shareCode}`)
+            
+            return
+        }else{
+        history.push("/");
+    }
 
+    shareCode 分享逻辑是 
+    用户点击分享按钮或者分享到Facebook
+    别人点击进来的话就携带他的分享码
+    提交的时候他有分享提成
+    如果未注册的新用户的话就注册完毕后跳转到分享者的页面无法提交购物车进行购买分销
 
 
 

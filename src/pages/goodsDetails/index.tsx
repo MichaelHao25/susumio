@@ -23,7 +23,16 @@ import "react-photo-view/dist/index.css";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
 interface Props
-  extends ConnectProps<{}, {}, { id: string; isDiscountGoods: string }> {}
+  extends ConnectProps<
+    {},
+    {},
+    {
+      id: string;
+      shareCode: string;
+      isDiscountGoods: string;
+      addCardShow: string;
+    }
+  > {}
 
 enum Tab {
   Details,
@@ -81,7 +90,7 @@ export enum LayoutType {
 const index = (props: Props) => {
   const {
     location: {
-      query: { id = "" },
+      query: { id = "", addCardShow = "" },
       // isDiscountGoods: urlIsDiscountGoods = ''
     },
   } = props;
@@ -89,6 +98,9 @@ const index = (props: Props) => {
   const [goods, setGoods] = useState<Details>();
   const [commentsList, setCommentsList] = useState<Comment[]>([]);
   const [tab, setTab] = useState<Tab>(Tab.Details);
+  const [isShare, setIsShare] = useState<boolean>(false);
+  const [shareAddress, setShareAddress] = useState<string>("");
+  const [openShareLayout, setOpenShareLayout] = useState<boolean>(false);
   const [isCollect, setIsCollect] = useState<0 | 1>(0);
   const [showLayout, setShowLayout] = useState<LayoutType>(LayoutType.None);
   const [showAttr, setShowAttr] = useState<boolean>(false);
@@ -98,11 +110,35 @@ const index = (props: Props) => {
   //   setIsDiscountGoods(isDiscountGoods)
   // }, [urlIsDiscountGoods])
   useEffect(() => {
+    const {
+      location: {
+        query: { id = "", shareCode = "" },
+      },
+    } = props;
+    if (id && shareCode) {
+      localStorage.setItem(
+        "global_shareInfo",
+        JSON.stringify({
+          id,
+          shareCode,
+        }),
+      );
+    }
+  }, []);
+  useEffect(() => {
     postApiGoodsGoodsRead({
       id,
     }).then((res) => {
       if (res) {
         const { data } = res;
+        const { shareCode = "", id = "" } = data || {};
+        if (shareCode) {
+          setIsShare(true);
+          const address = new URL(window.location.href);
+          address.searchParams.set("id", id);
+          address.searchParams.set("shareCode", shareCode);
+          setShareAddress(address.toString());
+        }
         setGoods(data);
       }
     });
@@ -377,6 +413,9 @@ const index = (props: Props) => {
       }
     }
   }
+  function toggleShareLayout() {
+    setOpenShareLayout((prev) => !prev);
+  }
 
   return (
     <div className="goodsDetail">
@@ -414,18 +453,29 @@ const index = (props: Props) => {
           <span>
             <MoneyValueUnitRender>{sell_price}</MoneyValueUnitRender>
           </span>
+          {isShare && (
+            <div
+              style={{ float: "right", fontSize: "24px" }}
+              onClick={toggleShareLayout}
+            >
+              Compartir
+            </div>
+          )}
           {/*facebook share*/}
-          {/*<div style={{float: 'right', fontSize: '24px'}}*/}
-          {/*     v-if="isShare"*/}
-          {/*     data-click="openLayout()">Compartir*/}
-          {/*</div>*/}
-          {/*<div className="fb-share-button"*/}
-          {/*     v-if="isShare"*/}
-          {/*     data-href="shareAddress"*/}
-          {/*     data-layout="button_count"*/}
-          {/*     data-size="small"><a target="_blank"*/}
-          {/*                          href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&src=sdkpreparse"*/}
-          {/*                          className="fb-xfbml-parse-ignore"/></div>*/}
+          {isShare && (
+            <div
+              className="fb-share-button"
+              data-href={shareAddress}
+              data-layout="button_count"
+              data-size="small"
+            >
+              <a
+                target="_blank"
+                href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&src=sdkpreparse"
+                className="fb-xfbml-parse-ignore"
+              />
+            </div>
+          )}
         </h1>
         <h3 className="aui-padded-t-5">
           {name}-"{id}"
@@ -523,18 +573,23 @@ const index = (props: Props) => {
       {/* 评价 */}
       {getTabComment()}
 
-      {/*<div className="layout"*/}
-      {/*     v-if="layout">*/}
-      {/*  <div className="layoutContainer">*/}
-      {/*    <h3 className="layout-tc">Para copiar este sitio web, mantener el enlace presionado</h3>*/}
-      {/*    <p className="layout-tc layout-url"*/}
-      {/*       v-text="shareAddress"/>*/}
-      {/*    <div className="layout-tc"*/}
-      {/*         style={{marginTop: '10px'}}*/}
-      {/*         data-click="hideLayout()">Cerrar*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</div>*/}
+      {openShareLayout && (
+        <div className="layout">
+          <div className="layoutContainer">
+            <h3 className="layout-tc">
+              Para copiar este sitio web, mantener el enlace presionado
+            </h3>
+            <p className="layout-tc layout-url">{shareAddress}</p>
+            <div
+              className="layout-tc"
+              style={{ marginTop: "10px" }}
+              onClick={toggleShareLayout}
+            >
+              Cerrar
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={{ height: "2.25rem" }} />
       <footer className="aui-bar aui-bar-tab aui-margin-t-15" id="footer">
@@ -554,19 +609,20 @@ const index = (props: Props) => {
             </div>
           </div>
         )}
-        {shoper_id === 0 && (
-          <div
-            className="aui-bar-tab-item aui-text-white"
-            onClick={() => addCart(LayoutType.AddCart)}
-            style={{
-              width: "auto",
-              backgroundColor: "#6bcfc4",
-              fontSize: "0.8rem",
-            }}
-          >
-            Añadir a carro
-          </div>
-        )}
+        {shoper_id === 0 ||
+          (addCardShow === "false" && (
+            <div
+              className="aui-bar-tab-item aui-text-white"
+              onClick={() => addCart(LayoutType.AddCart)}
+              style={{
+                width: "auto",
+                backgroundColor: "#6bcfc4",
+                fontSize: "0.8rem",
+              }}
+            >
+              Añadir a carro
+            </div>
+          ))}
         <div
           className="aui-bar-tab-item aui-text-white"
           style={{
