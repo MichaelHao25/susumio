@@ -31,8 +31,38 @@ import {
   PostTeamChildUsersList,
   PostTeamUsers,
 } from "@/services/interface";
+export enum SortType {
+  /**
+   * 升序 从小到大
+   */
+  Asc,
+  /**
+   * 降序 从大到小
+   */
+  Desc,
+}
+export enum SortKey {
+  /**
+   * 根据id大小来排序
+   */
+  Id,
+  /**
+   * 根据销售金额
+   */
+  sellPrice,
 
+  /**
+   * 根据销售数量
+   */
+  sellNum,
+  /**
+   * 根据上架时间
+   */
+  newGoods,
+}
 export interface ListState {
+  sortType?: SortType;
+  sortKey?: SortKey;
   postApiGoodsGoodsLists: Details[];
   postApiOrdersLists: OrdersListItem[];
   postAddressLists: AddressItem[];

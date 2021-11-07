@@ -144,6 +144,7 @@ const index = (props: Props) => {
         });
       }
     }
+
     if (goods && refQuillHandler.current) {
       refQuillHandler.current.setContents(JSON.parse(goods.desc));
     }
@@ -329,6 +330,7 @@ const index = (props: Props) => {
 
   function getTabDetails() {
     if (Tab.Details === tab) {
+      debugger;
       if (shoper_id !== 0) {
         return <div ref={refEditorElement}></div>;
       } else {
@@ -636,20 +638,19 @@ const index = (props: Props) => {
             </div>
           </div>
         )}
-        {shoper_id === 0 ||
-          (addCardShow === "false" && (
-            <div
-              className="aui-bar-tab-item aui-text-white"
-              onClick={() => addCart(LayoutType.AddCart)}
-              style={{
-                width: "auto",
-                backgroundColor: "#6bcfc4",
-                fontSize: "0.8rem",
-              }}
-            >
-              Añadir a carro
-            </div>
-          ))}
+        {(shoper_id === 0 || addCardShow === "false") && (
+          <div
+            className="aui-bar-tab-item aui-text-white"
+            onClick={() => addCart(LayoutType.AddCart)}
+            style={{
+              width: "auto",
+              backgroundColor: "#6bcfc4",
+              fontSize: "0.8rem",
+            }}
+          >
+            Añadir a carro
+          </div>
+        )}
         <div
           className="aui-bar-tab-item aui-text-white"
           style={{
