@@ -52,9 +52,9 @@ function fetchRate(
     })
     .catch((res) => {
       Notiflix.Report.failure(
-        "警告",
-        "使用了过期的汇率价格计算可能不准确请刷新页面",
-        "好的",
+        "Advertencia",
+        "Los precios calculado con el cambio inválido pueden ser inexactos, por favor actualice la página.",
+        "OK",
       );
     });
 }

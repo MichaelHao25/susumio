@@ -97,10 +97,10 @@ export default () => {
       Notiflix.Confirm.show(
         "Elige",
         `${[
-          "重置密码",
-          "修改密码使用邮箱",
-          "重置支付密码",
-          "修改支付密码使用邮箱",
+          "Reset la contraseña de login",
+          "Cambiar la contraseña de login por email",
+          "Reset la contraseña de pago",
+          "Cambiar la contraseña de pago por email",
         ]
           .map((item, index) => {
             return `<button class="layout_button">${item}</button>`;

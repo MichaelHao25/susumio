@@ -157,7 +157,7 @@ export default (props: Props) => {
         });
       }
     } else {
-      Notify.failure("请完整填写");
+      Notify.failure("Información incompleta");
     }
   };
   return (
@@ -173,10 +173,10 @@ export default (props: Props) => {
                 className={styles.img}
                 onClick={() => {
                   Confirm.show(
-                    "删除图片",
-                    "确定是否删除图片？",
-                    "删除",
-                    "取消",
+                    "Cancel de imagen",
+                    "Confirmas el cancel de imagen？",
+                    "Sí",
+                    "No",
                     () => {
                       setThum([]);
                     },
@@ -213,10 +213,10 @@ export default (props: Props) => {
                 key={index}
                 onClick={() => {
                   Confirm.show(
-                    "删除图片",
-                    "确定是否删除图片？",
-                    "删除",
-                    "取消",
+                    "Cancel de imagen",
+                    "Confirmas el cancel de imagen？",
+                    "Sí",
+                    "No",
                     () => {
                       setImg((img) => {
                         img.splice(index, 1);

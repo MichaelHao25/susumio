@@ -35,9 +35,9 @@ const Paypal = (props: Props) => {
       //   document.body.appendChild(script);
       //   script.onload = onload;
       Notiflix.Report.failure(
-        "警告",
-        "paypal 加载失败，请重新打开页面.",
-        "好的",
+        "Advertencia",
+        "Falló la carga de PAYPAL, abre la página de nuevo",
+        "Bien",
       );
     } else {
       onload();

@@ -181,7 +181,7 @@ export default () => {
                   className=" aui-font-size-10 aui-text-pray"
                   style={{ color: "transparent!important" }}
                 >
-                  Pendiente No aprobado Fondos
+                  Retira
                 </span>
               </div>
               <div

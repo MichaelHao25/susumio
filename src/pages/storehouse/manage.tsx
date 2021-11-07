@@ -42,12 +42,14 @@ export default () => {
       />
       <div className={styles.list}>
         <div className={styles.left}>
-          <div className={`${styles.item} ${styles.active}`}>人气Top</div>
-          <div className={`${styles.item}`}>人气Top</div>
+          <div className={`${styles.item} ${styles.active}`}>
+            Popularidad Top
+          </div>
+          <div className={`${styles.item}`}>Popularidad Top</div>
         </div>
         <div className={styles.right}>
           <div className={styles.right_title}>
-            <span>人气Top</span>
+            <span>Popularidad Top</span>
           </div>
           {list.map((item) => {
             return (

@@ -87,11 +87,11 @@ index.getMoney = (value) => {
     (window.localStorage.getItem("currentCurrency") as CurrencyType) ||
     CurrencyType.USD;
   if (isNaN(parseFloat(value))) {
-    Notify.failure("请输入正确的提现金额");
+    Notify.failure("Importe incorrecto");
     return { type: currentCurrency, value: "0" };
   }
   if (!currentCurrencyResponse) {
-    Notify.failure("汇率缺失，请重新加载app");
+    Notify.failure("Falta el cambio, hay que recargar APP de nuevo");
     return { type: currentCurrency, value: "0" };
   } else {
     const parseCurrencyResponse: CurrencyData = JSON.parse(
