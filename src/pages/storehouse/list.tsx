@@ -67,7 +67,6 @@ export default () => {
       </div>
     </div>
   );
-  console.log("params", params);
   return (
     <div className={styles.storehouse}>
       <List

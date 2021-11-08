@@ -38,6 +38,10 @@ const SortHeader = (props: { title: string }) => {
       payload.sortType = SortType.Desc;
     }
     dispatch({
+      type: "list/sortList",
+      payload,
+    });
+    dispatch({
       type: "list/setState",
       payload,
     });

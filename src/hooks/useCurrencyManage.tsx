@@ -75,35 +75,36 @@ export default () => {
     const oldCurrencyResponseString = window.localStorage.getItem(
       "currentCurrencyResponse",
     );
-    if (currentCurrency === CurrencyType.USD) {
-      // 如果货币是美元的话就不用处理，因为默认就是美元
-      fetchRate(currentCurrency as CurrencyType, prevCurrency.current);
-      if (prevCurrency.current !== currentCurrency) {
-        window.location.reload();
+    // if (currentCurrency === CurrencyType.USD) {
+    //   // 如果货币是美元的话就不用处理，因为默认就是美元
+    //   fetchRate(currentCurrency as CurrencyType, prevCurrency.current);
+    //   if (prevCurrency.current !== currentCurrency) {
+    //     window.location.reload();
+    //   }
+    // } else {
+    // 如果本地存储没有response的话就重新请求接口
+
+    if (oldCurrencyResponseString) {
+      const oldCurrencyResponse: CurrencyData = JSON.parse(
+        oldCurrencyResponseString,
+      );
+      const diff = moment(new Date()).diff(
+        moment(oldCurrencyResponse.result.updatetime),
+        "hours",
+      );
+      // 如果过去了20小时就清除这个数据，下次打开的时候重新查询
+      // 或者本次存储的币种发生了变化
+      if (diff > 20 || oldCurrencyResponse.result.to !== currentCurrency) {
+        fetchRate(currentCurrency as CurrencyType, prevCurrency.current);
+      } else {
+        if (prevCurrency.current !== currentCurrency) {
+          window.location.reload();
+        }
       }
     } else {
-      // 如果本地存储没有response的话就重新请求接口
-      if (oldCurrencyResponseString) {
-        const oldCurrencyResponse: CurrencyData = JSON.parse(
-          oldCurrencyResponseString,
-        );
-        const diff = moment(new Date()).diff(
-          moment(oldCurrencyResponse.result.updatetime),
-          "hours",
-        );
-        // 如果过去了20小时就清除这个数据，下次打开的时候重新查询
-        // 或者本次存储的币种发生了变化
-        if (diff > 20 || oldCurrencyResponse.result.to !== currentCurrency) {
-          fetchRate(currentCurrency as CurrencyType, prevCurrency.current);
-        } else {
-          if (prevCurrency.current !== currentCurrency) {
-            window.location.reload();
-          }
-        }
-      } else {
-        fetchRate(currentCurrency as CurrencyType, prevCurrency.current);
-      }
+      fetchRate(currentCurrency as CurrencyType, prevCurrency.current);
     }
+    // }
   }, [currentCurrency]);
   useEffect(() => {
     window.localStorage.setItem("currentCurrency", currentCurrency);

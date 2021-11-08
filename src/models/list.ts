@@ -110,6 +110,16 @@ export interface ListModel {
     postTeamUsers: Effect;
   };
   reducers: {
+    sortList: ImmerReducer<
+      ListState,
+      {
+        type: string;
+        payload: {
+          sortKey: SortKey;
+          sortType: SortType;
+        };
+      }
+    >;
     updateComments: ImmerReducer<
       ListState,
       {
@@ -461,6 +471,67 @@ export default <ListModel>{
   },
 
   reducers: {
+    sortList(state, action) {
+      const {
+        payload: { sortKey, sortType },
+      } = action;
+
+      if (sortKey === SortKey.Id && sortType === SortType.Asc) {
+        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
+          (a, b) => {
+            return b.id - a.id;
+          },
+        );
+      } else if (sortKey === SortKey.Id && sortType === SortType.Desc) {
+        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
+          (a, b) => {
+            return a.id - b.id;
+          },
+        );
+      } else if (sortKey === SortKey.sellPrice && sortType === SortType.Asc) {
+        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
+          (a, b) => {
+            return b.sell_price - a.sell_price;
+          },
+        );
+      } else if (sortKey === SortKey.sellPrice && sortType === SortType.Desc) {
+        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
+          (a, b) => {
+            return a.sell_price - b.sell_price;
+          },
+        );
+      } else if (sortKey === SortKey.sellNum && sortType === SortType.Asc) {
+        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
+          (a, b) => {
+            return b.sell_num - a.sell_num;
+          },
+        );
+      } else if (sortKey === SortKey.sellNum && sortType === SortType.Desc) {
+        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
+          (a, b) => {
+            return a.sell_num - b.sell_num;
+          },
+        );
+      } else if (sortKey === SortKey.newGoods && sortType === SortType.Asc) {
+        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
+          (a, b) => {
+            return (
+              new Date(b.update_time).getTime() -
+              new Date(a.update_time).getTime()
+            );
+          },
+        );
+      } else if (sortKey === SortKey.newGoods && sortType === SortType.Desc) {
+        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
+          (a, b) => {
+            return (
+              new Date(a.update_time).getTime() -
+              new Date(b.update_time).getTime()
+            );
+          },
+        );
+      }
+    },
     updateComments(state, action) {
       const {
         payload: { commentId, type },
@@ -535,7 +606,6 @@ export default <ListModel>{
           }
         });
       } else {
-        // 这种情况没啥用
         (
           Object.entries(payload) as [
             keyof ListState,
