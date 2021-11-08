@@ -77,6 +77,7 @@ export default () => {
     );
     if (currentCurrency === CurrencyType.USD) {
       // 如果货币是美元的话就不用处理，因为默认就是美元
+      fetchRate(currentCurrency as CurrencyType, prevCurrency.current);
       if (prevCurrency.current !== currentCurrency) {
         window.location.reload();
       }

@@ -133,7 +133,28 @@ const Header = () => {
                   setChangeCurrencyType(false);
                 }}
               >
-                {item}
+                {(() => {
+                  switch (item) {
+                    case CurrencyType.USD: {
+                      return `🇺🇸  ${item}`;
+                    }
+                    case CurrencyType.EUR: {
+                      return `🇦🇹  ${item}`;
+                    }
+                    case CurrencyType.MXN: {
+                      return `🇲🇽  ${item}`;
+                    }
+                    case CurrencyType.PEN: {
+                      return `🇵🇪  ${item}`;
+                    }
+                    case CurrencyType.CLP: {
+                      return `🇨🇱  ${item}`;
+                    }
+                    case CurrencyType.COP: {
+                      return `🇨🇴  ${item}`;
+                    }
+                  }
+                })()}
               </div>
             );
           })}

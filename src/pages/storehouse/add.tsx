@@ -53,7 +53,8 @@ export default (props: Props) => {
     if (refEditorElement.current) {
       if (!refQuillHandler.current) {
         refQuillHandler.current = new Quill(refEditorElement.current, {
-          debug: "info",
+          bounds: refEditorElement.current,
+          //   debug: "info",
           modules: {
             toolbar: [
               [
@@ -87,8 +88,8 @@ export default (props: Props) => {
               userOnly: true,
             },
           },
-          placeholder: "Por favor ingrese una descripción del artículo",
-          readOnly: false,
+          placeholder: "Por favor ingrese una descripción del artículo--",
+          //   readOnly: false,
           theme: "snow",
         });
       }
