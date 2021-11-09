@@ -8,6 +8,7 @@ import {
   PostUserAccountsRegister,
 } from "@/services/api";
 import fbShareCheck from "@/utils/fbShareCheck";
+import loginSuccessBack from "@/utils/loginSuccessBack";
 
 export default () => {
   const [mobile, setMobile] = useState<string>(() => {
@@ -50,7 +51,7 @@ export default () => {
         Notify.success(res.msg);
         window.localStorage.setItem("userinfo", JSON.stringify(res.data));
         window.localStorage.setItem("token", res.data.token.token);
-        fbShareCheck({});
+        fbShareCheck({ normalCallBack: loginSuccessBack });
       }
     });
   }

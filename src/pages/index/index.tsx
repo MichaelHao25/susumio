@@ -139,7 +139,7 @@ const Header = () => {
                       return `🇺🇸  ${item}`;
                     }
                     case CurrencyType.EUR: {
-                      return `🇦🇹  ${item}`;
+                      return `🇪🇺  ${item}`;
                     }
                     case CurrencyType.MXN: {
                       return `🇲🇽  ${item}`;
@@ -196,7 +196,7 @@ const Header = () => {
 
                       if (item.model === "tag") {
                         history.push(
-                          `/goodsListModel?id=${item.model_id}&title=Categorías`,
+                          `/goodsListModel?customTagId=${item.model_id}&title=Categorías`,
                         );
                       }
                     } else {

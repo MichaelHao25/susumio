@@ -61,7 +61,7 @@ export const origin = "https://www.177pinche.com/index.php";
 export const request = extend({
   // prefix: 'https://f26a70c7-44b4-4d49-9e65-2fd7e41553cf.mock.pstmn.io/api',
   prefix: origin,
-  timeout: 10000,
+  timeout: 100000,
   headers: {
     // 'X-Requested-With': 'XMLHttpRequest',
     // lang: 'zh_CN',

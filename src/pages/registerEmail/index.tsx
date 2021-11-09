@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Notify } from "notiflix";
 import { postRegisterAsEmail, postUserAccountsRegister } from "@/services/api";
 import fbShareCheck from "@/utils/fbShareCheck";
+import loginSuccessBack from "@/utils/loginSuccessBack";
 
 export default () => {
   const [email, setEmail] = useState<string>("18600899806");
@@ -44,7 +45,7 @@ export default () => {
         window.localStorage.setItem("userinfo", JSON.stringify(res.data));
         window.localStorage.setItem("token", res.data.token.token);
 
-        fbShareCheck({});
+        fbShareCheck({ normalCallBack: loginSuccessBack });
       }
     });
   }

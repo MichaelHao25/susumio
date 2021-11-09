@@ -1148,6 +1148,7 @@ export interface ListRequest {
   id?: string;
   keyword?: string;
   shoperId?: number;
+  customTagId?: string;
 }
 
 /**
@@ -1162,6 +1163,7 @@ export const postApiGoodsGoodsLists = (data: ListRequest) => {
     id = "",
     shoperId = "",
     keyword = "",
+    customTagId = "",
   } = data;
 
   const res: CustomHeader = {
@@ -1174,6 +1176,7 @@ export const postApiGoodsGoodsLists = (data: ListRequest) => {
       goods_cate_id: id,
       keyword,
       shoper_id: shoperId,
+      custom_tag_id: customTagId,
     },
   };
   return request.post(`/api_goods/goods/lists`, res);

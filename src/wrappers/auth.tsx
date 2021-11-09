@@ -1,7 +1,7 @@
-import useAuth, { LoginStatusQuery } from '@/hooks/useAuth';
-import { Redirect } from 'umi';
-import React, { useEffect } from 'react';
-import { Loading } from 'notiflix';
+import useAuth, { LoginStatusQuery } from "@/hooks/useAuth";
+import { Redirect } from "umi";
+import React, { useEffect } from "react";
+import { Loading } from "notiflix";
 
 const index: React.FC = (props) => {
   const { isLogin } = useAuth();
@@ -15,6 +15,8 @@ const index: React.FC = (props) => {
   if (isLogin === LoginStatusQuery.isLogin) {
     return <div>{props.children}</div>;
   } else if (isLogin === LoginStatusQuery.notLogin) {
+    console.log(window.location.pathname);
+    window.localStorage.setItem("loginSuccessBack", window.location.pathname);
     return <Redirect to="/login" />;
   } else {
     return <div>...</div>;

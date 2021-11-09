@@ -444,6 +444,7 @@ export default <ListModel>{
         id = "",
         keyword = "",
         shoperId = "",
+        customTagId = "",
       } = payload;
 
       const res: ListResponse | undefined = yield call(postApiGoodsGoodsLists, {
@@ -453,6 +454,7 @@ export default <ListModel>{
         id,
         keyword,
         shoperId,
+        customTagId,
       });
 
       if (res) {

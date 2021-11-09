@@ -22,6 +22,11 @@ export default function goodsListNewPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (window.FB) {
+      FB.XFBML.parse();
+    }
+  }, [window.FB]);
   function handleSubmit() {
     dispatch({
       type: "userinfo/postApiUsersUserAccountsLogin",
@@ -136,6 +141,14 @@ export default function goodsListNewPage() {
           Registro Email
         </div>
         <div
+          className="fb-login-button"
+          data-max-rows="1"
+          data-size="large"
+          data-button-type="continue_with"
+          data-use-continue-as="true"
+          data-scope="public_profile,email"
+        ></div>
+        {/* <div
           onClick={() => {
             try {
               FB.login(
@@ -162,7 +175,7 @@ export default function goodsListNewPage() {
           style={{ backgroundColor: "#fff" }}
         >
           使用Facebook登陆
-        </div>
+        </div> */}
 
         {/*onclick="$util.openWindow('register_email_win')"*/}
       </div>

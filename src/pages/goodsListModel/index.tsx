@@ -10,7 +10,13 @@ interface Props
   extends ConnectProps<
     {},
     {},
-    { customTag: string; title: string; id: string; keyword: string }
+    {
+      customTag: string;
+      title: string;
+      id: string;
+      keyword: string;
+      customTagId: string;
+    }
   > {}
 
 const SortHeader = (props: { title: string }) => {
@@ -121,7 +127,13 @@ const SortHeader = (props: { title: string }) => {
 export default (props: Props) => {
   const {
     location: {
-      query: { customTag = "", title = "", id = "", keyword = "" },
+      query: {
+        customTag = "",
+        title = "",
+        id = "",
+        keyword = "",
+        customTagId = "",
+      },
     },
   } = props;
 
@@ -129,12 +141,16 @@ export default (props: Props) => {
     customTag?: string;
     id?: string;
     keyword?: string;
+    custom_tag_id?: string;
   } = {};
   if (customTag) {
     params.customTag = customTag;
   }
   if (id) {
     params.id = id;
+  }
+  if (customTagId) {
+    params.customTagId = customTagId;
   }
   if (keyword) {
     params.keyword = keyword;

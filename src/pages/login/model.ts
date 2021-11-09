@@ -10,6 +10,7 @@ import { ImmerReducer, Subscription } from "@@/plugin-dva/connect";
 
 import { history } from "umi";
 import fbShareCheck from "@/utils/fbShareCheck";
+import loginSuccessBack from "@/utils/loginSuccessBack";
 
 export interface ListState {
   postApiGoodsGoodsLists: Details[];
@@ -185,7 +186,7 @@ const userinfoModel: UserinfoModel = {
             // Facebook的自动登陆的话就不弹窗了
             if (autoLogin === false) {
               Report.success("ok", res.msg, "OK", () => {
-                history.goBack();
+                loginSuccessBack();
               });
             }
           },
@@ -226,6 +227,7 @@ const userinfoModel: UserinfoModel = {
           if (res) {
             const { data } = res;
             FB.init(data);
+            FB.XFBML.parse();
             FB.getLoginStatus(function (response = {}) {
               // 如果从fb获取到信息的话就调用fb的登陆
               if (response.authResponse) {

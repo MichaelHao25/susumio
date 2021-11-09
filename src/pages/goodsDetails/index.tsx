@@ -330,7 +330,6 @@ const index = (props: Props) => {
 
   function getTabDetails() {
     if (Tab.Details === tab) {
-      debugger;
       if (shoper_id !== 0) {
         return <div ref={refEditorElement}></div>;
       } else {

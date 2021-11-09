@@ -91,13 +91,16 @@ const index = (props: Props) => {
       Notify.failure("Seleccione los productos que quiere añadir al favorito.");
       return;
     }
-
-    postCollectionsBatchDelete(selectList).then((res) => {
+    const goodsIdList = list
+      .filter((item) => {
+        return selectList.includes(item.id);
+      })
+      .map((item) => {
+        return item.goods_id;
+      });
+    postCollectionsBatchDelete(goodsIdList).then((res) => {
       if (res) {
         Notify.success(res.msg);
-        setList((list) => {
-          return [...list.filter((item) => !selectList.includes(item.id))];
-        });
         setSelectList([]);
       }
     });

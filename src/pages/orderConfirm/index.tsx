@@ -63,7 +63,7 @@ export default (props: Props) => {
       if (res) {
         if (!res.data.id) {
           Notify.failure("Añadir la dirección");
-          selectAddress();
+          //   selectAddress();
           return;
         }
         const address = sessionStorage.getItem("address");

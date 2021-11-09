@@ -12,6 +12,8 @@ interface Props {
   afterSymbol?: string;
   // 标签模式，如果是标签的话就必须要children参数
   labelMode?: boolean;
+  // 只有特定的货币才有效
+  fontSize?: string;
 }
 
 const MoneySymbol = {
@@ -26,7 +28,7 @@ const MoneySymbol = {
 const index: React.FC<Props> & {
   getMoney: (value: string) => { type: CurrencyType; value: string };
 } = (props) => {
-  const { children: value, afterSymbol, labelMode } = props;
+  const { children: value, afterSymbol, labelMode, fontSize } = props;
   useCurrencyManage();
 
   const [rate] = useState<number>(() => {
@@ -62,7 +64,7 @@ const index: React.FC<Props> & {
     returnString = MoneySymbol[currentCurrency] + value;
   } else if (currentCurrency === CurrencyType.MXN) {
     returnString = (
-      <span style={{ fontSize: ".5em" }}>
+      <span style={{ fontSize: fontSize ? fontSize : ".5em" }}>
         {MoneySymbol[currentCurrency]}
         {new Big(value).times(rate).toFixed(2)}
       </span>

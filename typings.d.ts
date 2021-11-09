@@ -46,4 +46,7 @@ declare namespace FB {
   ): void;
   export function logout(): void;
   export function getLoginStatus(cb: (a: any) => void): void;
+  export module XFBML {
+    export function parse(): void;
+  }
 }

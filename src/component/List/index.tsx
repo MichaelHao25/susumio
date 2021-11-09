@@ -1154,7 +1154,22 @@ export default connect(({ list }: { list: ListState }) => {
                 className="aui-flex-item-6"
                 style={{ position: "relative", padding: "3px" }}
               >
-                <img loading="lazy" src={item.thum} /> {/**/}
+                {/* aspect-ratio : 1 */}
+                <div style={{ paddingTop: "100%", position: "relative" }}>
+                  <img
+                    loading="lazy"
+                    src={item.thum}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>{" "}
+                {/**/}
                 <h5
                   className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-5 aui-padded-r-5 aui-bg-white"
                   style={{ height: "2rem", marginBottom: 0 }}
@@ -1167,7 +1182,7 @@ export default connect(({ list }: { list: ListState }) => {
                 >
                   {/* <span className="aui-text-price aui-font-size-10">$</span>{" "} */}
                   <span className="aui-text-price ">
-                    <MoneyValueUnitRender>
+                    <MoneyValueUnitRender fontSize={"14px"}>
                       {item.sell_price}
                     </MoneyValueUnitRender>
                   </span>
