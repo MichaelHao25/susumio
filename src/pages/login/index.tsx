@@ -1,31 +1,35 @@
 import Header from "@/component/Header";
-import "./index.less";
+import styles from "./index.less";
 import { history, useDispatch } from "umi";
 import { useEffect, useState } from "react";
+import Notiflix, { Notify } from "notiflix";
 import { postFacebookLogin } from "@/services/api";
+type Mode = "login" | "register";
+export default function login() {
+  const [mode, setMode] = useState<Mode>("login");
+  const [mobile, setMobile] = useState<string>("13968066530");
+  const [password, setPassword] = useState<string>("954321");
+  const [checked, setChecked] = useState<boolean>(false);
 
-export default function goodsListNewPage() {
-  const [mobile, setMobile] = useState<string>(() => {
-    if (process.env.NODE_ENV === "development") {
-      return "13968066530";
-    } else {
-      return "";
-    }
-  });
-  const [password, setPassword] = useState<string>(() => {
-    if (process.env.NODE_ENV === "development") {
-      return "954321";
-    } else {
-      return "";
-    }
-  });
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (window.FB) {
       FB.XFBML.parse();
     }
+    window.checkLogin = (e: any) => {
+      const {
+        status = "",
+        authResponse: { accessToken },
+      } = e || {};
+      if (status === "connected") {
+        postFacebookLogin(accessToken).then((res) => {
+          dispatch({
+            type: "userinfo/login",
+            payload: { res },
+          });
+        });
+      }
+    };
   }, [window.FB]);
   function handleSubmit() {
     dispatch({
@@ -36,148 +40,148 @@ export default function goodsListNewPage() {
       },
     });
   }
+  const handleLogin = () => {
+    dispatch({
+      type: "userinfo/loginAsMobileOrMail",
+      payload: {
+        mobile,
+        password,
+      },
+    });
+  };
+  const handleRegister = () => {
+    if (!checked) {
+      Notify.failure("Marque la cláusula de servicio");
+      return;
+    }
+    dispatch({
+      type: "userinfo/registerAsMobileOrMail",
+      payload: {
+        mobile,
+        password,
+      },
+    });
+  };
+  //   const checkLoginState = ()=> {
+  //     FB.getLoginStatus(function(response) {
+  //       console.log(response);
 
+  //     });
+  //   }
   return (
-    <div className="login">
-      <Header title={"Entrada"} />
-
-      <div className="area aui-text-center">
-        <div
-          style={{
-            height: "7.5rem",
-            backgroundColor: "#fff",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <img
-            loading="lazy"
-            src="https://www.177pinche.com/public/upload/user_images/20190701/52f0b7ea6656a4af7484d6503e2f0a51.png"
-            style={{ width: "60%" }}
-          />
-          {/*onclick="api.closeWin()"*/}
+    <div className={styles.login}>
+      <Header title={""} />
+      <img
+        src={require("../../assets/img/logo2.png")}
+        alt=""
+        className={styles.log}
+      />
+      <div className={styles.maxWidth300}>
+        <div className={styles.tab}>
+          <div
+            className={`${styles.item} ${mode === "login" && styles.active}`}
+            onClick={() => {
+              setMode("login");
+            }}
+          >
+            INICIAR SESIÓN
+          </div>
+          <div
+            className={`${styles.item} ${mode === "register" && styles.active}`}
+            onClick={() => {
+              setMode("register");
+            }}
+          >
+            REGISTRARSE
+          </div>
         </div>
-        <div className="mix">
-          <i
-            className="iconfont icon-shouji"
-            style={{ color: "#3fa0f9", fontSize: "20px" }}
-          />
+        <div className={`${styles.input_container} ${styles.username}`}>
+          <div className={styles.img_container}>
+            <img src={require("../../assets/img/user-icon.svg")} alt="" />
+          </div>
           <input
-            type="tel"
+            type="text"
+            placeholder={"Móvil / Email"}
             value={mobile}
-            className="input"
-            placeholder="Número de teléfono"
-            id="mobile"
             onChange={(e) => {
               setMobile(e.target.value);
             }}
           />
         </div>
-        <div className="mix">
-          <i
-            className="iconfont icon-mima"
-            style={{ color: "#3fa0f9", fontSize: "20px" }}
-          />
+        <div className={`${styles.input_container} ${styles.password}`}>
+          <div className={styles.img_container}>
+            <img src={require("../../assets/img/password-icon.svg")} alt="" />
+          </div>
           <input
-            type={showPassword ? "text" : "password"}
-            className="input"
-            placeholder="Contraseña"
+            type="password"
+            placeholder={"Contraseña"}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
             value={password}
-            id="password"
-          />
-          <i
-            className={`iconfont ${
-              showPassword ? "icon-yanjing_xianshi" : "icon-yanjing_yincang"
-            }`}
-            style={{
-              color: "#bbbbbb",
-              fontSize: "20px",
-              marginRight: "0.7rem",
-            }}
-            onClick={() => {
-              setShowPassword((prev) => !prev);
-            }}
           />
         </div>
-        <div className="other" style={{ justifyContent: "space-between" }}>
-          <div
-            onClick={() => {
-              history.push("/loginEmail");
-            }}
-          >
-            Acceso por correo
+        {mode === "login" && (
+          <div className={styles.lostPassword}>
+            <a
+              onClick={() => {
+                Notiflix.Report.info(
+                  "Póngase en contacto con nosotros：",
+                  "邮箱 fernando777@126.com <br/>电话 008613968966530",
+                  "ok",
+                  () => {},
+                  { plainText: false },
+                );
+              }}
+            >
+              ¿Te ha olvidado la contraseña?
+            </a>
           </div>
-          {/*onclick="$util.openWindow('message_auth_login_win')"*/}
-        </div>
+        )}
+        {mode === "login" && (
+          <button className={styles.button} onClick={handleLogin}>
+            INICIAR SESIÓN
+          </button>
+        )}
         <div
-          className="submit1"
-          onClick={handleSubmit}
-          style={{ backgroundColor: "#3fa0f9" }}
-        >
-          Listo
-        </div>
-        {/*onclick="app.doLogin()"*/}
-        <div
-          onClick={() => {
-            history.push("/register");
+          className={styles.button_fb}
+          style={{
+            display: mode === "login" ? "block" : "none",
           }}
-          className="rigster"
-          style={{ backgroundColor: "#fff" }}
         >
-          Registro
-          {/*onclick="$util.openWindow('register_win')"*/}
+          <div
+            className="fb-login-button"
+            data-max-rows="1"
+            data-size="large"
+            data-width="280"
+            data-button-type="continue_with"
+            data-use-continue-as="true"
+            data-scope="public_profile,email"
+            data-onlogin={`checkLogin`}
+          ></div>
         </div>
-        <div
-          onClick={() => {
-            history.push("/registerEmail");
-          }}
-          className="rigster"
-          style={{ backgroundColor: "#fff" }}
-        >
-          Registro Email
-        </div>
-        <div
-          className="fb-login-button"
-          data-max-rows="1"
-          data-size="large"
-          data-button-type="continue_with"
-          data-use-continue-as="true"
-          data-scope="public_profile,email"
-        ></div>
-        {/* <div
-          onClick={() => {
-            try {
-              FB.login(
-                function (response = {}) {
-                  if (response.authResponse) {
-                    const { authResponse: { accessToken = "" } = {} } =
-                      response;
-                    console.log(accessToken);
-                    postFacebookLogin(accessToken).then((res) => {
-                      dispatch({
-                        type: "userinfo/login",
-                        payload: { res },
-                      });
-                    });
-                  }
-                },
-                { scope: "public_profile,email" },
-              );
-            } catch (error) {
-              console.log(error);
-            }
-          }}
-          className="rigster"
-          style={{ backgroundColor: "#fff" }}
-        >
-          使用Facebook登陆
-        </div> */}
 
-        {/*onclick="$util.openWindow('register_email_win')"*/}
+        {mode === "register" && (
+          <button className={styles.button} onClick={handleRegister}>
+            REGISTRARSE
+          </button>
+        )}
+        {mode === "register" && (
+          <div className={styles.rule}>
+            <input
+              className={`aui-checkbox ${styles.checkbox}`}
+              type="checkbox"
+              checked={checked}
+              onChange={(e) => {
+                setChecked(e.target.checked);
+              }}
+            />
+            <span>
+              Acuerdo <a href="#">Condiciones de servicio</a>{" "}
+              <a href="#">Política de privacidad</a>
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

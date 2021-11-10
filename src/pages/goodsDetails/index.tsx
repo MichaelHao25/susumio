@@ -402,6 +402,10 @@ const index = (props: Props) => {
   function buy(type: LayoutType) {
     const token = window.localStorage.getItem("token");
     if (!token) {
+      window.localStorage.setItem(
+        "loginSuccessBack",
+        window.location.pathname + window.location.search,
+      );
       history.replace("/login");
       return;
     }

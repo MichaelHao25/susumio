@@ -811,7 +811,7 @@ export interface PostLoginAsEmail {
 }
 
 /**
- * 使用邮箱注册
+ * 使用邮箱登陆
  */
 export const postLoginAsEmail = (data: PostLoginAsEmail) => {
   return request.post(`/api_users/user_accounts/login_email`, {

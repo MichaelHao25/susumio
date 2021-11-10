@@ -2,6 +2,9 @@ import {
   postApiUsersUserAccountsLogin,
   postFacebookLogin,
   postFacebookLoginBaseInfoGet,
+  postLoginAsEmail,
+  postRegisterAsEmail,
+  postUserAccountsRegister,
 } from "@/services/api";
 import { Details, FBAPPID } from "@/services/interface";
 import { Notify, Report } from "notiflix";
@@ -70,20 +73,48 @@ export interface UserinfoState {
   };
 }
 
+type Action = (
+  action: {
+    type: string;
+    payload: {
+      mobile: string;
+      password: string;
+    };
+  },
+  effects: EffectsCommandMap,
+) => void;
+const check = (mobile: string, password: string): boolean => {
+  if (!password) {
+    Notify.failure("Rellene la contraseña");
+    return true;
+  }
+  if (!/^[A-Za-z0-9]{6,20}$/.test(password)) {
+    Notify.failure(
+      "La combinación de letras y números se limita a 6 a 20 bits",
+    );
+    return true;
+  }
+  if (mobile.includes("@")) {
+    if (!mobile) {
+      Notify.failure("El buzón no puede estar vacío");
+      return true;
+    }
+    if (!/^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/.test(mobile)) {
+      Notify.failure("Formato de correo incorrecto");
+      return true;
+    }
+  } else if (mobile === "") {
+    return true;
+  }
+  return false;
+};
 export interface UserinfoModel {
   namespace: "userinfo";
   state: UserinfoState;
   effects: {
-    postApiUsersUserAccountsLogin: (
-      action: {
-        type: string;
-        payload: {
-          mobile: string;
-          password: string;
-        };
-      },
-      effects: EffectsCommandMap,
-    ) => void;
+    postApiUsersUserAccountsLogin: Action;
+    loginAsMobileOrMail: Action;
+    registerAsMobileOrMail: Action;
     login: Effect;
   };
   reducers: {
@@ -171,6 +202,52 @@ const userinfoModel: UserinfoModel = {
         payload: { res },
       });
     },
+
+    *loginAsMobileOrMail({ payload }, { call, select, put }) {
+      const { mobile, password } = payload;
+      if (check(mobile, password)) {
+        return;
+      }
+      let res;
+      if (mobile.includes("@")) {
+        res = yield call(postLoginAsEmail, {
+          email: mobile,
+          password,
+        });
+      } else {
+        res = yield call(postApiUsersUserAccountsLogin, {
+          mobile,
+          password,
+        });
+      }
+      yield put({
+        type: "login",
+        payload: { res },
+      });
+    },
+    *registerAsMobileOrMail({ payload }, { call, select, put }) {
+      const { mobile, password } = payload;
+      if (check(mobile, password)) {
+        return;
+      }
+      let res;
+      if (mobile.includes("@")) {
+        res = yield call(postRegisterAsEmail, {
+          email: mobile,
+          password,
+        });
+      } else {
+        res = yield call(postUserAccountsRegister, {
+          mobile,
+          password,
+        });
+      }
+
+      yield put({
+        type: "login",
+        payload: { res },
+      });
+    },
     *login({ payload }, { call, select, put }) {
       const { res, autoLogin = false } = payload;
       if (res) {
@@ -230,8 +307,9 @@ const userinfoModel: UserinfoModel = {
             FB.XFBML.parse();
             FB.getLoginStatus(function (response = {}) {
               // 如果从fb获取到信息的话就调用fb的登陆
+              console.log(response);
+
               if (response.authResponse) {
-                console.log(response);
                 const { authResponse: { accessToken = "" } = {} } = response;
                 postFacebookLogin(accessToken).then((res) => {
                   dispatch({

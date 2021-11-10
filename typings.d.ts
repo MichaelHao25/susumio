@@ -18,7 +18,7 @@ declare module "*.svg" {
 //         YQ_Num: string;
 //       }) => void;
 // }
-
+declare function checkLogin(bb: any): void;
 declare namespace YQV5 {
   export function trackSingle(p: {
     YQ_ContainerId: string;
