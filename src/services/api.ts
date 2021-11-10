@@ -106,7 +106,6 @@ export const postApiGoodsUpdate = (data: PostApiGoodsSave) => {
     data: {
       id,
       name: name,
-      intro: "代金券",
       status: 1,
       goods_cate_id: 83,
       sell_price: sellPrice,
@@ -146,7 +145,6 @@ export const postApiGoodsSave = (data: PostApiGoodsSave) => {
   return request.post(`/api_goods/goods/save`, {
     data: {
       name: name,
-      intro: "代金券",
       status: 1,
       goods_cate_id: 83,
       sell_price: sellPrice,
