@@ -116,6 +116,11 @@ const index = (props: Props) => {
   // }, [urlIsDiscountGoods])
 
   useEffect(() => {
+    if (window.FB) {
+      FB.XFBML.parse();
+    }
+  }, [window.FB]);
+  useEffect(() => {
     const {
       location: {
         query: { id = "", shareCode = "" },
