@@ -30,33 +30,41 @@ export interface CurrencyData {
 export interface Response extends BaseResponse {
   data: CurrencyData;
 }
+// 控制并发数
+let fetchRateStatus = false;
 // 获取汇率
 function fetchRate(
   currencyType: CurrencyType,
   prevCurrency: CurrencyType,
 ): void {
-  postExchangeRate({
-    from: CurrencyType.USD,
-    to: currencyType,
-  })
-    .then((res: Response) => {
-      if (res) {
-        window.localStorage.setItem(
-          "currentCurrencyResponse",
-          JSON.stringify(res.data),
-        );
-      }
-      if (prevCurrency !== currencyType) {
-        window.location.reload();
-      }
+  if (fetchRateStatus === false) {
+    fetchRateStatus = true;
+    postExchangeRate({
+      from: CurrencyType.USD,
+      to: currencyType,
     })
-    .catch((res) => {
-      Notiflix.Report.failure(
-        "Advertencia",
-        "Los precios calculado con el cambio inválido pueden ser inexactos, por favor actualice la página.",
-        "OK",
-      );
-    });
+      .then((res: Response) => {
+        if (res) {
+          fetchRateStatus = false;
+          window.localStorage.setItem(
+            "currentCurrencyResponse",
+            JSON.stringify(res.data),
+          );
+        }
+        if (prevCurrency !== currencyType) {
+          window.location.reload();
+        }
+      })
+      .catch((res) => {
+        Notiflix.Report.failure(
+          "Advertencia",
+          "Los precios calculado con el cambio inválido pueden ser inexactos, por favor actualice la página.",
+          "OK",
+        );
+      });
+  } else {
+    console.log("拦截");
+  }
 }
 export default () => {
   const [currentCurrency, setCurrentCurrency] = useState<CurrencyType>(() => {
@@ -88,6 +96,11 @@ export default () => {
       const oldCurrencyResponse: CurrencyData = JSON.parse(
         oldCurrencyResponseString,
       );
+      if (!oldCurrencyResponse) {
+        setCurrentCurrency(CurrencyType.USD);
+        window.localStorage.removeItem("currentCurrencyResponse");
+        return;
+      }
       const diff = moment(new Date()).diff(
         moment(oldCurrencyResponse.result.updatetime),
         "hours",

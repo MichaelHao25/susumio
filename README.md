@@ -1,3 +1,5 @@
+1. 如果没有汇率信息的话就改成美元
+
 
  const global_shareInfo = localStorage.getItem('global_shareInfo')
         // 登陆成功后如果有分享信息的话就直接跳转到详情页面

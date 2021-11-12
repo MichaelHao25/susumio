@@ -3,6 +3,22 @@ import { RequestOptionsInit } from "umi-request";
 import { AddressItem } from "@/services/interface";
 import { CurrencyType } from "@/hooks/useCurrencyManage";
 
+interface PostArticles {
+  type: string;
+  id: string;
+}
+/**
+ * 获取文章详情
+ * @returns
+ */
+export const postArticles = (props: PostArticles) => {
+  const { type, id } = props;
+  return request.post(`/api_articles/${type}/read`, {
+    data: {
+      id,
+    },
+  });
+};
 /**
  * fb登陆
  */

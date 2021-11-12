@@ -1,14 +1,26 @@
 import Header from "@/component/Header";
 import styles from "./index.less";
-import { history, useDispatch } from "umi";
+import { history, Link, useDispatch } from "umi";
 import { useEffect, useState } from "react";
 import Notiflix, { Notify } from "notiflix";
 import { postFacebookLogin } from "@/services/api";
 type Mode = "login" | "register";
 export default function login() {
   const [mode, setMode] = useState<Mode>("login");
-  const [mobile, setMobile] = useState<string>("13968066530");
-  const [password, setPassword] = useState<string>("954321");
+  const [mobile, setMobile] = useState<string>(() => {
+    if (process.env.NODE_ENV === "development") {
+      return "13968066530";
+    } else {
+      return "";
+    }
+  });
+  const [password, setPassword] = useState<string>(() => {
+    if (process.env.NODE_ENV === "development") {
+      return "954321";
+    } else {
+      return "";
+    }
+  });
   const [checked, setChecked] = useState<boolean>(false);
 
   const dispatch = useDispatch();
@@ -127,7 +139,7 @@ export default function login() {
               onClick={() => {
                 Notiflix.Report.info(
                   "Póngase en contacto con nosotros：",
-                  "邮箱 fernando777@126.com <br/>电话 008613968966530",
+                  "Email:fernando777@126.com <br/>Whatsapp:008613968066530",
                   "ok",
                   () => {},
                   { plainText: false },
@@ -177,8 +189,17 @@ export default function login() {
               }}
             />
             <span>
-              Acuerdo <a href="#">Condiciones de servicio</a>{" "}
-              <a href="#">Política de privacidad</a>
+              Acuerdo{" "}
+              <Link
+                to={`/privacyPolicy?type=rules&id=5&title=Detalles del artículo`}
+              >
+                Condiciones de servicio
+              </Link>{" "}
+              <Link
+                to={`/privacyPolicy?type=rules&id=6&title=Detalles del artículo`}
+              >
+                Política de privacidad
+              </Link>
             </span>
           </div>
         )}
