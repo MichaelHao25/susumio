@@ -29,10 +29,7 @@ export default function login() {
       FB.XFBML.parse();
     }
     window.checkLogin = (e: any) => {
-      const {
-        status = "",
-        authResponse: { accessToken },
-      } = e || {};
+      const { status = "", authResponse: { accessToken = "" } = {} } = e || {};
       if (status === "connected") {
         postFacebookLogin(accessToken).then((res) => {
           dispatch({
