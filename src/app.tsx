@@ -12,6 +12,9 @@ import {
 } from "./services/api";
 import { FBAPPID } from "./services/interface";
 
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
+
 Notify.init({
   position: "right-top",
   cssAnimationStyle: "from-bottom",
@@ -23,4 +26,13 @@ Notiflix.Confirm.init({
   messageMaxLength: 500,
   buttonsMaxLength: 500,
   titleMaxLength: 500,
+});
+
+Sentry.init({
+  dsn: "https://1204fd24a64b48e0b6bd161a9b7e15ac@o1068070.ingest.sentry.io/6062216",
+  integrations: [new Integrations.BrowserTracing()],
+  /**
+   * 捕获的粒度
+   */
+  tracesSampleRate: 1.0,
 });
