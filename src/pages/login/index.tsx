@@ -28,17 +28,6 @@ export default function login() {
     if (window.FB) {
       FB.XFBML.parse();
     }
-    window.checkLogin = (e: any) => {
-      const { status = "", authResponse: { accessToken = "" } = {} } = e || {};
-      if (status === "connected") {
-        postFacebookLogin(accessToken).then((res) => {
-          dispatch({
-            type: "userinfo/login",
-            payload: { res },
-          });
-        });
-      }
-    };
   }, [window.FB]);
   function handleSubmit() {
     dispatch({

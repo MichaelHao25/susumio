@@ -14,6 +14,7 @@ import { ImmerReducer, Subscription } from "@@/plugin-dva/connect";
 import { history } from "umi";
 import fbShareCheck from "@/utils/fbShareCheck";
 import loginSuccessBack from "@/utils/loginSuccessBack";
+import Notiflix from "notiflix";
 
 export interface ListState {
   postApiGoodsGoodsLists: Details[];
@@ -292,6 +293,23 @@ const userinfoModel: UserinfoModel = {
   },
   subscriptions: {
     onload({ dispatch, history }) {
+      window.checkLogin = (e: any) => {
+        console.log("window.checkLogin");
+        console.log(e);
+        const { status = "", authResponse } = e || {};
+        const { accessToken = "" } = authResponse || {};
+        if (status === "connected") {
+          postFacebookLogin(accessToken).then((res) => {
+            dispatch({
+              type: "userinfo/login",
+              payload: { res },
+            });
+          });
+        } else {
+          Notiflix.Report.failure("警告", JSON.stringify(e), "好的");
+        }
+      };
+
       // Facebook登陆
       const facebooklogin = document.createElement("script");
       facebooklogin.async = true;
@@ -307,6 +325,8 @@ const userinfoModel: UserinfoModel = {
             FB.XFBML.parse();
             FB.getLoginStatus(function (response = {}) {
               // 如果从fb获取到信息的话就调用fb的登陆
+              console.log("FB.getLoginStatus");
+
               console.log(response);
 
               if (response.authResponse) {
