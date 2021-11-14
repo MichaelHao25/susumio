@@ -19,6 +19,7 @@ export default (props: Props) => {
       state: { order: propsOrder },
     },
   } = props;
+
   const [order, setOrder] = useState<OrdersListItem>(() => {
     return propsOrder;
   });
@@ -328,25 +329,25 @@ export default (props: Props) => {
                           style={{ width: "70%" }}
                         />
                         {order.status == 4 &&
-                        goods.is_comment == 0 &&
-                        goods.return_goods_status != 3 &&
-                        goods.return_goods_status != 1 ? (
-                          <div
-                            className="aui-list-item-right "
-                            style={{ width: "30%" }}
-                          >
+                          goods.is_comment == 0 &&
+                          goods.return_goods_status != 3 &&
+                          goods.return_goods_status != 1 && (
                             <div
-                              className="order-buttons aui-text-right"
-                              onClick={(e) => goComment(e, goods)}
+                              className="aui-list-item-right "
+                              style={{ width: "30%" }}
                             >
-                              <div className="mini-button aui-font-size-10">
-                                Comentar
-                              </div>
+                              {order.shoper_id === 0 && (
+                                <div
+                                  className="order-buttons aui-text-right"
+                                  onClick={(e) => goComment(e, goods)}
+                                >
+                                  <div className="mini-button aui-font-size-10">
+                                    Comentar
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          </div>
-                        ) : (
-                          <></>
-                        )}
+                          )}
                       </div>
                       {/* 退款 针对已付款和已发货的订单 */}
                       <div className="aui-list-item-text aui-margin-t-10">
@@ -355,69 +356,64 @@ export default (props: Props) => {
                           style={{ width: "70%" }}
                         />
                         {(order.status == 2 || order.status == 3) &&
-                        goods.return_goods_status == 0 ? (
-                          <div
-                            className="aui-list-item-right"
-                            style={{ width: "30%" }}
-                            onClick={(e) => refund(e, goods)}
-                          >
-                            <div className="order-buttons aui-text-right">
-                              <div
-                                className="mini-button aui-font-size-10"
-                                style={{ width: "5rem" }}
-                              >
-                                Reembolso
+                          goods.return_goods_status == 0 &&
+                          order.shoper_id === 0 && (
+                            <div
+                              className="aui-list-item-right"
+                              style={{ width: "30%" }}
+                              onClick={(e) => refund(e, goods)}
+                            >
+                              <div className="order-buttons aui-text-right">
+                                <div
+                                  className="mini-button aui-font-size-10"
+                                  style={{ width: "5rem" }}
+                                >
+                                  Reembolso
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-                        {goods.return_goods_status == 1 ? (
-                          <div
-                            className="aui-list-item-right aui-text-right"
-                            style={{ width: "30%" }}
-                            onClick={(e) => refund(e, goods)}
-                          >
-                            Solicitud de reembolso
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-                        {goods.return_goods_status == 2 ? (
-                          <div
-                            className="aui-list-item-right aui-text-right"
-                            style={{ width: "30%" }}
-                          >
-                            Reembolso denegado
-                          </div>
-                        ) : (
-                          <></>
-                        )}
+                          )}
+                        {goods.return_goods_status == 1 &&
+                          order.shoper_id === 0 && (
+                            <div
+                              className="aui-list-item-right aui-text-right"
+                              style={{ width: "30%" }}
+                              onClick={(e) => refund(e, goods)}
+                            >
+                              Solicitud de reembolso
+                            </div>
+                          )}
+                        {goods.return_goods_status == 2 &&
+                          order.shoper_id === 0 && (
+                            <div
+                              className="aui-list-item-right aui-text-right"
+                              style={{ width: "30%" }}
+                            >
+                              Reembolso denegado
+                            </div>
+                          )}
                         {goods.return_goods_status == 3 &&
-                        goods.is_return_money == 0 ? (
-                          <div
-                            className="aui-list-item-right aui-text-right"
-                            style={{ width: "30%" }}
-                          >
-                            Devolución exitosa
-                            <br />
-                            Pendiente de reembolso
-                          </div>
-                        ) : (
-                          <></>
-                        )}
+                          goods.is_return_money == 0 &&
+                          order.shoper_id === 0 && (
+                            <div
+                              className="aui-list-item-right aui-text-right"
+                              style={{ width: "30%" }}
+                            >
+                              Devolución exitosa
+                              <br />
+                              Pendiente de reembolso
+                            </div>
+                          )}
                         {goods.return_goods_status == 3 &&
-                        goods.is_return_money == 1 ? (
-                          <div
-                            className="aui-list-item-right aui-text-right"
-                            style={{ width: "30%" }}
-                          >
-                            Devolución exitosa
-                          </div>
-                        ) : (
-                          <></>
-                        )}
+                          goods.is_return_money == 1 &&
+                          order.shoper_id === 0 && (
+                            <div
+                              className="aui-list-item-right aui-text-right"
+                              style={{ width: "30%" }}
+                            >
+                              Devolución exitosa
+                            </div>
+                          )}
                       </div>
                     </div>
                   </div>
@@ -440,7 +436,7 @@ export default (props: Props) => {
                 </div>
               </div>
             </li>
-            {order.market_activity_id != 0 ? (
+            {order.market_activity_id != 0 && (
               <li className="aui-list-item">
                 <div className="aui-list-item-inner">
                   <div className="aui-list-item-title aui-font-size-14">
@@ -454,10 +450,8 @@ export default (props: Props) => {
                   </div>
                 </div>
               </li>
-            ) : (
-              <></>
             )}
-            {order.market_activity_id != 0 ? (
+            {order.market_activity_id != 0 && (
               <li className="aui-list-item">
                 <div className="aui-list-item-inner">
                   <div className="aui-list-item-title aui-font-size-14">
@@ -473,8 +467,6 @@ export default (props: Props) => {
                   </div>
                 </div>
               </li>
-            ) : (
-              <></>
             )}
           </ul>
         </div>
@@ -487,101 +479,75 @@ export default (props: Props) => {
           <h5 className="aui-padded-t-5 aui-font-size-12">
             {order.create_time}
           </h5>
-          {order.pay_time ? (
+          {order.pay_time && (
             <h5 className="aui-padded-t-5 aui-font-size-12">
               Tiempo de pago: {order.pay_time}
             </h5>
-          ) : (
-            <></>
           )}
-          {order.deliver_time ? (
+          {order.deliver_time && (
             <h5 className="aui-padded-t-5 aui-font-size-12">
               Tiempo de entrega: {order.deliver_time}
             </h5>
-          ) : (
-            <></>
           )}
-          {order.confirm_receipt_time ? (
+          {order.confirm_receipt_time && (
             <h5 className="aui-padded-t-5 aui-font-size-12">
               Tiempo de recepción confirmado: {order.confirm_receipt_time}
             </h5>
-          ) : (
-            <></>
           )}
-          {order.cancel_time ? (
+          {order.cancel_time && (
             <h5 className="aui-padded-t-5 aui-font-size-12">
               Tiempo de cancelación: {order.cancel_time}
             </h5>
-          ) : (
-            <></>
           )}
-          {order.apply_return_time ? (
+          {order.apply_return_time && (
             <h5 className="aui-padded-t-5 aui-font-size-12">
               Solicitud de reembolso: {order.apply_return_time}
             </h5>
-          ) : (
-            <></>
           )}
-          {order.return_time ? (
+          {order.return_time && (
             <h5 className="aui-padded-t-5 aui-font-size-12">
               Plazo de aceptación/rechazo del reembolso: {order.return_time}
             </h5>
-          ) : (
-            <></>
           )}
-          {order.memo ? (
+          {order.memo && (
             <h5 className="aui-padded-t-5 aui-font-size-12">
               Mi mensaje: {order.memo}
             </h5>
-          ) : (
-            <></>
           )}
-          {order.reply_memo ? (
+          {order.reply_memo && (
             <h5 className="aui-padded-t-5 aui-font-size-12">
               Respuesta comercial: {order.reply_memo}
             </h5>
-          ) : (
-            <></>
           )}
         </div>
       </div>
       <div style={{ minHeight: "2.25rem" }} />
       <footer className="aui-bar aui-bar-tab" id="footer">
         <div className="order-buttons aui-padded-b-5 ">
-          {order.status == 1 ? (
+          {order.status == 1 && order.shoper_id === 0 && (
             <div className="button active" onClick={orderPay}>
               Pagar
             </div>
-          ) : (
-            <></>
           )}
-          {order.status == 1 ? (
+          {order.status == 1 && order.shoper_id === 0 && (
             <div className="button " onClick={cancelOrder}>
               Cancelar
             </div>
-          ) : (
-            <></>
           )}
-          {order.status == 2 ? (
+          {order.status == 2 && order.shoper_id === 0 && (
             <div className="button " onClick={remind}>
               Recordatorio
             </div>
-          ) : (
-            <></>
           )}
-          {order.status == 3 ? (
+          {order.status == 3 && order.shoper_id === 0 && (
             <div className="button active " onClick={finish}>
               Confirmar
             </div>
-          ) : (
-            <></>
           )}
-          {order.status == 3 || order.status == 4 ? (
+          {(order.status == 3 || order.status == 4) && order.shoper_id === 0 && (
             <div className="button" onClick={goLogistics}>
               Logística
             </div>
-          ) : (
-            <></>
           )}
         </div>
       </footer>

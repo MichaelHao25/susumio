@@ -1271,7 +1271,7 @@ export default connect(({ list }: { list: ListState }) => {
         //     </div>
         //   );
         // }
-        // 店中店的详情页
+        // 店中店的列表页
         case AllList.postApiOrdersListsForStorehouse: {
           const orderStatus = (order: OrdersListItem): string => {
             var str = "";
@@ -1498,12 +1498,12 @@ export default connect(({ list }: { list: ListState }) => {
                                 className="aui-media-list-item-inner"
                                 style={{ width: "100%" }}
                               >
-                                <Link
+                                <div
                                   className="aui-list-item-media aui-col-4"
-                                  to={`/goodsDetails?id=${goods.goods_id}`}
+                                  //   to={`/goodsDetails?id=${goods.goods_id}`}
                                 >
                                   <img loading="lazy" src={goods.thum} />
-                                </Link>
+                                </div>
 
                                 <div className="aui-list-item-inner aui-col-8">
                                   <div className="aui-list-item-text aui-col-xs-12">
@@ -1846,12 +1846,18 @@ export default connect(({ list }: { list: ListState }) => {
                                 className="aui-media-list-item-inner"
                                 style={{ width: "100%" }}
                               >
-                                <Link
+                                <div
                                   className="aui-list-item-media aui-col-4"
-                                  to={`/goodsDetails?id=${goods.goods_id}`}
+                                  //   onClick={(e) => {
+                                  //     history.push(
+                                  //       `/goodsDetails?id=${goods.goods_id}`,
+                                  //     );
+                                  //     e.stopPropagation();
+                                  //     e.preventDefault();
+                                  //   }}
                                 >
                                   <img loading="lazy" src={goods.thum} />
-                                </Link>
+                                </div>
 
                                 <div className="aui-list-item-inner aui-col-8">
                                   <div className="aui-list-item-text aui-col-xs-12">

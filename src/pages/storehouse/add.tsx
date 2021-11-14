@@ -28,7 +28,7 @@ interface Props
   > {}
 export default (props: Props) => {
   const refEditorElement = useRef<HTMLDivElement>(null);
-  const refQuillHandler = useRef<any>(null);
+  const refQuillHandler = useRef<Quill>(null);
   const [id, setId] = useState<number>();
   const [thum, setThum] = useState<string[]>([]);
   const [img, setImg] = useState<string[]>([]);
@@ -52,6 +52,7 @@ export default (props: Props) => {
   useEffect(() => {
     if (refEditorElement.current) {
       if (!refQuillHandler.current) {
+        // @ts-ignore
         refQuillHandler.current = new Quill(refEditorElement.current, {
           bounds: refEditorElement.current,
           //   debug: "info",
@@ -98,8 +99,9 @@ export default (props: Props) => {
   useEffect(() => {
     if (refQuillHandler.current && desc) {
       try {
-        const json = JSON.parse(desc);
-        refQuillHandler.current.setContents(json);
+        // const json = JSON.parse(desc);
+        refQuillHandler.current.clipboard.dangerouslyPasteHTML(desc);
+        // refQuillHandler.current.setContents(json);
       } catch (error) {
         refQuillHandler.current.setText(desc);
       }
@@ -117,7 +119,7 @@ export default (props: Props) => {
       name !== "" &&
       sellPrice !== ""
     ) {
-      const desc = JSON.stringify(refQuillHandler.current.getContents());
+      const desc = refQuillHandler.current?.root.innerHTML || "";
       const money = MoneyValueUnitRender.getMoney(sellPrice);
       if (money.value === "0") {
         return;
