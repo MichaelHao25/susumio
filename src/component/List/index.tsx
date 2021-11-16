@@ -32,6 +32,7 @@ import {
   postTipDeliver,
 } from "@/services/api";
 import MoneyValueUnitRender from "../MoneyValueUnitRender";
+import SoldOut from "../SoldOut";
 
 interface PageProps {
   dispatch: Dispatch;
@@ -1168,6 +1169,7 @@ export default connect(({ list }: { list: ListState }) => {
                       objectFit: "cover",
                     }}
                   />
+                  {item.stock === 0 && <SoldOut />}
                 </div>{" "}
                 {/**/}
                 <h5

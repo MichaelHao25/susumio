@@ -28,6 +28,7 @@ interface GoodsItem extends List {
   id: number;
   stock: number;
   spec_group_id_str: string;
+  thum: string;
 }
 
 interface List {
@@ -70,13 +71,14 @@ export default (props: Props) => {
           const res = spec_group_info.find(
             (item) => item.spec_option_group === `${type}_${cType}`,
           );
-          const { id = 0, stock = 0, id_str = "" } = res || {};
+          const { id = 0, stock = 0, id_str = "", thum = "" } = res || {};
           return {
             id,
             stock,
             type: spec_info[1].name,
             name: cType,
             spec_group_id_str: id_str,
+            thum,
             children: [],
           };
         }),
@@ -222,6 +224,8 @@ export default (props: Props) => {
       });
     }
   }
+  const children_thum = data?.[typeOneIndex]?.children?.[0]?.thum;
+  console.log("浓缩图:", children_thum);
 
   return (
     <div
@@ -256,7 +260,11 @@ export default (props: Props) => {
       <div className="aui-row aui-padded-10">
         {/* 缩略图 */}
         <div className="aui-col-xs-6">
-          <img loading="lazy" src={thum} className="aui-padded-15" />
+          <img
+            loading="lazy"
+            src={children_thum ? children_thum : thum}
+            className="aui-padded-15"
+          />
         </div>
         {/* 价格和库存 */}
         <div className="aui-col-xs-6 aui-padded-10">

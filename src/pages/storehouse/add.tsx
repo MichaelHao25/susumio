@@ -29,11 +29,13 @@ interface Props
 export default (props: Props) => {
   const refEditorElement = useRef<HTMLDivElement>(null);
   const refQuillHandler = useRef<Quill>(null);
+  const refUpload = useRef<() => void>(null);
   const [id, setId] = useState<number>();
   const [thum, setThum] = useState<string[]>([]);
   const [img, setImg] = useState<string[]>([]);
   const [desc, setDesc] = useState<string>("");
   const [name, setName] = useState<string>("");
+
   const [sellPrice, setSellPrice] = useState<string>("");
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
     return userinfo;
@@ -57,32 +59,47 @@ export default (props: Props) => {
           bounds: refEditorElement.current,
           //   debug: "info",
           modules: {
-            toolbar: [
-              [
-                { font: [] },
-                { header: [1, 2, 3, 4, 5, 6, false] },
-                { align: [] },
-                "clean",
-              ],
-              [
-                "bold",
-                "italic",
-                "underline",
-                "strike",
-                "link",
-                "blockquote",
-                "image",
-                "video",
-                { list: "ordered" },
-                { list: "bullet" },
-                "code-block",
-              ],
-              [{ script: "sub" }, { script: "super" }], // superscript/subscript
-              [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+            toolbar: {
+              container: [
+                [
+                  { font: [] },
+                  { header: [1, 2, 3, 4, 5, 6, false] },
+                  { align: [] },
+                  "clean",
+                ],
+                [
+                  "bold",
+                  "italic",
+                  "underline",
+                  "strike",
+                  "link",
+                  "blockquote",
+                  "image",
+                  "video",
+                  { list: "ordered" },
+                  { list: "bullet" },
+                  "code-block",
+                ],
+                [{ script: "sub" }, { script: "super" }], // superscript/subscript
+                [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
 
-              [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-              [{ direction: "rtl" }], // text direction
-            ],
+                [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+                [{ direction: "rtl" }], // text direction
+              ],
+              handlers: {
+                image: function (value: boolean) {
+                  if (value) {
+                    if (refUpload.current) {
+                      refUpload.current();
+                    }
+                  } else {
+                    if (refQuillHandler.current) {
+                      refQuillHandler.current.format("image", false);
+                    }
+                  }
+                },
+              },
+            },
             history: {
               delay: 2000,
               maxStack: 500,
@@ -173,7 +190,23 @@ export default (props: Props) => {
   return (
     <div className={styles.storehouse}>
       <Header title={"Subir producto"} />
-
+      <Upload
+        onUpload={refUpload}
+        uploadSuccessCallback={(res) => {
+          if (refQuillHandler.current) {
+            // 获取光标所在位置
+            let length = refQuillHandler.current.getSelection().index;
+            // 插入图片  res.info为服务器返回的图片地址
+            refQuillHandler.current.insertEmbed(
+              length,
+              "image",
+              res.host_file_path,
+            );
+            // 调整光标到最后
+            refQuillHandler.current.setSelection(length + 1);
+          }
+        }}
+      />
       <div className={styles.add_container}>
         <div className={styles.img_title}>Portada</div>
         <div className={styles.img_list}>

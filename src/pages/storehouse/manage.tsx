@@ -48,6 +48,21 @@ export default () => {
           <div className={styles.right_title}>
             <span>Popularidad Top</span>
           </div>
+          {list.length === 0 && (
+            <div
+              className="aui-col-xs-12 aui-text-center"
+              style={{ marginTop: "10%" }}
+            >
+              <img
+                loading="lazy"
+                src={require("../../assets/img/no_content.png")}
+                style={{ width: "18%", margin: "0 auto" }}
+              />
+              <h5 style={{ marginTop: "1rem" }} className="aui-font-size-14">
+                Oh. Aquí no hay nada.
+              </h5>
+            </div>
+          )}
           {list.map((item) => {
             return (
               <div className={styles.item} key={item.id}>

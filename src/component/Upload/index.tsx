@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { MutableRefObject, useRef } from "react";
 import React from "react";
 import { useEffect } from "react";
 import { postUploadFile } from "@/services/api";
@@ -26,10 +26,14 @@ interface Props {
    * 图片上传成功后的回调函数
    */
   uploadSuccessCallback?: (args: UploadSuccessCallback) => void;
+  /**
+   * 手动出发上传图片的ref
+   */
+  onUpload?: React.RefObject<() => void>;
 }
 
 const index: React.FC<Props> = (props) => {
-  const { uploadSuccessCallback } = props;
+  const { uploadSuccessCallback, onUpload } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -40,6 +44,11 @@ const index: React.FC<Props> = (props) => {
       inputRef.current.click();
     }
   };
+  useEffect(() => {
+    if (onUpload) {
+      onUpload.current = handleClick;
+    }
+  }, []);
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.onchange = (e) => {
