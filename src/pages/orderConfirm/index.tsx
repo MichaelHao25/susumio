@@ -139,6 +139,12 @@ export default (props: Props) => {
             order_no,
             total_money,
           });
+          /**
+           * 如果有分享码的话就清楚分享信息
+           */
+          if (req.shareCode) {
+            window.localStorage.removeItem("global_shareInfo");
+          }
         }
       });
     }
