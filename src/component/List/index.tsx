@@ -20,6 +20,7 @@ import {
 } from "@/services/interface";
 import { Action, ListState } from "@/models/list";
 import { Confirm, Notify } from "notiflix";
+import LazyLoad from "react-lazyload";
 import {
   postAddressDelete,
   postAddressSetDefault,
@@ -84,7 +85,7 @@ export default connect(({ list }: { list: ListState }) => {
         if (reload) {
           miniRefresh.current.endDownLoading(true);
         } else {
-          if (data.length < 10) {
+          if (data instanceof Array && data.length < 10) {
             miniRefresh.current.endUpLoading(true);
           } else {
             miniRefresh.current.endUpLoading(false);
@@ -95,6 +96,7 @@ export default connect(({ list }: { list: ListState }) => {
       if (reload) {
         page.current.pageNum = 1;
       }
+      debugger;
       switch (type) {
         case AllList.postTeamUsers: {
           dispatch({
@@ -274,11 +276,13 @@ export default connect(({ list }: { list: ListState }) => {
                   className="aui-col-xs-12 aui-text-center"
                   style={{ marginTop: "30%" }}
                 >
-                  <img
-                    loading="lazy"
-                    src={require("../../assets/img/no_content.png")}
-                    style={{ width: "18%", margin: "0 auto" }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
+                    />
+                  </LazyLoad>
                   <h5
                     style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
@@ -346,11 +350,13 @@ export default connect(({ list }: { list: ListState }) => {
                   className="aui-col-xs-12 aui-text-center"
                   style={{ marginTop: "30%" }}
                 >
-                  <img
-                    loading="lazy"
-                    src={require("../../assets/img/no_content.png")}
-                    style={{ width: "18%", margin: "0 auto" }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
+                    />
+                  </LazyLoad>
                   <h5
                     style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
@@ -432,11 +438,13 @@ export default connect(({ list }: { list: ListState }) => {
                   className="aui-col-xs-12 aui-text-center"
                   style={{ marginTop: "30%" }}
                 >
-                  <img
-                    loading="lazy"
-                    src={require("../../assets/img/no_content.png")}
-                    style={{ width: "18%", margin: "0 auto" }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
+                    />
+                  </LazyLoad>
                   <h5
                     style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
@@ -548,11 +556,13 @@ export default connect(({ list }: { list: ListState }) => {
                   className="aui-col-xs-12 aui-text-center"
                   style={{ marginTop: "30%" }}
                 >
-                  <img
-                    loading="lazy"
-                    src={require("../../assets/img/no_content.png")}
-                    style={{ width: "18%", margin: "0 auto" }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
+                    />
+                  </LazyLoad>
                   <h5
                     style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
@@ -620,11 +630,13 @@ export default connect(({ list }: { list: ListState }) => {
                   className="aui-col-xs-12 aui-text-center"
                   style={{ marginTop: "30%" }}
                 >
-                  <img
-                    loading="lazy"
-                    src={require("../../assets/img/no_content.png")}
-                    style={{ width: "18%", margin: "0 auto" }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
+                    />
+                  </LazyLoad>
                   <h5
                     style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
@@ -669,11 +681,13 @@ export default connect(({ list }: { list: ListState }) => {
                   className="aui-col-xs-12 aui-text-center"
                   style={{ marginTop: "30%" }}
                 >
-                  <img
-                    loading="lazy"
-                    src={require("../../assets/img/no_content.png")}
-                    style={{ width: "18%", margin: "0 auto" }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
+                    />
+                  </LazyLoad>
                   <h5
                     style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
@@ -698,16 +712,18 @@ export default connect(({ list }: { list: ListState }) => {
                           style={{ position: "relative", padding: "3px" }}
                           key={trace.id}
                         >
-                          <img
-                            loading="lazy"
-                            style={{ display: "block" }}
-                            src={trace.goods_info.thum}
-                            onClick={() => {
-                              history.push(
-                                `/goodsDetails?id=${trace.goods_id}`,
-                              );
-                            }}
-                          />
+                          <LazyLoad once>
+                            <img
+                              loading="lazy"
+                              style={{ display: "block" }}
+                              src={trace.goods_info.thum}
+                              onClick={() => {
+                                history.push(
+                                  `/goodsDetails?id=${trace.goods_id}`,
+                                );
+                              }}
+                            />
+                          </LazyLoad>
                           <h5
                             className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white"
                             style={{ height: "2.2rem" }}
@@ -766,11 +782,13 @@ export default connect(({ list }: { list: ListState }) => {
                   className="aui-col-xs-12 aui-text-center"
                   style={{ marginTop: "30%" }}
                 >
-                  <img
-                    loading="lazy"
-                    src={require("../../assets/img/no_content.png")}
-                    style={{ width: "18%", margin: "0 auto" }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
+                    />
+                  </LazyLoad>
                   <h5
                     style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
@@ -816,13 +834,13 @@ export default connect(({ list }: { list: ListState }) => {
                         >
                           <div className="aui-media-list-item-inner">
                             <div className="aui-list-item-media">
-                              {comment.order_goods_info ? (
-                                <img
-                                  loading="lazy"
-                                  src={comment.order_goods_info.thum}
-                                />
-                              ) : (
-                                ""
+                              {comment.order_goods_info && (
+                                <LazyLoad once>
+                                  <img
+                                    loading="lazy"
+                                    src={comment.order_goods_info.thum}
+                                  />
+                                </LazyLoad>
                               )}
                             </div>
                             <div className="aui-list-item-inner">
@@ -905,7 +923,9 @@ export default connect(({ list }: { list: ListState }) => {
                     <div className="aui-row aui-row-padded">
                       {comment.imgs.map((img, index) => (
                         <div className="aui-col-xs-3" key={index}>
-                          <img loading="lazy" src={img} />
+                          <LazyLoad once>
+                            <img loading="lazy" src={img} />
+                          </LazyLoad>
                         </div>
                       ))}
                     </div>
@@ -944,11 +964,13 @@ export default connect(({ list }: { list: ListState }) => {
                   className="aui-col-xs-12 aui-text-center"
                   style={{ marginTop: "30%" }}
                 >
-                  <img
-                    loading="lazy"
-                    src={require("../../assets/img/no_content.png")}
-                    style={{ width: "18%", margin: "0 auto" }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
+                    />
+                  </LazyLoad>
                   <h5
                     style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
@@ -986,16 +1008,18 @@ export default connect(({ list }: { list: ListState }) => {
                           style={{ position: "relative", padding: "3px" }}
                           key={collection.id}
                         >
-                          <img
-                            loading="lazy"
-                            style={{ display: "block" }}
-                            src={collection.goods_info.thum}
-                            onClick={() => {
-                              history.push(
-                                `/goodsDetails?id=${collection.goods_id}`,
-                              );
-                            }}
-                          />
+                          <LazyLoad once>
+                            <img
+                              loading="lazy"
+                              style={{ display: "block" }}
+                              src={collection.goods_info.thum}
+                              onClick={() => {
+                                history.push(
+                                  `/goodsDetails?id=${collection.goods_id}`,
+                                );
+                              }}
+                            />
+                          </LazyLoad>
                           <h5 className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-10 aui-padded-r-10  aui-bg-white">
                             {collection.goods_info.name}
                           </h5>
@@ -1088,11 +1112,13 @@ export default connect(({ list }: { list: ListState }) => {
                   className="aui-col-xs-12 aui-text-center"
                   style={{ marginTop: "30%" }}
                 >
-                  <img
-                    loading="lazy"
-                    src={require("../../assets/img/no_content.png")}
-                    style={{ width: "18%", margin: "0 auto" }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={require("../../assets/img/no_content.png")}
+                      style={{ width: "18%", margin: "0 auto" }}
+                    />
+                  </LazyLoad>
                   <h5
                     style={{ marginTop: "1rem" }}
                     className="aui-font-size-14"
@@ -1168,18 +1194,20 @@ export default connect(({ list }: { list: ListState }) => {
               >
                 {/* aspect-ratio : 1 */}
                 <div style={{ paddingTop: "100%", position: "relative" }}>
-                  <img
-                    loading="lazy"
-                    src={item.thum}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      objectFit: "cover",
-                    }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={item.thum}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        objectFit: "cover",
+                      }}
+                    />
+                  </LazyLoad>
                   {item.stock === 0 && <SoldOut />}
                 </div>{" "}
                 {/**/}
@@ -1465,11 +1493,13 @@ export default connect(({ list }: { list: ListState }) => {
                     className="aui-col-xs-12 aui-text-center"
                     style={{ marginTop: "30%" }}
                   >
-                    <img
-                      loading="lazy"
-                      src={require("../../assets/img/no_content.png")}
-                      style={{ width: "18%", margin: "0 auto" }}
-                    />
+                    <LazyLoad once>
+                      <img
+                        loading="lazy"
+                        src={require("../../assets/img/no_content.png")}
+                        style={{ width: "18%", margin: "0 auto" }}
+                      />
+                    </LazyLoad>
                     <h5
                       style={{ marginTop: "1rem" }}
                       className="aui-font-size-14"
@@ -1515,7 +1545,9 @@ export default connect(({ list }: { list: ListState }) => {
                                   className="aui-list-item-media aui-col-4"
                                   //   to={`/goodsDetails?id=${goods.goods_id}`}
                                 >
-                                  <img loading="lazy" src={goods.thum} />
+                                  <LazyLoad once>
+                                    <img loading="lazy" src={goods.thum} />
+                                  </LazyLoad>
                                 </div>
 
                                 <div className="aui-list-item-inner aui-col-8">
@@ -1813,11 +1845,13 @@ export default connect(({ list }: { list: ListState }) => {
                     className="aui-col-xs-12 aui-text-center"
                     style={{ marginTop: "30%" }}
                   >
-                    <img
-                      loading="lazy"
-                      src={require("../../assets/img/no_content.png")}
-                      style={{ width: "18%", margin: "0 auto" }}
-                    />
+                    <LazyLoad once>
+                      <img
+                        loading="lazy"
+                        src={require("../../assets/img/no_content.png")}
+                        style={{ width: "18%", margin: "0 auto" }}
+                      />
+                    </LazyLoad>
                     <h5
                       style={{ marginTop: "1rem" }}
                       className="aui-font-size-14"
@@ -1869,7 +1903,9 @@ export default connect(({ list }: { list: ListState }) => {
                                   //     e.preventDefault();
                                   //   }}
                                 >
-                                  <img loading="lazy" src={goods.thum} />
+                                  <LazyLoad once>
+                                    <img loading="lazy" src={goods.thum} />
+                                  </LazyLoad>
                                 </div>
 
                                 <div className="aui-list-item-inner aui-col-8">

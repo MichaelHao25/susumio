@@ -214,7 +214,7 @@ export default <ListModel>{
             },
           },
         });
-        cb(res.data);
+        cb(res.data.team_users);
       } else {
         cb([]);
       }
@@ -268,7 +268,7 @@ export default <ListModel>{
             },
           },
         });
-        cb(res.data);
+        cb(res.data.orders);
       } else {
         cb([]);
       }
@@ -293,7 +293,7 @@ export default <ListModel>{
                 : list.concat(res.data.applys),
           },
         });
-        cb(res.data);
+        cb(res.data.applys);
       } else {
         cb([]);
       }

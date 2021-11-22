@@ -3,7 +3,7 @@
   "scripts": {
     "start": "umi dev",
     "start_https": "HTTPS=1 umi dev",
-    "cc":"COMPRESS=none ",
+    "cc": "COMPRESS=none ",
     "build": "umi build",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
@@ -30,6 +30,7 @@
     "@types/big.js": "^6.1.2",
     "@types/qrcode.react": "^1.0.2",
     "@types/quill": "^2.0.9",
+    "@types/react-lazyload": "^3.1.1",
     "big.js": "^6.1.1",
     "lottie-web": "^5.7.13",
     "minirefresh": "^2.0.2",
@@ -39,6 +40,7 @@
     "quill": "^1.3.7",
     "react": "17.x",
     "react-dom": "17.x",
+    "react-lazyload": "^3.2.0",
     "react-photo-view": "^0.5.7",
     "swiper": "^7.2.0",
     "umi": "^3.5.17"

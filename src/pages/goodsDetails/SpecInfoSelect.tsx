@@ -5,6 +5,7 @@ import { CartInfo, postApiGoodsCartsBatchSave } from "@/services/api";
 import { LayoutType } from "@/pages/goodsDetails/index";
 import { history } from "umi";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import LazyLoad from "react-lazyload";
 
 export interface GoodsList {
   thum: string;
@@ -260,11 +261,13 @@ export default (props: Props) => {
       <div className="aui-row aui-padded-10">
         {/* 缩略图 */}
         <div className="aui-col-xs-6">
-          <img
-            loading="lazy"
-            src={children_thum ? children_thum : thum}
-            className="aui-padded-15"
-          />
+          <LazyLoad once>
+            <img
+              loading="lazy"
+              src={children_thum ? children_thum : thum}
+              className="aui-padded-15"
+            />
+          </LazyLoad>
         </div>
         {/* 价格和库存 */}
         <div className="aui-col-xs-6 aui-padded-10">

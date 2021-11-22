@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { postDistributorInfo, postGetParams } from "@/services/api";
 import { UserinfoState } from "@/pages/login/model";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import LazyLoad from "react-lazyload";
 
 export default () => {
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
@@ -60,19 +61,23 @@ export default () => {
             history.goBack();
           }}
         />
-        <img
-          loading="lazy"
-          src={params.distribution_centre_head_img}
-          className="distribution-bg"
-        />
-        {/* 中间页 */}
-        <div className="aui-content aui-text-center aui-text-white">
+        <LazyLoad once>
           <img
             loading="lazy"
-            src={user.avatar}
-            className="aui-img-round"
-            id="avatar"
+            src={params.distribution_centre_head_img}
+            className="distribution-bg"
           />
+        </LazyLoad>
+        {/* 中间页 */}
+        <div className="aui-content aui-text-center aui-text-white">
+          <LazyLoad once>
+            <img
+              loading="lazy"
+              src={user.avatar}
+              className="aui-img-round"
+              id="avatar"
+            />
+          </LazyLoad>
           <div>{user.nick_name || "Usuario anónimo"}</div>
           <div className="aui-font-size-14">{distributor.level_name}</div>
           <div className="aui-font-size-12">

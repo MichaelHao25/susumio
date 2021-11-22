@@ -11,6 +11,7 @@ import List from "@/component/List";
 import { AllList } from "@/services/interface";
 import { postBannerList, postGoodsTag } from "@/services/api";
 import useCurrencyManage from "@/hooks/useCurrencyManage";
+import LazyLoad from "react-lazyload";
 
 interface PageProps extends ConnectProps {
   dispatch: Dispatch;
@@ -163,12 +164,6 @@ const Header = () => {
               </div>
             );
           })}
-          {/* <div className="item active">USD</div>
-        <div className="item">EUR</div>
-        <div className="item">MXN</div>
-        <div className="item">PEN</div>
-        <div className="item">CLP</div>
-        <div className="item">COP</div> */}
         </div>
       )}
       <div className="aui-content">
@@ -184,33 +179,35 @@ const Header = () => {
           {bannerList.map((item) => {
             return (
               <SwiperSlide key={item.id}>
-                <img
-                  loading="lazy"
-                  src={item.img}
-                  alt=""
-                  onClick={() => {
-                    if (item.is_open_model) {
-                      if (item.model === "goods") {
-                        history.push(`/goodsDetails?id=${item.model_id}`);
-                      }
-                      if (item.model === "goods_cate") {
-                        history.push(
-                          `/goodsListModel?id=${item.model_id}&title=Categorías`,
-                        );
-                      }
+                <LazyLoad once>
+                  <img
+                    loading="lazy"
+                    src={item.img}
+                    alt=""
+                    onClick={() => {
+                      if (item.is_open_model) {
+                        if (item.model === "goods") {
+                          history.push(`/goodsDetails?id=${item.model_id}`);
+                        }
+                        if (item.model === "goods_cate") {
+                          history.push(
+                            `/goodsListModel?id=${item.model_id}&title=Categorías`,
+                          );
+                        }
 
-                      if (item.model === "tag") {
-                        history.push(
-                          `/goodsListModel?customTagId=${item.model_id}&title=Categorías`,
-                        );
+                        if (item.model === "tag") {
+                          history.push(
+                            `/goodsListModel?customTagId=${item.model_id}&title=Categorías`,
+                          );
+                        }
+                      } else {
+                        if (item.href) {
+                          window.location.href = item.href;
+                        }
                       }
-                    } else {
-                      if (item.href) {
-                        window.location.href = item.href;
-                      }
-                    }
-                  }}
-                />
+                    }}
+                  />
+                </LazyLoad>
               </SwiperSlide>
             );
           })}
@@ -228,12 +225,14 @@ const Header = () => {
                     key={item.id}
                     className="aui-col-xs-3"
                   >
-                    <img
-                      loading="lazy"
-                      src={item.thum}
-                      className="aui-padded-5"
-                      style={{ margin: "0px auto", width: "55%" }}
-                    />
+                    <LazyLoad once>
+                      <img
+                        loading="lazy"
+                        src={item.thum}
+                        className="aui-padded-5"
+                        style={{ margin: "0px auto", width: "55%" }}
+                      />
+                    </LazyLoad>
                     <div className="aui-grid-label">{item.name}</div>
                   </Link>
                 );

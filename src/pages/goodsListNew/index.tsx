@@ -1,12 +1,13 @@
-import Header from '@/component/Header';
-import './index.less';
-import Tab from '@/component/Tab';
-import React, { useEffect, useState } from 'react';
+import Header from "@/component/Header";
+import "./index.less";
+import Tab from "@/component/Tab";
+import React, { useEffect, useState } from "react";
 import {
   getApiGoodsGoodsCatesListsTree,
   postApiGoodsGoodsLists,
-} from '@/services/api';
-import { history } from 'umi';
+} from "@/services/api";
+import { history } from "umi";
+import LazyLoad from "react-lazyload";
 
 interface CategoryList {
   id: number;
@@ -25,7 +26,7 @@ export default () => {
   const [child, setChildList] = useState<Child[]>([]);
 
   const [id, setId] = useState<number>(0);
-  const [name, setName] = useState<string>('');
+  const [name, setName] = useState<string>("");
   useEffect(() => {
     getApiGoodsGoodsCatesListsTree().then((res) => {
       if (res) {
@@ -43,13 +44,13 @@ export default () => {
   }, []);
   return (
     <div className="goodsListNew">
-      <Header title={'Categorías'} noBack={true} />
-      <div style={{ height: '2.25rem' }} />
+      <Header title={"Categorías"} noBack={true} />
+      <div style={{ height: "2.25rem" }} />
       <div
         className="aui-title"
-        style={{ left: '0rem', right: '0rem' }}
+        style={{ left: "0rem", right: "0rem" }}
         onClick={() => {
-          history.push('/searchPage');
+          history.push("/searchPage");
         }}
       >
         {/*onClick="$util.openWindow('search_page_win')"*/}
@@ -79,7 +80,7 @@ export default () => {
             return (
               <li
                 key={item.id}
-                className={item.id === id ? 'active' : ''}
+                className={item.id === id ? "active" : ""}
                 onClick={() => {
                   setId(item.id);
                   setName(item.name);
@@ -94,10 +95,12 @@ export default () => {
         {/* 右侧二级类目 */}
         <div className="aui-col-xs-9 aui_grid">
           <div>
-            <img
-              loading="lazy"
-              src="https://www.177pinche.com/public/upload/article_images/20190726/f9b6991c87826650c32f1047e72273b8.png"
-            />
+            <LazyLoad once>
+              <img
+                loading="lazy"
+                src="https://www.177pinche.com/public/upload/article_images/20190726/f9b6991c87826650c32f1047e72273b8.png"
+              />
+            </LazyLoad>
             {/*@click="goModel(cate_ad)"*/}
           </div>
           <div>
@@ -114,11 +117,13 @@ export default () => {
                       );
                     }}
                   >
-                    <img
-                      loading="lazy"
-                      src={item.thum}
-                      style={{ width: '80%', height: '3.5rem' }}
-                    />
+                    <LazyLoad once>
+                      <img
+                        loading="lazy"
+                        src={item.thum}
+                        style={{ width: "80%", height: "3.5rem" }}
+                      />
+                    </LazyLoad>
                     <div className="aui-grid-label aui-padded-t-5">
                       {item.name}
                     </div>
@@ -129,7 +134,7 @@ export default () => {
           </div>
         </div>
       </div>
-      <div style={{ height: '2.5rem' }}></div>
+      <div style={{ height: "2.5rem" }}></div>
       <Tab />
     </div>
   );

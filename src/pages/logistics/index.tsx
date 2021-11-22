@@ -2,6 +2,7 @@ import Header from "@/component/Header";
 import { ConnectProps } from "umi";
 import { OrdersListItem } from "@/services/interface";
 import { useEffect } from "react";
+import LazyLoad from "react-lazyload";
 
 interface Props
   extends ConnectProps<
@@ -68,7 +69,9 @@ export default (props: Props) => {
           {order.order_goods_info.map((goods) => {
             return (
               <div className="thum">
-                <img loading="lazy" src={goods.thum} />
+                <LazyLoad once>
+                  <img loading="lazy" src={goods.thum} />
+                </LazyLoad>
               </div>
             );
           })}

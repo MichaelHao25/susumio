@@ -7,6 +7,7 @@ import { Confirm, Notify } from "notiflix";
 import { postOrderCommentsSave } from "@/services/api";
 import { history } from "@@/core/umiExports";
 import Upload from "@/component/Upload";
+import LazyLoad from "react-lazyload";
 
 interface Props
   extends ConnectProps<
@@ -60,7 +61,9 @@ export default (props: Props) => {
         <div className="aui-content">
           <div className="goods">
             <div className="thum">
-              <img loading="lazy" src={goods.thum} />
+              <LazyLoad once>
+                <img loading="lazy" src={goods.thum} />
+              </LazyLoad>
             </div>
             <div className="content">
               <textarea
@@ -77,31 +80,33 @@ export default (props: Props) => {
             <div className="imgs" id="imgs">
               {imgs.map((img, index) => {
                 return (
-                  <img
-                    loading="lazy"
-                    key={index}
-                    src={img}
-                    className="photo"
-                    onClick={() => {
-                      Confirm.show(
-                        "Cancel de imagen",
-                        "Confirmas el cancel de imagen？",
-                        "Sí",
-                        "No",
-                        () => {
-                          setImgs((img) => {
-                            img.splice(index, 1);
-                            return [...img];
-                          });
-                        },
-                      );
-                    }}
-                    style={{
-                      padding: "5px",
-                      width: "24%",
-                      height: "4.4rem",
-                    }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      key={index}
+                      src={img}
+                      className="photo"
+                      onClick={() => {
+                        Confirm.show(
+                          "Cancel de imagen",
+                          "Confirmas el cancel de imagen？",
+                          "Sí",
+                          "No",
+                          () => {
+                            setImgs((img) => {
+                              img.splice(index, 1);
+                              return [...img];
+                            });
+                          },
+                        );
+                      }}
+                      style={{
+                        padding: "5px",
+                        width: "24%",
+                        height: "4.4rem",
+                      }}
+                    />
+                  </LazyLoad>
                 );
               })}
               <Upload

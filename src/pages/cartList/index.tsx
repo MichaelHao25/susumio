@@ -11,6 +11,7 @@ import {
 import Notiflix, { Confirm, Notify } from "notiflix";
 import { GoodsList } from "@/pages/goodsDetails/SpecInfoSelect";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import LazyLoad from "react-lazyload";
 
 interface Props extends ConnectProps<{}, {}, {}> {}
 
@@ -184,12 +185,14 @@ const index = (props: Props) => {
                   to={`/goodsDetails?id=${cart.goods_id}`}
                 >
                   {/* 规格缩略图 */}
-                  <img
-                    loading="lazy"
-                    src={cart.spec_group_info.thum || cart.goods_info.thum}
-                    className="aui-list-img-sm"
-                    style={{ border: "1px solid #f4f4f4" }}
-                  />
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={cart.spec_group_info.thum || cart.goods_info.thum}
+                      className="aui-list-img-sm"
+                      style={{ border: "1px solid #f4f4f4" }}
+                    />
+                  </LazyLoad>
                 </Link>
                 {/* 查看购物车详情 */}
                 {edit === id ? (

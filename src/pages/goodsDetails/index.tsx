@@ -24,6 +24,7 @@ import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 // import Quill from "quill";
 // import { useRef } from "react";
 import "quill/dist/quill.snow.css";
+import LazyLoad from "react-lazyload";
 
 interface Props
   extends ConnectProps<
@@ -216,11 +217,13 @@ const index = (props: Props) => {
                 marginBottom: "4rem",
               }}
             >
-              <img
-                loading="lazy"
-                src={require("../../assets/img/no_content.png")}
-                style={{ width: "18%", margin: "0 auto" }}
-              />
+              <LazyLoad once>
+                <img
+                  loading="lazy"
+                  src={require("../../assets/img/no_content.png")}
+                  style={{ width: "18%", margin: "0 auto" }}
+                />
+              </LazyLoad>
               <h5 style={{ marginTop: "1rem" }} className="aui-font-size-14">
                 Oh. Aquí no hay nada.
               </h5>
@@ -243,14 +246,16 @@ const index = (props: Props) => {
                           borderRadius: "1.5rem",
                         }}
                       >
-                        <img
-                          loading="lazy"
-                          src={
-                            item.user_info.avatar ||
-                            require("../../assets/img/avatar.png")
-                          }
-                          style={{ maxWidth: "100%" }}
-                        />
+                        <LazyLoad once>
+                          <img
+                            loading="lazy"
+                            src={
+                              item.user_info.avatar ||
+                              require("../../assets/img/avatar.png")
+                            }
+                            style={{ maxWidth: "100%" }}
+                          />
+                        </LazyLoad>
                       </div>
                       <span className="aui-margin-l-5">
                         {item.user_info.nick_name || item.user_info.mobile}
@@ -297,30 +302,17 @@ const index = (props: Props) => {
                             key={index}
                             style={{ height: "5rem" }}
                           >
-                            <img
-                              loading="lazy"
-                              style={{ width: "100%", height: "100%" }}
-                              src={item}
-                            />
+                            <LazyLoad once>
+                              <img
+                                loading="lazy"
+                                style={{ width: "100%", height: "100%" }}
+                                src={item}
+                              />
+                            </LazyLoad>
                           </div>
                         </PhotoConsumer>
                       ))}
                     </PhotoProvider>
-                    {/* {(item.imgs || []).map((item, index) => {
-                      return (
-                        <div
-                          className="aui-col-xs-3"
-                          key={index}
-                          style={{ height: "5rem" }}
-                        >
-                          <img
-                            loading="lazy"
-                            style={{ width: "100%", height: "100%" }}
-                            src={item}
-                          />
-                        </div>
-                      );
-                    })} */}
                   </div>
                 </div>
               );
@@ -347,7 +339,9 @@ const index = (props: Props) => {
           {thums.map((item, index) => {
             return (
               <div key={index}>
-                <img loading="lazy" src={item} />
+                <LazyLoad once>
+                  <img loading="lazy" src={item} />
+                </LazyLoad>
               </div>
             );
           })}
@@ -480,7 +474,9 @@ const index = (props: Props) => {
         {imgs.map((src, index) => {
           return (
             <SwiperSlide key={index}>
-              <img loading="lazy" src={src} alt="" />
+              <LazyLoad once>
+                <img loading="lazy" src={src} alt="" />
+              </LazyLoad>
             </SwiperSlide>
           );
         })}
@@ -608,7 +604,7 @@ const index = (props: Props) => {
         </div>
       </div>
       {/*详情*/}
-      {getTabDetails()}
+      <LazyLoad once>{getTabDetails()}</LazyLoad>
 
       {/* 评价 */}
       {getTabComment()}
