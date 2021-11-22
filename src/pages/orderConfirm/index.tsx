@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {
   postOrdersView,
   postQueryMarketUser,
+  PostQuerySave,
   postQuerySave,
   postQueryUsersDefaultAddress,
 } from "@/services/api";
@@ -107,32 +108,40 @@ export default (props: Props) => {
   }, [address, goodsList]);
 
   function handleSubmit() {
-    const req = {
-      address_id: address.id,
-      goods_info: goodsList.map((item) => {
-        return {
-          goods_id: item.goods_id,
-          num: item.num,
-          spec_group_id_str: item.goods_id_str,
-        };
-      }),
-      market_activity_type: 0,
-      market_activity_id: 0,
-      memo,
-      shoper_id: shoperId,
-    };
-    postQuerySave(req).then((res) => {
-      console.log(res);
-      if (res) {
-        Notify.success(res.msg);
-        const { order_no, total_money } = res.data;
-        // 跳转到支付页面带入订单号和支付金额
-        history.push("/paySelect", {
-          order_no,
-          total_money,
-        });
+    const shareInfoString: string | null =
+      window.localStorage.getItem("global_shareInfo");
+    if (shareInfoString) {
+      const shareInfoParsed = JSON.parse(shareInfoString);
+
+      const req: PostQuerySave = {
+        address_id: address.id,
+        goods_info: goodsList.map((item) => {
+          return {
+            goods_id: item.goods_id,
+            num: item.num,
+            spec_group_id_str: item.goods_id_str,
+          };
+        }),
+        market_activity_type: 0,
+        market_activity_id: 0,
+        memo,
+        shoper_id: shoperId,
+      };
+      if (goodsList.some((item) => item.id === parseInt(shareInfoParsed.id))) {
+        req.shareCode = shareInfoParsed.shareCode;
       }
-    });
+      postQuerySave(req).then((res) => {
+        if (res) {
+          Notify.success(res.msg);
+          const { order_no, total_money } = res.data;
+          // 跳转到支付页面带入订单号和支付金额
+          history.push("/paySelect", {
+            order_no,
+            total_money,
+          });
+        }
+      });
+    }
   }
 
   function selectAddress() {

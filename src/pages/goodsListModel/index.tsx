@@ -141,7 +141,7 @@ export default (props: Props) => {
     customTag?: string;
     id?: string;
     keyword?: string;
-    custom_tag_id?: string;
+    customTagId?: string;
   } = {};
   if (customTag) {
     params.customTag = customTag;
@@ -160,10 +160,11 @@ export default (props: Props) => {
     <div className="goodsListModel">
       <SortHeader title={title} />
       <List
-        top={`${2.2 + 2.25}rem`}
+        // top={`${2.2 + 2.25}rem`}
         type={AllList.postApiGoodsGoodsLists}
         params={params}
       />
+      <div style={{ height: "4.45rem" }}></div>
       {/*<div className="aui-flex-col aui-flex-center ">*/}
       {/*  <div className="aui-flex-item-12 ">*/}
       {/*    <div*/}

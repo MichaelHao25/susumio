@@ -10,8 +10,8 @@ import {
 import styles from "./index.less";
 import storehouse from "../../pages/storehouse/index.less";
 // @ts-ignore
-import MiniRefreshTools from "minirefresh";
-import "minirefresh/dist/debug/minirefresh.css";
+import MiniRefreshTools from "../../plugin/minirefresh/minirefresh";
+import "../../plugin/minirefresh/minirefresh.css";
 import {
   AddressItem,
   AllList,
@@ -37,8 +37,8 @@ import SoldOut from "../SoldOut";
 interface PageProps {
   dispatch: Dispatch;
   header?: React.ReactNode;
-  top?: string;
-  bottom?: string;
+  //   top?: string;
+  //   bottom?: string;
   params?: {
     [key: string]: any;
   };
@@ -63,8 +63,8 @@ export default connect(({ list }: { list: ListState }) => {
     );
     const {
       header = "",
-      top = "",
-      bottom = "",
+      //   top = "",
+      //   bottom = "",
       dispatch,
       type,
       list,
@@ -233,20 +233,31 @@ export default connect(({ list }: { list: ListState }) => {
     };
     useEffect(() => {
       miniRefresh.current = new MiniRefreshTools.theme.defaults({
-        // isUseBodyScroll:true,
+        isUseBodyScroll: true,
         down: {
           isAuto: false,
           callback: () => {
+            console.log("down-callback");
+
             loadData(true);
           },
         },
         up: {
+          toTop: {
+            // 是否开启点击回到顶部
+            isEnable: false,
+          },
           isAuto: false,
           callback: () => {
+            console.log("up-callback");
             loadData(false);
           },
         },
+        isScrollBar: 0,
       });
+      return () => {
+        miniRefresh.current.unload();
+      };
     }, []);
     useEffect(() => {
       page.current.pageNum = 1;
@@ -2140,7 +2151,7 @@ export default connect(({ list }: { list: ListState }) => {
         <div
           id="minirefresh"
           className="minirefresh-wrap"
-          style={{ top: top ? top : "0", bottom: bottom ? bottom : "0" }}
+          //   style={{ top: top ? top : "0", bottom: bottom ? bottom : "0" }}
         >
           <div className="minirefresh-scroll">
             {header}

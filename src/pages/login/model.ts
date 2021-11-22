@@ -367,6 +367,15 @@ const userinfoModel: UserinfoModel = {
       const script2 = document.createElement("script");
       script2.src = "https://www.17track.net/externalcall.js";
       document.body.appendChild(script2);
+      window.onerror = function (
+        errorMessage,
+        scriptURI,
+        lineNumber,
+        columnNumber,
+        error,
+      ) {
+        console.log("错误", errorMessage);
+      };
     },
   },
 };

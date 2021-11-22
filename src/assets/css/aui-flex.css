@@ -59,7 +59,7 @@ html,body,header,section,footer,div,ul,ol,li,img,a,span,em,del,legend,center,str
     -webkit-flex-wrap: wrap;
             flex-wrap: wrap;
 }
-.aui-flex-col:before,
+/* .aui-flex-col:before,
 .aui-flex-row:before,
 .aui-flex-col:after,
 .aui-flex-row:after {
@@ -72,7 +72,7 @@ html,body,header,section,footer,div,ul,ol,li,img,a,span,em,del,legend,center,str
 .aui-flex-col:after,
 .aui-flex-row:after {
   clear: both;
-}
+} */
 .aui-flex-col {
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;

@@ -70,7 +70,6 @@ export default () => {
   return (
     <div className={styles.storehouse}>
       <List
-        bottom={"2.5rem"}
         params={params}
         type={AllList.postApiOrdersListsForStorehouse}
         header={header}

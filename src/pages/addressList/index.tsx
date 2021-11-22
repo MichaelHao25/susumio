@@ -16,10 +16,11 @@ export default (props: Props) => {
     <div id="app">
       <List
         header={<Header title={"Mi dirección"} />}
-        bottom={"2.5rem"}
+        // bottom={"2.5rem"}
         params={{ selectAddress }}
         type={AllList.postAddressLists}
       />
+      <div style={{ height: "2.5rem" }}></div>
       <footer className="aui-bar aui-bar-tab" id="footer">
         <Link
           to={"/addressEdit"}

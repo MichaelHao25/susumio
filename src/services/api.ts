@@ -912,6 +912,8 @@ export interface PostQuerySave {
   /*优惠相关*/
   market_activity_id: number;
   memo: string;
+  shareCode?: string;
+  shoper_id: string;
 }
 
 /**

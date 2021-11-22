@@ -9,7 +9,7 @@ interface Props extends ConnectProps<{}, { status: number }, {}> {}
 
 export default (props: Props) => {
   const [activeStatus, setActiveStatus] = useState<number>(() => {
-    return props.location.state.status;
+    return props?.location?.state?.status || 0;
   });
   const [params, setParams] = useState<OrdersData>({});
   const [loading, setLoading] = useState<boolean>(true);

@@ -31,11 +31,10 @@ enum PaySessionType {
 }
 
 export default (props: Props) => {
-  const {
-    location: {
-      state: { order_no, total_money },
-    },
-  } = props;
+  const { location: { state: { order_no, total_money } = {} } = {} } = props;
+  if (!order_no) {
+    history.replace("/");
+  }
   const [isBalance, setIsBalance] = useState<boolean>(false);
   const [paySessionType, setPaySessionType] = useState<PaySessionType>(
     PaySessionType.mx,
@@ -79,7 +78,11 @@ export default (props: Props) => {
           }
         }
       },
-      function () {},
+      function () {
+        history.push("/orderList", {
+          status: 0,
+        });
+      },
     );
   }
 
@@ -188,9 +191,9 @@ export default (props: Props) => {
           }}
           onApprove={(data, actions) => {
             return actions.order.capture().then(function (details: any) {
-              alert(
-                "Transaction completed by " + details.payer.name.given_name,
-              );
+              //   alert(
+              //     "Transaction completed by " + details.payer.name.given_name,
+              //   );
 
               if (details.status == "COMPLETED") {
                 postPayPaypal({
@@ -209,6 +212,9 @@ export default (props: Props) => {
           onCancel={(data) => {
             //alert(data);
             // todo 返回到我的未支付订单
+            history.push("/orderList", {
+              status: 0,
+            });
           }}
           onError={(err) => {
             //   alert(JSON.stringify(err));

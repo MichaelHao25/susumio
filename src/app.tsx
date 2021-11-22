@@ -27,12 +27,13 @@ Notiflix.Confirm.init({
   buttonsMaxLength: 500,
   titleMaxLength: 500,
 });
-
-Sentry.init({
-  dsn: "https://1204fd24a64b48e0b6bd161a9b7e15ac@o1068070.ingest.sentry.io/6062216",
-  integrations: [new Integrations.BrowserTracing()],
-  /**
-   * 捕获的粒度
-   */
-  tracesSampleRate: 1.0,
-});
+if (process.env.NODE_ENV === "production") {
+  Sentry.init({
+    dsn: "https://1204fd24a64b48e0b6bd161a9b7e15ac@o1068070.ingest.sentry.io/6062216",
+    integrations: [new Integrations.BrowserTracing()],
+    /**
+     * 捕获的粒度
+     */
+    tracesSampleRate: 1.0,
+  });
+}

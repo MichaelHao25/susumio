@@ -11,6 +11,7 @@ import List from "@/component/List";
 import { AllList } from "@/services/interface";
 import { postBannerList, postGoodsTag } from "@/services/api";
 import useCurrencyManage from "@/hooks/useCurrencyManage";
+
 interface PageProps extends ConnectProps {
   dispatch: Dispatch;
 }
@@ -54,16 +55,20 @@ const Header = () => {
     setChangeCurrencyType,
   } = useCurrencyManage();
   useEffect(() => {
-    postBannerList().then((res) => {
-      if (res) {
-        setBannerList(res.data || []);
-      }
-    });
-    postGoodsTag().then((res) => {
-      if (res) {
-        setTags(res.data || []);
-      }
-    });
+    if (bannerList.length === 0) {
+      postBannerList().then((res) => {
+        if (res) {
+          setBannerList(res.data || []);
+        }
+      });
+    }
+    if (tags.length === 0) {
+      postGoodsTag().then((res) => {
+        if (res) {
+          setTags(res.data || []);
+        }
+      });
+    }
   }, []);
   return (
     <>
@@ -251,16 +256,13 @@ const Header = () => {
     </>
   );
 };
-
 export default connect(({}: {}) => ({}))(
   React.memo((props: PageProps) => {
-    const { dispatch } = props;
-    useEffect(() => {}, []);
     return (
       <div className="indexPage">
         <List
           header={<Header />}
-          bottom={"2.5rem"}
+          //   bottom={"2.5rem"}
           type={AllList.postApiGoodsGoodsLists}
         />
         <div style={{ height: "2.5rem" }}></div>

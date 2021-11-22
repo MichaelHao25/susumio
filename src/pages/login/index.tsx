@@ -29,21 +29,12 @@ export default function login() {
       FB.XFBML.parse();
     }
   }, [window.FB]);
-  function handleSubmit() {
-    dispatch({
-      type: "userinfo/postApiUsersUserAccountsLogin",
-      payload: {
-        mobile,
-        password,
-      },
-    });
-  }
   const handleLogin = () => {
     dispatch({
       type: "userinfo/loginAsMobileOrMail",
       payload: {
-        mobile,
-        password,
+        mobile: mobile.trim(),
+        password: password.trim(),
       },
     });
   };
@@ -55,8 +46,8 @@ export default function login() {
     dispatch({
       type: "userinfo/registerAsMobileOrMail",
       payload: {
-        mobile,
-        password,
+        mobile: mobile.trim(),
+        password: password.trim(),
       },
     });
   };

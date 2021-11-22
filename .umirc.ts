@@ -1,8 +1,8 @@
-import { defineConfig } from 'umi';
+import { defineConfig } from "umi";
 
 export default defineConfig({
   nodeModulesTransform: {
-    type: 'none',
+    type: "none",
   },
   workerLoader: {},
   // msfu ---- config
@@ -21,8 +21,11 @@ export default defineConfig({
     immer: true,
   },
   // routes: [
-  //   { path: '/', component: '@/pages/index' },
+  //   { path: "/", component: "@/pages/index", exact: true },
+  //   { path: "/goodsDetails", component: "@/pages/goodsDetails", exact: true },
+  //
   // ],
+  antd: false,
   fastRefresh: {},
   // chainWebpack(config) {
   //   config.module

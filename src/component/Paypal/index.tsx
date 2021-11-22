@@ -26,7 +26,7 @@ const Paypal = (props: Props) => {
           .render("#paypal-button");
       }
     };
-    if (!paypal) {
+    if (!window.paypal) {
       //   const clientId = `AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi`;
       //   const currency = `USD`;
       //   const src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}`;

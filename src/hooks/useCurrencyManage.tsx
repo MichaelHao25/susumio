@@ -30,7 +30,10 @@ export interface CurrencyData {
 export interface Response extends BaseResponse {
   data: CurrencyData;
 }
-// 控制并发数
+
+/**
+ * 简单控制并发数，同一时间只允许发出一个请求
+ */
 let fetchRateStatus = false;
 // 获取汇率
 function fetchRate(
