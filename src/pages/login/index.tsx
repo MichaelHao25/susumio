@@ -146,7 +146,7 @@ export default function login() {
             data-button-type="continue_with"
             data-use-continue-as="true"
             data-scope="public_profile,email"
-            data-onlogin={`checkLogin`}
+            data-onlogin={"checkLogin"}
           ></div>
         </div>
 
@@ -168,12 +168,16 @@ export default function login() {
             <span>
               Acuerdo{" "}
               <Link
-                to={`/privacyPolicy?type=rules&id=5&title=Detalles del artículo`}
+                to={
+                  "/privacyPolicy?type=rules&id=5&title=Detalles del artículo"
+                }
               >
                 Condiciones de servicio
               </Link>{" "}
               <Link
-                to={`/privacyPolicy?type=rules&id=6&title=Detalles del artículo`}
+                to={
+                  "/privacyPolicy?type=rules&id=6&title=Detalles del artículo"
+                }
               >
                 Política de privacidad
               </Link>

@@ -109,6 +109,7 @@ const check = (mobile: string, password: string): boolean => {
   }
   return false;
 };
+
 export interface UserinfoModel {
   namespace: "userinfo";
   state: UserinfoState;
@@ -354,6 +355,11 @@ const userinfoModel: UserinfoModel = {
         });
       };
       document.body.appendChild(facebooklogin);
+
+      //  百度统计
+      const baidu = document.createElement("script");
+      baidu.src = `https://hm.baidu.com/hm.js?f5f5dc0f23281c16e5c29d0fe6af6ad8`;
+      document.body.appendChild(baidu);
 
       // paypal
       const clientId = `AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi`;

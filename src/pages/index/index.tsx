@@ -1,6 +1,6 @@
 import Tab from "@/component/Tab";
 import "./index.less";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Pagination, Autoplay } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
 import "swiper/swiper.less";
@@ -167,6 +167,7 @@ const Header = () => {
         </div>
       )}
       <div className="aui-content">
+        {bannerList.length === 0 && <div style={{ paddingTop: "50%" }} />}
         <Swiper
           modules={[Pagination, Autoplay]}
           autoplay={{
@@ -174,40 +175,39 @@ const Header = () => {
             disableOnInteraction: false,
           }}
           loop={true}
+          style={{ height: "100%" }}
           pagination={{ clickable: true }}
         >
           {bannerList.map((item) => {
             return (
               <SwiperSlide key={item.id}>
-                <LazyLoad once>
-                  <img
-                    loading="lazy"
-                    src={item.img}
-                    alt=""
-                    onClick={() => {
-                      if (item.is_open_model) {
-                        if (item.model === "goods") {
-                          history.push(`/goodsDetails?id=${item.model_id}`);
-                        }
-                        if (item.model === "goods_cate") {
-                          history.push(
-                            `/goodsListModel?id=${item.model_id}&title=Categorías`,
-                          );
-                        }
-
-                        if (item.model === "tag") {
-                          history.push(
-                            `/goodsListModel?customTagId=${item.model_id}&title=Categorías`,
-                          );
-                        }
-                      } else {
-                        if (item.href) {
-                          window.location.href = item.href;
-                        }
+                <img
+                  loading="lazy"
+                  src={item.img}
+                  alt=""
+                  onClick={() => {
+                    if (item.is_open_model) {
+                      if (item.model === "goods") {
+                        history.push(`/goodsDetails?id=${item.model_id}`);
                       }
-                    }}
-                  />
-                </LazyLoad>
+                      if (item.model === "goods_cate") {
+                        history.push(
+                          `/goodsListModel?id=${item.model_id}&title=Categorías`,
+                        );
+                      }
+
+                      if (item.model === "tag") {
+                        history.push(
+                          `/goodsListModel?customTagId=${item.model_id}&title=Categorías`,
+                        );
+                      }
+                    } else {
+                      if (item.href) {
+                        window.location.href = item.href;
+                      }
+                    }
+                  }}
+                />
               </SwiperSlide>
             );
           })}
@@ -218,6 +218,9 @@ const Header = () => {
               className="aui-row aui-padded-t-15 "
               style={{ display: "flex", flexWrap: "wrap" }}
             >
+              {tags.length === 0 && (
+                <div style={{ paddingTop: "25%", marginTop: "52px" }} />
+              )}
               {tags.map((item) => {
                 return (
                   <Link
@@ -225,14 +228,17 @@ const Header = () => {
                     key={item.id}
                     className="aui-col-xs-3"
                   >
-                    <LazyLoad once>
-                      <img
-                        loading="lazy"
-                        src={item.thum}
-                        className="aui-padded-5"
-                        style={{ margin: "0px auto", width: "55%" }}
-                      />
-                    </LazyLoad>
+                    <div style={{ position: "relative" }}>
+                      <div style={{ paddingTop: "55%" }} />
+                      <div style={{ position: "absolute", top: 0 }}>
+                        <img
+                          loading="lazy"
+                          src={item.thum}
+                          className="aui-padded-5"
+                          style={{ margin: "0px auto", width: "55%" }}
+                        />
+                      </div>
+                    </div>
                     <div className="aui-grid-label">{item.name}</div>
                   </Link>
                 );
@@ -255,7 +261,7 @@ const Header = () => {
     </>
   );
 };
-export default connect(({}: {}) => ({}))(
+export default connect(() => ({}))(
   React.memo((props: PageProps) => {
     return (
       <div className="indexPage">
@@ -264,7 +270,7 @@ export default connect(({}: {}) => ({}))(
           //   bottom={"2.5rem"}
           type={AllList.postApiGoodsGoodsLists}
         />
-        <div style={{ height: "2.5rem" }}></div>
+        <div style={{ height: "2.5rem" }} />
         <Tab />
       </div>
     );

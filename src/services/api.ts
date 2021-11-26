@@ -7,6 +7,7 @@ interface PostArticles {
   type: string;
   id: string;
 }
+
 /**
  * 获取文章详情
  * @returns
@@ -25,11 +26,13 @@ export const postArticles = (props: PostArticles) => {
 export const postFreightTemplate = () => {
   return request.post("/api_goods/freight_templates/lists");
 };
+
 interface ExchangeRate {
   amount?: number;
   from?: CurrencyType;
   to?: CurrencyType;
 }
+
 /**
  * 汇率调整
  */
@@ -111,6 +114,7 @@ interface PostApiGoodsSave {
   shoperId: number;
   id?: number;
 }
+
 /**
  * 店中店更新商品
  * @param data
@@ -214,6 +218,7 @@ export const postUploadFile = (req: PostUploadFile) => {
     data: formData,
   });
 };
+
 export interface PostOrdersList {
   status: number;
   pageLimit: number;

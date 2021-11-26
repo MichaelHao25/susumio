@@ -2,10 +2,7 @@ import Header from "@/component/Header";
 import "./index.less";
 import Tab from "@/component/Tab";
 import React, { useEffect, useState } from "react";
-import {
-  getApiGoodsGoodsCatesListsTree,
-  postApiGoodsGoodsLists,
-} from "@/services/api";
+import { getApiGoodsGoodsCatesListsTree } from "@/services/api";
 import { history } from "umi";
 import LazyLoad from "react-lazyload";
 

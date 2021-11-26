@@ -630,6 +630,9 @@
             scrollWrap === document.body
               ? document.querySelector("html").scrollTop
               : scrollWrap.scrollTop;
+          if (scrollTop === 0) {
+            scrollTop = document.querySelector("body").scrollTop;
+          }
           var scrollHeight = scrollWrap.scrollHeight;
           var clientHeight = getClientHeightByDom(scrollWrap);
           var options = this.options;

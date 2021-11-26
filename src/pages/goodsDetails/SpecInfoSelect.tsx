@@ -98,7 +98,26 @@ export default (props: Props) => {
       );
     }, 0);
     setTotalNum(totalNum);
-    setTotalMoney(Number((totalNum * sell_price).toFixed(2)));
+    const {
+      goods: { spec_group_info },
+    } = props;
+    const costList = Object.values(selectList)
+      .flat(2)
+      .map((item) => {
+        const info = spec_group_info.find(
+          (item2) => item2.id_str === item.spec_group_id_str,
+        );
+        if (!info) {
+          Notify.failure("价格信息异常请联系管理员！");
+          return 0;
+        }
+        return info.sell_price * item.num;
+      });
+    const totalMoney = costList.reduce((a, b) => {
+      return a + b;
+    }, 0);
+
+    setTotalMoney(Number(totalMoney.toFixed(2)));
   }, [selectList]);
 
   function getValue(id: number): number {
@@ -226,7 +245,6 @@ export default (props: Props) => {
     }
   }
   const children_thum = data?.[typeOneIndex]?.children?.[0]?.thum;
-  console.log("浓缩图:", children_thum);
 
   return (
     <div

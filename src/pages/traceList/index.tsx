@@ -4,11 +4,9 @@ import { AllList } from "@/services/interface";
 
 export default () => {
   return (
-    <>
-      <List
-        header={<Header title={"Mis huellas"} />}
-        type={AllList.postUserFootLists}
-      />
-    </>
+    <List
+      header={<Header title={"Mis huellas"} />}
+      type={AllList.postUserFootLists}
+    />
   );
 };

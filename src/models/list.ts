@@ -63,6 +63,9 @@ export enum SortKey {
 export interface ListState {
   sortType?: SortType;
   sortKey?: SortKey;
+  /**
+   * 讲他的key按照域名拆开
+   */
   postApiGoodsGoodsLists: Details[];
   postApiOrdersLists: OrdersListItem[];
   postAddressLists: AddressItem[];
@@ -430,11 +433,17 @@ export default <ListModel>{
       }
     },
     *postApiGoodsGoodsLists({ payload }, { call, select, put }) {
-      const { list } = yield select(({ list }: { list: ListState }) => {
-        return {
-          list: list.postApiGoodsGoodsLists,
-        };
-      });
+      const { list, indexList } = yield select(
+        ({ list }: { list: ListState }) => {
+          return {
+            list: list.postApiGoodsGoodsLists,
+            indexList: list.postApiGoodsGoodsListsIndex,
+          };
+        },
+      );
+      /**
+       * 如果是首页的话
+       */
 
       const {
         pageLimit = 10,
@@ -458,13 +467,23 @@ export default <ListModel>{
       });
 
       if (res) {
-        yield put({
-          type: "setState",
-          payload: {
-            postApiGoodsGoodsLists:
-              pageNum === 1 ? res.data : list.concat(res.data),
-          },
-        });
+        if (window.location.pathname === "/") {
+          yield put({
+            type: "setState",
+            payload: {
+              postApiGoodsGoodsListsIndex:
+                pageNum === 1 ? res.data : indexList.concat(res.data),
+            },
+          });
+        } else {
+          yield put({
+            type: "setState",
+            payload: {
+              postApiGoodsGoodsLists:
+                pageNum === 1 ? res.data : list.concat(res.data),
+            },
+          });
+        }
         cb(res.data);
       } else {
         cb([]);

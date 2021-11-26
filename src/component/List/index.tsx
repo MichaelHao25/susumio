@@ -96,7 +96,6 @@ export default connect(({ list }: { list: ListState }) => {
       if (reload) {
         page.current.pageNum = 1;
       }
-      debugger;
       switch (type) {
         case AllList.postTeamUsers: {
           dispatch({
@@ -262,6 +261,15 @@ export default connect(({ list }: { list: ListState }) => {
       };
     }, []);
     useEffect(() => {
+      if (window.location.pathname === "/") {
+        if ((list.postApiGoodsGoodsListsIndex || []).length !== 0) {
+          page.current.pageNum = parseInt(
+            list.postApiGoodsGoodsListsIndex.length / 10 + 1,
+            10,
+          );
+          return;
+        }
+      }
       page.current.pageNum = 1;
       loadData(false);
     }, [props.params]);
@@ -561,6 +569,7 @@ export default connect(({ list }: { list: ListState }) => {
                       loading="lazy"
                       src={require("../../assets/img/no_content.png")}
                       style={{ width: "18%", margin: "0 auto" }}
+                      alt={"no_content"}
                     />
                   </LazyLoad>
                   <h5
@@ -574,11 +583,11 @@ export default connect(({ list }: { list: ListState }) => {
                 ""
               )}
               <ul className="aui-list aui-media-list aui-bg-default">
-                {list.postApplyList.map((apply) => {
+                {list.postApplyList.map((apply, index) => {
                   return (
                     <li
                       className="aui-list-item aui-list-item-middle aui-bg-white aui-margin-b-10"
-                      v-for="(apply, key) in list"
+                      key={index}
                       data-click="goDetail(apply)"
                     >
                       <div className="aui-media-list-item-inner">
@@ -905,11 +914,12 @@ export default connect(({ list }: { list: ListState }) => {
                         .map((_, index) => {
                           return (
                             <i
+                              key={index}
                               className="aui-iconfont iconfont icon-shoucang aui-margin-5"
                               style={{
                                 fontSize: "1.2rem",
                                 color:
-                                  index + 1 <= parseInt(comment.score)
+                                  index + 1 <= parseInt(comment.score, 10)
                                     ? "#ffc640"
                                     : "#ccc",
                               }}
@@ -1184,7 +1194,11 @@ export default connect(({ list }: { list: ListState }) => {
         }
 
         case AllList.postApiGoodsGoodsLists: {
-          return list.postApiGoodsGoodsLists.map((item) => {
+          const tempList =
+            window.location.pathname === "/"
+              ? list.postApiGoodsGoodsListsIndex || []
+              : list.postApiGoodsGoodsLists;
+          return tempList.map((item) => {
             return (
               <Link
                 to={`/goodsDetails?id=${item.id}`}
