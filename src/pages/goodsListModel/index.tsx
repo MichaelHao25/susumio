@@ -164,7 +164,7 @@ export default (props: Props) => {
         type={AllList.postApiGoodsGoodsLists}
         params={params}
       />
-      <div style={{ height: "4.45rem" }}></div>
+      <div style={{ height: "4.45rem" }} />
     </div>
   );
 };

@@ -353,47 +353,49 @@ export default (props: Props) => {
                 <div className="aui-list-item-title aui-font-size-12 aui-padded-l-10 aui-padded-r-10 spec-middle flex-2">
                   Existencias:{stock}
                 </div>
-                <div className="aui-list-item-right aui-text-price is-flex aui-padded-l-15 flex-2">
-                  <i
-                    onClick={() =>
-                      handleChangeNum(id, {
-                        type: "remove",
-                        stock,
-                        spec_group_id_str,
-                      })
-                    }
-                    className="aui-iconfont iconfont icon-jian aui-font-size-20 aui-text-info"
-                  />
-                  <input
-                    className="aui-padded-l-5 aui-padded-r-5 aui-font-size-14 aui-text-center"
-                    type="text"
-                    style={{ marginTop: "-0.25rem" }}
-                    pattern="[0-9]*"
-                    onChange={(e) => {
-                      const {
-                        target: { value },
-                      } = e;
-                      handleChangeNum(id, {
-                        type: "set",
-                        num: value,
-                        stock,
-                        spec_group_id_str,
-                      });
-                    }}
-                    value={getValue(id)}
-                  />
+                {stock !== 0 && (
+                  <div className="aui-list-item-right aui-text-price is-flex aui-padded-l-15 flex-2">
+                    <i
+                      onClick={() =>
+                        handleChangeNum(id, {
+                          type: "remove",
+                          stock,
+                          spec_group_id_str,
+                        })
+                      }
+                      className="aui-iconfont iconfont icon-jian aui-font-size-20 aui-text-info"
+                    />
+                    <input
+                      className="aui-padded-l-5 aui-padded-r-5 aui-font-size-14 aui-text-center"
+                      type="text"
+                      style={{ marginTop: "-0.25rem" }}
+                      pattern="[0-9]*"
+                      onChange={(e) => {
+                        const {
+                          target: { value },
+                        } = e;
+                        handleChangeNum(id, {
+                          type: "set",
+                          num: value,
+                          stock,
+                          spec_group_id_str,
+                        });
+                      }}
+                      value={getValue(id)}
+                    />
 
-                  <i
-                    onClick={() =>
-                      handleChangeNum(id, {
-                        type: "add",
-                        stock,
-                        spec_group_id_str,
-                      })
-                    }
-                    className="aui-iconfont iconfont icon-jia aui-font-size-20 aui-text-info"
-                  />
-                </div>
+                    <i
+                      onClick={() =>
+                        handleChangeNum(id, {
+                          type: "add",
+                          stock,
+                          spec_group_id_str,
+                        })
+                      }
+                      className="aui-iconfont iconfont icon-jia aui-font-size-20 aui-text-info"
+                    />
+                  </div>
+                )}
               </div>
             );
           })}

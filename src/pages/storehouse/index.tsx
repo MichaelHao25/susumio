@@ -39,7 +39,7 @@ export default (props: Props) => {
       }
     });
     postApiGoodsGoodsLists({
-      shoperId: parseInt(id),
+      shoperId: parseInt(id, 10),
       pageLimit: 100,
       pageNum: 1,
     }).then((res) => {

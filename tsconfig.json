@@ -11,6 +11,7 @@
     "baseUrl": "./",
     "strict": true,
     "strictNullChecks": true,
+
     "paths": {
       "@/*": ["src/*"],
       "@@/*": ["src/.umi/*"]

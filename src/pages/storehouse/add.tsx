@@ -72,7 +72,10 @@ export default (props: Props) => {
                   "italic",
                   "underline",
                   "strike",
-                  "link",
+                  /**
+                   * 屏蔽link按钮
+                   */
+                  // "link",
                   "blockquote",
                   "image",
                   "video",
@@ -87,7 +90,7 @@ export default (props: Props) => {
                 [{ direction: "rtl" }], // text direction
               ],
               handlers: {
-                image: function (value: boolean) {
+                image(value: boolean) {
                   if (value) {
                     if (refUpload.current) {
                       refUpload.current();
@@ -110,6 +113,26 @@ export default (props: Props) => {
           //   readOnly: false,
           theme: "snow",
         });
+        // refQuillHandler.current.on("text-change", (...props) => {
+        //     const [, , source] = props;
+        //     console.log("3333");
+        //     if (source === "user") {
+        //       console.log(refQuillHandler.current?.root.innerHTML || "")
+        //       let html = refQuillHandler.current?.root.innerHTML || "";
+        //       html = html.replace(/<a.*?>(.*?)<\/a>/g, "$1");
+        //       const links = html.match(/www\..*?(?=(<|"))/g);
+        //       if (links) {
+        //         const linkSet = new Set(links);
+        //         for (const link of linkSet) {
+        //           const aTag = `<a href="${link}" rel="noopener noreferrer" target="_blank">${link}</a>`;
+        //           const regx = new RegExp(link, "g");
+        //           html = html.replace(regx, aTag);
+        //         }
+        //       }
+        //       setDesc(html);
+        //     }
+        //   }
+        // );
       }
     }
   }, [refEditorElement]);
@@ -136,10 +159,20 @@ export default (props: Props) => {
       name !== "" &&
       sellPrice !== ""
     ) {
-      const desc = refQuillHandler.current?.root.innerHTML || "";
+      let desc: string = refQuillHandler.current?.root.innerHTML || "";
       const money = MoneyValueUnitRender.getMoney(sellPrice);
       if (money.value === "0") {
         return;
+      }
+      desc = desc.replace(/<a.*?>(.*?)<\/a>/g, "$1");
+      const links = desc.match(/www\..*?(?=(<|"))/g);
+      if (links) {
+        const linkSet = new Set(links);
+        for (const link of linkSet) {
+          const aTag = `<a href="https://${link}" rel="noopener noreferrer" target="_blank">${link}</a>`;
+          const regx = new RegExp(link, "g");
+          desc = desc.replace(regx, aTag);
+        }
       }
       if (id) {
         postApiGoodsUpdate({

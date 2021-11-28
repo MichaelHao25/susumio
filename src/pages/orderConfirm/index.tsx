@@ -14,14 +14,18 @@ import Notiflix, { Notify } from "notiflix";
 import { history } from "umi";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 
-interface Props
-  extends ConnectProps<{}, { goodsList: GoodsList[]; shoperId: string }, {}> {}
+type IProps = ConnectProps<
+  Record<string, never>,
+  { goodsList: GoodsList[]; shoperId: string },
+  Record<string, never>
+>;
 
 enum Action {
   Add,
   Remove,
   Set,
 }
+
 interface Address {
   address: string;
   mobile: string;
@@ -36,7 +40,7 @@ interface Cost {
   total_money: number;
 }
 
-export default (props: Props) => {
+export default (props: IProps) => {
   const { location: { state: { shoperId = "" } = {} } = {} } = props;
   const [goodsList, setGoodsList] = useState<GoodsList[]>(() => {
     const { location: { state: { goodsList = [] } = {} } = {} } = props;
@@ -110,44 +114,46 @@ export default (props: Props) => {
   function handleSubmit() {
     const shareInfoString: string | null =
       window.localStorage.getItem("global_shareInfo");
+
+    const req: PostQuerySave = {
+      address_id: address.id,
+      goods_info: goodsList.map((item) => {
+        return {
+          goods_id: item.goods_id,
+          num: item.num,
+          spec_group_id_str: item.goods_id_str,
+        };
+      }),
+      market_activity_type: 0,
+      market_activity_id: 0,
+      memo,
+      shoper_id: shoperId,
+    };
     if (shareInfoString) {
       const shareInfoParsed = JSON.parse(shareInfoString);
-
-      const req: PostQuerySave = {
-        address_id: address.id,
-        goods_info: goodsList.map((item) => {
-          return {
-            goods_id: item.goods_id,
-            num: item.num,
-            spec_group_id_str: item.goods_id_str,
-          };
-        }),
-        market_activity_type: 0,
-        market_activity_id: 0,
-        memo,
-        shoper_id: shoperId,
-      };
-      if (goodsList.some((item) => item.id === parseInt(shareInfoParsed.id))) {
+      if (
+        goodsList.some((item) => item.id === parseInt(shareInfoParsed.id, 10))
+      ) {
         req.shareCode = shareInfoParsed.shareCode;
       }
-      postQuerySave(req).then((res) => {
-        if (res) {
-          Notify.success(res.msg);
-          const { order_no, total_money } = res.data;
-          // 跳转到支付页面带入订单号和支付金额
-          history.push("/paySelect", {
-            order_no,
-            total_money,
-          });
-          /**
-           * 如果有分享码的话就清楚分享信息
-           */
-          if (req.shareCode) {
-            window.localStorage.removeItem("global_shareInfo");
-          }
-        }
-      });
     }
+    postQuerySave(req).then((res) => {
+      if (res) {
+        Notify.success(res.msg);
+        const { order_no, total_money } = res.data;
+        // 跳转到支付页面带入订单号和支付金额
+        history.push("/paySelect", {
+          order_no,
+          total_money,
+        });
+        /**
+         * 如果有分享码的话就清楚分享信息
+         */
+        if (req.shareCode) {
+          window.localStorage.removeItem("global_shareInfo");
+        }
+      }
+    });
   }
 
   function selectAddress() {
@@ -297,7 +303,7 @@ export default (props: Props) => {
                             handleAddOrRemove(
                               Action.Set,
                               id,
-                              parseInt(e.target.value || "0"),
+                              parseInt(e.target.value || "0", 10),
                             );
                           }}
                           className="aui-padded-l-5 aui-padded-r-5 aui-font-size-14 aui-text-center"
