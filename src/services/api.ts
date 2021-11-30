@@ -3,6 +3,31 @@ import { RequestOptionsInit } from "umi-request";
 import { AddressItem } from "@/services/interface";
 import { CurrencyType } from "@/hooks/useCurrencyManage";
 
+interface PostDelivery {
+  order_id: number;
+  content: string;
+  is_open_eorder: 0;
+  express_type: "";
+  express_no: "";
+}
+
+/**
+ * 订单发货
+ * @returns
+ */
+export const postDelivery = (props: PostDelivery) => {
+  const { order_id, content, is_open_eorder, express_type, express_no } = props;
+  return request.post("/api_orders/deliver_goods/shoper_save", {
+    data: {
+      order_id,
+      content,
+      is_open_eorder,
+      express_type,
+      express_no,
+    },
+  });
+};
+
 interface PostArticles {
   type: string;
   id: string;

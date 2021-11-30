@@ -1432,6 +1432,7 @@ export default connect(({ list }: { list: ListState }) => {
               }
             });
           };
+
           /**
            * 店中店发货
            * @param e
@@ -1457,6 +1458,7 @@ export default connect(({ list }: { list: ListState }) => {
               }
             });
           }
+
           const finish = (
             e: React.MouseEvent<HTMLDivElement>,
             order: OrdersListItem,
@@ -1676,15 +1678,27 @@ export default connect(({ list }: { list: ListState }) => {
                     </div>
                     {/* 按钮组 */}
                     <div className="order-buttons aui-padded-b-5 ">
-                      {(order.status == 2 || order.status == 3) &&
-                        order.shoper_id === user.id && (
-                          <div
-                            className="button active "
-                            onClick={(e) => sendGoods(e, order)}
-                          >
-                            Verificar
-                          </div>
-                        )}
+                      {/*发货*/}
+                      {order.status == 2 && order.shoper_id === user.id && (
+                        <div
+                          className="button active "
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            history.push(`/storehouse/delivery?id=${order.id}`);
+                          }}
+                        >
+                          发货 Delivery
+                        </div>
+                      )}
+                      {/*{(order.status == 2 || order.status == 3) &&*/}
+                      {/*order.shoper_id === user.id && (*/}
+                      {/*  <div*/}
+                      {/*    className="button active "*/}
+                      {/*    onClick={(e) => sendGoods(e, order)}*/}
+                      {/*  >*/}
+                      {/*    Verificar*/}
+                      {/*  </div>*/}
+                      {/*)}*/}
                       {order.status == 3 ? (
                         <div
                           className="button "

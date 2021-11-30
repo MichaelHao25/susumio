@@ -26,6 +26,7 @@ interface Props
     },
     {}
   > {}
+
 export default (props: Props) => {
   const refEditorElement = useRef<HTMLDivElement>(null);
   const refQuillHandler = useRef<Quill>(null);
@@ -169,9 +170,11 @@ export default (props: Props) => {
       if (links) {
         const linkSet = new Set(links);
         for (const link of linkSet) {
-          const aTag = `<a href="https://${link}" rel="noopener noreferrer" target="_blank">${link}</a>`;
-          const regx = new RegExp(link, "g");
-          desc = desc.replace(regx, aTag);
+          if (!link.includes("www.177pinche.com")) {
+            const aTag = `<a href="https://${link}" rel="noopener noreferrer" target="_blank">${link}</a>`;
+            const regx = new RegExp(link, "g");
+            desc = desc.replace(regx, aTag);
+          }
         }
       }
       if (id) {

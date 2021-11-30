@@ -1,13 +1,26 @@
 1. 如果没有汇率信息的话就改成美元
 
+| 账号 | ID  | 登录密码  | 支付密码  |||
+ | ---  | ---  | ---  | ---  | ---|---|
+|13968066530|954321|954321|123456|1|
+| 2583691470  | 21667  | 123456  | 123456  | 1|
+| 1578423960  | 22668  | 123456  | 123456  |
+| 542786698  | 21669  | 123456 | 123456 |
+| 2348965678 | 21670 | 123456 | 123456 |
+| 586752499 | 21671 | 123456 | 123456 |
+| 6493231999 | 21672 | 123456 | 123456 |
+| 568797539 | 21673 | 123456 | 123456 |
+| 8713949966 | 21674 | 123456 | 123456 |
+| 689782136 | 21675 | 123456 | 123456 |
+| 6945618694 | 21676 | 123456 | 123456 |
+
+登录密码123456，支付密码 123456
 
  const global_shareInfo = localStorage.getItem('global_shareInfo')
-        // 登陆成功后如果有分享信息的话就直接跳转到详情页面
-        if (global_shareInfo) {
-            // localStorage.removeItem('global_shareInfo')
-            const parse_global_shareInfo = JSON.parse(global_shareInfo);
-            history.push(`/goodsDetails?id=${parse_global_shareInfo.id}&shareCode=${parse_global_shareInfo.shareCode}`)
-            
+// 登陆成功后如果有分享信息的话就直接跳转到详情页面 if (global_shareInfo) { // localStorage.removeItem('global_shareInfo')
+const parse_global_shareInfo = JSON.parse(global_shareInfo);
+history.push(`/goodsDetails?id=${parse_global_shareInfo.id}&shareCode=${parse_global_shareInfo.shareCode}`)
+
             return
         }else{
         history.push("/");
