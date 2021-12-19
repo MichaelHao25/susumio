@@ -6,12 +6,17 @@ import Tab from "./tab";
 import Upload from "@/component/Upload";
 import { postApiGoodsSave, postApiGoodsUpdate } from "@/services/api";
 import { Confirm, Notify } from "notiflix";
-import { ConnectProps, UserinfoState } from "@/.umi/plugin-dva/connect";
+import {
+  ConnectProps,
+  ListState,
+  UserinfoState,
+} from "@/.umi/plugin-dva/connect";
 import { history, useSelector } from "umi";
 import Quill from "quill";
 import { useRef } from "react";
 import "quill/dist/quill.snow.css";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import Notiflix from "notiflix";
 
 interface Props
   extends ConnectProps<
@@ -38,9 +43,29 @@ export default (props: Props) => {
   const [name, setName] = useState<string>("");
 
   const [sellPrice, setSellPrice] = useState<string>("");
-  const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
-    return userinfo;
-  });
+  const {
+    userinfo: { user },
+    postApiOrdersLists,
+  } = useSelector(
+    ({ userinfo, list }: { userinfo: UserinfoState; list: ListState }) => {
+      return {
+        userinfo,
+        postApiOrdersLists: list.postApiOrdersLists,
+      };
+    },
+  );
+  useEffect(() => {
+    if ((postApiOrdersLists || []).length >= 20) {
+      Notiflix.Report.failure(
+        "Falló la adición del producto",
+        "No se puede añadir más artículos, sólo 20pcs como máximo. Síguelo después de eliminar algunos por favor.",
+        "ok",
+        () => {
+          history.goBack();
+        },
+      );
+    }
+  }, [postApiOrdersLists]);
   useEffect(() => {
     if (props.location.state) {
       const { id, thum, img, desc, name, sellPrice } = props.location.state;
@@ -76,7 +101,7 @@ export default (props: Props) => {
                   /**
                    * 屏蔽link按钮
                    */
-                  // "link",
+                  "link",
                   "blockquote",
                   "image",
                   "video",
@@ -165,18 +190,18 @@ export default (props: Props) => {
       if (money.value === "0") {
         return;
       }
-      desc = desc.replace(/<a.*?>(.*?)<\/a>/g, "$1");
-      const links = desc.match(/www\..*?(?=(<|"))/g);
-      if (links) {
-        const linkSet = new Set(links);
-        for (const link of linkSet) {
-          if (!link.includes("www.177pinche.com")) {
-            const aTag = `<a href="https://${link}" rel="noopener noreferrer" target="_blank">${link}</a>`;
-            const regx = new RegExp(link, "g");
-            desc = desc.replace(regx, aTag);
-          }
-        }
-      }
+      // desc = desc.replace(/<a.*?>(.*?)<\/a>/g, "$1");
+      // const links = desc.match(/www\..*?(?=(<|"))/g);
+      // if (links) {
+      //   const linkSet = new Set(links);
+      //   for (const link of linkSet) {
+      //     if (!link.includes("www.177pinche.com")) {
+      //       const aTag = `<a href="https://${link}" rel="noopener noreferrer" target="_blank">${link}</a>`;
+      //       const regx = new RegExp(link, "g");
+      //       desc = desc.replace(regx, aTag);
+      //     }
+      //   }
+      // }
       if (id) {
         postApiGoodsUpdate({
           id,

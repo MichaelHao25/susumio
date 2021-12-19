@@ -1679,7 +1679,7 @@ export default connect(({ list }: { list: ListState }) => {
                     {/* 按钮组 */}
                     <div className="order-buttons aui-padded-b-5 ">
                       {/*发货*/}
-                      {order.status == 2 && order.shoper_id === user.id && (
+                      {order.status === 2 && order.shoper_id === user.id && (
                         <div
                           className="button active "
                           onClick={(e) => {
@@ -1687,7 +1687,7 @@ export default connect(({ list }: { list: ListState }) => {
                             history.push(`/storehouse/delivery?id=${order.id}`);
                           }}
                         >
-                          发货 Delivery
+                          Delivery
                         </div>
                       )}
                       {/*{(order.status == 2 || order.status == 3) &&*/}
@@ -1859,6 +1859,7 @@ export default connect(({ list }: { list: ListState }) => {
             e: React.MouseEvent<HTMLDivElement>,
             order: OrdersListItem,
           ): void => {
+            e.stopPropagation();
             history.push("/viewHtmlDetails", {
               order,
             });

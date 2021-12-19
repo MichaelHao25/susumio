@@ -79,7 +79,6 @@ export default () => {
             }
           }
         },
-        function () {},
       );
     });
   }
@@ -118,11 +117,11 @@ export default () => {
             </span>
             {/* <input type="number" style="letter-spacing: 1px;width: 90%; display: inline;"> */}
           </div>
-          <div className="aui-text-pray aui-font-size-12">
-            Importe minimo para sscar:{" "}
-            <MoneyValueUnitRender>{min_drawcash_money}</MoneyValueUnitRender>
-            {/* $ */}
-          </div>
+          {/*<div className="aui-text-pray aui-font-size-12">*/}
+          {/*  Importe minimo para sscar:{" "}*/}
+          {/*  <MoneyValueUnitRender>{min_drawcash_money}</MoneyValueUnitRender>*/}
+          {/*  /!* $ *!/*/}
+          {/*</div>*/}
         </div>
 
         <div className="aui-margin-10">

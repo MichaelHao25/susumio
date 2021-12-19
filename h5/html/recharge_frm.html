@@ -3,237 +3,243 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
-    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
-    <link rel="stylesheet" type="text/css" href="../css/aui-flex.css" />
-    <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css" />
-    <style media="screen">
-        .bg {
-            background-color: #fff;
-            margin: 1rem 1rem;
-            border-radius: 0.2rem;
-        }
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+  <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+  <link rel="stylesheet" type="text/css" href="../css/aui.css"/>
+  <link rel="stylesheet" type="text/css" href="../css/aui-flex.css"/>
+  <link rel="stylesheet" type="text/css" href="../ali_icon/iconfont.css"/>
+  <style media="screen">
+    .bg {
+      background-color: #fff;
+      margin: 1rem 1rem;
+      border-radius: 0.2rem;
+    }
 
-        .bg .money {
-            padding: 1rem 0rem 0rem 0rem;
-            margin: 0rem 1.5rem 1rem 1.5rem;
-            padding-bottom: .5rem;
-            border-bottom: 1px solid #bcbcbc;
-        }
+    .bg .money {
+      padding: 1rem 0rem 0rem 0rem;
+      margin: 0rem 1.5rem 1rem 1.5rem;
+      padding-bottom: .5rem;
+      border-bottom: 1px solid #bcbcbc;
+    }
 
-        .bg .money .input {
-            text-align: center;
-            letter-spacing: 0.2rem;
-            font-size: 2rem;
-        }
+    .bg .money .input {
+      text-align: center;
+      letter-spacing: 0.2rem;
+      font-size: 2rem;
+    }
 
-        .bg .paybutton {
-            margin: 1rem 0.5rem;
-            padding: 0.8rem 0rem 1.3rem 0rem;
-        }
+    .bg .paybutton {
+      margin: 1rem 0.5rem;
+      padding: 0.8rem 0rem 1.3rem 0rem;
+    }
 
-        .bg .paybutton .button {
-            width: 100%;
-            line-height: 2.2rem;
-            height: 2.2rem;
-            text-align: center;
-            color: #fff;
-            border-radius: 0.3rem;
-            margin-bottom: 0.5rem;
-        }
+    .bg .paybutton .button {
+      width: 100%;
+      line-height: 2.2rem;
+      height: 2.2rem;
+      text-align: center;
+      color: #fff;
+      border-radius: 0.3rem;
+      margin-bottom: 0.5rem;
+    }
 
-        .bg .paybutton .wechat {
-            background-color: #09bb07
-        }
+    .bg .paybutton .wechat {
+      background-color: #09bb07
+    }
 
-        .bg .paybutton .alipay {
-            background-color: #0AE;
-        }
+    .bg .paybutton .alipay {
+      background-color: #0AE;
+    }
 
-        .bg .paybutton .wechat:active {
-            background-color: #4ea948
-        }
+    .bg .paybutton .wechat:active {
+      background-color: #4ea948
+    }
 
-        .bg .paybutton .alipay:active {
-            background-color: #2c6abe;
-        }
-    </style>
+    .bg .paybutton .alipay:active {
+      background-color: #2c6abe;
+    }
+  </style>
 </head>
 
 <body>
-    <div id="minirefresh" class="minirefresh-wrap">
-        <div class="minirefresh-scroll">
+<div id="minirefresh" class="minirefresh-wrap">
+  <div class="minirefresh-scroll">
     <div id="app">
-        <!-- 中间页 -->
-        <div class="aui-content">
-            <div class="bg">
-                <div class="money">
-                    <div>Valor de cartera(Dólar)</div>
-                    <div style="display:flex;margin-top:1rem;">
-                        <span>$</span>
-                        <input class="input" type="number" id="money">
-                    </div>
-                </div>
-                <div class="paybutton" id="button">
-                     <div  id="paypal-button-container" class="aui-margin-t-15"></div>
-                    <!-- <div class="button wechat" tapmode onclick="pay('wx')">Pago de micro carta</div>
-                    <div class="button alipay" tapmode onclick="pay('ali')">Pago del Tesoro</div> -->
-                </div>
+      <!-- 中间页 -->
+      <div class="aui-content">
+        <div class="bg">
+          <div class="money">
+            <div>Valor de cartera(Dólar)</div>
+            <div style="display:flex;margin-top:1rem;">
+              <span>$</span>
+              <input class="input" type="number" id="money">
             </div>
+          </div>
+          <div class="paybutton" id="button">
+            <div id="paypal-button-container" class="aui-margin-t-15"></div>
+            <!-- <div class="button wechat" tapmode onclick="pay('wx')">Pago de micro carta</div>
+            <div class="button alipay" tapmode onclick="pay('ali')">Pago del Tesoro</div> -->
+          </div>
         </div>
-    </div>
       </div>
     </div>
+  </div>
+</div>
 
 </body>
 <script type="text/javascript" src="../script/api.js"></script>
 <script type="text/javascript" src="../script/util.js"></script>
 <script type="text/javascript" src="../script/vue.min.js"></script>
 <script type="text/javascript" src="../script/fastclick.js"></script>
-<script src="https://www.paypal.com/sdk/js?client-id=AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi&currency=USD"></script>
+<script
+  src="https://www.paypal.com/sdk/js?client-id=AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi&currency=USD"></script>
 <script type="text/javascript">
-    //var aliPayPlus = {};
-    var wxPay = {};
-    var money=0;
+  //var aliPayPlus = {};
+  var wxPay = {};
+  var money = 0;
 
 
-            paypal.Buttons({
-              style: {
-                  layout: 'horizontal'
-              },
-              createOrder: function(data, actions) {
-                if (typeof lastSubmitTime === 'undefined') {
-                    lastSubmitTime = Date.now();
-                } else if (Date.now() - lastSubmitTime < 2000) {
-                    lastSubmitTime = Date.now()
-                    return;
-                }
-                money = document.getElementById('money').value;
-                if (!money) {
-                    $util.toast('Introduzca la cantidad correcta');
-                    document.getElementById('money').value = '';
-                    document.getElementById('money').focus();
-                    return;
-                }
-                if (isNaN(money)) {
-                    $util.toast('Introduzca la cantidad correcta');
-                    document.getElementById('money').focus();
-                    return;
-                }
+  paypal.Buttons({
+    style: {
+      layout: "horizontal"
+    },
+    createOrder: function (data, actions) {
+      if (typeof lastSubmitTime === "undefined") {
+        lastSubmitTime = Date.now();
+      } else if (Date.now() - lastSubmitTime < 2000) {
+        lastSubmitTime = Date.now()
+        return;
+      }
+      money = document.getElementById("money").value;
+      if (!money) {
+        $util.toast("Introduzca la cantidad correcta");
+        document.getElementById("money").value = "";
+        document.getElementById("money").focus();
+        return;
+      }
+      if (isNaN(money)) {
+        $util.toast("Introduzca la cantidad correcta");
+        document.getElementById("money").focus();
+        return;
+      }
 
 
-                return actions.order.create({
-                  purchase_units: [{
-                    amount: {
-                      value: money,
-                      currency_code:'USD'
-                    }
-                  }]
-                });
-              },
-              onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                alert('Transaction completed by ' + details.payer.name.given_name);
-                if (details.status == 'COMPLETED') {
-                  $util.ajax({
-                      url: 'api_users/user_recharges/save',
-                      data: {
-                          money: money,
-                          asset_type: 'money',
-                          type: 1
-                      },
-                      isLoading: true,
-                  }).then(function(resp) {
-                      var order = resp.data;
-                      $util.ajax({
-                          url: 'api_orders/pay/paypal',
-                          data: {
-                              order_no: order.order_no
-                          },
-                          isLoading: true,
-                      }).then(function(resp) {
-                        // console.log(JSON.stringify(resp));
-                          // 直接把服务端的返回作为参数进行支付
-                              alert(JSON.stringify(resp))
-                              $util.toast(resp.msg);
-                              if(resp.code==1){
-                                api.sendEvent({
-                                    name: 'updateOrder',
-                                });
-                                setTimeout(function() {
-                                    $util.openWindow('home_win');
-                                }, 500)
-                              }
-                      }).catch(function(err) {})
-                  }).catch(function(err) {})
-                } else {
-                  $util.toast('Pago fallido')
-                }
-
-                });
-              },
-              onCancel:function (data) {
-               //alert(data);
-                   // todo 返回到我的未支付订单
-               },
-               onError: function (err) {
-                //   alert(JSON.stringify(err));
-                   // todo 展示错误页面
-               }
-            }).render('#paypal-button-container');
-
-
-
-
-    // 微信支付
-    function payByWx(order) {
-
-    };
-    // 支付宝支付
-    function payByAli(order) {
-
-    }
-
-    function queryOrderIsPay(order) {
-        api.showProgress({
-            style: 'default',
-            animationType: 'fade',
-            title: 'Tramitación de pagos',
-            text: 'Un momento...',
-            modal: false
-        });
-        var intervalInt = setInterval(function() {
-            console.log(order.order_no)
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: money,
+            currency_code: "USD",
+          }
+        }]
+      });
+    },
+    onApprove: function (data, actions) {
+      return actions.order.capture().then(function (details) {
+        alert("Transaction completed by " + details.payer.name.given_name);
+        if (details.status === "COMPLETED") {
+          $util.ajax({
+            url: "api_users/user_recharges/save",
+            data: {
+              money: money,
+              asset_type: "money",
+              type: 1
+            },
+            isLoading: true,
+          }).then(function (resp) {
+            var order = resp.data;
             $util.ajax({
-                url: 'api_query/pay/is_pay',
-                data: {
-                    order_no: order.order_no,
-                }
-            }).then(function(resp) {
-                if (resp.data.is_pay == 1) {
-                    api.hideProgress();
-                    $util.toast('Pago completo')
-                    clearInterval(intervalInt)
-                    api.sendEvent({
-                        name: 'updateWallet',
-                    });
-                    setTimeout(function() {
-                        api.closeWin()
-                    }, 500)
-                }
-            }).catch(function(err) {})
-        }, 3000)
+              url: "api_orders/pay/paypal",
+              data: {
+                order_no: order.order_no
+              },
+              isLoading: true,
+            }).then(function (resp) {
+              // console.log(JSON.stringify(resp));
+              // 直接把服务端的返回作为参数进行支付
+              alert(JSON.stringify(resp))
+              $util.toast(resp.msg);
+              if (resp.code == 1) {
+                api.sendEvent({
+                  name: "updateOrder",
+                });
+                setTimeout(function () {
+                  $util.openWindow("home_win");
+                }, 500)
+              }
+            }).catch(function (err) {
+            })
+          }).catch(function (err) {
+          })
+        } else {
+          $util.toast("Pago fallido")
+        }
+
+      });
+    },
+    onCancel: function (data) {
+      //alert(data);
+      // todo 返回到我的未支付订单
+    },
+    onError: function (err) {
+      //   alert(JSON.stringify(err));
+      // todo 展示错误页面
     }
-    function payByPaypal(order){
-          
-    };
-    apiready = function() {
-        $util.fixPage();
-        //aliPayPlus = api.require("aliPayPlus");
-        //wxPay = api.require("wxPay");
-    };
+  }).render("#paypal-button-container");
+
+
+  // 微信支付
+  function payByWx(order) {
+
+  }
+
+  // 支付宝支付
+  function payByAli(order) {
+
+  }
+
+  function queryOrderIsPay(order) {
+    api.showProgress({
+      style: "default",
+      animationType: "fade",
+      title: "Tramitación de pagos",
+      text: "Un momento...",
+      modal: false
+    });
+    var intervalInt = setInterval(function () {
+      console.log(order.order_no)
+      $util.ajax({
+        url: "api_query/pay/is_pay",
+        data: {
+          order_no: order.order_no,
+        }
+      }).then(function (resp) {
+        if (resp.data.is_pay == 1) {
+          api.hideProgress();
+          $util.toast("Pago completo")
+          clearInterval(intervalInt)
+          api.sendEvent({
+            name: "updateWallet",
+          });
+          setTimeout(function () {
+            api.closeWin()
+          }, 500)
+        }
+      }).catch(function (err) {
+      })
+    }, 3000)
+  }
+
+  function payByPaypal(order) {
+
+  }
+
+  apiready = function () {
+    $util.fixPage();
+    //aliPayPlus = api.require("aliPayPlus");
+    //wxPay = api.require("wxPay");
+  };
 </script>
 
 </html>

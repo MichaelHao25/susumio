@@ -1,21 +1,21 @@
-import Header from '@/component/Header';
-import Paypal from '@/component/Paypal';
-import { postPayPaypal, postRecharges } from '@/services/api';
-import { Notify } from 'notiflix';
-import { history } from '@@/core/history';
-import React, { LegacyRef, MutableRefObject, useRef, useState } from 'react';
+import Header from "@/component/Header";
+import Paypal from "@/component/Paypal";
+import { postPayPaypal, postRecharges } from "@/services/api";
+import { Notify } from "notiflix";
+import { history } from "@@/core/history";
+import React, { LegacyRef, MutableRefObject, useRef, useState } from "react";
 
 export default () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [money, setMoney] = useState<string>('');
+  const [money, setMoney] = useState<string>("");
   return (
-    <div className={'recharge'}>
-      <Header title={'Recargar'} />
+    <div className={"recharge"}>
+      <Header title={"Recargar"} />
       <div className="aui-content">
         <div className="bg">
           <div className="money">
             <div>Valor de cartera(Dólar)</div>
-            <div style={{ display: 'flex', marginTop: '1rem' }}>
+            <div style={{ display: "flex", marginTop: "1rem" }}>
               <span>$</span>
               <input
                 className="input"
@@ -23,22 +23,23 @@ export default () => {
                 id="money"
                 ref={inputRef}
                 value={money}
-                onChange={(e) => {
-                  setMoney(e.target.value);
-                }}
+                onChange={(e) => setMoney(e.target.value)}
               />
             </div>
           </div>
           <div className="paybutton" id="button">
             <Paypal
               style={{
-                shape: 'rect',
-                layout: 'horizontal',
-                label: 'paypal',
+                shape: "rect",
+                layout: "horizontal",
+                label: "paypal",
               }}
               createOrder={(data: any, actions: any) => {
-                if (!money) {
-                  Notify.failure('Introduzca la cantidad correcta');
+                if (!inputRef.current) {
+                  return;
+                }
+                if (!inputRef.current.value) {
+                  Notify.failure("Introduzca la cantidad correcta");
                   if (inputRef.current) {
                     inputRef.current.focus();
                   }
@@ -48,8 +49,8 @@ export default () => {
                   purchase_units: [
                     {
                       amount: {
-                        value: money,
-                        currency_code: 'USD',
+                        value: inputRef.current.value,
+                        currency_code: "USD",
                       },
                     },
                   ],
@@ -58,15 +59,14 @@ export default () => {
               onApprove={(data, actions) => {
                 // postRecharges
                 // postPayPaypal
-
                 return actions.order.capture().then(function (details: any) {
                   alert(
-                    'Transaction completed by ' + details.payer.name.given_name,
+                    "Transaction completed by " + details.payer.name.given_name,
                   );
-                  if (details.status == 'COMPLETED') {
+                  if (details.status === "COMPLETED") {
                     postRecharges({
                       money,
-                      asset_type: 'money',
+                      asset_type: "money",
                       type: 1,
                     }).then((res) => {
                       if (res) {
@@ -75,13 +75,13 @@ export default () => {
                         }).then((res) => {
                           if (res) {
                             Notify.success(res.msg);
-                            history.push('/my');
+                            history.push("/my");
                           }
                         });
                       }
                     });
                   } else {
-                    Notify.failure('Pago fallido');
+                    Notify.failure("Pago fallido");
                   }
                 });
               }}

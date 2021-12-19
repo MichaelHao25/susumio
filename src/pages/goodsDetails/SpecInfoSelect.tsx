@@ -240,10 +240,12 @@ export default (props: Props) => {
         };
       });
       history.push("/orderConfirm", {
+        shoperId: goods.shoper_id,
         goodsList: goodsList.filter((item) => item.num !== 0),
       });
     }
   }
+
   const children_thum = data?.[typeOneIndex]?.children?.[0]?.thum;
 
   return (

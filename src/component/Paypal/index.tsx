@@ -1,5 +1,6 @@
 import Notiflix from "notiflix";
 import React, { useEffect } from "react";
+import { history } from "umi";
 
 interface Props {
   onSuccess?: () => void;
@@ -38,6 +39,9 @@ const Paypal = (props: Props) => {
         "Advertencia",
         "Falló la carga de PAYPAL, abre la página de nuevo",
         "Bien",
+        () => {
+          history.push("/");
+        },
       );
     } else {
       onload();

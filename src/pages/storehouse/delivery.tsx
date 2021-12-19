@@ -47,10 +47,7 @@ export default (
                   "italic",
                   "underline",
                   "strike",
-                  /**
-                   * 屏蔽link按钮
-                   */
-                  // "link",
+                  "link",
                   "blockquote",
                   "image",
                   "video",
@@ -93,19 +90,19 @@ export default (
   }, [refEditorElement]);
 
   const handleSubmit = () => {
-    let desc: string = refQuillHandler.current?.root.innerHTML || "";
-    desc = desc.replace(/<a.*?>(.*?)<\/a>/g, "$1");
-    const links = desc.match(/www\..*?(?=(<|"))/g);
-    if (links) {
-      const linkSet = new Set(links);
-      for (const link of linkSet) {
-        if (!window.location.href.includes(link)) {
-          const aTag = `<a href="https://${link}" rel="noopener noreferrer" target="_blank">${link}</a>`;
-          const regx = new RegExp(link, "g");
-          desc = desc.replace(regx, aTag);
-        }
-      }
-    }
+    const desc: string = refQuillHandler.current?.root.innerHTML || "";
+    // desc = desc.replace(/<a.*?>(.*?)<\/a>/g, "$1");
+    // const links = desc.match(/www\..*?(?=(<|"))/g);
+    // if (links) {
+    //   const linkSet = new Set(links);
+    //   for (const link of linkSet) {
+    //     if (!window.location.href.includes(link)) {
+    //       const aTag = `<a href="https://${link}" rel="noopener noreferrer" target="_blank">${link}</a>`;
+    //       const regx = new RegExp(link, "g");
+    //       desc = desc.replace(regx, aTag);
+    //     }
+    //   }
+    // }
 
     postDelivery({
       order_id: parseInt(props.location.query.id, 10),
@@ -115,7 +112,7 @@ export default (
       express_no: "",
     }).then((res) => {
       console.log(res);
-      Notiflix.Report.success("发货成功", res.msg, "ok", () => {
+      Notiflix.Report.success("", res.msg, "ok", () => {
         history.goBack();
       });
     });
@@ -146,7 +143,7 @@ export default (
           className={styles.textarea}
           style={{ height: "500px" }}
           ref={refEditorElement}
-        ></div>
+        />
         <div className={styles.button} onClick={handleSubmit}>
           Delivery
         </div>
