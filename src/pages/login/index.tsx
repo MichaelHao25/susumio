@@ -24,11 +24,11 @@ export default function login() {
   const [checked, setChecked] = useState<boolean>(false);
 
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (window.FB) {
-      FB.XFBML.parse();
-    }
-  }, [window.FB]);
+  //   useEffect(() => {
+  //     if (window.FB) {
+  //       FB.XFBML.parse();
+  //     }
+  //   }, [window.FB]);
   const handleLogin = () => {
     dispatch({
       type: "userinfo/loginAsMobileOrMail",
@@ -132,7 +132,7 @@ export default function login() {
             INICIAR SESIÓN
           </button>
         )}
-        <div
+        {/* <div
           className={styles.button_fb}
           style={{
             display: mode === "login" ? "block" : "none",
@@ -148,7 +148,7 @@ export default function login() {
             data-scope="public_profile,email"
             data-onlogin={"checkLogin"}
           ></div>
-        </div>
+        </div> */}
 
         {mode === "register" && (
           <button className={styles.button} onClick={handleRegister}>
