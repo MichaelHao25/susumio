@@ -55,7 +55,7 @@ const errorHandler = function (error: Error) {
   return undefined;
 };
 const stack: number[] = [];
-export const origin = "https://api.susumio.com/index.php";
+export const origin = "https://www.177pinche.com/index.php";
 // export const origin = "http://api.lictic.com:88/index.php";
 
 export const request = extend({
