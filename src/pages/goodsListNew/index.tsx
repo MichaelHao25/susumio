@@ -95,7 +95,7 @@ export default () => {
             <LazyLoad once>
               <img
                 loading="lazy"
-                src="https://www.177pinche.com/public/upload/article_images/20190726/f9b6991c87826650c32f1047e72273b8.png"
+                src="https://api.susumio.com/public/upload/article_images/20190726/f9b6991c87826650c32f1047e72273b8.png"
               />
             </LazyLoad>
             {/*@click="goModel(cate_ad)"*/}

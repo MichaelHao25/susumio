@@ -13,7 +13,7 @@
   };
   var _u = {};
   //   _u.origin = "http://api.lictic.com:88/";
-  _u.origin = "https://www.177pinche.com/";
+  _u.origin = "https://api.susumio.com/";
   // http://api.lictic.com:88/index.php
   // _u.origin = 'http://t.0lz.net/';
 

@@ -127,7 +127,7 @@ const index = () => {
           id="top"
           style={{
             background:
-              'url("https://www.177pinche.com/public/upload/user_images/20190407/feb8ba2fbeb8cb431c137f8d49be252b.png") center center no-repeat',
+              'url("https://api.susumio.com/public/upload/user_images/20190407/feb8ba2fbeb8cb431c137f8d49be252b.png") center center no-repeat',
           }}
         >
           <img

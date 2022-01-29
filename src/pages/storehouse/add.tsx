@@ -195,7 +195,7 @@ export default (props: Props) => {
       // if (links) {
       //   const linkSet = new Set(links);
       //   for (const link of linkSet) {
-      //     if (!link.includes("www.177pinche.com")) {
+      //     if (!link.includes("api.susumio.com")) {
       //       const aTag = `<a href="https://${link}" rel="noopener noreferrer" target="_blank">${link}</a>`;
       //       const regx = new RegExp(link, "g");
       //       desc = desc.replace(regx, aTag);
