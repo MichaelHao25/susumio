@@ -15,6 +15,7 @@ import "../../plugin/minirefresh/minirefresh.css";
 import {
   AddressItem,
   AllList,
+  IPostForumList,
   OrderListItemGoodsInfo,
   OrdersListItem,
 } from "@/services/interface";
@@ -22,11 +23,14 @@ import { Action, ListState } from "@/models/list";
 import { Confirm, Notify } from "notiflix";
 import LazyLoad from "react-lazyload";
 import {
+  IForumCommentDetails,
   postAddressDelete,
   postAddressSetDefault,
   postCancelOrders,
   postCommentsDelete,
   postFavoriteDelete,
+  postForumItemApproval,
+  postForumItemCancelApproval,
   postGoodsSend,
   postOrderFinish,
   postPayPrepay,
@@ -301,9 +305,61 @@ export default connect(({ list }: { list: ListState }) => {
         case AllList.postForumListFromMy: {
           return list.postForumListFromMy.map((item) => {
             const { thums, title } = item;
+            const handleLike = ({ id, approval }: Partial<IPostForumList>) => {
+              if (id) {
+                postForumItemApproval({
+                  id,
+                }).then((res) => {
+                  console.log(res);
+                  dispatch({
+                    type: "list/setState",
+                    payload: {
+                      key: ["postForumList", { id }],
+                      value: {
+                        approval: {
+                          ...approval,
+                          [user.id]: 111,
+                        },
+                      },
+                    },
+                  });
+                });
+              }
+            };
+            const handleCancelLike = ({
+              id,
+              approval,
+            }: Partial<IPostForumList>) => {
+              if (id) {
+                if (approval) {
+                  const tempApproval: {
+                    [key: string]: number;
+                  } = {};
+                  Object.entries(approval).forEach(([key, value]) => {
+                    if (key !== user.id.toString()) {
+                      tempApproval[key] = value;
+                    }
+                  });
+                  postForumItemCancelApproval({
+                    id,
+                  }).then((res) => {
+                    console.log(res);
+                    dispatch({
+                      type: "list/setState",
+                      payload: {
+                        key: ["postForumList", { id }],
+                        value: {
+                          approval: tempApproval,
+                        },
+                      },
+                    });
+                  });
+                }
+              }
+            };
             return (
               <Link
-                to={`/forum/details?id=${item.id}`}
+                to={`/forum/add?id=${item.id}`}
                 key={item.id}
                 className="aui-flex-item-6"
                 style={{ position: "relative", padding: "3px" }}
@@ -328,15 +384,95 @@ export default connect(({ list }: { list: ListState }) => {
                 {/**/}
                 <h5
                   className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-5 aui-padded-r-5 aui-bg-white"
-                  style={{ height: "2rem", marginBottom: 0 }}
+                  style={{
+                    height: "2rem",
+                    marginBottom: 0,
+                    position: "relative",
+                  }}
                 >
                   {title}
+                  <div
+                    className={`${styles.commentLike} iconFontForum`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (
+                        Object.keys(item.approval).includes(user.id.toString())
+                      ) {
+                        handleCancelLike({
+                          id: item.id,
+                          approval: item.approval,
+                        });
+                      } else {
+                        handleLike({ id: item.id });
+                      }
+                    }}
+                    dangerouslySetInnerHTML={{
+                      __html: Object.keys(item.approval).includes(
+                        user.id.toString(),
+                      )
+                        ? "&#xe602;"
+                        : "&#xe601;",
+                    }}
+                  ></div>
                 </h5>
               </Link>
             );
           });
         }
         case AllList.postForumList: {
+          const handleLike = ({ id, approval }: Partial<IPostForumList>) => {
+            if (id) {
+              postForumItemApproval({
+                id,
+              }).then((res) => {
+                console.log(res);
+                dispatch({
+                  type: "list/setState",
+                  payload: {
+                    key: ["postForumList", { id }],
+                    value: {
+                      approval: {
+                        ...approval,
+                        [user.id]: 111,
+                      },
+                    },
+                  },
+                });
+              });
+            }
+          };
+          const handleCancelLike = ({
+            id,
+            approval,
+          }: Partial<IPostForumList>) => {
+            if (id) {
+              if (approval) {
+                const tempApproval: {
+                  [key: string]: number;
+                } = {};
+                Object.entries(approval).forEach(([key, value]) => {
+                  if (key !== user.id.toString()) {
+                    tempApproval[key] = value;
+                  }
+                });
+                postForumItemCancelApproval({
+                  id,
+                }).then((res) => {
+                  console.log(res);
+                  dispatch({
+                    type: "list/setState",
+                    payload: {
+                      key: ["postForumList", { id }],
+                      value: {
+                        approval: tempApproval,
+                      },
+                    },
+                  });
+                });
+              }
+            }
+          };
           return list.postForumList.map((item) => {
             const { thums, title } = item;
             return (
@@ -369,6 +505,30 @@ export default connect(({ list }: { list: ListState }) => {
                   style={{ height: "2rem", marginBottom: 0 }}
                 >
                   {title}
+                  <div
+                    className={`${styles.commentLike} iconFontForum`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (
+                        Object.keys(item.approval).includes(user.id.toString())
+                      ) {
+                        handleCancelLike({
+                          id: item.id,
+                          approval: item.approval,
+                        });
+                      } else {
+                        handleLike({ id: item.id });
+                      }
+                    }}
+                    dangerouslySetInnerHTML={{
+                      __html: Object.keys(item.approval).includes(
+                        user.id.toString(),
+                      )
+                        ? "&#xe602;"
+                        : "&#xe601;",
+                    }}
+                  ></div>
                 </h5>
               </Link>
             );

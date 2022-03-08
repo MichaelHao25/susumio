@@ -3,6 +3,24 @@ import { RequestOptionsInit } from "umi-request";
 import { AddressItem } from "@/services/interface";
 import { CurrencyType } from "@/hooks/useCurrencyManage";
 /**
+ * 取消点赞
+ */
+export const postForumItemCancelApproval = (props: IForumCommentDetails) => {
+  const { id } = props;
+  return request.post("/api_bbs/bbs/cancel_approval", {
+    data: { id },
+  });
+};
+/**
+ * 点赞
+ */
+export const postForumItemApproval = (props: IForumCommentDetails) => {
+  const { id } = props;
+  return request.post("/api_bbs/bbs/approval", {
+    data: { id },
+  });
+};
+/**
  * 添加留言
  */
 export interface IForumCommentAdd {

@@ -1,11 +1,33 @@
 import Upload from "@/component/Upload";
-import { IForumPublishParams, postForumPublish } from "@/services/api";
+import {
+  IForumPublishParams,
+  postForumDetails,
+  postForumPublish,
+} from "@/services/api";
+import {
+  IPostForumDetailsResponse,
+  IPostForumList,
+  IPostForumListResponse,
+} from "@/services/interface";
 import { Confirm, Notify } from "notiflix";
 import Quill from "quill";
 import { useEffect, useRef, useState } from "react";
+import { ConnectProps } from "umi";
 import styles from "./index.less";
-
-export default () => {
+interface IProps
+  extends ConnectProps<
+    {},
+    {},
+    {
+      id?: string;
+    }
+  > {}
+export default (props: IProps) => {
+  const {
+    location: {
+      query: { id },
+    },
+  } = props;
   const refEditorElement = useRef<HTMLDivElement>(null);
   const refQuillHandler = useRef<Quill>(null);
   const refUpload = useRef<() => void>(null);
@@ -14,6 +36,35 @@ export default () => {
     content: "",
     thums: [],
   });
+  useEffect(() => {
+    if (id) {
+      postForumDetails({ id: parseInt(id) }).then(
+        (res: IPostForumDetailsResponse) => {
+          const {
+            data: { title, thums, content },
+          } = res;
+          setRequestBody({
+            title,
+            thums,
+            content,
+          });
+        },
+      );
+    }
+  }, [id]);
+  useEffect(() => {
+    if (refQuillHandler.current) {
+      if (requestBody.content !== "") {
+        try {
+          refQuillHandler.current.clipboard.dangerouslyPasteHTML(
+            requestBody.content,
+          );
+        } catch (error) {
+          refQuillHandler.current.setText(requestBody.content);
+        }
+      }
+    }
+  }, [requestBody]);
   useEffect(() => {
     if (refEditorElement.current) {
       if (!refQuillHandler.current) {

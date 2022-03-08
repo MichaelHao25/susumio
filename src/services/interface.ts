@@ -55,10 +55,17 @@ export interface IPostForumList {
   title: string;
   update_time: string;
   user_id: number;
+  approval: {
+    [key: string]: number;
+  };
   user: {
     avatar: string;
     nick_name: string;
   };
+}
+
+export interface IPostForumDetailsResponse extends BaseResponse {
+  data: IPostForumList;
 }
 export interface IPostForumListResponse extends BaseResponse {
   data: IPostForumList[];

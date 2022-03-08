@@ -40,7 +40,6 @@ export default (props: IProps) => {
       }
     });
   };
-  console.log(type);
   return (
     <div>
       <Header handleSortBtnClick={handleSortBtnClick} />
