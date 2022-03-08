@@ -1,6 +1,6 @@
 import Tab from "@/component/Tab";
 import "./index.less";
-import React, { memo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pagination, Autoplay } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
 import "swiper/swiper.less";
@@ -243,6 +243,22 @@ const Header = () => {
                   </Link>
                 );
               })}
+              <Link to={"/forum"} className="aui-col-xs-3">
+                <div style={{ position: "relative" }}>
+                  <div style={{ paddingTop: "55%" }} />
+                  <div style={{ position: "absolute", top: 0 }}>
+                    <img
+                      loading="lazy"
+                      src={
+                        "https://api.susumio.com/public/upload/goods_images/20211101/35d813e64126e235b277c63b30116445.png"
+                      }
+                      className="aui-padded-5"
+                      style={{ margin: "0px auto", width: "55%" }}
+                    />
+                  </div>
+                </div>
+                <div className="aui-grid-label">{"论坛"}</div>
+              </Link>
             </div>
           </section>
         </div>

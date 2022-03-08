@@ -1,0 +1,165 @@
+.swiper {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  .header {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    .back {
+      width: 48px;
+      height: 48px;
+      color: #000;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .userInfo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .pic {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+      }
+      .div {
+        padding-left: 15px;
+        font-size: 14px;
+        color: #101010;
+        display: flex;
+        line-height: 1;
+        flex-direction: column;
+        justify-content: center;
+        .address {
+          padding-top: 5px;
+          display: flex;
+          align-items: center;
+          font-size: 10px;
+          color: #666;
+        }
+      }
+    }
+  }
+  .htmlContent {
+    padding: 15px 0;
+    width: 90%;
+    margin: 0 auto;
+    border-bottom: 1px solid #bbb;
+  }
+  .evaluate {
+    width: 90%;
+    margin: 0 auto;
+    padding: 15px 0;
+    .total {
+      font-size: 14px;
+      color: #ccc;
+    }
+    .add {
+      padding-top: 15px;
+      display: flex;
+      align-items: center;
+      .img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+      }
+      .input {
+        height: 36px;
+        margin-left: 20px;
+        flex: 1;
+        border-radius: 15px;
+        background: #ededed;
+        color: #333;
+        padding: 0 15px;
+        font-size: 14px;
+      }
+    }
+    .list {
+      padding-top: 10px;
+
+      .row {
+        display: flex;
+        padding-top: 10px;
+        position: relative;
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 40px;
+          right: 0;
+          border-bottom: 1px solid #eaeaea;
+        }
+        &.pl_20 {
+          padding-left: 40px;
+          .imgContainer {
+            .img {
+              width: 30px;
+              height: 30px;
+            }
+          }
+        }
+
+        .imgContainer {
+          align-self: flex-start;
+          .img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+          }
+        }
+        .commentContainer {
+          flex: 1;
+          padding: 0 10px 10px;
+          .name {
+            font-size: 14px;
+            color: #ccc;
+            padding-bottom: 10px;
+            .author {
+              color: #666;
+              background: #eee;
+              font-size: 12px;
+              padding: 2px;
+            }
+          }
+          .comment {
+            color: #000;
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-all;
+          }
+          .time {
+            color: #ccc;
+            font-size: 12px;
+            line-height: 20px;
+            padding-left: 10px;
+          }
+          .openReplay {
+            padding-top: 10px;
+            font-size: 14px;
+            color: #94b0db;
+          }
+        }
+        .like {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          color: #ccc;
+          line-height: 1;
+          align-self: flex-start;
+          .num {
+            padding-top: 5px;
+          }
+        }
+      }
+    }
+  }
+}

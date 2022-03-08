@@ -9,6 +9,8 @@ import {
   postAssetLogsList,
   postCommentsLists,
   postFavorite,
+  postForumList,
+  postForumListFromMy,
   postOrdersList,
   postTeamChildUsers,
   postTeamUsers,
@@ -21,6 +23,8 @@ import {
   CommentItem,
   Details,
   DropOrdersListItem,
+  IPostForumList,
+  IPostForumListResponse,
   ListResponse,
   LogItem,
   OrderListResponse,
@@ -90,6 +94,9 @@ export interface ListState {
     level3Num: number;
     totalNum: number;
   };
+  postApiGoodsGoodsListsIndex: Details[];
+  postForumList: IPostForumList[];
+  postForumListFromMy: IPostForumList[];
 }
 
 export enum Action {
@@ -111,6 +118,8 @@ export interface ListModel {
     postOrdersList: Effect;
     postTeamChildUsers: Effect;
     postTeamUsers: Effect;
+    postForumList: Effect;
+    postForumListFromMy: Effect;
   };
   reducers: {
     sortList: ImmerReducer<
@@ -191,8 +200,58 @@ export default <ListModel>{
       level3Num: 0,
       totalNum: 0,
     },
+    postApiGoodsGoodsListsIndex: [],
+    postForumList: [],
+    postForumListFromMy: [],
   },
   effects: {
+    *postForumListFromMy({ payload }, { call, select, put }) {
+      const { list } = yield select(({ list }: { list: ListState }) => {
+        return {
+          list: list.postForumListFromMy,
+        };
+      });
+      const { cb, ...req } = payload;
+      const res: IPostForumListResponse | undefined = yield call(
+        postForumListFromMy,
+        req,
+      );
+      if (res) {
+        yield put({
+          type: "setState",
+          payload: {
+            postForumListFromMy:
+              req.pageNum === 1 ? res.data : list.concat(res.data),
+          },
+        });
+        cb(res.data);
+      } else {
+        cb([]);
+      }
+    },
+    *postForumList({ payload }, { call, select, put }) {
+      const { list } = yield select(({ list }: { list: ListState }) => {
+        return {
+          list: list.postForumList,
+        };
+      });
+      const { cb, ...req } = payload;
+      const res: IPostForumListResponse | undefined = yield call(
+        postForumList,
+        req,
+      );
+      if (res) {
+        yield put({
+          type: "setState",
+          payload: {
+            postForumList: req.pageNum === 1 ? res.data : list.concat(res.data),
+          },
+        });
+        cb(res.data);
+      } else {
+        cb([]);
+      }
+    },
     *postTeamUsers({ payload }, { call, select, put }) {
       const { list } = yield select(({ list }: { list: ListState }) => {
         return {
@@ -285,7 +344,6 @@ export default <ListModel>{
       });
       const { cb, ...req } = payload;
       const res: PostApplyList | undefined = yield call(postApplyList, req);
-      debugger;
       if (res) {
         yield put({
           type: "setState",

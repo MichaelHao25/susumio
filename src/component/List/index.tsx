@@ -97,6 +97,28 @@ export default connect(({ list }: { list: ListState }) => {
         page.current.pageNum = 1;
       }
       switch (type) {
+        case AllList.postForumListFromMy: {
+          dispatch({
+            type: "list/postForumListFromMy",
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
+        case AllList.postForumList: {
+          dispatch({
+            type: "list/postForumList",
+            payload: {
+              ...page.current,
+              ...global.params,
+              cb: cb(reload),
+            },
+          });
+          break;
+        }
         case AllList.postTeamUsers: {
           dispatch({
             type: "list/postTeamUsers",
@@ -263,19 +285,95 @@ export default connect(({ list }: { list: ListState }) => {
     useEffect(() => {
       if (window.location.pathname === "/") {
         if ((list.postApiGoodsGoodsListsIndex || []).length !== 0) {
-          page.current.pageNum = parseInt(
-            list.postApiGoodsGoodsListsIndex.length / 10 + 1,
-            10,
+          page.current.pageNum = ~~(
+            list.postApiGoodsGoodsListsIndex.length / 10 +
+            1
           );
           return;
         }
       }
       page.current.pageNum = 1;
       loadData(false);
-    }, [props.params]);
+    }, [props.params, type]);
 
     function getList() {
       switch (type) {
+        case AllList.postForumListFromMy: {
+          return list.postForumListFromMy.map((item) => {
+            const { thums, title } = item;
+            return (
+              <Link
+                to={`/forum/details?id=${item.id}`}
+                key={item.id}
+                className="aui-flex-item-6"
+                style={{ position: "relative", padding: "3px" }}
+              >
+                {/* aspect-ratio : 1 */}
+                <div style={{ paddingTop: "100%", position: "relative" }}>
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={thums[0]}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        objectFit: "cover",
+                      }}
+                    />
+                  </LazyLoad>
+                </div>{" "}
+                {/**/}
+                <h5
+                  className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-5 aui-padded-r-5 aui-bg-white"
+                  style={{ height: "2rem", marginBottom: 0 }}
+                >
+                  {title}
+                </h5>
+              </Link>
+            );
+          });
+        }
+        case AllList.postForumList: {
+          return list.postForumList.map((item) => {
+            const { thums, title } = item;
+            return (
+              <Link
+                to={`/forum/details?id=${item.id}`}
+                key={item.id}
+                className="aui-flex-item-6"
+                style={{ position: "relative", padding: "3px" }}
+              >
+                {/* aspect-ratio : 1 */}
+                <div style={{ paddingTop: "100%", position: "relative" }}>
+                  <LazyLoad once>
+                    <img
+                      loading="lazy"
+                      src={thums[0]}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        objectFit: "cover",
+                      }}
+                    />
+                  </LazyLoad>
+                </div>{" "}
+                {/**/}
+                <h5
+                  className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-5 aui-padded-r-5 aui-bg-white"
+                  style={{ height: "2rem", marginBottom: 0 }}
+                >
+                  {title}
+                </h5>
+              </Link>
+            );
+          });
+        }
         case AllList.postTeamUsers: {
           return (
             <div className="aui-content" style={{ width: "100%" }}>
@@ -1438,6 +1536,7 @@ export default connect(({ list }: { list: ListState }) => {
            * @param e
            * @param order
            */
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           function sendGoods(
             e: React.MouseEvent<HTMLDivElement, MouseEvent>,
             order: OrdersListItem,

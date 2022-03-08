@@ -27,7 +27,43 @@ export enum AllList {
   postTeamUsers,
   // 店中店和订单公用一个列表
   postApiOrdersListsForStorehouse,
+  // 论坛列表
+  postForumList,
+  postForumListFromMy,
 }
+
+export interface IPostForumComment {
+  bbs_id: number;
+  content: string;
+  create_time: string;
+  id: number;
+  update_time: string;
+  user_id: number;
+  user: {
+    avatar: string;
+    nick_name: string;
+  };
+}
+export interface IPostForumCommentResponse extends BaseResponse {
+  data: IPostForumComment[];
+}
+export interface IPostForumList {
+  content: string;
+  create_time: string;
+  id: number;
+  thums: string[];
+  title: string;
+  update_time: string;
+  user_id: number;
+  user: {
+    avatar: string;
+    nick_name: string;
+  };
+}
+export interface IPostForumListResponse extends BaseResponse {
+  data: IPostForumList[];
+}
+
 export interface FBAPPID extends BaseResponse {
   data: {
     appId: string;

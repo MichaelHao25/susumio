@@ -256,7 +256,7 @@ export default (props: Props) => {
         uploadSuccessCallback={(res) => {
           if (refQuillHandler.current) {
             // 获取光标所在位置
-            let length = refQuillHandler.current.getSelection()?.index || 0;
+            const length = refQuillHandler.current.getSelection()?.index || 0;
             // 插入图片  res.info为服务器返回的图片地址
             refQuillHandler.current.insertEmbed(
               length,

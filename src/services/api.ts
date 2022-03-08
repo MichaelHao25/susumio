@@ -2,7 +2,121 @@ import { request } from "./core";
 import { RequestOptionsInit } from "umi-request";
 import { AddressItem } from "@/services/interface";
 import { CurrencyType } from "@/hooks/useCurrencyManage";
-
+/**
+ * 添加留言
+ */
+export interface IForumCommentAdd {
+  id: number;
+  content: string;
+}
+export const postForumCommentAdd = (props: IForumCommentAdd) => {
+  const { id, content } = props;
+  return request.post("/api_bbs/bbs/comment", {
+    data: { bbs_id: id, content },
+  });
+};
+/**
+ * 留言详情
+ */
+export interface IForumCommentDetails {
+  id: number;
+}
+export const postForumCommentDetails = (props: IForumCommentDetails) => {
+  const { id } = props;
+  return request.post("/api_bbs/bbs/commentlist", {
+    data: { bbs_id: id },
+  });
+};
+/**
+ * 论坛详情
+ */
+export interface IForumDetails {
+  id: number;
+}
+export const postForumDetails = (props: IForumDetails) => {
+  const { id } = props;
+  return request.post("/api_bbs/bbs/read", {
+    data: { id },
+  });
+};
+/**
+ * 论坛列表
+ */
+export enum IForumSortType {
+  /**
+   * 发布
+   */
+  CreateTime = "create_time",
+  /**
+   * 回复
+   */
+  UpdateTime = "update_time",
+}
+export interface IForumList {
+  sort_by?: IForumSortType;
+  sort_type?: "desc";
+  pageLimit: number;
+  pageNum: number;
+}
+/**
+ * 我的列表
+ * @param props
+ * @returns
+ */
+export const postForumListFromMy = (props: IForumList) => {
+  const {
+    sort_by = IForumSortType.CreateTime,
+    sort_type = "desc",
+    pageLimit,
+    pageNum,
+  } = props;
+  return request.post("/api_bbs/bbs/mine", {
+    headers: {
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
+    },
+    data: {
+      sort_by,
+      sort_type,
+    },
+  });
+};
+export const postForumList = (props: IForumList) => {
+  const {
+    sort_by = IForumSortType.CreateTime,
+    sort_type = "desc",
+    pageLimit,
+    pageNum,
+  } = props;
+  return request.post("/api_bbs/bbs/index", {
+    headers: {
+      "page-limit": pageLimit.toString(),
+      "page-num": pageNum.toString(),
+    },
+    data: {
+      sort_by,
+      sort_type,
+    },
+  });
+};
+/**
+ * 论坛发布
+ */
+export interface IForumPublishParams {
+  title: string;
+  content: string;
+  thums: string[];
+}
+export const postForumPublish = (props: IForumPublishParams) => {
+  const { title, thums, content } = props;
+  return request.post("/api_bbs/bbs/save", {
+    data: {
+      title,
+      thums,
+      content,
+    },
+  });
+};
 interface PostDelivery {
   order_id: number;
   content: string;
