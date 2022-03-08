@@ -117,14 +117,30 @@ export const postForumList = (props: IForumList) => {
     },
   });
 };
-/**
- * 论坛发布
- */
 export interface IForumPublishParams {
   title: string;
   content: string;
   thums: string[];
 }
+/**
+ * 更新帖子
+ */
+export const postForumUpdate = (
+  props: IForumPublishParams & { id: string },
+) => {
+  const { title, thums, content, id } = props;
+  return request.post("/api_bbs/bbs/update", {
+    data: {
+      id,
+      title,
+      thums,
+      content,
+    },
+  });
+};
+/**
+ * 论坛发布
+ */
 export const postForumPublish = (props: IForumPublishParams) => {
   const { title, thums, content } = props;
   return request.post("/api_bbs/bbs/save", {

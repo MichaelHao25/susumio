@@ -3,6 +3,7 @@ import {
   IForumPublishParams,
   postForumDetails,
   postForumPublish,
+  postForumUpdate,
 } from "@/services/api";
 import {
   IPostForumDetailsResponse,
@@ -148,14 +149,26 @@ export default (props: IProps) => {
       Notify.failure("请至少上传一张图片");
       return;
     }
-    postForumPublish({
-      thums,
-      title,
-      content,
-    }).then((res) => {
-      Notify.success(res.msg);
-      history.back();
-    });
+    if (id) {
+      postForumUpdate({
+        thums,
+        title,
+        content,
+        id,
+      }).then((res) => {
+        Notify.success(res.msg);
+        history.back();
+      });
+    } else {
+      postForumPublish({
+        thums,
+        title,
+        content,
+      }).then((res) => {
+        Notify.success(res.msg);
+        history.back();
+      });
+    }
   };
   return (
     <div className={styles.page}>
