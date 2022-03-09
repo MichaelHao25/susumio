@@ -12,17 +12,19 @@ import {
 } from "@/services/interface";
 import { Confirm, Notify } from "notiflix";
 import Quill from "quill";
+
 import { useEffect, useRef, useState } from "react";
 import { ConnectProps } from "umi";
 import styles from "./index.less";
-interface IProps
-  extends ConnectProps<
-    {},
-    {},
-    {
-      id?: string;
-    }
-  > {}
+const Clipboard = Quill.import("modules/clipboard");
+const Delta = Quill.import("delta");
+type IProps = ConnectProps<
+  {},
+  {},
+  {
+    id?: string;
+  }
+>;
 export default (props: IProps) => {
   const {
     location: {
@@ -69,6 +71,30 @@ export default (props: IProps) => {
   useEffect(() => {
     if (refEditorElement.current) {
       if (!refQuillHandler.current) {
+        class PlainClipboard extends Clipboard {
+          convert(html = null) {
+            if (typeof html === "string") {
+              this.container.innerHTML = html;
+            }
+            const text = this.container.innerText;
+            this.container.innerHTML = "";
+            if (text) {
+              if (!html) {
+                try {
+                  const url = new URL(text);
+                  return new Delta().insert(url.toString(), {
+                    link: url.toString(),
+                  });
+                } catch (error) {
+                  console.log("非网址");
+                }
+              }
+            }
+            return new Delta().insert(text);
+          }
+        }
+
+        Quill.register("modules/clipboard", PlainClipboard, true);
         // @ts-ignore
         refQuillHandler.current = new Quill(refEditorElement.current, {
           bounds: refEditorElement.current,
