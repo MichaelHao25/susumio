@@ -25,7 +25,7 @@ type IProps = ConnectProps<
     id?: string;
   }
 >;
-export default (props: IProps) => {
+const index = (props: IProps) => {
   const {
     location: {
       query: { id },
@@ -283,3 +283,5 @@ export default (props: IProps) => {
     </div>
   );
 };
+index.wrappers = ["@/wrappers/auth"];
+export default index;

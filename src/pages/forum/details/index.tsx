@@ -4,7 +4,7 @@ import {
   postForumDetails,
 } from "@/services/api";
 import { useEffect, useState } from "react";
-import { ConnectProps } from "umi";
+import { ConnectProps, UserinfoState, useSelector } from "umi";
 import { Pagination, Autoplay } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
 import styles from "./index.less";
@@ -31,6 +31,10 @@ export default (props: IProps) => {
       query: { id },
     },
   } = props;
+  const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
+    return userinfo;
+  });
+
   const [details, setDetails] = useState<IPostForumList>();
   const [commentList, setCommentList] = useState<IPostForumComment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
@@ -109,21 +113,23 @@ export default (props: IProps) => {
       ></div>
       <div className={`${styles.evaluate}`}>
         <div className={`${styles.total}`}>共{commentList.length}条评论</div>
-        <div className={`${styles.add}`}>
-          <img
-            src={details?.user.avatar || require("@/assets/img/logo2.png")}
-            alt=""
-            className={`${styles.img}`}
-          />
-          <input
-            type="text"
-            className={`${styles.input}`}
-            placeholder="爱评论的人运气都不会差"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            onKeyPress={handleComment}
-          />
-        </div>
+        {user.id !== 0 && (
+          <div className={`${styles.add}`}>
+            <img
+              src={user.avatar || require("@/assets/img/logo2.png")}
+              alt=""
+              className={`${styles.img}`}
+            />
+            <input
+              type="text"
+              className={`${styles.input}`}
+              placeholder="爱评论的人运气都不会差"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onKeyPress={handleComment}
+            />
+          </div>
+        )}
         <div className={`${styles.list}`}>
           {commentList.map((item) => {
             const {

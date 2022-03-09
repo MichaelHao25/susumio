@@ -1,7 +1,7 @@
 import { UserinfoState, useSelector, history } from "umi";
 import Tab from "../tab";
 import styles from "./index.less";
-export default () => {
+const index = () => {
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
     return userinfo;
   });
@@ -11,7 +11,7 @@ export default () => {
         <div
           className={`${styles.back} iconFontForum`}
           onClick={() => {
-            history.back();
+            history.goBack();
           }}
         >
           &#xe84f;
@@ -36,3 +36,6 @@ export default () => {
     </div>
   );
 };
+
+index.wrappers = ["@/wrappers/auth"];
+export default index;
