@@ -75,11 +75,13 @@ const index = (props: IProps) => {
           convert(html = null) {
             if (typeof html === "string") {
               this.container.innerHTML = html;
-            }
-            const text = this.container.innerText;
-            this.container.innerHTML = "";
-            if (text) {
-              if (!html) {
+              const delta = super.convert();
+              this.container.innerHTML = "";
+              return delta;
+            } else {
+              const text = this.container.innerText;
+              this.container.innerHTML = "";
+              if (text) {
                 try {
                   const url = new URL(text);
                   return new Delta().insert(url.toString(), {
@@ -89,8 +91,8 @@ const index = (props: IProps) => {
                   console.log("非网址");
                 }
               }
+              return new Delta().insert(text);
             }
-            return new Delta().insert(text);
           }
         }
 
@@ -98,7 +100,7 @@ const index = (props: IProps) => {
         // @ts-ignore
         refQuillHandler.current = new Quill(refEditorElement.current, {
           bounds: refEditorElement.current,
-          //   debug: "info",
+          // debug: "info",
           modules: {
             toolbar: {
               container: [

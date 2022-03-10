@@ -314,7 +314,7 @@ export default connect(({ list }: { list: ListState }) => {
                   dispatch({
                     type: "list/setState",
                     payload: {
-                      key: ["postForumList", { id }],
+                      key: ["postForumListFromMy", { id }],
                       value: {
                         approval: {
                           ...approval,
@@ -347,7 +347,7 @@ export default connect(({ list }: { list: ListState }) => {
                     dispatch({
                       type: "list/setState",
                       payload: {
-                        key: ["postForumList", { id }],
+                        key: ["postForumListFromMy", { id }],
                         value: {
                           approval: tempApproval,
                         },
@@ -359,7 +359,7 @@ export default connect(({ list }: { list: ListState }) => {
             };
             return (
               <Link
-                to={`/forum/add?id=${item.id}`}
+                to={`/forum/details?id=${item.id}`}
                 key={item.id}
                 className="aui-flex-item-6"
                 style={{ position: "relative", padding: "3px" }}
@@ -391,30 +391,44 @@ export default connect(({ list }: { list: ListState }) => {
                   }}
                 >
                   {title}
-                  <div
-                    className={`${styles.commentLike} iconFontForum`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (
-                        Object.keys(item.approval).includes(user.id.toString())
-                      ) {
-                        handleCancelLike({
-                          id: item.id,
-                          approval: item.approval,
-                        });
-                      } else {
-                        handleLike({ id: item.id });
-                      }
-                    }}
-                    dangerouslySetInnerHTML={{
-                      __html: Object.keys(item.approval).includes(
-                        user.id.toString(),
-                      )
-                        ? "&#xe602;"
-                        : "&#xe601;",
-                    }}
-                  ></div>
+                  <div className={styles.controlBtn}>
+                    <div
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        history.push(`/forum/add?id=${item.id}`);
+                      }}
+                      className={`${styles.icon} iconFontForum`}
+                    >
+                      &#xe6b0;
+                    </div>
+                    <div
+                      className={`${styles.commentLike} iconFontForum`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (
+                          Object.keys(item.approval).includes(
+                            user.id.toString(),
+                          )
+                        ) {
+                          handleCancelLike({
+                            id: item.id,
+                            approval: item.approval,
+                          });
+                        } else {
+                          handleLike({ id: item.id });
+                        }
+                      }}
+                      dangerouslySetInnerHTML={{
+                        __html: Object.keys(item.approval).includes(
+                          user.id.toString(),
+                        )
+                          ? "&#xe602;"
+                          : "&#xe601;",
+                      }}
+                    ></div>
+                  </div>
                 </h5>
               </Link>
             );

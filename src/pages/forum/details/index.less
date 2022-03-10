@@ -64,21 +64,41 @@
     .add {
       padding-top: 15px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       .img {
         width: 36px;
         height: 36px;
         border-radius: 50%;
       }
-      .input {
-        height: 36px;
+      .inputInfo {
         margin-left: 20px;
         flex: 1;
-        border-radius: 15px;
+      }
+      .inputContainer {
+        min-height: 36px;
+        border-radius: 3px;
+        overflow: hidden;
         background: #ededed;
+        padding: 10px;
+      }
+      .input {
+        height: 18px;
         color: #333;
-        padding: 0 15px;
         font-size: 14px;
+        line-height: 18px;
+        resize: vertical;
+      }
+      .btn {
+        margin-top: 10px;
+        height: 30px;
+        padding: 0 20px;
+        width: 100px;
+        border-radius: 3px;
+        background: #ed0f0f;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
     .list {

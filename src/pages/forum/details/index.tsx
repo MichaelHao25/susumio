@@ -49,16 +49,16 @@ export default (props: IProps) => {
       setCommentList(res.data);
     });
   };
-  const handleComment: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.key === "Enter") {
-      postForumCommentAdd({
-        id: parseInt(id),
-        content: newComment,
-      }).then(() => {
-        handleFetchComment();
-        setNewComment("");
-      });
-    }
+  const handleComment: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    // if (e.key === "Enter") {
+    postForumCommentAdd({
+      id: parseInt(id),
+      content: newComment,
+    }).then(() => {
+      handleFetchComment();
+      setNewComment("");
+    });
+    // }
   };
   return (
     <div className={styles.page}>
@@ -79,10 +79,10 @@ export default (props: IProps) => {
           />
           <div className={styles.div}>
             <div className={styles.name}>Christmas</div>
-            <div className={styles.address}>
+            {/* <div className={styles.address}>
               <span className={`iconFontForum`}>&#xe652;</span>
               万科松花湖度假村
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -120,14 +120,20 @@ export default (props: IProps) => {
               alt=""
               className={`${styles.img}`}
             />
-            <input
-              type="text"
-              className={`${styles.input}`}
-              placeholder="爱评论的人运气都不会差"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              onKeyPress={handleComment}
-            />
+            <div className={styles.inputInfo}>
+              <div className={styles.inputContainer}>
+                <textarea
+                  className={`${styles.input}`}
+                  placeholder="爱评论的人运气都不会差"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  // onKeyPress={handleComment}
+                />
+              </div>
+              <div className={styles.btn} onClick={handleComment}>
+                提交
+              </div>
+            </div>
           </div>
         )}
         <div className={`${styles.list}`}>
