@@ -186,20 +186,32 @@ export default (props: IProps) => {
       </Link>
     );
   };
+  if (type === "my") {
+    return (
+      <div>
+        <Header
+          handleSortBtnClick={handleSortBtnClick}
+          setColumns={setColumns}
+        />
+        <div style={{ height: "48px" }}></div>
+        <List
+          type={AllList.postForumListFromMy}
+          params={requestBody}
+          renderItem={handleRenderItemTypeForumListFromMy}
+        />
+        <div style={{ height: "2.5rem" }}></div>
+        <Tab />
+      </div>
+    );
+  }
   return (
     <div>
       <Header handleSortBtnClick={handleSortBtnClick} setColumns={setColumns} />
       <div style={{ height: "48px" }}></div>
       <List
-        type={
-          type === "my" ? AllList.postForumListFromMy : AllList.postForumList
-        }
+        type={AllList.postForumList}
         params={requestBody}
-        renderItem={
-          type === "my"
-            ? handleRenderItemTypeForumListFromMy
-            : handleRenderItemTypeForumList
-        }
+        renderItem={handleRenderItemTypeForumList}
       />
       <div style={{ height: "2.5rem" }}></div>
       <Tab />
