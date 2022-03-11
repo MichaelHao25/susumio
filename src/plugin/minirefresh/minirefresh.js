@@ -1386,15 +1386,15 @@
         duration: 300,
       },
       // 可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
-      contentdown: "下拉刷新",
+      contentdown: "pull down to refresh",
       // 可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
-      contentover: "释放刷新",
+      contentover: "release to refresh",
       // 可选，正在刷新状态时，下拉刷新控件上显示的标题内容
-      contentrefresh: "加载中...",
+      contentrefresh: "loading...",
       // 可选，刷新成功的提示，当开启successAnim时才有效
-      contentsuccess: "刷新成功",
+      contentsuccess: "refresh success",
       // 可选，刷新失败的提示，错误回调用到，当开启successAnim时才有效
-      contenterror: "刷新失败",
+      contenterror: "freshing failed",
       // 是否默认跟随进行css动画
       isWrapCssTranslate: false,
     },
@@ -1408,8 +1408,8 @@
       },
       // 默认为空，可以自行改为 上拉显示更多 等
       contentdown: "",
-      contentrefresh: "加载中...",
-      contentnomore: "没有更多数据了",
+      contentrefresh: "loading...",
+      contentnomore: "No más datos",
     },
   };
 

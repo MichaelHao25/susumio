@@ -10,7 +10,7 @@ export default (props: IProps) => {
         activeClassName={"aui-active"}
       >
         <i className="aui-iconfont iconfont icon-shouye" />
-        <div className="aui-bar-tab-label">首页</div>
+        <div className="aui-bar-tab-label">Inicio</div>
       </NavLink>
       <NavLink
         to={"/forum/add"}
@@ -34,7 +34,7 @@ export default (props: IProps) => {
             style={{ width: "54px", height: "54px", margin: "0 auto" }}
           />
           <div className="aui-bar-tab-label" style={{ color: "#4eaaa9" }}>
-            发帖
+            Publicar
           </div>
         </div>
       </NavLink>
@@ -44,7 +44,7 @@ export default (props: IProps) => {
         activeClassName={"aui-active"}
       >
         <i className="aui-iconfont iconfont icon-people" />
-        <div className="aui-bar-tab-label">我的</div>
+        <div className="aui-bar-tab-label">Mío</div>
       </NavLink>
     </footer>
   );

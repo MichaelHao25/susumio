@@ -170,11 +170,11 @@ const index = (props: IProps) => {
     const content: string = refQuillHandler.current?.root.innerHTML || "";
     const { title, thums } = requestBody;
     if (!title) {
-      Notify.failure("请输入标题");
+      Notify.failure("please input title");
       return;
     }
     if (thums.length < 1) {
-      Notify.failure("请至少上传一张图片");
+      Notify.failure("Suba una imagen");
       return;
     }
     if (id) {
@@ -265,7 +265,7 @@ const index = (props: IProps) => {
       </div>
       <input
         type="text"
-        placeholder="添加标题会有更多赞哦~"
+        placeholder="add title get more zan~"
         className={styles.inputTitle}
         value={requestBody.title}
         onChange={(e) => {
@@ -279,7 +279,7 @@ const index = (props: IProps) => {
       </div>
       <div className={styles.footer}>
         <span className={styles.button} onClick={handlePublish}>
-          发布笔记
+          publish now
         </span>
       </div>
     </div>

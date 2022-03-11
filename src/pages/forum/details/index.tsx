@@ -131,7 +131,7 @@ export default (props: IProps) => {
                 />
               </div>
               <div className={styles.btn} onClick={handleComment}>
-                提交
+                submit
               </div>
             </div>
           </div>

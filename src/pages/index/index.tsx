@@ -257,7 +257,7 @@ const Header = () => {
                     />
                   </div>
                 </div>
-                <div className="aui-grid-label">{"论坛"}</div>
+                <div className="aui-grid-label">{"Foro"}</div>
               </Link>
             </div>
           </section>

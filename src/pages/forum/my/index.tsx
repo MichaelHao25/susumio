@@ -27,7 +27,7 @@ const index = () => {
             history.push("/forum?type=my");
           }}
         >
-          <span>我发布的帖子</span>
+          <span>Mi publicación</span>
           <span className="iconFontForum">&#xe65f;</span>
         </li>
       </ul>

@@ -49,6 +49,7 @@ interface PageProps {
   };
   type: AllList;
   list: ListState;
+  renderItem?: (item: any) => React.ReactNode;
 }
 
 const global = {
@@ -74,6 +75,7 @@ export default connect(({ list }: { list: ListState }) => {
       type,
       list,
       params = {},
+      renderItem,
     } = props;
     // 解决闭包问题
 
@@ -303,11 +305,42 @@ export default connect(({ list }: { list: ListState }) => {
     function getList() {
       switch (type) {
         case AllList.postForumListFromMy: {
-          return list.postForumListFromMy.map((item) => {
-            const { thums, title } = item;
-            const handleLike = ({ id, approval }: Partial<IPostForumList>) => {
-              if (id) {
-                postForumItemApproval({
+          const handleLike = ({ id, approval }: Partial<IPostForumList>) => {
+            if (id) {
+              postForumItemApproval({
+                id,
+              }).then((res) => {
+                console.log(res);
+                dispatch({
+                  type: "list/setState",
+                  payload: {
+                    key: ["postForumListFromMy", { id }],
+                    value: {
+                      approval: {
+                        ...approval,
+                        [user.id]: 111,
+                      },
+                    },
+                  },
+                });
+              });
+            }
+          };
+          const handleCancelLike = ({
+            id,
+            approval,
+          }: Partial<IPostForumList>) => {
+            if (id) {
+              if (approval) {
+                const tempApproval: {
+                  [key: string]: number;
+                } = {};
+                Object.entries(approval).forEach(([key, value]) => {
+                  if (key !== user.id.toString()) {
+                    tempApproval[key] = value;
+                  }
+                });
+                postForumItemCancelApproval({
                   id,
                 }).then((res) => {
                   console.log(res);
@@ -316,122 +349,25 @@ export default connect(({ list }: { list: ListState }) => {
                     payload: {
                       key: ["postForumListFromMy", { id }],
                       value: {
-                        approval: {
-                          ...approval,
-                          [user.id]: 111,
-                        },
+                        approval: tempApproval,
                       },
                     },
                   });
                 });
               }
-            };
-            const handleCancelLike = ({
-              id,
-              approval,
-            }: Partial<IPostForumList>) => {
-              if (id) {
-                if (approval) {
-                  const tempApproval: {
-                    [key: string]: number;
-                  } = {};
-                  Object.entries(approval).forEach(([key, value]) => {
-                    if (key !== user.id.toString()) {
-                      tempApproval[key] = value;
-                    }
-                  });
-                  postForumItemCancelApproval({
-                    id,
-                  }).then((res) => {
-                    console.log(res);
-                    dispatch({
-                      type: "list/setState",
-                      payload: {
-                        key: ["postForumListFromMy", { id }],
-                        value: {
-                          approval: tempApproval,
-                        },
-                      },
-                    });
-                  });
-                }
-              }
-            };
-            return (
-              <Link
-                to={`/forum/details?id=${item.id}`}
-                key={item.id}
-                className="aui-flex-item-6"
-                style={{ position: "relative", padding: "3px" }}
-              >
-                {/* aspect-ratio : 1 */}
-                <div style={{ paddingTop: "100%", position: "relative" }}>
-                  <LazyLoad once>
-                    <img
-                      loading="lazy"
-                      src={thums[0]}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        right: 0,
-                        objectFit: "cover",
-                      }}
-                    />
-                  </LazyLoad>
-                </div>{" "}
-                {/**/}
-                <h5
-                  className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-5 aui-padded-r-5 aui-bg-white"
-                  style={{
-                    height: "2rem",
-                    marginBottom: 0,
-                    position: "relative",
-                  }}
-                >
-                  {title}
-                  <div className={styles.controlBtn}>
-                    <div
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        history.push(`/forum/add?id=${item.id}`);
-                      }}
-                      className={`${styles.icon} iconFontForum`}
-                    >
-                      &#xe6b0;
-                    </div>
-                    <div
-                      className={`${styles.commentLike} iconFontForum`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (
-                          Object.keys(item.approval).includes(
-                            user.id.toString(),
-                          )
-                        ) {
-                          handleCancelLike({
-                            id: item.id,
-                            approval: item.approval,
-                          });
-                        } else {
-                          handleLike({ id: item.id });
-                        }
-                      }}
-                      dangerouslySetInnerHTML={{
-                        __html: Object.keys(item.approval).includes(
-                          user.id.toString(),
-                        )
-                          ? "&#xe602;"
-                          : "&#xe601;",
-                      }}
-                    ></div>
-                  </div>
-                </h5>
-              </Link>
-            );
+            }
+          };
+          return list.postForumListFromMy.map((item) => {
+            if (renderItem) {
+              return renderItem({
+                ...item,
+                handleCancelLike,
+                handleLike,
+                user,
+              });
+            } else {
+              return <div>没有渲染目标</div>;
+            }
           });
         }
         case AllList.postForumList: {
@@ -488,64 +424,16 @@ export default connect(({ list }: { list: ListState }) => {
             }
           };
           return list.postForumList.map((item) => {
-            const { thums, title } = item;
-            return (
-              <Link
-                to={`/forum/details?id=${item.id}`}
-                key={item.id}
-                className="aui-flex-item-6"
-                style={{ position: "relative", padding: "3px" }}
-              >
-                {/* aspect-ratio : 1 */}
-                <div style={{ paddingTop: "100%", position: "relative" }}>
-                  <LazyLoad once>
-                    <img
-                      loading="lazy"
-                      src={thums[0]}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        right: 0,
-                        objectFit: "cover",
-                      }}
-                    />
-                  </LazyLoad>
-                </div>{" "}
-                {/**/}
-                <h5
-                  className="aui-text-default aui-ellipsis-2 aui-font-size-12 aui-padded-t-5 aui-padded-l-5 aui-padded-r-5 aui-bg-white"
-                  style={{ height: "2rem", marginBottom: 0 }}
-                >
-                  {title}
-                  <div
-                    className={`${styles.commentLike} iconFontForum`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (
-                        Object.keys(item.approval).includes(user.id.toString())
-                      ) {
-                        handleCancelLike({
-                          id: item.id,
-                          approval: item.approval,
-                        });
-                      } else {
-                        handleLike({ id: item.id });
-                      }
-                    }}
-                    dangerouslySetInnerHTML={{
-                      __html: Object.keys(item.approval).includes(
-                        user.id.toString(),
-                      )
-                        ? "&#xe602;"
-                        : "&#xe601;",
-                    }}
-                  ></div>
-                </h5>
-              </Link>
-            );
+            if (renderItem) {
+              return renderItem({
+                ...item,
+                handleCancelLike,
+                handleLike,
+                user,
+              });
+            } else {
+              return <div>没有渲染目标</div>;
+            }
           });
         }
         case AllList.postTeamUsers: {
