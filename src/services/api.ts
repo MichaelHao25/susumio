@@ -3,6 +3,24 @@ import { RequestOptionsInit } from "umi-request";
 import { AddressItem } from "@/services/interface";
 import { CurrencyType } from "@/hooks/useCurrencyManage";
 /**
+ * 删除一个帖子下面的某一条留言
+ */
+export const postForumItemDeleteComment = (props: IForumCommentDetails) => {
+  const { id } = props;
+  return request.post("/api_bbs/bbs/delete_comment", {
+    data: { id },
+  });
+};
+/**
+ * 删除一个帖子
+ */
+export const postForumItemDelete = (props: IForumCommentDetails) => {
+  const { id } = props;
+  return request.post("/api_bbs/bbs/delete", {
+    data: { id },
+  });
+};
+/**
  * 取消点赞
  */
 export const postForumItemCancelApproval = (props: IForumCommentDetails) => {
@@ -73,6 +91,7 @@ export enum IForumSortType {
 export interface IForumList {
   sort_by?: IForumSortType;
   sort_type?: "desc";
+  keyword?: string;
   pageLimit: number;
   pageNum: number;
 }
@@ -87,6 +106,7 @@ export const postForumListFromMy = (props: IForumList) => {
     sort_type = "desc",
     pageLimit,
     pageNum,
+    keyword,
   } = props;
   return request.post("/api_bbs/bbs/mine", {
     headers: {
@@ -96,6 +116,7 @@ export const postForumListFromMy = (props: IForumList) => {
     data: {
       sort_by,
       sort_type,
+      keyword,
     },
   });
 };
@@ -105,6 +126,7 @@ export const postForumList = (props: IForumList) => {
     sort_type = "desc",
     pageLimit,
     pageNum,
+    keyword,
   } = props;
   return request.post("/api_bbs/bbs/index", {
     headers: {
@@ -114,6 +136,7 @@ export const postForumList = (props: IForumList) => {
     data: {
       sort_by,
       sort_type,
+      keyword,
     },
   });
 };

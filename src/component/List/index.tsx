@@ -305,132 +305,18 @@ export default connect(({ list }: { list: ListState }) => {
     function getList() {
       switch (type) {
         case AllList.postForumListFromMy: {
-          const handleLike = ({ id, approval }: Partial<IPostForumList>) => {
-            if (id) {
-              postForumItemApproval({
-                id,
-              }).then((res) => {
-                console.log(res);
-                dispatch({
-                  type: "list/setState",
-                  payload: {
-                    key: ["postForumListFromMy", { id }],
-                    value: {
-                      approval: {
-                        ...approval,
-                        [user.id]: 111,
-                      },
-                    },
-                  },
-                });
-              });
-            }
-          };
-          const handleCancelLike = ({
-            id,
-            approval,
-          }: Partial<IPostForumList>) => {
-            if (id) {
-              if (approval) {
-                const tempApproval: {
-                  [key: string]: number;
-                } = {};
-                Object.entries(approval).forEach(([key, value]) => {
-                  if (key !== user.id.toString()) {
-                    tempApproval[key] = value;
-                  }
-                });
-                postForumItemCancelApproval({
-                  id,
-                }).then((res) => {
-                  console.log(res);
-                  dispatch({
-                    type: "list/setState",
-                    payload: {
-                      key: ["postForumListFromMy", { id }],
-                      value: {
-                        approval: tempApproval,
-                      },
-                    },
-                  });
-                });
-              }
-            }
-          };
           return list.postForumListFromMy.map((item) => {
             if (renderItem) {
-              return renderItem({
-                ...item,
-                handleCancelLike,
-                handleLike,
-                user,
-              });
+              return renderItem(item);
             } else {
               return <div>没有渲染目标</div>;
             }
           });
         }
         case AllList.postForumList: {
-          const handleLike = ({ id, approval }: Partial<IPostForumList>) => {
-            if (id) {
-              postForumItemApproval({
-                id,
-              }).then((res) => {
-                console.log(res);
-                dispatch({
-                  type: "list/setState",
-                  payload: {
-                    key: ["postForumList", { id }],
-                    value: {
-                      approval: {
-                        ...approval,
-                        [user.id]: 111,
-                      },
-                    },
-                  },
-                });
-              });
-            }
-          };
-          const handleCancelLike = ({
-            id,
-            approval,
-          }: Partial<IPostForumList>) => {
-            if (id) {
-              if (approval) {
-                const tempApproval: {
-                  [key: string]: number;
-                } = {};
-                Object.entries(approval).forEach(([key, value]) => {
-                  if (key !== user.id.toString()) {
-                    tempApproval[key] = value;
-                  }
-                });
-                postForumItemCancelApproval({
-                  id,
-                }).then((res) => {
-                  console.log(res);
-                  dispatch({
-                    type: "list/setState",
-                    payload: {
-                      key: ["postForumList", { id }],
-                      value: {
-                        approval: tempApproval,
-                      },
-                    },
-                  });
-                });
-              }
-            }
-          };
           return list.postForumList.map((item) => {
             if (renderItem) {
-              return renderItem({
-                ...item,
-                handleCancelLike,
-                handleLike,
-                user,
-              });
+              return renderItem(item);
             } else {
               return <div>没有渲染目标</div>;
             }

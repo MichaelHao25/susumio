@@ -43,6 +43,7 @@ export interface UserinfoState {
     telephone: string;
     qq: string;
     wechat: string;
+    is_bbs: boolean;
     email: string;
     province: string;
     province_code: string;
@@ -158,6 +159,7 @@ const userinfoModel: UserinfoModel = {
       telephone: "",
       qq: "",
       wechat: "",
+      is_bbs: false,
       email: "",
       province: "",
       province_code: "",

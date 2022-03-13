@@ -18,6 +18,32 @@ import { ConnectProps } from "umi";
 import styles from "./index.less";
 const Clipboard = Quill.import("modules/clipboard");
 const Delta = Quill.import("delta");
+class PlainClipboard extends Clipboard {
+  convert(html = null) {
+    if (typeof html === "string") {
+      this.container.innerHTML = html;
+      const delta = super.convert();
+      this.container.innerHTML = "";
+      return delta;
+    } else {
+      const text = this.container.innerText;
+      this.container.innerHTML = "";
+      if (text) {
+        try {
+          const url = new URL(text);
+          return new Delta().insert(url.toString(), {
+            link: url.toString(),
+          });
+        } catch (error) {
+          console.log("非网址");
+        }
+      }
+      return new Delta().insert(text);
+    }
+  }
+}
+
+Quill.register("modules/clipboard", PlainClipboard, true);
 type IProps = ConnectProps<
   {},
   {},
@@ -71,32 +97,6 @@ const index = (props: IProps) => {
   useEffect(() => {
     if (refEditorElement.current) {
       if (!refQuillHandler.current) {
-        class PlainClipboard extends Clipboard {
-          convert(html = null) {
-            if (typeof html === "string") {
-              this.container.innerHTML = html;
-              const delta = super.convert();
-              this.container.innerHTML = "";
-              return delta;
-            } else {
-              const text = this.container.innerText;
-              this.container.innerHTML = "";
-              if (text) {
-                try {
-                  const url = new URL(text);
-                  return new Delta().insert(url.toString(), {
-                    link: url.toString(),
-                  });
-                } catch (error) {
-                  console.log("非网址");
-                }
-              }
-              return new Delta().insert(text);
-            }
-          }
-        }
-
-        Quill.register("modules/clipboard", PlainClipboard, true);
         // @ts-ignore
         refQuillHandler.current = new Quill(refEditorElement.current, {
           bounds: refEditorElement.current,
@@ -170,7 +170,7 @@ const index = (props: IProps) => {
     const content: string = refQuillHandler.current?.root.innerHTML || "";
     const { title, thums } = requestBody;
     if (!title) {
-      Notify.failure("please input title");
+      Notify.failure("Introduzca el título");
       return;
     }
     if (thums.length < 1) {
@@ -265,7 +265,7 @@ const index = (props: IProps) => {
       </div>
       <input
         type="text"
-        placeholder="add title get more zan~"
+        placeholder="Escriba un buen título para obtener más elogios"
         className={styles.inputTitle}
         value={requestBody.title}
         onChange={(e) => {

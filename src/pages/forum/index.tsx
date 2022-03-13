@@ -1,11 +1,26 @@
 import Tab from "./tab";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./index.less";
-import { IForumList, IForumSortType } from "@/services/api";
+import {
+  IForumList,
+  IForumSortType,
+  postForumItemApproval,
+  postForumItemCancelApproval,
+  postForumItemDelete,
+} from "@/services/api";
 import List from "@/component/List";
-import { AllList } from "@/services/interface";
-import { ConnectProps, history, Link } from "umi";
+import { AllList, IPostForumList } from "@/services/interface";
+import {
+  ConnectProps,
+  history,
+  Link,
+  ListState,
+  useDispatch,
+  UserinfoState,
+  useSelector,
+} from "umi";
 import LazyLoad from "react-lazyload";
+import { Confirm, Notify } from "notiflix";
 interface IProps
   extends ConnectProps<
     {},
@@ -26,10 +41,23 @@ export default (props: IProps) => {
   >({
     sort_by: IForumSortType.CreateTime,
     sort_type: "desc",
+    keyword: "",
   });
   const [columns, setColumns] = useState<ColumnType>(
     ColumnType.MultipleColumns,
   );
+  const {
+    userinfo: { user },
+    list,
+  } = useSelector(
+    ({ userinfo, list }: { userinfo: UserinfoState; list: ListState }) => {
+      return {
+        list,
+        userinfo,
+      };
+    },
+  );
+  const dispatch = useDispatch();
   const {
     location: { query: { type = "" } = {} },
   } = props;
@@ -37,19 +65,104 @@ export default (props: IProps) => {
     setRequestBody((prevState) => {
       if (prevState.sort_by === IForumSortType.CreateTime) {
         return {
+          ...prevState,
           sort_by: IForumSortType.UpdateTime,
           sort_type: "desc",
         };
       } else {
         return {
+          ...prevState,
           sort_by: IForumSortType.CreateTime,
           sort_type: "desc",
         };
       }
     });
   };
+  const handleLike = ({ id, approval }: Partial<IPostForumList>) => {
+    if (id) {
+      postForumItemApproval({
+        id,
+      }).then((res) => {
+        console.log(res);
+        dispatch({
+          type: "list/setState",
+          payload: {
+            key: ["postForumList", { id }],
+            value: {
+              approval: {
+                ...approval,
+                [user.id]: 111,
+              },
+            },
+          },
+        });
+      });
+    }
+  };
+  const handleCancelLike = ({ id, approval }: Partial<IPostForumList>) => {
+    if (id) {
+      if (approval) {
+        const tempApproval: {
+          [key: string]: number;
+        } = {};
+        Object.entries(approval).forEach(([key, value]) => {
+          if (key !== user.id.toString()) {
+            tempApproval[key] = value;
+          }
+        });
+        postForumItemCancelApproval({
+          id,
+        }).then((res) => {
+          dispatch({
+            type: "list/setState",
+            payload: {
+              key: ["postForumList", { id }],
+              value: {
+                approval: tempApproval,
+              },
+            },
+          });
+        });
+      }
+    }
+  };
+  const handleDeleteItem = (params: Pick<IPostForumList, "id">) => {
+    const { id } = params;
+    Confirm.show(
+      "Advertencia de eliminación",
+      "Está confirmada la eliminación?",
+      "Sí",
+      "No",
+      () => {
+        postForumItemDelete({ id }).then((res) => {
+          Notify.success(res.msg);
+          if (type === "my") {
+            const tempList = list.postForumListFromMy.filter(
+              (item) => item.id !== id,
+            );
+            dispatch({
+              type: "list/setState",
+              payload: {
+                postForumListFromMy: tempList,
+              },
+            });
+          } else {
+            const tempList = list.postForumList.filter(
+              (item) => item.id !== id,
+            );
+            dispatch({
+              type: "list/setState",
+              payload: {
+                postForumList: tempList,
+              },
+            });
+          }
+        });
+      },
+    );
+  };
   const handleRenderItemTypeForumListFromMy = (item: any) => {
-    const { id, thums, title, handleCancelLike, handleLike, user } = item;
+    const { id, thums, title } = item;
     return (
       <Link
         to={`/forum/details?id=${id}`}
@@ -93,6 +206,16 @@ export default (props: IProps) => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                handleDeleteItem({ id: item.id });
+              }}
+              className={`${styles.icon} iconFontForum`}
+            >
+              &#xe68e;
+            </div>
+            <div
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 history.push(`/forum/add?id=${item.id}`);
               }}
               className={`${styles.icon} iconFontForum`}
@@ -125,7 +248,7 @@ export default (props: IProps) => {
     );
   };
   const handleRenderItemTypeForumList = (item: any) => {
-    const { id, thums, title, handleCancelLike, handleLike, user } = item;
+    const { id, thums, title } = item;
     return (
       <Link
         to={`/forum/details?id=${id}`}
@@ -161,6 +284,18 @@ export default (props: IProps) => {
         >
           {title}
           <div className={styles.controlBtn}>
+            {user.is_bbs && (
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleDeleteItem({ id: item.id });
+                }}
+                className={`${styles.icon} iconFontForum`}
+              >
+                &#xe68e;
+              </div>
+            )}
             <div
               className={`${styles.commentLike} iconFontForum`}
               onClick={(e) => {
@@ -192,6 +327,7 @@ export default (props: IProps) => {
         <Header
           handleSortBtnClick={handleSortBtnClick}
           setColumns={setColumns}
+          setRequestBody={setRequestBody}
         />
         <div style={{ height: "48px" }}></div>
         <List
@@ -206,7 +342,11 @@ export default (props: IProps) => {
   }
   return (
     <div>
-      <Header handleSortBtnClick={handleSortBtnClick} setColumns={setColumns} />
+      <Header
+        handleSortBtnClick={handleSortBtnClick}
+        setColumns={setColumns}
+        setRequestBody={setRequestBody}
+      />
       <div style={{ height: "48px" }}></div>
       <List
         type={AllList.postForumList}
@@ -222,6 +362,7 @@ export default (props: IProps) => {
 const SortBtn = (props: { handleClick: () => void }) => {
   const { handleClick } = props;
   const [tabType, setTabType] = useState<boolean>(false);
+
   return (
     <div
       className={`${styles.sortContainer} ${
@@ -238,7 +379,7 @@ const SortBtn = (props: { handleClick: () => void }) => {
         //   setTabType(false);
         // }}
       >
-        Publicar
+        Publicación <span className="iconFontForum">&#xe6cc;</span>
       </div>
       <div
         className={`${styles.sortBtn} ${tabType ? styles.sortBtnActive : ""}`}
@@ -246,7 +387,7 @@ const SortBtn = (props: { handleClick: () => void }) => {
         //   setTabType(true);
         // }}
       >
-        Responder
+        Comentario<span className="iconFontForum">&#xe6cc;</span>
       </div>
     </div>
   );
@@ -254,36 +395,86 @@ const SortBtn = (props: { handleClick: () => void }) => {
 const Header = (props: {
   handleSortBtnClick: () => void;
   setColumns: React.Dispatch<React.SetStateAction<ColumnType>>;
+  setRequestBody: React.Dispatch<
+    React.SetStateAction<Omit<IForumList, "pageNum" | "pageLimit">>
+  >;
 }) => {
-  const { handleSortBtnClick, setColumns } = props;
+  const { handleSortBtnClick, setColumns, setRequestBody } = props;
+  const [active, setActive] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [keyword, setKeyword] = useState<string>("");
+
+  useEffect(() => {
+    if (active) {
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 500);
+    }
+  }, [active]);
+  const handleKeypress: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    const { code } = e;
+    if (code == "Enter") {
+      setRequestBody((res) => {
+        return {
+          ...res,
+          keyword,
+        };
+      });
+    }
+  };
   return (
-    <div className={styles.header}>
-      <h3
-        className={styles.title}
-        onClick={() => {
-          history.push("/");
-        }}
-      >
-        Foro
-      </h3>
-      <div className={styles.control}>
-        <SortBtn handleClick={handleSortBtnClick} />
-        {/* 单列 */}
-        <div
-          className="iconFontForum"
-          onClick={() => setColumns(ColumnType.SingleColumns)}
-        >
-          &#xe600;
+    <div className={styles.headerContainer}>
+      <div className={`${styles.moveContainer} ${active ? styles.active : ""}`}>
+        <div className={styles.header}>
+          <h3
+            className={styles.title}
+            onClick={() => {
+              history.push("/");
+            }}
+          >
+            Foro
+          </h3>
+          <div className={styles.control}>
+            <SortBtn handleClick={handleSortBtnClick} />
+            {/* 单列 */}
+            <div
+              className="iconFontForum"
+              onClick={() => setColumns(ColumnType.SingleColumns)}
+            >
+              &#xe600;
+            </div>
+            {/* 多列 */}
+            <div
+              className="iconFontForum"
+              onClick={() => setColumns(ColumnType.MultipleColumns)}
+            >
+              &#xe6e5;
+            </div>
+            {/* 搜索 */}
+            <div className="iconFontForum" onClick={() => setActive(true)}>
+              &#xe8d6;
+            </div>
+          </div>
         </div>
-        {/* 多列 */}
-        <div
-          className="iconFontForum"
-          onClick={() => setColumns(ColumnType.MultipleColumns)}
-        >
-          &#xe6e5;
+        <div className={styles.search}>
+          <input
+            type="text"
+            placeholder="Search"
+            className={styles.input}
+            ref={inputRef}
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyPress={handleKeypress}
+          />
+          <div
+            onClick={() => setActive(false)}
+            className={`${styles.close} iconFontForum`}
+          >
+            &#xeaf2;
+          </div>
         </div>
-        {/* 搜索 */}
-        <div className="iconFontForum">&#xe8d6;</div>
       </div>
     </div>
   );

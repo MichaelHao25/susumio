@@ -2,9 +2,10 @@ import {
   postForumCommentAdd,
   postForumCommentDetails,
   postForumDetails,
+  postForumItemDeleteComment,
 } from "@/services/api";
-import { useEffect, useState } from "react";
-import { ConnectProps, UserinfoState, useSelector } from "umi";
+import { useEffect, useRef, useState } from "react";
+import { ConnectProps, UserinfoState, useSelector, history } from "umi";
 import { Pagination, Autoplay } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
 import styles from "./index.less";
@@ -14,7 +15,39 @@ import "swiper/swiper.less";
 import "swiper/modules/pagination/pagination.less";
 import "swiper/modules/autoplay/autoplay.less";
 import moment from "moment";
+import Upload from "@/component/Upload";
+import Quill from "quill";
+import { Confirm, Notify } from "notiflix";
 
+const Clipboard = Quill.import("modules/clipboard");
+const Delta = Quill.import("delta");
+
+class PlainClipboard extends Clipboard {
+  convert(html = null) {
+    if (typeof html === "string") {
+      this.container.innerHTML = html;
+      const delta = super.convert();
+      this.container.innerHTML = "";
+      return delta;
+    } else {
+      const text = this.container.innerText;
+      this.container.innerHTML = "";
+      if (text) {
+        try {
+          const url = new URL(text);
+          return new Delta().insert(url.toString(), {
+            link: url.toString(),
+          });
+        } catch (error) {
+          console.log("非网址");
+        }
+      }
+      return new Delta().insert(text);
+    }
+  }
+}
+
+Quill.register("modules/clipboard", PlainClipboard, true);
 interface IProps
   extends ConnectProps<
     {},
@@ -34,10 +67,39 @@ export default (props: IProps) => {
   const { user } = useSelector(({ userinfo }: { userinfo: UserinfoState }) => {
     return userinfo;
   });
-
+  const refEditorElement = useRef<HTMLDivElement>(null);
+  const refQuillHandler = useRef<Quill>(null);
+  const refUpload = useRef<() => void>(null);
   const [details, setDetails] = useState<IPostForumList>();
   const [commentList, setCommentList] = useState<IPostForumComment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
+  useEffect(() => {
+    if (refEditorElement.current) {
+      if (!refQuillHandler.current) {
+        // @ts-ignore
+        refQuillHandler.current = new Quill(refEditorElement.current, {
+          bounds: refEditorElement.current,
+          // debug: "info",
+          modules: {
+            toolbar: [],
+            history: {
+              delay: 2000,
+              maxStack: 500,
+              userOnly: true,
+            },
+          },
+          placeholder:
+            "Por favor, introduzca lo que desea especificar y si quiere puede copiar y pegar un enlace, por ejemplo link de página web 、WhatsApp...",
+          theme: "snow",
+        });
+      }
+    }
+    // return () => {
+    //   if (refQuillHandler.current) {
+    //     refQuillHandler.current. .destroy();
+    //   }
+    // }
+  }, [refEditorElement]);
   useEffect(() => {
     postForumDetails({ id: parseInt(id) }).then((res) => {
       setDetails(res.data);
@@ -51,14 +113,48 @@ export default (props: IProps) => {
   };
   const handleComment: React.MouseEventHandler<HTMLDivElement> = (e) => {
     // if (e.key === "Enter") {
-    postForumCommentAdd({
-      id: parseInt(id),
-      content: newComment,
-    }).then(() => {
-      handleFetchComment();
-      setNewComment("");
-    });
+    if (user.id === 0) {
+      history.push("/login");
+      return;
+    }
+    if (refQuillHandler.current) {
+      const content: string = refQuillHandler.current?.root.innerHTML || "";
+
+      if (refQuillHandler.current.getText() !== "\n") {
+        postForumCommentAdd({
+          id: parseInt(id),
+          content,
+        }).then(() => {
+          handleFetchComment();
+          setNewComment("");
+          if (refQuillHandler.current) {
+            refQuillHandler.current.clipboard.dangerouslyPasteHTML("");
+          }
+        });
+      } else {
+        Notify.failure("Dar un comentario es un placer");
+      }
+    }
     // }
+  };
+  const handleDeleteComment = (id: number) => {
+    if (user.is_bbs) {
+      Confirm.show(
+        "Advertencia de eliminación",
+        "Está confirmada la eliminación?",
+        "Sí",
+        "No",
+        () => {
+          postForumItemDeleteComment({
+            id,
+          }).then((res) => {
+            Notify.success(res.msg);
+            const tempList = commentList.filter((item) => item.id !== id);
+            setCommentList(tempList);
+          });
+        },
+      );
+    }
   };
   return (
     <div className={styles.page}>
@@ -66,7 +162,7 @@ export default (props: IProps) => {
         <div
           className={`${styles.back} iconFontForum`}
           onClick={() => {
-            history.back();
+            history.goBack();
           }}
         >
           &#xe84f;
@@ -86,6 +182,23 @@ export default (props: IProps) => {
           </div>
         </div>
       </div>
+      <Upload
+        onUpload={refUpload}
+        uploadSuccessCallback={(res) => {
+          if (refQuillHandler.current) {
+            // 获取光标所在位置
+            const length = refQuillHandler.current.getSelection()?.index || 0;
+            // 插入图片  res.info为服务器返回的图片地址
+            refQuillHandler.current.insertEmbed(
+              length,
+              "image",
+              res.host_file_path,
+            );
+            // 调整光标到最后
+            refQuillHandler.current.setSelection(length + 1, 0);
+          }
+        }}
+      />
       <div className={styles.swiper}>
         <Swiper
           modules={[Pagination, Autoplay]}
@@ -112,30 +225,32 @@ export default (props: IProps) => {
         dangerouslySetInnerHTML={{ __html: details?.content || "" }}
       ></div>
       <div className={`${styles.evaluate}`}>
-        <div className={`${styles.total}`}>共{commentList.length}条评论</div>
-        {user.id !== 0 && (
-          <div className={`${styles.add}`}>
-            <img
+        <div className={`${styles.total}`}>
+          Total （ {commentList.length}）comentarios
+        </div>
+
+        <div className={`${styles.add}`}>
+          {/* <img
               src={user.avatar || require("@/assets/img/logo2.png")}
               alt=""
               className={`${styles.img}`}
-            />
-            <div className={styles.inputInfo}>
-              <div className={styles.inputContainer}>
-                <textarea
+            /> */}
+          <div className={styles.inputInfo}>
+            <div className={styles.inputContainer}>
+              <div className={styles.textEditor} ref={refEditorElement}></div>
+              {/* <textarea
                   className={`${styles.input}`}
                   placeholder="爱评论的人运气都不会差"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  // onKeyPress={handleComment}
-                />
-              </div>
-              <div className={styles.btn} onClick={handleComment}>
-                submit
-              </div>
+                // onKeyPress={handleComment}
+                /> */}
+            </div>
+            <div className={styles.btn} onClick={handleComment}>
+              Publicar
             </div>
           </div>
-        )}
+        </div>
         <div className={`${styles.list}`}>
           {commentList.map((item) => {
             const {
@@ -148,7 +263,11 @@ export default (props: IProps) => {
               } = {},
             } = item;
             return (
-              <div key={id} className={`${styles.row}`}>
+              <div
+                key={id}
+                className={`${styles.row}`}
+                onClick={() => handleDeleteComment(item.id)}
+              >
                 <div className={`${styles.imgContainer}`}>
                   <img src={avatar} alt="" className={`${styles.img}`} />
                 </div>
@@ -158,7 +277,7 @@ export default (props: IProps) => {
                     {/* <span className={styles.author}>作者</span> */}
                   </div>
                   <div className={`${styles.comment}`}>
-                    {content}
+                    <span dangerouslySetInnerHTML={{ __html: content }}></span>
                     <span className={`${styles.time}`}>
                       {moment(create_time).format("MM-DD")}
                     </span>
