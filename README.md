@@ -1,6 +1,6 @@
 1. 如果没有汇率信息的话就改成美元
 
-| 账号 | ID  | 登录密码  | 支付密码  |||
+<!-- | 账号 | ID  | 登录密码  | 支付密码  |||
  | ---  | ---  | ---  | ---  | ---|---|
 |13968066530|954321|954321|123456|1|
 | 2583691470  | 21667  | 123456  | 123456  | 1|
@@ -19,7 +19,7 @@
 http://3.238.17.28:8888/364f6b8a
 http://172.31.14.196:8888/364f6b8a
 username: ukx8nebi
-password: 60f971e3
+password: 60f971e3 -->
 
  const global_shareInfo = localStorage.getItem('global_shareInfo')
 // 登陆成功后如果有分享信息的话就直接跳转到详情页面 if (global_shareInfo) { // localStorage.removeItem('global_shareInfo')
