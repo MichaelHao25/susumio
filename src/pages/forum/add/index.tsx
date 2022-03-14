@@ -77,23 +77,26 @@ const index = (props: IProps) => {
             thums,
             content,
           });
+          if (refQuillHandler.current) {
+            refQuillHandler.current.clipboard.dangerouslyPasteHTML(content);
+          }
         },
       );
     }
   }, [id]);
-  useEffect(() => {
-    if (refQuillHandler.current) {
-      if (requestBody.content !== "") {
-        try {
-          refQuillHandler.current.clipboard.dangerouslyPasteHTML(
-            requestBody.content,
-          );
-        } catch (error) {
-          refQuillHandler.current.setText(requestBody.content);
-        }
-      }
-    }
-  }, [requestBody]);
+  // useEffect(() => {
+  //   if (refQuillHandler.current) {
+  //     if (requestBody.content !== "") {
+  //       try {
+  //         refQuillHandler.current.clipboard.dangerouslyPasteHTML(
+  //           requestBody.content,
+  //         );
+  //       } catch (error) {
+  //         refQuillHandler.current.setText(requestBody.content);
+  //       }
+  //     }
+  //   }
+  // }, [requestBody]);
   useEffect(() => {
     if (refEditorElement.current) {
       if (!refQuillHandler.current) {
@@ -152,7 +155,8 @@ const index = (props: IProps) => {
               userOnly: true,
             },
           },
-          placeholder: "Por favor ingrese una descripción del artículo--",
+          placeholder:
+            "Por favor, introduzca lo que desea especificar y si quiere puede copiar y pegar un enlace, por ejemplo link de página web 、WhatsApp...",
           theme: "snow",
         });
       }
