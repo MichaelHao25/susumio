@@ -175,7 +175,13 @@ export default (props: IProps) => {
         style={{ position: "relative", padding: "3px" }}
       >
         {/* aspect-ratio : 1 */}
-        <div style={{ paddingTop: "100%", position: "relative" }}>
+        <div
+          style={{
+            paddingTop: "100%",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
           <LazyLoad once>
             <img
               loading="lazy"
@@ -261,7 +267,13 @@ export default (props: IProps) => {
         style={{ position: "relative", padding: "3px" }}
       >
         {/* aspect-ratio : 1 */}
-        <div style={{ paddingTop: "100%", position: "relative" }}>
+        <div
+          style={{
+            paddingTop: "100%",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
           <LazyLoad once>
             <img
               loading="lazy"

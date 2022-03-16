@@ -18,32 +18,7 @@ import { ConnectProps } from "umi";
 import styles from "./index.less";
 const Clipboard = Quill.import("modules/clipboard");
 const Delta = Quill.import("delta");
-class PlainClipboard extends Clipboard {
-  convert(html = null) {
-    if (typeof html === "string") {
-      this.container.innerHTML = html;
-      const delta = super.convert();
-      this.container.innerHTML = "";
-      return delta;
-    } else {
-      const text = this.container.innerText;
-      this.container.innerHTML = "";
-      if (text) {
-        try {
-          const url = new URL(text);
-          return new Delta().insert(url.toString(), {
-            link: url.toString(),
-          });
-        } catch (error) {
-          console.log("非网址");
-        }
-      }
-      return new Delta().insert(text);
-    }
-  }
-}
 
-Quill.register("modules/clipboard", PlainClipboard, true);
 type IProps = ConnectProps<
   {},
   {},
@@ -100,7 +75,37 @@ const index = (props: IProps) => {
   useEffect(() => {
     if (refEditorElement.current) {
       if (!refQuillHandler.current) {
+        class PlainClipboard extends Clipboard {
+          convert(html = null) {
+            if (typeof html === "string") {
+              this.container.innerHTML = html;
+              const delta = super.convert();
+              this.container.innerHTML = "";
+              return delta;
+            } else {
+              const text = this.container.innerText;
+
+              if (text) {
+                try {
+                  const html = text
+                    .replace(/(http.*?)([ \n]|$)/gi, `<a href="$1">$1</a>$2`)
+                    .replace(/\n/g, "<br/>");
+                  this.container.innerHTML = html;
+                  const delta = super.convert();
+                  this.container.innerHTML = "";
+                  return delta;
+                } catch (error) {
+                  console.log("非网址");
+                }
+              }
+              return new Delta().insert(text);
+            }
+          }
+        }
+
+        Quill.register("modules/clipboard", PlainClipboard, true);
         // @ts-ignore
+
         refQuillHandler.current = new Quill(refEditorElement.current, {
           bounds: refEditorElement.current,
           // debug: "info",
