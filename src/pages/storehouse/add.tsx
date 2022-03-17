@@ -17,7 +17,8 @@ import { useRef } from "react";
 import "quill/dist/quill.snow.css";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 import Notiflix from "notiflix";
-
+const Clipboard = Quill.import("modules/clipboard");
+const Delta = Quill.import("delta");
 interface Props
   extends ConnectProps<
     {},
@@ -80,6 +81,35 @@ export default (props: Props) => {
   useEffect(() => {
     if (refEditorElement.current) {
       if (!refQuillHandler.current) {
+        class PlainClipboard extends Clipboard {
+          convert(html = null) {
+            if (typeof html === "string") {
+              this.container.innerHTML = html;
+              const delta = super.convert();
+              this.container.innerHTML = "";
+              return delta;
+            } else {
+              const text = this.container.innerText;
+
+              if (text) {
+                try {
+                  const html = text
+                    .replace(/(http.*?)([ \n]|$)/gi, `<a href="$1">$1</a>$2`)
+                    .replace(/\n/g, "<br/>");
+                  this.container.innerHTML = html;
+                  const delta = super.convert();
+                  this.container.innerHTML = "";
+                  return delta;
+                } catch (error) {
+                  console.log("非网址");
+                }
+              }
+              return new Delta().insert(text);
+            }
+          }
+        }
+
+        Quill.register("modules/clipboard", PlainClipboard, true);
         // @ts-ignore
         refQuillHandler.current = new Quill(refEditorElement.current, {
           bounds: refEditorElement.current,

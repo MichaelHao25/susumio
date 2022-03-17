@@ -222,12 +222,12 @@ const Header = () => {
                 <div style={{ paddingTop: "25%", marginTop: "52px" }} />
               )}
               {tags.map((item) => {
+                let to = `/goodsListModel?customTag=${item.name}&title=${item.name}`;
+                if (item.name === "Toktok") {
+                  to = "/forum";
+                }
                 return (
-                  <Link
-                    to={`/goodsListModel?customTag=${item.name}&title=${item.name}`}
-                    key={item.id}
-                    className="aui-col-xs-3"
-                  >
+                  <Link to={to} key={item.id} className="aui-col-xs-3">
                     <div style={{ position: "relative" }}>
                       <div style={{ paddingTop: "55%" }} />
                       <div style={{ position: "absolute", top: 0 }}>
@@ -243,7 +243,7 @@ const Header = () => {
                   </Link>
                 );
               })}
-              <Link to={"/forum"} className="aui-col-xs-3">
+              {/* <Link to={"/forum"} className="aui-col-xs-3">
                 <div style={{ position: "relative" }}>
                   <div style={{ paddingTop: "55%" }} />
                   <div style={{ position: "absolute", top: 0 }}>
@@ -258,7 +258,7 @@ const Header = () => {
                   </div>
                 </div>
                 <div className="aui-grid-label">{"Foro"}</div>
-              </Link>
+              </Link> */}
             </div>
           </section>
         </div>
