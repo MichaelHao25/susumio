@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export enum LoginStatusQuery {
   Loading,
@@ -12,7 +12,7 @@ export default (): {
     LoginStatusQuery.Loading,
   );
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       setIsLogin(LoginStatusQuery.isLogin);
     } else {

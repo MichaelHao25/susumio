@@ -342,7 +342,7 @@ const userinfoModel: UserinfoModel = {
                 });
               } else {
                 // 否则就从本地获取信息
-                console.log("从本地获取登陆信息");
+                console.log("从本地获取登陆信息,facebook登陆失败");
                 const userInfo = window.localStorage.getItem("userinfo");
                 if (userInfo) {
                   const parseUserInfo = JSON.parse(userInfo);
@@ -355,6 +355,18 @@ const userinfoModel: UserinfoModel = {
             });
           }
         });
+      };
+      facebooklogin.onerror = () => {
+        // 否则就从本地获取信息
+        console.log("从本地获取登陆信息,facebookSdk加载失败");
+        const userInfo = window.localStorage.getItem("userinfo");
+        if (userInfo) {
+          const parseUserInfo = JSON.parse(userInfo);
+          dispatch({
+            type: "setState",
+            payload: parseUserInfo,
+          });
+        }
       };
       document.body.appendChild(facebooklogin);
 

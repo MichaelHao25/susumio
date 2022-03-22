@@ -18,6 +18,7 @@ import moment from "moment";
 import Upload from "@/component/Upload";
 import Quill from "quill";
 import { Confirm, Notify } from "notiflix";
+import useAuth, { LoginStatusQuery } from "@/hooks/useAuth";
 
 const Clipboard = Quill.import("modules/clipboard");
 const Delta = Quill.import("delta");
@@ -47,6 +48,7 @@ export default (props: IProps) => {
   const [details, setDetails] = useState<IPostForumList>();
   const [commentList, setCommentList] = useState<IPostForumComment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
+  const { isLogin } = useAuth();
   useEffect(() => {
     if (refEditorElement.current) {
       if (!refQuillHandler.current) {
@@ -116,7 +118,7 @@ export default (props: IProps) => {
   };
   const handleComment: React.MouseEventHandler<HTMLDivElement> = (e) => {
     // if (e.key === "Enter") {
-    if (user.id === 0) {
+    if (isLogin !== LoginStatusQuery.isLogin) {
       history.push("/login");
       return;
     }
