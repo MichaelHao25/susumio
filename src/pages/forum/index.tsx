@@ -425,16 +425,17 @@ const Header = (props: {
       }, 500);
     }
   }, [active]);
-  const handleKeypress: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
-    const { code } = e;
-    if (code == "Enter") {
-      setRequestBody((res) => {
-        return {
-          ...res,
-          keyword,
-        };
-      });
-    }
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    // const { code } = e;
+    // if (code == "Enter") {
+    setRequestBody((res) => {
+      return {
+        ...res,
+        keyword,
+      };
+    });
+    // }
   };
   return (
     <div className={styles.headerContainer}>
@@ -470,7 +471,7 @@ const Header = (props: {
             </div>
           </div>
         </div>
-        <div className={styles.search}>
+        <form className={styles.search} onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="Search"
@@ -478,7 +479,6 @@ const Header = (props: {
             ref={inputRef}
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            onKeyPress={handleKeypress}
           />
           <div
             onClick={() => setActive(false)}
@@ -486,7 +486,7 @@ const Header = (props: {
           >
             &#xeaf2;
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
