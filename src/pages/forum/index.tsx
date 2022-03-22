@@ -39,7 +39,7 @@ export default (props: IProps) => {
   const [requestBody, setRequestBody] = useState<
     Omit<IForumList, "pageNum" | "pageLimit">
   >({
-    sort_by: IForumSortType.CreateTime,
+    sort_by: IForumSortType.UpdateTime,
     sort_type: "desc",
     keyword: "",
   });
@@ -229,7 +229,11 @@ export default (props: IProps) => {
               &#xe6b0;
             </div>
             <div
-              className={`${styles.commentLike} iconFontForum`}
+              className={`${styles.commentLike} ${
+                Object.keys(item.approval).includes(user.id.toString())
+                  ? styles.commentLikeActive
+                  : ""
+              } iconFontForum`}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -248,6 +252,9 @@ export default (props: IProps) => {
                   : "&#xe601;",
               }}
             ></div>
+            <div className={`${styles.num}`}>
+              {Object.keys(item.approval).length}
+            </div>
           </div>
         </h5>
       </Link>
@@ -309,7 +316,11 @@ export default (props: IProps) => {
               </div>
             )}
             <div
-              className={`${styles.commentLike} iconFontForum`}
+              className={`${styles.commentLike} ${
+                Object.keys(item.approval).includes(user.id.toString())
+                  ? styles.commentLikeActive
+                  : ""
+              } iconFontForum`}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -324,10 +335,13 @@ export default (props: IProps) => {
               }}
               dangerouslySetInnerHTML={{
                 __html: Object.keys(item.approval).includes(user.id.toString())
-                  ? "&#xe602;"
-                  : "&#xe601;",
+                  ? `&#xe602;`
+                  : `&#xe601;`,
               }}
             ></div>
+            <div className={`${styles.num}`}>
+              {Object.keys(item.approval).length}
+            </div>
           </div>
         </h5>
       </Link>
@@ -391,7 +405,7 @@ const SortBtn = (props: { handleClick: () => void }) => {
         //   setTabType(false);
         // }}
       >
-        Publicación <span className="iconFontForum">&#xe6cc;</span>
+        Comentario <span className="iconFontForum">&#xe6cc;</span>
       </div>
       <div
         className={`${styles.sortBtn} ${tabType ? styles.sortBtnActive : ""}`}
@@ -399,7 +413,7 @@ const SortBtn = (props: { handleClick: () => void }) => {
         //   setTabType(true);
         // }}
       >
-        Comentario<span className="iconFontForum">&#xe6cc;</span>
+        Publicación<span className="iconFontForum">&#xe6cc;</span>
       </div>
     </div>
   );

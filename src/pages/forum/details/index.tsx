@@ -264,8 +264,9 @@ export default (props: IProps) => {
               create_time,
               user: {
                 avatar = "https://api.susumio.com/public/upload/goods_images/20220211/a0430b5edfacca65df05f752851d245d.jpg",
-                nick_name = "",
+                nick_name,
               } = {},
+              user_id,
             } = item;
             return (
               <div
@@ -278,7 +279,7 @@ export default (props: IProps) => {
                 </div>
                 <div className={`${styles.commentContainer}`}>
                   <div className={`${styles.name}`}>
-                    {nick_name}
+                    {nick_name ? nick_name : user_id}
                     {/* <span className={styles.author}>作者</span> */}
                   </div>
                   <div className={`${styles.comment}`}>
