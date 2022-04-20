@@ -55,6 +55,7 @@ export interface IPostForumList {
   title: string;
   update_time: string;
   user_id: number;
+  comments: number;
   approval: {
     [key: string]: number;
   };

@@ -208,6 +208,11 @@ export default (props: IProps) => {
         >
           {title}
           <div className={styles.controlBtn}>
+            <div className={`${styles.icon} iconFontForum`}>&#xe6ad;</div>
+
+            <div className={`${styles.icon}`} style={{ width: "auto" }}>
+              {item.comments}
+            </div>
             <div
               onClick={(e) => {
                 e.preventDefault();
@@ -303,6 +308,11 @@ export default (props: IProps) => {
         >
           {title}
           <div className={styles.controlBtn}>
+            <div className={`${styles.icon} iconFontForum`}>&#xe6ad;</div>
+
+            <div className={`${styles.icon}`} style={{ width: "auto" }}>
+              {item.comments}
+            </div>
             {user.is_bbs && (
               <div
                 onClick={(e) => {
