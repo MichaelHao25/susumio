@@ -23,14 +23,13 @@ import useAuth, { LoginStatusQuery } from "@/hooks/useAuth";
 const Clipboard = Quill.import("modules/clipboard");
 const Delta = Quill.import("delta");
 
-interface IProps
-  extends ConnectProps<
-    {},
-    {},
-    {
-      id: string;
-    }
-  > {}
+type IProps = ConnectProps<
+  {},
+  {},
+  {
+    id: string;
+  }
+>;
 {
 }
 export default (props: IProps) => {
@@ -185,7 +184,11 @@ export default (props: IProps) => {
             className={styles.pic}
           />
           <div className={styles.div}>
-            <div className={styles.name}>{details?.user.nick_name}</div>
+            <div className={styles.name}>
+              {(details?.user?.nick_name || "") === ""
+                ? details?.user_id
+                : details?.user?.nick_name}
+            </div>
             {/* <div className={styles.address}>
               <span className={`iconFontForum`}>&#xe652;</span>
               万科松花湖度假村

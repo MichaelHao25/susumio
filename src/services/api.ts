@@ -731,8 +731,13 @@ export interface PostWithdraw {
  * 提现
  */
 export const postWithdraw = (req: PostWithdraw) => {
+  const transformParams = req;
+  transformParams.card_holder = req.user_name;
+  transformParams.card_number = req.bank_no;
+  delete transformParams.user_name;
+  delete transformParams.bank_no;
   return request.post(`/api_users/user_drawcashs/save`, {
-    data: req,
+    data: transformParams,
   });
 };
 
@@ -844,7 +849,7 @@ export const postFavorite = (req: PostFavorite) => {
 /**
  * 获取版本信息等
  */
-export const postGetParams = (type: string = "basic") => {
+export const postGetParams = (type = "basic") => {
   return request.post(`/api_systems/Params/getParams`, {
     data: {
       type: type,
