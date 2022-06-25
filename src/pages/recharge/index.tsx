@@ -23,7 +23,7 @@ export default () => {
                 id="money"
                 ref={inputRef}
                 value={money}
-                onChange={(e) => setMoney(e.target.value)}
+                onInput={(e) => setMoney(e.target.value)}
               />
             </div>
           </div>
@@ -65,14 +65,12 @@ export default () => {
                   );
                   if (details.status === "COMPLETED") {
                     postRecharges({
-                      money,
+                      money: inputRef.current.value,
                       asset_type: "money",
                       type: 1,
                     }).then((res) => {
                       if (res) {
-                        postPayPaypal({
-                          order_no: res.data,
-                        }).then((res) => {
+                        postPayPaypal(res.data).then((res) => {
                           if (res) {
                             Notify.success(res.msg);
                             history.push("/my");

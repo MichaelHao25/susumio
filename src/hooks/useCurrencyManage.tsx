@@ -94,7 +94,6 @@ export default () => {
     //   }
     // } else {
     // 如果本地存储没有response的话就重新请求接口
-
     if (oldCurrencyResponseString) {
       const oldCurrencyResponse: CurrencyData = JSON.parse(
         oldCurrencyResponseString,
