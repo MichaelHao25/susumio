@@ -116,7 +116,7 @@ const Header = () => {
               </div>
               <img
                 onClick={() => {
-                  setChangeCurrencyType(true);
+                  setChangeCurrencyType((prev) => !prev);
                 }}
                 src={require("../../assets/img/money.svg")}
                 alt=""

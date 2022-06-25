@@ -23,14 +23,13 @@ import useAuth, { LoginStatusQuery } from "@/hooks/useAuth";
 const Clipboard = Quill.import("modules/clipboard");
 const Delta = Quill.import("delta");
 
-interface IProps
-  extends ConnectProps<
-    {},
-    {},
-    {
-      id: string;
-    }
-  > {}
+type IProps = ConnectProps<
+  {},
+  {},
+  {
+    id: string;
+  }
+>;
 {
 }
 export default (props: IProps) => {
@@ -142,8 +141,14 @@ export default (props: IProps) => {
     }
     // }
   };
-  const handleDeleteComment = (id: number) => {
-    if (user.is_bbs) {
+  const handleDeleteComment = ({
+    msgId,
+    userId,
+  }: {
+    msgId: number;
+    userId: number;
+  }) => {
+    if (user.is_bbs || userId === user.id) {
       Confirm.show(
         "Advertencia de eliminación",
         "Está confirmada la eliminación?",
@@ -151,10 +156,10 @@ export default (props: IProps) => {
         "No",
         () => {
           postForumItemDeleteComment({
-            id,
+            id: msgId,
           }).then((res) => {
             Notify.success(res.msg);
-            const tempList = commentList.filter((item) => item.id !== id);
+            const tempList = commentList.filter((item) => item.id !== msgId);
             setCommentList(tempList);
           });
         },
@@ -179,7 +184,11 @@ export default (props: IProps) => {
             className={styles.pic}
           />
           <div className={styles.div}>
-            <div className={styles.name}>{details?.user.nick_name}</div>
+            <div className={styles.name}>
+              {(details?.user?.nick_name || "") === ""
+                ? details?.user_id
+                : details?.user?.nick_name}
+            </div>
             {/* <div className={styles.address}>
               <span className={`iconFontForum`}>&#xe652;</span>
               万科松花湖度假村
@@ -225,6 +234,7 @@ export default (props: IProps) => {
           })}
         </Swiper>
       </div>
+      <h3 className={styles.htmlTitle}>{details?.title}</h3>
       <div
         className={styles.htmlContent}
         dangerouslySetInnerHTML={{ __html: details?.content || "" }}
@@ -272,7 +282,12 @@ export default (props: IProps) => {
               <div
                 key={id}
                 className={`${styles.row}`}
-                onClick={() => handleDeleteComment(item.id)}
+                onClick={() =>
+                  handleDeleteComment({
+                    msgId: id,
+                    userId: user_id,
+                  })
+                }
               >
                 <div className={`${styles.imgContainer}`}>
                   <img src={avatar} alt="" className={`${styles.img}`} />
