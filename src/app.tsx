@@ -15,6 +15,21 @@ import { FBAPPID } from "./services/interface";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 
+console.log("3333");
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-wroker.js") //这块注意不要改动
+      .then((registration) => {
+        console.log("SW registered: ", registration);
+      })
+      .catch((registrationError) => {
+        console.log("SW registration failed: ", registrationError);
+      });
+  });
+}
+
 Notify.init({
   position: "right-top",
   cssAnimationStyle: "from-bottom",

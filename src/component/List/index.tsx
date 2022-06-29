@@ -78,7 +78,6 @@ export default connect(({ list }: { list: ListState }) => {
       renderItem,
     } = props;
     // 解决闭包问题
-
     global.params = params;
     const page = useRef({
       pageLimit: 10,
@@ -99,6 +98,8 @@ export default connect(({ list }: { list: ListState }) => {
         }
       };
     const loadData = (reload = false) => {
+      console.log("loadData");
+
       if (reload) {
         page.current.pageNum = 1;
       }
@@ -289,17 +290,76 @@ export default connect(({ list }: { list: ListState }) => {
       };
     }, []);
     useEffect(() => {
-      if (window.location.pathname === "/") {
-        if ((list.postApiGoodsGoodsListsIndex || []).length !== 0) {
-          page.current.pageNum = ~~(
-            list.postApiGoodsGoodsListsIndex.length / 10 +
-            1
-          );
-          return;
+      let listKey: keyof ListState = "postAddressLists";
+      switch (type) {
+        case AllList.postForumListFromMy: {
+          listKey = "postForumListFromMy";
+          break;
+        }
+        case AllList.postForumList: {
+          listKey = "postForumList";
+          break;
+        }
+        case AllList.postApiGoodsGoodsLists: {
+          if (window.location.pathname === "/") {
+            if ((list.postApiGoodsGoodsListsIndex || []).length !== 0) {
+              listKey = "postApiGoodsGoodsListsIndex";
+              break;
+            }
+          } else {
+            listKey = "postApiGoodsGoodsLists";
+          }
+          break;
+        }
+        case AllList.postApiOrdersLists: {
+          listKey = "postApiOrdersLists";
+          break;
+        }
+        case AllList.postAddressLists: {
+          listKey = "postAddressLists";
+          break;
+        }
+        case AllList.postFavorite: {
+          listKey = "postFavorite";
+          break;
+        }
+        case AllList.postCommentsLists: {
+          listKey = "postCommentsLists";
+          break;
+        }
+        case AllList.postUserFootLists: {
+          listKey = "postUserFootLists";
+          break;
+        }
+        case AllList.postAssetLogsList: {
+          listKey = "postAssetLogsList";
+          break;
+        }
+        case AllList.postApplyList: {
+          listKey = "postApplyList";
+          break;
+        }
+        case AllList.postOrdersList: {
+          listKey = "postOrdersList";
+          break;
+        }
+        case AllList.postTeamChildUsers: {
+          listKey = "postTeamChildUsers";
+          break;
+        }
+        case AllList.postTeamUsers: {
+          listKey = "postTeamUsers";
+          break;
+        }
+        case AllList.postApiOrdersListsForStorehouse: {
+          listKey = "postApiOrdersLists";
+          break;
         }
       }
-      page.current.pageNum = 1;
-      loadData(false);
+      page.current.pageNum = ~~((list[listKey] || []).length / 10 + 1);
+      if (list[listKey].length === 0) {
+        loadData(false);
+      }
     }, [props.params, type]);
 
     function getList() {
@@ -1375,7 +1435,7 @@ export default connect(({ list }: { list: ListState }) => {
         // 店中店的列表页
         case AllList.postApiOrdersListsForStorehouse: {
           const orderStatus = (order: OrdersListItem): string => {
-            var str = "";
+            let str = "";
             if (order.status == 1) {
               str += "Esperando el pago";
             } else if (order.status == 2) {
@@ -1767,7 +1827,7 @@ export default connect(({ list }: { list: ListState }) => {
         // 我的订单详情页
         case AllList.postApiOrdersLists: {
           const orderStatus = (order: OrdersListItem): string => {
-            var str = "";
+            let str = "";
             if (order.status == 1) {
               str += "Esperando el pago";
             } else if (order.status == 2) {

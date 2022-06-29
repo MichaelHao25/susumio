@@ -21,16 +21,11 @@ import {
 } from "umi";
 import LazyLoad from "react-lazyload";
 import { Confirm, Notify } from "notiflix";
-interface IProps
-  extends ConnectProps<
-    {},
-    {},
-    {
-      type?: "my";
-    }
-  > {}
-{
-}
+type IProps = ConnectProps<
+  Record<string, string>,
+  Record<string, string>,
+  { type?: "my" }
+>;
 enum ColumnType {
   MultipleColumns,
   SingleColumns,
