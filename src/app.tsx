@@ -20,7 +20,7 @@ console.log("3333");
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/service-wroker.js") //这块注意不要改动
+      .register("/sw.js") //这块注意不要改动
       .then((registration) => {
         console.log("SW registered: ", registration);
       })

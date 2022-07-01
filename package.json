@@ -46,6 +46,13 @@
     "swiper": "^7.2.0",
     "tslint": "^6.1.3",
     "umi": "^3.5.17",
+    "workbox-cacheable-response": "^6.5.3",
+    "workbox-core": "^6.5.3",
+    "workbox-expiration": "^6.5.3",
+    "workbox-navigation-preload": "^6.5.3",
+    "workbox-precaching": "^6.5.3",
+    "workbox-routing": "^6.5.3",
+    "workbox-strategies": "^6.5.3",
     "workbox-webpack-plugin": "^6.5.3"
   },
   "devDependencies": {
