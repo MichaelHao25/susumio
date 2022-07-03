@@ -8,34 +8,30 @@ import {
   useSelector,
 } from "umi";
 import styles from "./index.less";
-import storehouse from "../../pages/storehouse/index.less";
 // @ts-ignore
-import MiniRefreshTools from "../../plugin/minirefresh/minirefresh";
-import "../../plugin/minirefresh/minirefresh.css";
-import {
-  AddressItem,
-  AllList,
-  IPostForumList,
-  OrderListItemGoodsInfo,
-  OrdersListItem,
-} from "@/services/interface";
 import { Action, ListState } from "@/models/list";
-import { Confirm, Notify } from "notiflix";
-import LazyLoad from "react-lazyload";
 import {
-  IForumCommentDetails,
   postAddressDelete,
   postAddressSetDefault,
   postCancelOrders,
   postCommentsDelete,
   postFavoriteDelete,
-  postForumItemApproval,
-  postForumItemCancelApproval,
   postGoodsSend,
   postOrderFinish,
   postPayPrepay,
   postTipDeliver,
 } from "@/services/api";
+import {
+  AddressItem,
+  AllList,
+  OrderListItemGoodsInfo,
+  OrdersListItem,
+} from "@/services/interface";
+import generateListKey from "@/utils/generateListKey";
+import { Confirm, Notify } from "notiflix";
+import LazyLoad from "react-lazyload";
+import MiniRefreshTools from "../../plugin/minirefresh/minirefresh";
+import "../../plugin/minirefresh/minirefresh.css";
 import MoneyValueUnitRender from "../MoneyValueUnitRender";
 import SoldOut from "../SoldOut";
 
@@ -99,7 +95,6 @@ export default connect(({ list }: { list: ListState }) => {
       };
     const loadData = (reload = false) => {
       console.log("loadData");
-
       if (reload) {
         page.current.pageNum = 1;
       }
@@ -290,7 +285,8 @@ export default connect(({ list }: { list: ListState }) => {
       };
     }, []);
     useEffect(() => {
-      let listKey: keyof ListState = "postAddressLists";
+      let listKey: keyof ListState | [keyof ListState, string] =
+        "postAddressLists";
       switch (type) {
         case AllList.postForumListFromMy: {
           listKey = "postForumListFromMy";
@@ -300,15 +296,12 @@ export default connect(({ list }: { list: ListState }) => {
           listKey = "postForumList";
           break;
         }
+        /**
+         * 搜索/首页/店中店共用的这个列表，现在缓存会造成搜索的结果无法呈现出来。
+         */
         case AllList.postApiGoodsGoodsLists: {
-          if (window.location.pathname === "/") {
-            if ((list.postApiGoodsGoodsListsIndex || []).length !== 0) {
-              listKey = "postApiGoodsGoodsListsIndex";
-              break;
-            }
-          } else {
-            listKey = "postApiGoodsGoodsLists";
-          }
+          const key = generateListKey(props.params);
+          listKey = ["postApiGoodsGoodsLists", key];
           break;
         }
         case AllList.postApiOrdersLists: {
@@ -356,9 +349,19 @@ export default connect(({ list }: { list: ListState }) => {
           break;
         }
       }
-      page.current.pageNum = ~~((list[listKey] || []).length / 10 + 1);
-      if (list[listKey].length === 0) {
-        loadData(false);
+      if (listKey instanceof Array) {
+        if (listKey[0] === "postApiGoodsGoodsLists") {
+          const tempList = list?.[listKey[0]]?.[listKey[1]] || [];
+          page.current.pageNum = ~~(tempList.length / 10 + 1);
+          if (tempList.length === 0) {
+            loadData(false);
+          }
+        }
+      } else {
+        page.current.pageNum = ~~((list[listKey] || []).length / 10 + 1);
+        if (list[listKey].length === 0) {
+          loadData(false);
+        }
       }
     }, [props.params, type]);
 
@@ -1300,10 +1303,8 @@ export default connect(({ list }: { list: ListState }) => {
         }
 
         case AllList.postApiGoodsGoodsLists: {
-          const tempList =
-            window.location.pathname === "/"
-              ? list.postApiGoodsGoodsListsIndex || []
-              : list.postApiGoodsGoodsLists;
+          const key = generateListKey(props.params);
+          const tempList = list.postApiGoodsGoodsLists[key] || [];
           return tempList.map((item) => {
             return (
               <Link

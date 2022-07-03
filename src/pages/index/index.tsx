@@ -63,10 +63,13 @@ interface TagItem {
   thum: string;
   update_time: string;
 }
-
+const cache = {
+  banner: [],
+  brandList: [],
+};
 const Header = () => {
-  const [bannerList, setBannerList] = useState<BannerItem[]>([]);
-  const [tags, setTags] = useState<TagItem[]>([]);
+  const [bannerList, setBannerList] = useState<BannerItem[]>(cache.banner);
+  const [tags, setTags] = useState<TagItem[]>(cache.brandList);
   const {
     CurrencyType,
     currentCurrency,
@@ -78,14 +81,16 @@ const Header = () => {
     if (bannerList.length === 0) {
       postBannerList().then((res) => {
         if (res) {
-          setBannerList(res.data || []);
+          cache.banner = res.data || [];
+          setBannerList(cache.banner);
         }
       });
     }
     if (tags.length === 0) {
       postGoodsTag().then((res) => {
         if (res) {
-          setTags(res.data || []);
+          cache.brandList = res.data || [];
+          setTags(cache.brandList);
         }
       });
     }

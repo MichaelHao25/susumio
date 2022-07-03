@@ -1,23 +1,21 @@
 import Header from "@/component/Header";
-import { ConnectProps, history } from "umi";
-import { useEffect, useState } from "react";
 import {
   postAddressesCreate,
   postFreightTemplate,
   postQueryAddressById,
-  postRegions,
 } from "@/services/api";
 import { AddressItem } from "@/services/interface";
 import { Notify } from "notiflix";
+import { useEffect, useState } from "react";
+import { ConnectProps, history } from "umi";
 
-interface Props
-  extends ConnectProps<
-    {},
-    {
-      addressId?: number;
-    },
-    {}
-  > {}
+type Props = ConnectProps<
+  Record<string, string>,
+  {
+    addressId?: number;
+  },
+  Record<string, string>
+>;
 
 interface Provinces {
   name: string;
@@ -38,7 +36,7 @@ interface Address {
   province_code: string;
   zip_code: string;
 }
-interface FreightTemplate {
+export interface FreightTemplate {
   country: string;
   country_code: string;
   express: string;
@@ -240,7 +238,9 @@ export default (props: Props) => {
                     )
                     .map((item) => {
                       return (
-                        <option value={item.express}>{item.express}</option>
+                        <option key={item.express} value={item.express}>
+                          {item.express}
+                        </option>
                       );
                     })}
 

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import { LayoutType } from "@/pages/goodsDetails/index";
+import { CartInfo, postApiGoodsCartsBatchSave } from "@/services/api";
 import { Details } from "@/services/interface";
 import { Notify } from "notiflix";
-import { CartInfo, postApiGoodsCartsBatchSave } from "@/services/api";
-import { LayoutType } from "@/pages/goodsDetails/index";
-import { history } from "umi";
-import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import React, { useEffect, useState } from "react";
 import LazyLoad from "react-lazyload";
+import { history } from "umi";
 
 export interface GoodsList {
   thum: string;
@@ -89,7 +89,7 @@ export default (props: Props) => {
     setData(list);
   }, [goods]);
   useEffect(() => {
-    let totalNum = Object.values(selectList).reduce((a, b) => {
+    const totalNum = Object.values(selectList).reduce((a, b) => {
       return (
         a +
         b.reduce((c, d) => {
@@ -146,11 +146,11 @@ export default (props: Props) => {
     },
   ) {
     const { type, num, stock, spec_group_id_str } = action;
-    let value = parseInt(num ? num : "0");
+    const value = parseInt(num ? num : "0");
     if (value < 0 || value > stock) {
       return;
     }
-    let res = selectList[typeOneIndex] || [];
+    const res = selectList[typeOneIndex] || [];
     const index = res.findIndex((item) => {
       if (item.id === id) {
         const numberNUm = item.num;

@@ -2,7 +2,7 @@
   "private": true,
   "version": "0.0.2",
   "scripts": {
-    "start": "CCCC=1 umi dev",
+    "start": "umi dev",
     "start_https": "HTTPS=1 umi dev",
     "cc": "COMPRESS=none ",
     "build": "umi build",
@@ -33,6 +33,7 @@
     "@types/quill": "^2.0.9",
     "@types/react-lazyload": "^3.1.1",
     "big.js": "^6.1.1",
+    "crypto-js": "^4.1.1",
     "lottie-web": "^5.7.13",
     "minirefresh": "^2.0.2",
     "moment": "^2.29.1",
@@ -57,6 +58,7 @@
     "workbox-webpack-plugin": "^6.5.3"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^5.4.0",

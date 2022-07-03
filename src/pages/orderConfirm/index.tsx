@@ -1,18 +1,22 @@
-import "./index.less";
 import Header from "@/component/Header";
-import { ConnectProps } from "@@/plugin-dva/connect";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 import { GoodsList } from "@/pages/goodsDetails/SpecInfoSelect";
-import { useEffect, useState } from "react";
 import {
+  postAddressesCreate,
+  postFreightTemplate,
   postOrdersView,
   postQueryMarketUser,
   PostQuerySave,
   postQuerySave,
   postQueryUsersDefaultAddress,
 } from "@/services/api";
-import Notiflix, { Notify } from "notiflix";
+import { AddressItem } from "@/services/interface";
+import { ConnectProps } from "@@/plugin-dva/connect";
+import { Notify } from "notiflix";
+import { useEffect, useState } from "react";
 import { history } from "umi";
-import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import { FreightTemplate } from "../addressEdit";
+import "./index.less";
 
 type IProps = ConnectProps<
   Record<string, never>,
@@ -32,6 +36,8 @@ interface Address {
   province: string;
   consignee_name: string;
   id: number;
+  express_type: string;
+  province_code: string;
 }
 
 interface Cost {
@@ -42,6 +48,7 @@ interface Cost {
 
 export default (props: IProps) => {
   const { location: { state: { shoperId = "" } = {} } = {} } = props;
+  const [freightTemplate, setFreightTemplate] = useState<FreightTemplate[]>([]);
   const [goodsList, setGoodsList] = useState<GoodsList[]>(() => {
     const { location: { state: { goodsList = [] } = {} } = {} } = props;
     if (goodsList.length === 0) {
@@ -55,6 +62,8 @@ export default (props: IProps) => {
     province: "",
     id: 0,
     consignee_name: "",
+    express_type: "",
+    province_code: "",
   });
   const [cost, setCost] = useState<Cost>({
     freight_money: 0,
@@ -62,7 +71,13 @@ export default (props: IProps) => {
     total_money: 0,
   });
   const [memo, setMemo] = useState<string>("");
-
+  useEffect(() => {
+    postFreightTemplate().then((res) => {
+      if (res) {
+        setFreightTemplate(res.data);
+      }
+    });
+  }, []);
   useEffect(() => {
     postQueryUsersDefaultAddress().then((res) => {
       if (res) {
@@ -339,6 +354,54 @@ export default (props: IProps) => {
         </li>
       </ul>
       <div className="aui-padded-l-5 aui-padded-r-5 aui-bg-white aui-padded-b-5">
+        <div className="line">
+          <div className="left">Envio:</div>
+          <div>
+            <select
+              value={address.express_type}
+              onChange={(e) => {
+                // setAddress((address) => {
+                //   return {
+                //     ...address,
+                //     express_type: e.target.value,
+                //   };
+                // });
+                /**
+                 * 更新地址
+                 */
+                const express_type = e.target.value;
+                postAddressesCreate({
+                  ...address,
+                  express_type,
+                } as AddressItem).then((res) => {
+                  if (res) {
+                    sessionStorage.setItem(
+                      "address",
+                      JSON.stringify({ ...address, express_type }),
+                    );
+                    setAddress((address) => {
+                      return {
+                        ...address,
+                        express_type,
+                      };
+                    });
+                  }
+                });
+              }}
+            >
+              <option value="">Seleccione la Envio</option>
+              {freightTemplate
+                .filter((item) => item.country_code === address.province_code)
+                .map((item) => {
+                  return (
+                    <option key={item.express} value={item.express}>
+                      {item.express}
+                    </option>
+                  );
+                })}
+            </select>
+          </div>
+        </div>
         <div className="line">
           <div className="left">Notas del comprador:</div>
           <div>

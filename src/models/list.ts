@@ -1,7 +1,6 @@
 import { Effect, ImmerReducer } from "umi";
 
 import {
-  OrdersLists,
   postAddressLists,
   postApiGoodsGoodsLists,
   postApiOrdersLists,
@@ -18,7 +17,6 @@ import {
 } from "@/services/api";
 import {
   AddressItem,
-  AddressListResponse,
   CartList,
   CommentItem,
   Details,
@@ -35,6 +33,7 @@ import {
   PostTeamChildUsersList,
   PostTeamUsers,
 } from "@/services/interface";
+import generateListKey from "@/utils/generateListKey";
 export enum SortType {
   /**
    * 升序 从小到大
@@ -70,7 +69,11 @@ export interface ListState {
   /**
    * 讲他的key按照域名拆开
    */
-  postApiGoodsGoodsLists: Details[];
+  postApiGoodsGoodsLists: {
+    [key: string]: Details[];
+  };
+  // postApiGoodsGoodsListsIndex: Details[];
+
   postApiOrdersLists: OrdersListItem[];
   postAddressLists: AddressItem[];
   postFavorite: CartList[];
@@ -94,7 +97,6 @@ export interface ListState {
     level3Num: number;
     totalNum: number;
   };
-  postApiGoodsGoodsListsIndex: Details[];
   postForumList: IPostForumList[];
   postForumListFromMy: IPostForumList[];
 }
@@ -176,7 +178,7 @@ export interface ListModel {
 
 export default <ListModel>{
   state: {
-    postApiGoodsGoodsLists: [],
+    postApiGoodsGoodsLists: {},
     postApiOrdersLists: [],
     postAddressLists: [],
     postFavorite: [],
@@ -200,7 +202,7 @@ export default <ListModel>{
       level3Num: 0,
       totalNum: 0,
     },
-    postApiGoodsGoodsListsIndex: [],
+    // postApiGoodsGoodsListsIndex: [],
     postForumList: [],
     postForumListFromMy: [],
   },
@@ -491,12 +493,13 @@ export default <ListModel>{
       }
     },
     *postApiGoodsGoodsLists({ payload }, { call, select, put }) {
-      const { list, indexList } = yield select(
+      const list: ListState["postApiGoodsGoodsLists"] = yield select(
         ({ list }: { list: ListState }) => {
-          return {
-            list: list.postApiGoodsGoodsLists,
-            indexList: list.postApiGoodsGoodsListsIndex,
-          };
+          return list.postApiGoodsGoodsLists;
+          // return {
+          //   list: list.postApiGoodsGoodsLists,
+          //   // indexList: list.postApiGoodsGoodsListsIndex,
+          // };
         },
       );
       /**
@@ -525,23 +528,32 @@ export default <ListModel>{
       });
 
       if (res) {
-        if (window.location.pathname === "/") {
-          yield put({
-            type: "setState",
-            payload: {
-              postApiGoodsGoodsListsIndex:
-                pageNum === 1 ? res.data : indexList.concat(res.data),
+        // if (window.location.pathname === "/") {
+        const key = generateListKey({
+          customTag,
+          id,
+          keyword,
+          shoperId,
+          customTagId,
+        });
+        yield put({
+          type: "setState",
+          payload: {
+            postApiGoodsGoodsLists: {
+              ...list,
+              [key]: pageNum === 1 ? res.data : list[key].concat(res.data),
             },
-          });
-        } else {
-          yield put({
-            type: "setState",
-            payload: {
-              postApiGoodsGoodsLists:
-                pageNum === 1 ? res.data : list.concat(res.data),
-            },
-          });
-        }
+          },
+        });
+        // } else {
+        //   yield put({
+        //     type: "setState",
+        //     payload: {
+        //       postApiGoodsGoodsLists:
+        //         pageNum === 1 ? res.data : list.concat(res.data),
+        //     },
+        //   });
+        // }
         cb(res.data);
       } else {
         cb([]);

@@ -230,7 +230,7 @@ export const postArticles = (props: PostArticles) => {
   });
 };
 /**
- * fb登陆
+ * 查询商品详情
  */
 export const postFreightTemplate = () => {
   return request.post("/api_goods/freight_templates/lists");
