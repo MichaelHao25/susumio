@@ -7,11 +7,10 @@ import {
   postUserAccountsRegister,
 } from "@/services/api";
 import { Details, FBAPPID } from "@/services/interface";
-import { Notify, Report } from "notiflix";
-import { Effect, EffectsCommandMap } from "dva";
 import { ImmerReducer, Subscription } from "@@/plugin-dva/connect";
+import { Effect, EffectsCommandMap } from "dva";
+import { Notify, Report } from "notiflix";
 
-import { history } from "umi";
 import fbShareCheck from "@/utils/fbShareCheck";
 import loginSuccessBack from "@/utils/loginSuccessBack";
 import Notiflix from "notiflix";
@@ -370,10 +369,57 @@ const userinfoModel: UserinfoModel = {
       };
       document.body.appendChild(facebooklogin);
 
-      //  百度统计
-      const baidu = document.createElement("script");
-      baidu.src = `https://hm.baidu.com/hm.js?f5f5dc0f23281c16e5c29d0fe6af6ad8`;
-      document.body.appendChild(baidu);
+      try {
+        new Promise((resolve, reject) => {
+          const controller = new AbortController();
+          const { signal } = controller;
+          const timeout = setTimeout(() => {
+            signal.aborted();
+          }, 1000 * 10);
+          fetch(`https://www.googletagmanager.com/gtag/js?id=G-8E5ER6V86L`, {
+            signal,
+          })
+            .then((res) => {
+              resolve("");
+              clearTimeout(timeout);
+            })
+            .catch(() => {
+              clearTimeout(timeout);
+              reject("");
+            });
+        })
+          .then(() => {
+            console.log("google analytics");
+            // Google分析
+            const google = document.createElement("script");
+            google.src =
+              "https://www.googletagmanager.com/gtag/js?id=G-8E5ER6V86L";
+            google.defer = true;
+            const googleStarUp = document.createElement("script");
+            googleStarUp.defer = true;
+
+            googleStarUp.innerText = `
+      window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-8E5ER6V86L');
+  `;
+            document.body.appendChild(google);
+            document.body.appendChild(googleStarUp);
+          })
+          .catch(() => {
+            console.log("google analytics not found");
+
+            //  百度统计
+            const baidu = document.createElement("script");
+            baidu.src = `https://hm.baidu.com/hm.js?f5f5dc0f23281c16e5c29d0fe6af6ad8`;
+            baidu.defer = true;
+            document.body.appendChild(baidu);
+          });
+      } catch (error) {
+        console.log(error);
+      }
 
       // paypal
       const clientId = `AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi`;

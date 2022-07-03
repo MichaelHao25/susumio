@@ -1,21 +1,14 @@
-import "./assets/css/aui.css";
-import "./assets/css/aui-flex.css";
-import "./assets/css/iconfont.less";
-import "./assets/css/iconfont.css";
+import Notiflix, { Notify } from "notiflix";
 import "./assets/css/ali_icon_fu/iconfont.less";
 import "./assets/css/ali_icon_wancll/iconfont.less";
+import "./assets/css/aui-flex.css";
+import "./assets/css/aui.css";
+import "./assets/css/iconfont.css";
+import "./assets/css/iconfont.less";
 import "./index.less";
-import Notiflix, { Notify } from "notiflix";
-import {
-  postFacebookLogin,
-  postFacebookLoginBaseInfoGet,
-} from "./services/api";
-import { FBAPPID } from "./services/interface";
 
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-
-console.log("3333");
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

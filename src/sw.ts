@@ -1,15 +1,23 @@
+import { CacheableResponsePlugin } from "workbox-cacheable-response";
 import { setCacheNameDetails } from "workbox-core";
+import { ExpirationPlugin } from "workbox-expiration";
+import * as googleAnalytics from "workbox-google-analytics";
 import * as navigationPreload from "workbox-navigation-preload";
 import { precacheAndRoute } from "workbox-precaching";
+import { NavigationRoute, registerRoute, Route } from "workbox-routing";
 import {
-  NetworkFirst,
   CacheFirst,
+  NetworkFirst,
   StaleWhileRevalidate,
 } from "workbox-strategies";
-import { registerRoute, NavigationRoute, Route } from "workbox-routing";
-import { CacheableResponsePlugin } from "workbox-cacheable-response";
-import { ExpirationPlugin } from "workbox-expiration";
+
 import packageJson from "../package.json";
+
+googleAnalytics.initialize({
+  parameterOverrides: {
+    cd1: "offline",
+  },
+});
 
 setCacheNameDetails({
   prefix: "app",
