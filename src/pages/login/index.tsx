@@ -1,11 +1,22 @@
 import Header from "@/component/Header";
-import styles from "./index.less";
-import { history, Link, useDispatch } from "umi";
-import { useEffect, useState } from "react";
 import Notiflix, { Notify } from "notiflix";
-import { postFacebookLogin } from "@/services/api";
+import { useEffect, useState } from "react";
+import { ConnectProps, Link, useDispatch } from "umi";
+import styles from "./index.less";
 type Mode = "login" | "register";
-export default function login() {
+type IProps = ConnectProps<
+  Record<string, string>,
+  Record<string, unknown>,
+  {
+    parent_mobile: string;
+  }
+>;
+export default function login(props: IProps) {
+  const {
+    location: {
+      query: { parent_mobile },
+    },
+  } = props;
   const [mode, setMode] = useState<Mode>("login");
   const [mobile, setMobile] = useState<string>(() => {
     if (process.env.NODE_ENV === "development") {
@@ -35,6 +46,7 @@ export default function login() {
       payload: {
         mobile: mobile.trim(),
         password: password.trim(),
+        parent_mobile,
       },
     });
   };
@@ -48,6 +60,7 @@ export default function login() {
       payload: {
         mobile: mobile.trim(),
         password: password.trim(),
+        parent_mobile,
       },
     });
   };

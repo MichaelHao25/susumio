@@ -1,11 +1,10 @@
 import Header from "@/component/Header";
-import "./index.less";
-import { useEffect, useState } from "react";
-import { postGetParams } from "@/services/api";
-import { useSelector } from "umi";
-import QRCode from "qrcode.react";
 import { UserinfoState } from "@/pages/login/model";
-import { origin } from "@/services/core";
+import { postGetParams } from "@/services/api";
+import QRCode from "qrcode.react";
+import { useEffect, useState } from "react";
+import { useSelector } from "umi";
+import "./index.less";
 
 export default () => {
   const [share_img, setShare_img] = useState<string>("");
@@ -30,7 +29,7 @@ export default () => {
           id="img"
         />
         <QRCode
-          value={`${origin}/wap/index/handle_qrcode.html?parent_mobile=${user.mobile}`}
+          value={`${window.location.origin}?parent_mobile=${user.mobile}`}
           className={"qrcode"}
         />
       </div>

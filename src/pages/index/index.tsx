@@ -1,19 +1,38 @@
+import List from "@/component/List";
 import Tab from "@/component/Tab";
-import "./index.less";
+import useCurrencyManage from "@/hooks/useCurrencyManage";
+import {
+  postBannerList,
+  postGoodsTag,
+  postUsersBindParent,
+} from "@/services/api";
+import { AllList } from "@/services/interface";
+import { Loading } from "notiflix";
 import React, { useEffect, useState } from "react";
-import { Pagination, Autoplay } from "swiper";
+import { Autoplay, Pagination } from "swiper";
+import "swiper/modules/autoplay/autoplay.less";
+import "swiper/modules/pagination/pagination.less";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
 import "swiper/swiper.less";
-import "swiper/modules/pagination/pagination.less";
-import "swiper/modules/autoplay/autoplay.less";
-import { connect, ConnectProps, Dispatch, history, Link } from "umi";
-import List from "@/component/List";
-import { AllList } from "@/services/interface";
-import { postBannerList, postGoodsTag } from "@/services/api";
-import useCurrencyManage from "@/hooks/useCurrencyManage";
-import LazyLoad from "react-lazyload";
+import {
+  connect,
+  ConnectProps,
+  Dispatch,
+  history,
+  Link,
+  UserinfoState,
+  useSelector,
+} from "umi";
+import "./index.less";
 
-interface PageProps extends ConnectProps {
+interface PageProps
+  extends ConnectProps<
+    Record<string, string>,
+    Record<string, string>,
+    {
+      parent_mobile: string;
+    }
+  > {
   dispatch: Dispatch;
 }
 
@@ -279,6 +298,34 @@ const Header = () => {
 };
 export default connect(() => ({}))(
   React.memo((props: PageProps) => {
+    const { user, notLogin } = useSelector(
+      ({ userinfo }: { userinfo: UserinfoState }) => {
+        return userinfo;
+      },
+    );
+    const {
+      location: {
+        query: { parent_mobile = "" },
+      },
+    } = props;
+    useEffect(() => {
+      if (parent_mobile) {
+        Loading.dots("Está enlazando...");
+        if (user.id !== 0) {
+          postUsersBindParent({
+            parent_mobile,
+          }).finally(() => {
+            history.push("/");
+          });
+        }
+        if (notLogin) {
+          history.push("/login?parent_mobile=" + parent_mobile);
+        }
+      }
+      return () => {
+        Loading.remove();
+      };
+    }, [parent_mobile, user, notLogin]);
     return (
       <div className="indexPage">
         <List

@@ -2,7 +2,7 @@
   "private": true,
   "version": "0.0.2",
   "scripts": {
-    "start": "umi dev",
+    "start": "CCCC=1 umi dev",
     "start_https": "HTTPS=1 umi dev",
     "cc": "COMPRESS=none ",
     "build": "umi build",

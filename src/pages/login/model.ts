@@ -72,6 +72,14 @@ export interface UserinfoState {
     guid: string;
     is_shopkeeper: boolean;
   };
+  /**
+   * 自动登录
+   */
+  autoLogin: boolean;
+  /**
+   * 未登陆
+   */
+  notLogin: boolean;
 }
 
 type Action = (
@@ -207,7 +215,7 @@ const userinfoModel: UserinfoModel = {
     },
 
     *loginAsMobileOrMail({ payload }, { call, select, put }) {
-      const { mobile, password } = payload;
+      const { mobile, password, parent_mobile = undefined } = payload;
       if (check(mobile, password)) {
         return;
       }
@@ -216,11 +224,13 @@ const userinfoModel: UserinfoModel = {
         res = yield call(postLoginAsEmail, {
           email: mobile,
           password,
+          parent_mobile,
         });
       } else {
         res = yield call(postApiUsersUserAccountsLogin, {
           mobile,
           password,
+          parent_mobile,
         });
       }
       yield put({
@@ -229,7 +239,7 @@ const userinfoModel: UserinfoModel = {
       });
     },
     *registerAsMobileOrMail({ payload }, { call, select, put }) {
-      const { mobile, password } = payload;
+      const { mobile, password, parent_mobile = undefined } = payload;
       if (check(mobile, password)) {
         return;
       }
@@ -238,11 +248,13 @@ const userinfoModel: UserinfoModel = {
         res = yield call(postRegisterAsEmail, {
           email: mobile,
           password,
+          parent_mobile,
         });
       } else {
         res = yield call(postUserAccountsRegister, {
           mobile,
           password,
+          parent_mobile,
         });
       }
 
@@ -320,7 +332,6 @@ const userinfoModel: UserinfoModel = {
       facebooklogin.src = "https://connect.facebook.net/en_US/sdk.js";
       facebooklogin.onload = () => {
         postFacebookLoginBaseInfoGet().then((res: FBAPPID) => {
-          console.log(res);
           if (res) {
             const { data } = res;
             FB.init(data);
@@ -333,12 +344,19 @@ const userinfoModel: UserinfoModel = {
 
               if (response.authResponse) {
                 const { authResponse: { accessToken = "" } = {} } = response;
-                postFacebookLogin(accessToken).then((res) => {
-                  dispatch({
-                    type: "login",
-                    payload: { res, autoLogin: true },
+                postFacebookLogin(accessToken)
+                  .then((res) => {
+                    dispatch({
+                      type: "login",
+                      payload: { res, autoLogin: true },
+                    });
+                  })
+                  .catch(() => {
+                    dispatch({
+                      type: "setState",
+                      payload: { notLogin: true },
+                    });
                   });
-                });
               } else {
                 // 否则就从本地获取信息
                 console.log("从本地获取登陆信息,facebook登陆失败");
@@ -348,6 +366,11 @@ const userinfoModel: UserinfoModel = {
                   dispatch({
                     type: "setState",
                     payload: parseUserInfo,
+                  });
+                } else {
+                  dispatch({
+                    type: "setState",
+                    payload: { notLogin: true },
                   });
                 }
               }

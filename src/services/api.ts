@@ -1,7 +1,20 @@
-import { request } from "./core";
-import { RequestOptionsInit } from "umi-request";
-import { AddressItem } from "@/services/interface";
 import { CurrencyType } from "@/hooks/useCurrencyManage";
+import { AddressItem } from "@/services/interface";
+import { RequestOptionsInit } from "umi-request";
+import { request } from "./core";
+
+interface IUsersBindParent {
+  parent_mobile: string;
+}
+/**
+ * 绑定上级用户
+ */
+export const postUsersBindParent = (props: IUsersBindParent) => {
+  const { parent_mobile } = props;
+  return request.post("/api_users/users/binding_parent", {
+    data: { parent_mobile },
+  });
+};
 /**
  * 删除一个帖子下面的某一条留言
  */
@@ -1030,6 +1043,7 @@ export const postCartsLists = () => {
 export interface PostLoginAsEmail {
   email: string;
   password: string;
+  parent_mobile?: string;
 }
 
 /**
@@ -1044,6 +1058,7 @@ export const postLoginAsEmail = (data: PostLoginAsEmail) => {
 export interface PostRegisterAsEmail {
   email: string;
   password: string;
+  parent_mobile?: string;
 }
 
 /**
@@ -1058,6 +1073,7 @@ export const postRegisterAsEmail = (data: PostRegisterAsEmail) => {
 export interface PostUserAccountsRegister {
   mobile: string;
   password: string;
+  parent_mobile?: string;
 }
 
 /**
@@ -1339,19 +1355,21 @@ export const postApiGoodsGoodsRead = (data: PostApiGoodsGoodsRead) => {
 interface PostApiUsersUserAccountsLogin {
   mobile: string;
   password: string;
+  parent_mobile?: string;
 }
 
 /**
- * 根据他的id进行切换调用列表接口查询
+ * 登录
  */
 export const postApiUsersUserAccountsLogin = (
   data: PostApiUsersUserAccountsLogin,
 ) => {
-  const { mobile, password } = data;
+  const { mobile, password, parent_mobile } = data;
   return request.post(`/api_users/user_accounts/login`, {
     data: {
       mobile,
       password,
+      parent_mobile,
     },
   });
 };
