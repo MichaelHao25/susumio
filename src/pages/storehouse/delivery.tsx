@@ -1,11 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import Quill from "quill";
-import styles from "@/pages/storehouse/index.less";
 import Header from "@/component/Header";
 import Upload from "@/component/Upload";
-import Notiflix, { Confirm, Notify } from "notiflix";
-import { ConnectProps, history } from "umi";
+import styles from "@/pages/storehouse/index.less";
 import { postDelivery } from "@/services/api";
+import Notiflix from "notiflix";
+import Quill from "quill";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import { useEffect, useRef } from "react";
+import { ConnectProps, history } from "umi";
 
 export default (
   props: ConnectProps<

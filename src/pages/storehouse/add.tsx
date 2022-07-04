@@ -1,37 +1,34 @@
-import styles from "./index.less";
 import Header from "@/component/Header";
+import styles from "./index.less";
 
-import React, { useEffect, useState } from "react";
-import Tab from "./tab";
-import Upload from "@/component/Upload";
-import { postApiGoodsSave, postApiGoodsUpdate } from "@/services/api";
-import { Confirm, Notify } from "notiflix";
 import {
   ConnectProps,
   ListState,
   UserinfoState,
 } from "@/.umi/plugin-dva/connect";
-import { history, useSelector } from "umi";
-import Quill from "quill";
-import { useRef } from "react";
-import "quill/dist/quill.snow.css";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
-import Notiflix from "notiflix";
+import Upload from "@/component/Upload";
+import { postApiGoodsSave, postApiGoodsUpdate } from "@/services/api";
+import Notiflix, { Confirm, Notify } from "notiflix";
+import Quill from "quill";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import { useEffect, useRef, useState } from "react";
+import { history, useSelector } from "umi";
 const Clipboard = Quill.import("modules/clipboard");
 const Delta = Quill.import("delta");
-interface Props
-  extends ConnectProps<
-    {},
-    {
-      id: number;
-      thum: [string];
-      img: string[];
-      desc: string;
-      name: string;
-      sellPrice: string;
-    },
-    {}
-  > {}
+type Props = ConnectProps<
+  {},
+  {
+    id: number;
+    thum: [string];
+    img: string[];
+    desc: string;
+    name: string;
+    sellPrice: string;
+  },
+  {}
+>;
 
 export default (props: Props) => {
   const refEditorElement = useRef<HTMLDivElement>(null);
@@ -215,7 +212,7 @@ export default (props: Props) => {
       name !== "" &&
       sellPrice !== ""
     ) {
-      let desc: string = refQuillHandler.current?.root.innerHTML || "";
+      const desc: string = refQuillHandler.current?.root.innerHTML || "";
       const money = MoneyValueUnitRender.getMoney(sellPrice);
       if (money.value === "0") {
         return;

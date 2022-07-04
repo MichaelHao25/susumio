@@ -1,6 +1,5 @@
-import "./index.less";
-import React, { useEffect, useState } from "react";
-import { ConnectProps } from "umi";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import SpecInfoSelect from "@/pages/goodsDetails/SpecInfoSelect";
 import {
   postApiGoodsCartsSave,
   postApiGoodsGoodsCollectionsCancel,
@@ -9,34 +8,31 @@ import {
   postApiGoodsGoodsIsCollect,
   postApiGoodsGoodsRead,
 } from "@/services/api";
-import { Pagination, Autoplay } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
-import "swiper/swiper.less";
-import "swiper/modules/pagination/pagination.less";
-import "swiper/modules/autoplay/autoplay.less";
 import { Details } from "@/services/interface";
 import { history } from "@@/core/umiExports";
-import Notiflix, { Notify } from "notiflix";
-import SpecInfoSelect from "@/pages/goodsDetails/SpecInfoSelect";
-import { PhotoProvider, PhotoConsumer } from "react-photo-view";
-import "react-photo-view/dist/index.css";
-import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
-// import Quill from "quill";
-// import { useRef } from "react";
-import "quill/dist/quill.snow.css";
+import { Notify } from "notiflix";
+import { useEffect, useState } from "react";
 import LazyLoad from "react-lazyload";
+import { PhotoConsumer, PhotoProvider } from "react-photo-view";
+import "react-photo-view/dist/index.css";
+import { Autoplay, Pagination } from "swiper";
+import "swiper/modules/autoplay/autoplay.less";
+import "swiper/modules/pagination/pagination.less";
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
+import "swiper/swiper.less";
+import { ConnectProps } from "umi";
+import "./index.less";
 
-interface Props
-  extends ConnectProps<
-    {},
-    {},
-    {
-      id: string;
-      shareCode: string;
-      isDiscountGoods: string;
-      addCardShow: string;
-    }
-  > {}
+type Props = ConnectProps<
+  {},
+  {},
+  {
+    id: string;
+    shareCode: string;
+    isDiscountGoods: string;
+    addCardShow: string;
+  }
+>;
 
 enum Tab {
   Details,
@@ -509,6 +505,7 @@ const index = (props: Props) => {
                 target="_blank"
                 href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&src=sdkpreparse"
                 className="fb-xfbml-parse-ignore"
+                rel="noreferrer"
               />
             </div>
           )}

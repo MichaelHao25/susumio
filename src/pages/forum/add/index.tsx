@@ -5,13 +5,11 @@ import {
   postForumPublish,
   postForumUpdate,
 } from "@/services/api";
-import {
-  IPostForumDetailsResponse,
-  IPostForumList,
-  IPostForumListResponse,
-} from "@/services/interface";
+import { IPostForumDetailsResponse } from "@/services/interface";
 import { Confirm, Notify } from "notiflix";
 import Quill from "quill";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
 
 import { useEffect, useRef, useState } from "react";
 import { ConnectProps } from "umi";
@@ -20,8 +18,8 @@ const Clipboard = Quill.import("modules/clipboard");
 const Delta = Quill.import("delta");
 
 type IProps = ConnectProps<
-  {},
-  {},
+  Record<string, string>,
+  Record<string, string>,
   {
     id?: string;
   }

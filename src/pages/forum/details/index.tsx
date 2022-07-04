@@ -1,24 +1,26 @@
+import Upload from "@/component/Upload";
+import useAuth, { LoginStatusQuery } from "@/hooks/useAuth";
 import {
   postForumCommentAdd,
   postForumCommentDetails,
   postForumDetails,
   postForumItemDeleteComment,
 } from "@/services/api";
-import { useEffect, useRef, useState } from "react";
-import { ConnectProps, UserinfoState, useSelector, history } from "umi";
-import { Pagination, Autoplay } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
-import styles from "./index.less";
-import LazyLoad from "react-lazyload";
 import { IPostForumComment, IPostForumList } from "@/services/interface";
-import "swiper/swiper.less";
-import "swiper/modules/pagination/pagination.less";
-import "swiper/modules/autoplay/autoplay.less";
 import moment from "moment";
-import Upload from "@/component/Upload";
-import Quill from "quill";
 import { Confirm, Notify } from "notiflix";
-import useAuth, { LoginStatusQuery } from "@/hooks/useAuth";
+import Quill from "quill";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import { useEffect, useRef, useState } from "react";
+import LazyLoad from "react-lazyload";
+import { Autoplay, Pagination } from "swiper";
+import "swiper/modules/autoplay/autoplay.less";
+import "swiper/modules/pagination/pagination.less";
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
+import "swiper/swiper.less";
+import { ConnectProps, history, UserinfoState, useSelector } from "umi";
+import styles from "./index.less";
 
 const Clipboard = Quill.import("modules/clipboard");
 const Delta = Quill.import("delta");
@@ -241,7 +243,7 @@ export default (props: IProps) => {
       ></div>
       <div className={`${styles.evaluate}`}>
         <div className={`${styles.total}`}>
-          Total （ {commentList.length}）comentarios
+          Total ({commentList.length}) comentarios
         </div>
 
         <div className={`${styles.add}`}>
