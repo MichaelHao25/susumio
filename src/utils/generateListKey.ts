@@ -1,5 +1,6 @@
+import { AllList } from "@/services/interface";
 import sha256 from "crypto-js/sha256";
-interface IProps {
+export interface IGenerateKeyPostApiGoodsGoodsLists {
   /**
    * 自定义标签
    */
@@ -22,15 +23,48 @@ interface IProps {
    */
   customTagId?: string;
 }
-export default (props: IProps = {}) => {
-  const {
-    customTag = "",
-    shoperId = "",
-    id = "",
-    keyword = "",
-    customTagId = "",
-  } = props;
-  return sha256(
-    `customTag_${customTag}id_${id}keyword_${keyword}shoperId_${shoperId}customTagId_${customTagId}`,
-  );
+
+export interface IGenerateKeyPostForumList {
+  sort_by?: string;
+  sort_type?: string;
+  keyword?: string;
+}
+
+interface IProps<T, P> {
+  /**
+   * type
+   */
+  type: T;
+  params: P;
+}
+export default (
+  props:
+    | IProps<AllList.postApiGoodsGoodsLists, IGenerateKeyPostApiGoodsGoodsLists>
+    | IProps<AllList.postForumList, IGenerateKeyPostForumList>
+    | IProps<AllList.postForumListFromMy, IGenerateKeyPostForumList>,
+): string => {
+  const { type } = props;
+  if (type === AllList.postApiGoodsGoodsLists) {
+    const {
+      params: {
+        customTag = "",
+        shoperId = "",
+        id = "",
+        keyword = "",
+        customTagId = "",
+      } = {},
+    } = props;
+    return sha256(
+      `customTag_${customTag}id_${id}keyword_${keyword}shoperId_${shoperId}customTagId_${customTagId}`,
+    ).toString();
+  }
+
+  if ([AllList.postForumList, AllList.postForumListFromMy].includes(type)) {
+    const { params: { sort_by = "", sort_type = "", keyword = "" } = {} } =
+      props;
+    return sha256(
+      `sort_by_${sort_by}sort_type_${sort_type}keyword_${keyword}`,
+    ).toString();
+  }
+  return "";
 };

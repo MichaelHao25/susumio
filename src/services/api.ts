@@ -137,9 +137,9 @@ export const postForumList = (props: IForumList) => {
   const {
     sort_by = IForumSortType.CreateTime,
     sort_type = "desc",
+    keyword,
     pageLimit,
     pageNum,
-    keyword,
   } = props;
   return request.post("/api_bbs/bbs/index", {
     headers: {
@@ -322,6 +322,7 @@ interface PostApiGoodsSave {
   sellPrice: string;
   shoperId: number;
   id?: number;
+  minimum: string;
 }
 
 /**
@@ -330,7 +331,7 @@ interface PostApiGoodsSave {
  * @returns
  */
 export const postApiGoodsUpdate = (data: PostApiGoodsSave) => {
-  const { thum, img, desc, name, sellPrice, shoperId, id } = data;
+  const { thum, img, desc, name, sellPrice, shoperId, id, minimum } = data;
   return request.post(`/api_goods/goods/update`, {
     data: {
       id,
@@ -342,7 +343,7 @@ export const postApiGoodsUpdate = (data: PostApiGoodsSave) => {
       stock: "9999",
       weight: 0,
       sell_num: 0,
-      minimum: 1,
+      minimum,
       buy_get_score: 0,
       click_num: 0,
       collect_num: 0,
@@ -370,7 +371,7 @@ export const postApiGoodsUpdate = (data: PostApiGoodsSave) => {
  * 店中店添加商品
  */
 export const postApiGoodsSave = (data: PostApiGoodsSave) => {
-  const { thum, img, desc, name, sellPrice, shoperId } = data;
+  const { thum, img, desc, name, sellPrice, shoperId, minimum } = data;
   return request.post(`/api_goods/goods/save`, {
     data: {
       name: name,
@@ -381,7 +382,7 @@ export const postApiGoodsSave = (data: PostApiGoodsSave) => {
       stock: "9999",
       weight: 0,
       sell_num: 0,
-      minimum: 1,
+      minimum,
       buy_get_score: 0,
       click_num: 0,
       collect_num: 0,

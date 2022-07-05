@@ -433,16 +433,16 @@ const userinfoModel: UserinfoModel = {
           })
           .catch(() => {
             console.log("google analytics not found");
-
-            //  百度统计
-            const baidu = document.createElement("script");
-            baidu.src = `https://hm.baidu.com/hm.js?f5f5dc0f23281c16e5c29d0fe6af6ad8`;
-            baidu.defer = true;
-            document.body.appendChild(baidu);
           });
       } catch (error) {
         console.log(error);
       }
+
+      //  百度统计
+      const baidu = document.createElement("script");
+      baidu.src = `https://hm.baidu.com/hm.js?f5f5dc0f23281c16e5c29d0fe6af6ad8`;
+      baidu.defer = true;
+      document.body.appendChild(baidu);
 
       // paypal
       const clientId = `AfT8aC1gkayVTl9gP4PBbifGpV9e1Ki-NBG8BN1wxNSpQW_N2-accMva485YaNZpVFjmZVQOjchOpHxi`;

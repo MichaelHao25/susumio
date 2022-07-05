@@ -18,7 +18,7 @@ import { history, useSelector } from "umi";
 const Clipboard = Quill.import("modules/clipboard");
 const Delta = Quill.import("delta");
 type Props = ConnectProps<
-  {},
+  Record<string, string>,
   {
     id: number;
     thum: [string];
@@ -26,8 +26,9 @@ type Props = ConnectProps<
     desc: string;
     name: string;
     sellPrice: string;
+    minimum: string;
   },
-  {}
+  Record<string, string>
 >;
 
 export default (props: Props) => {
@@ -39,6 +40,7 @@ export default (props: Props) => {
   const [img, setImg] = useState<string[]>([]);
   const [desc, setDesc] = useState<string>("");
   const [name, setName] = useState<string>("");
+  const [minimum, setMinimum] = useState<string>("1");
 
   const [sellPrice, setSellPrice] = useState<string>("");
   const {
@@ -66,13 +68,15 @@ export default (props: Props) => {
   }, [postApiOrdersLists]);
   useEffect(() => {
     if (props.location.state) {
-      const { id, thum, img, desc, name, sellPrice } = props.location.state;
+      const { id, thum, img, desc, name, sellPrice, minimum } =
+        props.location.state;
       setId(id);
       setThum(thum);
       setImg(img);
       setDesc(desc);
       setName(name);
       setSellPrice(sellPrice);
+      setMinimum(minimum);
     }
   }, [props.location.state]);
   useEffect(() => {
@@ -238,6 +242,7 @@ export default (props: Props) => {
           shoperId: user.id,
           name,
           sellPrice: money.value,
+          minimum,
         }).then((res) => {
           console.log(res);
           if (res) {
@@ -258,6 +263,7 @@ export default (props: Props) => {
           shoperId: user.id,
           name,
           sellPrice: money.value,
+          minimum,
         }).then((res) => {
           console.log(res);
           if (res) {
@@ -409,6 +415,28 @@ export default (props: Props) => {
             value={sellPrice}
             onChange={(e) => {
               setSellPrice(e.target.value);
+            }}
+          />
+          <div className={styles.title}>
+            <img
+              src={require("../../assets/img/price.png")}
+              alt=""
+              className={styles.w24}
+            />{" "}
+            Cantidad mínima
+          </div>
+
+          <input
+            type="number"
+            className={styles.text}
+            placeholder={"Por favor precio"}
+            value={minimum}
+            onChange={(e) => {
+              if (/^\d+$/.test(e.target.value)) {
+                setMinimum(e.target.value);
+              } else {
+                setMinimum("1");
+              }
             }}
           />
           <div className={styles.title}>

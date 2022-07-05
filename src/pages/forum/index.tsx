@@ -1,6 +1,4 @@
-import Tab from "./tab";
-import { useEffect, useRef, useState } from "react";
-import styles from "./index.less";
+import List from "@/component/List";
 import {
   IForumList,
   IForumSortType,
@@ -8,8 +6,10 @@ import {
   postForumItemCancelApproval,
   postForumItemDelete,
 } from "@/services/api";
-import List from "@/component/List";
 import { AllList, IPostForumList } from "@/services/interface";
+import { Confirm, Notify } from "notiflix";
+import { useEffect, useRef, useState } from "react";
+import LazyLoad from "react-lazyload";
 import {
   ConnectProps,
   history,
@@ -19,8 +19,8 @@ import {
   UserinfoState,
   useSelector,
 } from "umi";
-import LazyLoad from "react-lazyload";
-import { Confirm, Notify } from "notiflix";
+import styles from "./index.less";
+import Tab from "./tab";
 type IProps = ConnectProps<
   Record<string, string>,
   Record<string, string>,
@@ -31,6 +31,9 @@ enum ColumnType {
   SingleColumns,
 }
 export default (props: IProps) => {
+  const {
+    location: { query: { type: queryType = "" } = {} },
+  } = props;
   const [requestBody, setRequestBody] = useState<
     Omit<IForumList, "pageNum" | "pageLimit">
   >({
@@ -53,9 +56,10 @@ export default (props: IProps) => {
     },
   );
   const dispatch = useDispatch();
-  const {
-    location: { query: { type = "" } = {} },
-  } = props;
+  const [type, setType] = useState("");
+  useEffect(() => {
+    setType(queryType);
+  }, [queryType]);
   const handleSortBtnClick = () => {
     setRequestBody((prevState) => {
       if (prevState.sort_by === IForumSortType.CreateTime) {
@@ -352,6 +356,8 @@ export default (props: IProps) => {
       </Link>
     );
   };
+  console.log(type);
+
   if (type === "my") {
     return (
       <div>

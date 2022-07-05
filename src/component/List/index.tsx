@@ -27,7 +27,10 @@ import {
   OrderListItemGoodsInfo,
   OrdersListItem,
 } from "@/services/interface";
-import generateListKey from "@/utils/generateListKey";
+import generateListKey, {
+  IGenerateKeyPostApiGoodsGoodsLists,
+  IGenerateKeyPostForumList,
+} from "@/utils/generateListKey";
 import { Confirm, Notify } from "notiflix";
 import LazyLoad from "react-lazyload";
 import MiniRefreshTools from "../../plugin/minirefresh/minirefresh";
@@ -289,18 +292,29 @@ export default connect(({ list }: { list: ListState }) => {
         "postAddressLists";
       switch (type) {
         case AllList.postForumListFromMy: {
-          listKey = "postForumListFromMy";
+          const key = generateListKey({
+            type: AllList.postForumListFromMy,
+            params: props.params as IGenerateKeyPostForumList,
+          });
+          listKey = ["postForumListFromMy", key];
           break;
         }
         case AllList.postForumList: {
-          listKey = "postForumList";
+          const key = generateListKey({
+            type: AllList.postForumList,
+            params: props.params as IGenerateKeyPostForumList,
+          });
+          listKey = ["postForumList", key];
           break;
         }
         /**
          * 搜索/首页/店中店共用的这个列表，现在缓存会造成搜索的结果无法呈现出来。
          */
         case AllList.postApiGoodsGoodsLists: {
-          const key = generateListKey(props.params);
+          const key = generateListKey({
+            type: AllList.postApiGoodsGoodsLists,
+            params: props.params as IGenerateKeyPostApiGoodsGoodsLists,
+          });
           listKey = ["postApiGoodsGoodsLists", key];
           break;
         }
@@ -350,7 +364,13 @@ export default connect(({ list }: { list: ListState }) => {
         }
       }
       if (listKey instanceof Array) {
-        if (listKey[0] === "postApiGoodsGoodsLists") {
+        if (
+          [
+            "postApiGoodsGoodsLists",
+            "postForumList",
+            "postForumListFromMy",
+          ].includes(listKey[0])
+        ) {
           const tempList = list?.[listKey[0]]?.[listKey[1]] || [];
           page.current.pageNum = ~~(tempList.length / 10 + 1);
           if (tempList.length === 0) {
@@ -368,7 +388,11 @@ export default connect(({ list }: { list: ListState }) => {
     function getList() {
       switch (type) {
         case AllList.postForumListFromMy: {
-          return list.postForumListFromMy.map((item) => {
+          const key = generateListKey({
+            type: AllList.postForumListFromMy,
+            params: props.params as IGenerateKeyPostForumList,
+          });
+          return (list.postForumListFromMy[key] || []).map((item) => {
             if (renderItem) {
               return renderItem(item);
             } else {
@@ -377,7 +401,11 @@ export default connect(({ list }: { list: ListState }) => {
           });
         }
         case AllList.postForumList: {
-          return list.postForumList.map((item) => {
+          const key = generateListKey({
+            type: AllList.postForumList,
+            params: props.params as IGenerateKeyPostForumList,
+          });
+          return (list.postForumList[key] || []).map((item) => {
             if (renderItem) {
               return renderItem(item);
             } else {
@@ -1303,7 +1331,10 @@ export default connect(({ list }: { list: ListState }) => {
         }
 
         case AllList.postApiGoodsGoodsLists: {
-          const key = generateListKey(props.params);
+          const key = generateListKey({
+            type: AllList.postApiGoodsGoodsLists,
+            params: props.params as IGenerateKeyPostApiGoodsGoodsLists,
+          });
           const tempList = list.postApiGoodsGoodsLists[key] || [];
           return tempList.map((item) => {
             return (

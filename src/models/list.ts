@@ -17,6 +17,7 @@ import {
 } from "@/services/api";
 import {
   AddressItem,
+  AllList,
   CartList,
   CommentItem,
   Details,
@@ -33,7 +34,9 @@ import {
   PostTeamChildUsersList,
   PostTeamUsers,
 } from "@/services/interface";
-import generateListKey from "@/utils/generateListKey";
+import generateListKey, {
+  IGenerateKeyPostForumList,
+} from "@/utils/generateListKey";
 export enum SortType {
   /**
    * 升序 从小到大
@@ -97,8 +100,12 @@ export interface ListState {
     level3Num: number;
     totalNum: number;
   };
-  postForumList: IPostForumList[];
-  postForumListFromMy: IPostForumList[];
+  postForumList: {
+    [key: string]: IPostForumList[];
+  };
+  postForumListFromMy: {
+    [key: string]: IPostForumList[];
+  };
 }
 
 export enum Action {
@@ -202,9 +209,8 @@ export default <ListModel>{
       level3Num: 0,
       totalNum: 0,
     },
-    // postApiGoodsGoodsListsIndex: [],
-    postForumList: [],
-    postForumListFromMy: [],
+    postForumList: {},
+    postForumListFromMy: {},
   },
   effects: {
     *postForumListFromMy({ payload }, { call, select, put }) {
@@ -218,12 +224,18 @@ export default <ListModel>{
         postForumListFromMy,
         req,
       );
+      const key = generateListKey({
+        type: AllList.postForumListFromMy,
+        params: req as IGenerateKeyPostForumList,
+      });
       if (res) {
         yield put({
           type: "setState",
           payload: {
-            postForumListFromMy:
-              req.pageNum === 1 ? res.data : list.concat(res.data),
+            postForumListFromMy: {
+              ...list,
+              [key]: req.pageNum === 1 ? res.data : list[key].concat(res.data),
+            },
           },
         });
         cb(res.data);
@@ -232,21 +244,26 @@ export default <ListModel>{
       }
     },
     *postForumList({ payload }, { call, select, put }) {
-      const { list } = yield select(({ list }: { list: ListState }) => {
-        return {
-          list: list.postForumList,
-        };
+      const list = yield select(({ list }: { list: ListState }) => {
+        return list.postForumList;
       });
       const { cb, ...req } = payload;
       const res: IPostForumListResponse | undefined = yield call(
         postForumList,
         req,
       );
+      const key = generateListKey({
+        type: AllList.postForumList,
+        params: req as IGenerateKeyPostForumList,
+      });
       if (res) {
         yield put({
           type: "setState",
           payload: {
-            postForumList: req.pageNum === 1 ? res.data : list.concat(res.data),
+            postForumList: {
+              ...list,
+              [key]: req.pageNum === 1 ? res.data : list[key].concat(res.data),
+            },
           },
         });
         cb(res.data);
@@ -530,11 +547,14 @@ export default <ListModel>{
       if (res) {
         // if (window.location.pathname === "/") {
         const key = generateListKey({
-          customTag,
-          id,
-          keyword,
-          shoperId,
-          customTagId,
+          type: AllList.postApiGoodsGoodsLists,
+          params: {
+            customTag,
+            id,
+            keyword,
+            shoperId,
+            customTagId,
+          },
         });
         yield put({
           type: "setState",

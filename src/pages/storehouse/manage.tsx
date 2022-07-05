@@ -1,17 +1,13 @@
 import Header from "@/component/Header";
 import styles from "./index.less";
 
-import { history, NavLink, UserinfoState, useSelector } from "umi";
-import React, { useEffect, useState } from "react";
-import {
-  postApiGoodsGoodsLists,
-  postBannerList,
-  postGoodsDelete,
-} from "@/services/api";
-import Tab from "./tab";
-import { Details } from "@/services/interface";
-import Notiflix, { Confirm, Notify } from "notiflix";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import { postApiGoodsGoodsLists, postGoodsDelete } from "@/services/api";
+import { Details } from "@/services/interface";
+import { Confirm, Notify } from "notiflix";
+import { useEffect, useState } from "react";
+import { history, UserinfoState, useSelector } from "umi";
+import Tab from "./tab";
 
 export default () => {
   const [list, setList] = useState<Details[]>([]);
@@ -94,6 +90,7 @@ export default () => {
                           desc: item.desc,
                           name: item.name,
                           sellPrice: item.sell_price.toString(),
+                          minimum: item.minimum,
                         });
                       }}
                     >
