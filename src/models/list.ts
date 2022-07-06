@@ -705,15 +705,29 @@ export default <ListModel>{
           } else {
             const k = Object.keys(childKey)[0];
             const v = Object.values(childKey)[0];
-            // @ts-ignore
-            data.find((item) => {
-              if (item[k] === v) {
-                Object.entries(value).forEach(([key, value]) => {
-                  item[key] = value;
+            /**
+             * data 可能是数组或者是对象如果是对象的话就要更改他身上的全部属性
+             */
+            if (data instanceof Array) {
+              data.find((item) => {
+                if (item[k] === v) {
+                  Object.entries(value).forEach(([key, value]) => {
+                    item[key] = value;
+                  });
+                  return true;
+                }
+              });
+            } else if (data instanceof Object) {
+              Object.values(data).forEach((item) => {
+                item.forEach((itemB) => {
+                  if (itemB[k] === v) {
+                    Object.entries(value).forEach(([key, value]) => {
+                      itemB[key] = value;
+                    });
+                  }
                 });
-                return true;
-              }
-            });
+              });
+            }
           }
         });
       } else {

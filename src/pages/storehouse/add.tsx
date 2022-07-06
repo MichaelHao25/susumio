@@ -214,7 +214,8 @@ export default (props: Props) => {
       thum.length === 1 &&
       img.length >= 1 &&
       name !== "" &&
-      sellPrice !== ""
+      sellPrice !== "" &&
+      minimum
     ) {
       const desc: string = refQuillHandler.current?.root.innerHTML || "";
       const money = MoneyValueUnitRender.getMoney(sellPrice);
@@ -427,13 +428,18 @@ export default (props: Props) => {
           </div>
 
           <input
-            type="number"
+            type="tel"
             className={styles.text}
-            placeholder={"Por favor precio"}
+            placeholder={minimum}
             value={minimum}
             onChange={(e) => {
-              if (/^\d+$/.test(e.target.value)) {
-                setMinimum(e.target.value);
+              const minimum = e.target.value;
+              setMinimum(minimum);
+            }}
+            onBlur={(e) => {
+              const minimum = (e.target.value || "").replace(/\D/g, "");
+              if (minimum) {
+                setMinimum(minimum);
               } else {
                 setMinimum("1");
               }
