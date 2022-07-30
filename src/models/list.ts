@@ -35,6 +35,7 @@ import {
   PostTeamUsers,
 } from "@/services/interface";
 import generateListKey, {
+  IGenerateKeyPostApplyList,
   IGenerateKeyPostForumList,
 } from "@/utils/generateListKey";
 export enum SortType {
@@ -83,7 +84,13 @@ export interface ListState {
   postCommentsLists: CommentItem[];
   postUserFootLists: CartList[];
   postAssetLogsList: LogItem[];
-  postApplyList: any[];
+  postApplyList: {
+    [key: string]: {
+      list: any[];
+      apply_num: number;
+      money: number;
+    };
+  };
   postOrdersList: DropOrdersListItem[];
   postOrdersListHeaderInfo: {
     totalExceptMoney: number;
@@ -192,7 +199,7 @@ export default <ListModel>{
     postCommentsLists: [],
     postUserFootLists: [],
     postAssetLogsList: [],
-    postApplyList: [],
+    postApplyList: {},
     postOrdersList: [],
     postOrdersListHeaderInfo: {
       totalExceptMoney: 0,
@@ -363,14 +370,25 @@ export default <ListModel>{
       });
       const { cb, ...req } = payload;
       const res: PostApplyList | undefined = yield call(postApplyList, req);
+      const key = generateListKey({
+        type: AllList.postApplyList,
+        params: req as IGenerateKeyPostApplyList,
+      });
       if (res) {
         yield put({
           type: "setState",
           payload: {
-            postApplyList:
-              req.pageNum === 1
-                ? res.data.applys
-                : list.concat(res.data.applys),
+            postApplyList: {
+              ...list,
+              [key]: {
+                list:
+                  req.pageNum === 1
+                    ? res.data.applys
+                    : list[key].concat(res.data.applys),
+                money: res.data.money,
+                apply_num: res.data.apply_num,
+              },
+            },
           },
         });
         cb(res.data.applys);

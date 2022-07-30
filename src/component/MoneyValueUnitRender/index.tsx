@@ -1,12 +1,10 @@
-import { useEffect } from "react";
-import React from "react";
 import useCurrencyManage, {
   CurrencyData,
   CurrencyType,
 } from "@/hooks/useCurrencyManage";
-import { useState } from "react";
 import Big from "big.js";
 import { Notify } from "notiflix";
+import React, { useState } from "react";
 interface Props {
   children?: number | string;
   afterSymbol?: string;

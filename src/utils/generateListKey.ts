@@ -29,7 +29,9 @@ export interface IGenerateKeyPostForumList {
   sort_type?: string;
   keyword?: string;
 }
-
+export interface IGenerateKeyPostApplyList {
+  status: number;
+}
 interface IProps<T, P> {
   /**
    * type
@@ -41,7 +43,8 @@ export default (
   props:
     | IProps<AllList.postApiGoodsGoodsLists, IGenerateKeyPostApiGoodsGoodsLists>
     | IProps<AllList.postForumList, IGenerateKeyPostForumList>
-    | IProps<AllList.postForumListFromMy, IGenerateKeyPostForumList>,
+    | IProps<AllList.postForumListFromMy, IGenerateKeyPostForumList>
+    | IProps<AllList.postApplyList, IGenerateKeyPostApplyList>,
 ): string => {
   const { type } = props;
   if (type === AllList.postApiGoodsGoodsLists) {
@@ -57,6 +60,12 @@ export default (
     return sha256(
       `customTag_${customTag}id_${id}keyword_${keyword}shoperId_${shoperId}customTagId_${customTagId}`,
     ).toString();
+  }
+  if (type === AllList.postApplyList) {
+    const {
+      params: { status },
+    } = props;
+    return sha256(`status_${status}`).toString();
   }
 
   if ([AllList.postForumList, AllList.postForumListFromMy].includes(type)) {

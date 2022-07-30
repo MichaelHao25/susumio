@@ -1,17 +1,4 @@
-import {
-  postAddressLists,
-  postApiOrdersLists,
-  postApplyList,
-  postAssetLogsList,
-  postCommentsLists,
-  postOrdersList,
-  postTeamChildUsers,
-  postUserFootLists,
-} from "@/services/api";
-import {
-  DropOrdersListItem_AutoGender,
-  IOrder_goods_info,
-} from "@/services/autoGenderIterface";
+import { DropOrdersListItem_AutoGender } from "@/services/autoGenderIterface";
 
 export enum AllList {
   postApiGoodsGoodsLists,
@@ -279,6 +266,7 @@ export interface OrdersListItem {
   create_time: string;
   update_time: string;
   return_status: number;
+  express_key?: number;
   order_goods_info: OrderListItemGoodsInfo[];
   user_info: {
     id: number;
@@ -377,6 +365,8 @@ export interface PostOrdersList extends BaseResponse, Page {
 export interface PostApplyList extends BaseResponse, Page {
   data: {
     applys: string[];
+    money: number;
+    apply_num: number;
   };
 }
 

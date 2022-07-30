@@ -1,10 +1,24 @@
-import List from "../../component/List";
 import Header from "@/component/Header";
 import { AllList } from "@/services/interface";
-import React, { useState } from "react";
-
+import generateListKey, {
+  IGenerateKeyPostApplyList,
+} from "@/utils/generateListKey";
+import { useState } from "react";
+import { ListState, useSelector } from "umi";
+import List from "../../component/List";
 export default () => {
   const [activeStatus, setActiveStatus] = useState<number>(0);
+  const money = useSelector(({ list }: { list: ListState }) => {
+    const key = generateListKey({
+      type: AllList.postApplyList,
+      params: {
+        status: activeStatus,
+      } as IGenerateKeyPostApplyList,
+    });
+    return list?.["postApplyList"]?.[key]?.money;
+  });
+  console.log("postApplyList", money);
+
   const header = (
     <>
       <Header
@@ -17,7 +31,7 @@ export default () => {
               style={{ fontSize: ".7rem", color: "#2a8ee8" }}
             >
               {/* money */}
-              Importe:{0}
+              Importe:{money}
             </span>
           </a>
         }

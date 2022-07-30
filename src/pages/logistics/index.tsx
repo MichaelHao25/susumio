@@ -1,8 +1,8 @@
 import Header from "@/component/Header";
-import { ConnectProps } from "umi";
 import { OrdersListItem } from "@/services/interface";
 import { useEffect } from "react";
 import LazyLoad from "react-lazyload";
+import { ConnectProps } from "umi";
 
 interface Props
   extends ConnectProps<
@@ -26,13 +26,13 @@ export default (props: Props) => {
       //可选，指定查询结果高度，最大为800px，默认为560px。
       YQ_Height: 560,
       //可选，指定运输商，默认为自动识别。
-      YQ_Fc: "0",
+      YQ_Fc: order.express_key?.toString(),
       //可选，指定UI语言，默认根据浏览器自动识别。
       YQ_Lang: "en",
       //必须，指定要查询的单号。
       YQ_Num: order.express_no,
     });
-  });
+  }, []);
   const logisticsMap = {
     HTKY: "Megatone universal",
     EMS: "EMS",
@@ -57,7 +57,6 @@ export default (props: Props) => {
     } else {
       return "";
     }
-    return "";
   };
   return (
     <>

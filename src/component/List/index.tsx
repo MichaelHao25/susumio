@@ -29,6 +29,7 @@ import {
 } from "@/services/interface";
 import generateListKey, {
   IGenerateKeyPostApiGoodsGoodsLists,
+  IGenerateKeyPostApplyList,
   IGenerateKeyPostForumList,
 } from "@/utils/generateListKey";
 import { Confirm, Notify } from "notiflix";
@@ -343,7 +344,11 @@ export default connect(({ list }: { list: ListState }) => {
           break;
         }
         case AllList.postApplyList: {
-          listKey = "postApplyList";
+          const key = generateListKey({
+            type: AllList.postApplyList,
+            params: props.params as IGenerateKeyPostApplyList,
+          });
+          listKey = ["postApplyList", key];
           break;
         }
         case AllList.postOrdersList: {
@@ -372,6 +377,13 @@ export default connect(({ list }: { list: ListState }) => {
           ].includes(listKey[0])
         ) {
           const tempList = list?.[listKey[0]]?.[listKey[1]] || [];
+          page.current.pageNum = ~~(tempList.length / 10 + 1);
+          if (tempList.length === 0) {
+            loadData(false);
+          }
+        }
+        if ("postApplyList".includes(listKey[0])) {
+          const tempList = list?.[listKey[0]]?.[listKey[1]]?.list || [];
           page.current.pageNum = ~~(tempList.length / 10 + 1);
           if (tempList.length === 0) {
             loadData(false);
@@ -694,9 +706,22 @@ export default connect(({ list }: { list: ListState }) => {
           );
         }
         case AllList.postApplyList: {
+          const statusFilter = (value: number) => {
+            if (value == 1) {
+              return "Pendiente de examen";
+            } else if (value == 2) {
+              return "Sin verificar";
+            } else if (value == 3) {
+              return "Fondos asignados";
+            }
+          };
+          const key = generateListKey({
+            type: AllList.postApplyList,
+            params: props.params as IGenerateKeyPostApplyList,
+          });
           return (
             <div className="aui-content" style={{ width: "100%" }}>
-              {list.postApplyList.length === 0 ? (
+              {(list.postApplyList?.[key]?.list || []).length === 0 ? (
                 <div
                   className="aui-col-xs-12 aui-text-center"
                   style={{ marginTop: "30%" }}
@@ -720,7 +745,7 @@ export default connect(({ list }: { list: ListState }) => {
                 ""
               )}
               <ul className="aui-list aui-media-list aui-bg-default">
-                {list.postApplyList.map((apply, index) => {
+                {(list.postApplyList?.[key]?.list || []).map((apply, index) => {
                   return (
                     <li
                       className="aui-list-item aui-list-item-middle aui-bg-white aui-margin-b-10"
@@ -730,34 +755,31 @@ export default connect(({ list }: { list: ListState }) => {
                       <div className="aui-media-list-item-inner">
                         <div className="aui-list-item-inner">
                           <div className="aui-list-item-text">
-                            <div
-                              className="aui-list-item-title"
-                              v-text="apply.intro"
-                            />
-                            <div
-                              className="aui-list-item-right aui-text-info"
-                              v-text="'+' + apply.money"
-                            />
-                          </div>
-                          <div className="aui-list-item-text aui-margin-t-5">
-                            <div
-                              className="aui-list-item-title aui-font-size-12 aui-text-pray"
-                              v-text="'Numeración: ' + apply.apply_no"
-                            />
-                            <div
-                              className="aui-list-item-right  aui-text-pray aui-font-size-18"
-                              style={{ color: "#e95d40!important" }}
-                            >
-                              {"{"}
-                              {"{"}apply.status | statusFilter{"}"}
-                              {"}"}
+                            <div className="aui-list-item-title">
+                              {apply.intro}
+                            </div>
+                            <div className="aui-list-item-right aui-text-info">
+                              +
+                              <MoneyValueUnitRender>
+                                {apply.money}
+                              </MoneyValueUnitRender>
                             </div>
                           </div>
                           <div className="aui-list-item-text aui-margin-t-5">
+                            <div className="aui-list-item-title aui-font-size-12 aui-text-pray">
+                              Numeración:{apply.apply_no}
+                            </div>
                             <div
-                              className="aui-list-item-title aui-font-size-12 aui-text-pray"
-                              v-text="'Tiempo de aplicación: ' + apply.create_time"
-                            />
+                              className="aui-list-item-right  aui-text-pray aui-font-size-12"
+                              style={{ color: "#e95d40!important" }}
+                            >
+                              {statusFilter(apply.status)}
+                            </div>
+                          </div>
+                          <div className="aui-list-item-text aui-margin-t-5">
+                            <div className="aui-list-item-title aui-font-size-12 aui-text-pray">
+                              Tiempo de aplicación:{apply.create_time}
+                            </div>
                           </div>
                         </div>
                       </div>
