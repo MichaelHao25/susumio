@@ -1,5 +1,5 @@
-import "./index.less";
-import React, { useEffect, useState } from "react";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import Tab from "@/component/Tab";
 import {
   postDrpDbStatus,
   postQueryOrdersCount,
@@ -7,11 +7,11 @@ import {
   postUsersAsset,
   postUsersInfoRead,
 } from "@/services/api";
-import Tab from "@/component/Tab";
 import { history } from "@@/core/history";
-import { Link, useDispatch, UserinfoState, useSelector } from "umi";
 import QRCode from "qrcode.react";
-import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import { useEffect, useState } from "react";
+import { Link, useDispatch, UserinfoState, useSelector } from "umi";
+import "./index.less";
 
 interface OrdersCount {
   return_goods_num: number;
@@ -135,7 +135,7 @@ const index = () => {
             src={
               userInfo.avatar
                 ? userInfo.avatar
-                : require("../../assets/img/avatar.png")
+                : require("../../assets/img/logo2.png")
             }
             id="avatar"
             className="aui-img-round"

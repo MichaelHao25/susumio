@@ -35,6 +35,7 @@ import {
   PostTeamUsers,
 } from "@/services/interface";
 import generateListKey, {
+  IGenerateKeyPostApiOrdersLists,
   IGenerateKeyPostApplyList,
   IGenerateKeyPostForumList,
 } from "@/utils/generateListKey";
@@ -78,7 +79,9 @@ export interface ListState {
   };
   // postApiGoodsGoodsListsIndex: Details[];
 
-  postApiOrdersLists: OrdersListItem[];
+  postApiOrdersLists: {
+    [key: string]: OrdersListItem[];
+  };
   postAddressLists: AddressItem[];
   postFavorite: CartList[];
   postCommentsLists: CommentItem[];
@@ -193,7 +196,7 @@ export interface ListModel {
 export default <ListModel>{
   state: {
     postApiGoodsGoodsLists: {},
-    postApiOrdersLists: [],
+    postApiOrdersLists: {},
     postAddressLists: [],
     postFavorite: [],
     postCommentsLists: [],
@@ -514,12 +517,18 @@ export default <ListModel>{
         postApiOrdersLists,
         req,
       );
+      const key = generateListKey({
+        type: AllList.postApiOrdersLists,
+        params: req as IGenerateKeyPostApiOrdersLists,
+      });
       if (res) {
         yield put({
           type: "setState",
           payload: {
-            postApiOrdersLists:
-              req.pageNum === 1 ? res.data : list.concat(res.data),
+            postApiOrdersLists: {
+              ...list,
+              [key]: req.pageNum === 1 ? res.data : list[key].concat(res.data),
+            },
           },
         });
         cb(res.data);

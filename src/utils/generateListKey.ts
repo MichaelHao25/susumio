@@ -32,6 +32,10 @@ export interface IGenerateKeyPostForumList {
 export interface IGenerateKeyPostApplyList {
   status: number;
 }
+export interface IGenerateKeyPostApiOrdersLists {
+  status: number;
+  shoper_id?: number;
+}
 interface IProps<T, P> {
   /**
    * type
@@ -44,7 +48,8 @@ export default (
     | IProps<AllList.postApiGoodsGoodsLists, IGenerateKeyPostApiGoodsGoodsLists>
     | IProps<AllList.postForumList, IGenerateKeyPostForumList>
     | IProps<AllList.postForumListFromMy, IGenerateKeyPostForumList>
-    | IProps<AllList.postApplyList, IGenerateKeyPostApplyList>,
+    | IProps<AllList.postApplyList, IGenerateKeyPostApplyList>
+    | IProps<AllList.postApiOrdersLists, IGenerateKeyPostApiOrdersLists>,
 ): string => {
   const { type } = props;
   if (type === AllList.postApiGoodsGoodsLists) {
@@ -61,11 +66,18 @@ export default (
       `customTag_${customTag}id_${id}keyword_${keyword}shoperId_${shoperId}customTagId_${customTagId}`,
     ).toString();
   }
-  if (type === AllList.postApplyList) {
+  if ([AllList.postApplyList].includes(type)) {
     const {
       params: { status },
     } = props;
     return sha256(`status_${status}`).toString();
+  }
+
+  if ([AllList.postApiOrdersLists].includes(type)) {
+    const {
+      params: { status, shoper_id = "" },
+    } = props;
+    return sha256(`status_${status}shoper_id_${shoper_id}`).toString();
   }
 
   if ([AllList.postForumList, AllList.postForumListFromMy].includes(type)) {

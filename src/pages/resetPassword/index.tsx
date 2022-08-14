@@ -1,13 +1,13 @@
 import Header from "@/component/Header";
-import { ConnectProps, history, useSelector } from "umi";
-import { useEffect, useState } from "react";
+import { UserinfoState } from "@/pages/login/model";
 import {
   postGetParams,
   PostUpdatePassword,
   postUpdatePassword,
 } from "@/services/api";
-import { UserinfoState } from "@/pages/login/model";
-import Notiflix, { Notify } from "notiflix";
+import { Notify } from "notiflix";
+import { useEffect, useState } from "react";
+import { ConnectProps, history, useSelector } from "umi";
 
 interface Props extends ConnectProps<{}, { type: number }, {}> {}
 
@@ -44,7 +44,11 @@ export default (props: Props) => {
   }, []);
 
   function handleSubmit() {
-    if (!/^1\d{10}$/.test(mobile)) {
+    // if (!/^1\d{10}$/.test(mobile)) {
+    //   Notify.failure("Por favor,escriba el número correcto");
+    //   return;
+    // }
+    if (mobile === "") {
       Notify.failure("Por favor,escriba el número correcto");
       return;
     }

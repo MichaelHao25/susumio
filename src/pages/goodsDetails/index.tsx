@@ -247,7 +247,7 @@ const index = (props: Props) => {
                             loading="lazy"
                             src={
                               item.user_info.avatar ||
-                              require("../../assets/img/avatar.png")
+                              require("../../assets/img/logo2.png")
                             }
                             style={{ maxWidth: "100%" }}
                           />

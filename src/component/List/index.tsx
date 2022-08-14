@@ -29,6 +29,7 @@ import {
 } from "@/services/interface";
 import generateListKey, {
   IGenerateKeyPostApiGoodsGoodsLists,
+  IGenerateKeyPostApiOrdersLists,
   IGenerateKeyPostApplyList,
   IGenerateKeyPostForumList,
 } from "@/utils/generateListKey";
@@ -320,7 +321,11 @@ export default connect(({ list }: { list: ListState }) => {
           break;
         }
         case AllList.postApiOrdersLists: {
-          listKey = "postApiOrdersLists";
+          const key = generateListKey({
+            type: AllList.postApiOrdersLists,
+            params: props.params as IGenerateKeyPostApiOrdersLists,
+          });
+          listKey = ["postApiOrdersLists", key];
           break;
         }
         case AllList.postAddressLists: {
@@ -364,7 +369,11 @@ export default connect(({ list }: { list: ListState }) => {
           break;
         }
         case AllList.postApiOrdersListsForStorehouse: {
-          listKey = "postApiOrdersLists";
+          const key = generateListKey({
+            type: AllList.postApiGoodsGoodsLists,
+            params: props.params as IGenerateKeyPostApiGoodsGoodsLists,
+          });
+          listKey = ["postApiOrdersLists", key];
           break;
         }
       }
@@ -382,8 +391,8 @@ export default connect(({ list }: { list: ListState }) => {
             loadData(false);
           }
         }
-        if ("postApplyList".includes(listKey[0])) {
-          const tempList = list?.[listKey[0]]?.[listKey[1]]?.list || [];
+        if (["postApiOrdersLists"].includes(listKey[0])) {
+          const tempList = list?.[listKey[0]]?.[listKey[1]] || [];
           page.current.pageNum = ~~(tempList.length / 10 + 1);
           if (tempList.length === 0) {
             loadData(false);
@@ -466,7 +475,7 @@ export default connect(({ list }: { list: ListState }) => {
                             src={
                               team.avatar
                                 ? team.avatar
-                                : require("../../assets/img/avatar.png")
+                                : require("../../assets/img/logo2.png")
                             }
                             className="aui-img-round aui-list-img-sm"
                           />
@@ -540,7 +549,7 @@ export default connect(({ list }: { list: ListState }) => {
                             src={
                               cust.avatar
                                 ? cust.avatar
-                                : require("../../assets/img/avatar.png")
+                                : require("../../assets/img/logo2.png")
                             }
                             className="aui-img-round aui-list-img-sm"
                           />
@@ -1660,11 +1669,14 @@ export default connect(({ list }: { list: ListState }) => {
               order,
             });
           };
-
+          const key = generateListKey({
+            type: AllList.postApiOrdersLists,
+            params: props.params as IGenerateKeyPostApiOrdersLists,
+          });
           return (
             <div className="aui-content" style={{ width: "100%" }}>
               {/*什么都没有*/}
-              {list.postApiOrdersLists.length === 0 ? (
+              {(list.postApiOrdersLists[key] || []).length === 0 ? (
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <div
                     className="aui-col-xs-12 aui-text-center"
@@ -1688,7 +1700,7 @@ export default connect(({ list }: { list: ListState }) => {
               ) : (
                 <></>
               )}
-              {list.postApiOrdersLists.map((order) => {
+              {(list.postApiOrdersLists[key] || []).map((order) => {
                 return (
                   <div
                     className="aui-padded-5 aui-bg-white aui-margin-t-10"
@@ -2025,11 +2037,14 @@ export default connect(({ list }: { list: ListState }) => {
               order,
             });
           };
-
+          const key = generateListKey({
+            type: AllList.postApiOrdersLists,
+            params: props.params as IGenerateKeyPostApiOrdersLists,
+          });
           return (
             <div className="aui-content" style={{ width: "100%" }}>
               {/*什么都没有*/}
-              {list.postApiOrdersLists.length === 0 ? (
+              {(list.postApiOrdersLists[key] || []).length === 0 ? (
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <div
                     className="aui-col-xs-12 aui-text-center"
@@ -2053,7 +2068,7 @@ export default connect(({ list }: { list: ListState }) => {
               ) : (
                 <></>
               )}
-              {list.postApiOrdersLists.map((order) => {
+              {(list.postApiOrdersLists[key] || []).map((order) => {
                 return (
                   <div
                     className="aui-padded-5 aui-bg-white aui-margin-t-10"
