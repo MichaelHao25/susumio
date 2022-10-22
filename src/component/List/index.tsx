@@ -2351,7 +2351,7 @@ export default connect(({ list }: { list: ListState }) => {
                           style={{ width: "7rem" }}
                           onClick={(e) => finish(e, order)}
                         >
-                          Confirmar
+                          Recibido
                         </div>
                       ) : (
                         <></>
