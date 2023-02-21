@@ -1,26 +1,29 @@
 import Header from "@/component/Header";
-import "./index.less";
-import { AllList } from "@/services/interface";
 import List from "@/component/List";
-import React from "react";
+import { AllList } from "@/services/interface";
 import { ConnectProps, useDispatch, useSelector } from "umi";
 import { ListState, SortKey, SortType } from "../../models/list";
+import "./index.less";
 
-interface Props
-  extends ConnectProps<
-    {},
-    {},
-    {
-      customTag: string;
-      title: string;
-      id: string;
-      keyword: string;
-      customTagId: string;
-    }
-  > {}
+type Props = ConnectProps<
+  {},
+  {},
+  {
+    customTag: string;
+    title: string;
+    id: string;
+    keyword: string;
+    customTagId: string;
+  }
+>;
 
-const SortHeader = (props: { title: string }) => {
-  const { title } = props;
+const SortHeader = (props: {
+  title: string;
+  params?: {
+    [key: string]: any;
+  };
+}) => {
+  const { title, params } = props;
   const list: ListState = useSelector(({ list }: { list: ListState }) => list);
   const dispatch = useDispatch();
   const { sortKey = "", sortType = "" } = list;
@@ -28,10 +31,14 @@ const SortHeader = (props: { title: string }) => {
     const payload: {
       sortKey: SortKey;
       sortType: SortType;
+      params?: {
+        [key: string]: any;
+      };
     } = {
       sortKey: SortKey.Id,
       sortType: SortType.Asc,
     };
+    payload.params = params;
     if (newKey === sortKey) {
       payload.sortKey = newKey;
       if (sortType === SortType.Asc) {
@@ -158,7 +165,7 @@ export default (props: Props) => {
 
   return (
     <div className="goodsListModel">
-      <SortHeader title={title} />
+      <SortHeader params={params} title={title} />
       <List
         // top={`${2.2 + 2.25}rem`}
         type={AllList.postApiGoodsGoodsLists}

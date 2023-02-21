@@ -611,63 +611,66 @@ export default <ListModel>{
   reducers: {
     sortList(state, action) {
       const {
-        payload: { sortKey, sortType },
+        payload: { sortKey, sortType, params },
       } = action;
-
+      const key = generateListKey({
+        type: AllList.postApiGoodsGoodsLists,
+        params,
+      });
       if (sortKey === SortKey.Id && sortType === SortType.Asc) {
-        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
-          (a, b) => {
-            return b.id - a.id;
-          },
-        );
+        state.postApiGoodsGoodsLists[key] = state.postApiGoodsGoodsLists[
+          key
+        ].sort((a, b) => {
+          return b.id - a.id;
+        });
       } else if (sortKey === SortKey.Id && sortType === SortType.Desc) {
-        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
-          (a, b) => {
-            return a.id - b.id;
-          },
-        );
+        state.postApiGoodsGoodsLists[key] = state.postApiGoodsGoodsLists[
+          key
+        ].sort((a, b) => {
+          return a.id - b.id;
+        });
       } else if (sortKey === SortKey.sellPrice && sortType === SortType.Asc) {
-        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
-          (a, b) => {
-            return b.sell_price - a.sell_price;
-          },
-        );
+        state.postApiGoodsGoodsLists[key] = state.postApiGoodsGoodsLists[
+          key
+        ].sort((a, b) => {
+          return b.sell_price - a.sell_price;
+        });
       } else if (sortKey === SortKey.sellPrice && sortType === SortType.Desc) {
-        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
-          (a, b) => {
-            return a.sell_price - b.sell_price;
-          },
-        );
+        state.postApiGoodsGoodsLists[key] = state.postApiGoodsGoodsLists[
+          key
+        ].sort((a, b) => {
+          return a.sell_price - b.sell_price;
+        });
       } else if (sortKey === SortKey.sellNum && sortType === SortType.Asc) {
-        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
-          (a, b) => {
-            return b.sell_num - a.sell_num;
-          },
-        );
+        state.postApiGoodsGoodsLists[key] = state.postApiGoodsGoodsLists[
+          key
+        ].sort((a, b) => {
+          return b.sell_num - a.sell_num;
+        });
       } else if (sortKey === SortKey.sellNum && sortType === SortType.Desc) {
-        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
-          (a, b) => {
-            return a.sell_num - b.sell_num;
-          },
-        );
+        state.postApiGoodsGoodsLists[key] = state.postApiGoodsGoodsLists[
+          key
+        ].sort((a, b) => {
+          return a.sell_num - b.sell_num;
+        });
       } else if (sortKey === SortKey.newGoods && sortType === SortType.Asc) {
-        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
-          (a, b) => {
-            return (
-              new Date(b.update_time).getTime() -
-              new Date(a.update_time).getTime()
-            );
-          },
-        );
+        state.postApiGoodsGoodsLists[key] = state.postApiGoodsGoodsLists[
+          key
+        ].sort((a, b) => {
+          return (
+            new Date(b.update_time).getTime() -
+            new Date(a.update_time).getTime()
+          );
+        });
       } else if (sortKey === SortKey.newGoods && sortType === SortType.Desc) {
-        state.postApiGoodsGoodsLists = state.postApiGoodsGoodsLists.sort(
-          (a, b) => {
-            return (
-              new Date(a.update_time).getTime() -
-              new Date(b.update_time).getTime()
-            );
-          },
-        );
+        state.postApiGoodsGoodsLists[key] = state.postApiGoodsGoodsLists[
+          key
+        ].sort((a, b) => {
+          return (
+            new Date(a.update_time).getTime() -
+            new Date(b.update_time).getTime()
+          );
+        });
       }
     },
     updateComments(state, action) {
