@@ -1,28 +1,27 @@
 import Header from "@/component/Header";
-import "./index.less";
-import "../../assets/img/payssion/flag.less";
-import { ConnectProps } from "@@/plugin-dva/connect";
-import { useEffect, useState } from "react";
+import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import Paypal from "@/component/Paypal";
 import {
   postPayMoney,
   postPayPaypal,
   postPayssionPay,
   postQueryPayPassword,
 } from "@/services/api";
+import { ConnectProps } from "@@/plugin-dva/connect";
 import Notiflix, { Notify } from "notiflix";
+import { useEffect, useState } from "react";
 import { history } from "umi";
-import Paypal from "@/component/Paypal";
-import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
+import "../../assets/img/payssion/flag.less";
+import "./index.less";
 
-interface Props
-  extends ConnectProps<
-    {},
-    {
-      order_no: string;
-      total_money: number;
-    },
-    {}
-  > {}
+type Props = ConnectProps<
+  {},
+  {
+    order_no: string;
+    total_money: number;
+  },
+  {}
+>;
 
 enum PaySessionType {
   mx,
@@ -318,6 +317,22 @@ export default (props: Props) => {
                   <img
                     loading="lazy"
                     src={require("../../assets/img/payssion/santander_mx.png")}
+                    className="aui-margin-t-15"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="aui-grid">
+              <div className="aui-row">
+                <div
+                  className="aui-col-10"
+                  onClick={() => payByPayssion("paycash_mx")}
+                  style={{ padding: "0.4rem 0.6rem" }}
+                >
+                  <img
+                    loading="lazy"
+                    src={require("../../assets/img/payssion/paycash_mx.jpg")}
                     className="aui-margin-t-15"
                   />
                 </div>
