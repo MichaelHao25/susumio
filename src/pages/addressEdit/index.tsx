@@ -200,6 +200,7 @@ export default (props: Props) => {
                         ...address,
                         province_code: e.target.value,
                         express_type: "",
+                        province: provinces[e.target.value],
                       };
                     });
                   }}

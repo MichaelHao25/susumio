@@ -20,6 +20,9 @@ http://3.238.17.28:8888/364f6b8a
 http://172.31.14.196:8888/364f6b8a
 username: ukx8nebi
 password: 60f971e3 -->
+http://3.238.17.28:8888/364f6b8a/
+ukx8nebi
+60f971e3
 
 <!-- https://api.susumio.com/index.php/wap/index/handle_qrcode.html?parent_mobile=13968066530 -->
 

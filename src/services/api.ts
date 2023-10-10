@@ -1450,3 +1450,32 @@ export const postApiOrdersLists = (data: OrdersLists) => {
   };
   return request.post(`/api_orders/orders/lists`, res);
 };
+
+export interface IPostLong2dwz {
+  /**
+   * 需要转换的链接
+   */
+  url: string;
+}
+
+/**
+ * 转短链接
+ * @param data
+ */
+export const postLong2dwz = (data: IPostLong2dwz) => {
+  const { url } = data;
+  if (url === undefined || url === null || url === "") {
+    return Promise.reject(false);
+  }
+  return fetch(`https://www.urlc.cn/api/url/add`, {
+    method: "POST",
+    headers: {
+      Authorization: "Token pj5entjpXjzPgIdEcTRf",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      url,
+    }),
+    mode: "cors",
+  }).then((res) => res.json());
+};

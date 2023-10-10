@@ -7,6 +7,7 @@ import {
   postApiGoodsGoodsComments,
   postApiGoodsGoodsIsCollect,
   postApiGoodsGoodsRead,
+  postLong2dwz,
 } from "@/services/api";
 import { Details } from "@/services/interface";
 import { history } from "@@/core/umiExports";
@@ -160,10 +161,34 @@ const index = (props: Props) => {
         const { shareCode = "", id = "" } = data || {};
         if (shareCode) {
           setIsShare(true);
-          const address = new URL(window.location.href);
-          address.searchParams.set("id", id);
-          address.searchParams.set("shareCode", shareCode);
-          setShareAddress(address.toString());
+          const goodsShareLink = new URL(window.location.href);
+          goodsShareLink.searchParams.set("id", id);
+          goodsShareLink.searchParams.set("shareCode", shareCode);
+          const launchLink = new URL(window.location.href);
+          launchLink.pathname = "gotoApp";
+          for (const key of launchLink.searchParams.keys()) {
+            launchLink.searchParams.delete(key);
+          }
+          launchLink.searchParams.set(
+            "link",
+            decodeURIComponent(goodsShareLink.toString()),
+          );
+          /**
+           * 启动地址转换完毕，开始转换短链接
+           */
+          debugger;
+          postLong2dwz({
+            url: launchLink.toString(),
+          })
+            .then((res) => {
+              console.log(res);
+              debugger;
+            })
+            .catch((err) => {
+              console.log(err);
+              debugger;
+            });
+          setShareAddress(launchLink.toString());
         }
         setGoods(data);
       }
@@ -612,7 +637,18 @@ const index = (props: Props) => {
             <h3 className="layout-tc">
               Para copiar este sitio web, mantener el enlace presionado
             </h3>
-            <p className="layout-tc layout-url">{shareAddress}</p>
+            <p
+              className="layout-tc layout-url"
+              onClick={() => {
+                if (navigator.clipboard) {
+                  navigator.clipboard.writeText(shareAddress).then(() => {
+                    Notify.success("复制成功!");
+                  });
+                }
+              }}
+            >
+              {shareAddress}
+            </p>
             <div
               className="layout-tc"
               style={{ marginTop: "10px" }}
