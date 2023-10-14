@@ -1,3 +1,4 @@
+import LaunchApp from "@/component/LaunchApp";
 import MoneyValueUnitRender from "@/component/MoneyValueUnitRender";
 import SpecInfoSelect from "@/pages/goodsDetails/SpecInfoSelect";
 import {
@@ -11,6 +12,7 @@ import {
 } from "@/services/api";
 import { Details } from "@/services/interface";
 import { history } from "@@/core/umiExports";
+import copy from "copy-to-clipboard";
 import { Notify } from "notiflix";
 import { useEffect, useState } from "react";
 import LazyLoad from "react-lazyload";
@@ -164,31 +166,36 @@ const index = (props: Props) => {
           const goodsShareLink = new URL(window.location.href);
           goodsShareLink.searchParams.set("id", id);
           goodsShareLink.searchParams.set("shareCode", shareCode);
-          const launchLink = new URL(window.location.href);
-          launchLink.pathname = "gotoApp";
-          for (const key of launchLink.searchParams.keys()) {
-            launchLink.searchParams.delete(key);
-          }
-          launchLink.searchParams.set(
-            "link",
-            decodeURIComponent(goodsShareLink.toString()),
-          );
+          // const launchLink = new URL(window.location.href);
+          // launchLink.pathname = "gotoApp";
+          // for (const key of launchLink.searchParams.keys()) {
+          //   launchLink.searchParams.delete(key);
+          // }
+          // launchLink.searchParams.set(
+          //   "link",
+          //   decodeURIComponent(goodsShareLink.toString()),
+          // );
           /**
            * 启动地址转换完毕，开始转换短链接
            */
-          debugger;
           postLong2dwz({
-            url: launchLink.toString(),
+            url: goodsShareLink.toString(),
           })
             .then((res) => {
               console.log(res);
-              debugger;
+              if (res?.data?.short) {
+                setShareAddress(res?.data?.short);
+              } else {
+                setShareAddress(goodsShareLink.toString());
+              }
             })
             .catch((err) => {
               console.log(err);
-              debugger;
+              /**
+               * 如果失败的话就显示原始链接
+               */
+              setShareAddress(goodsShareLink.toString());
             });
-          setShareAddress(launchLink.toString());
         }
         setGoods(data);
       }
@@ -473,253 +480,261 @@ const index = (props: Props) => {
   }
 
   return (
-    <div className="goodsDetail">
-      {/*返回按钮*/}
-      <i
-        className="aui-iconfont aui-icon-left returni"
-        onClick={() => {
-          history.goBack();
-        }}
-        id="header"
-      />
-      {/*轮播*/}
-      <Swiper
-        modules={[Pagination, Autoplay]}
-        autoplay={{
-          delay: 3000,
-          disableOnInteraction: false,
-        }}
-        loop={true}
-        pagination={{ clickable: true }}
-      >
-        {imgs.map((src, index) => {
-          return (
-            <SwiperSlide key={index}>
-              <LazyLoad once>
-                <img loading="lazy" src={src} alt="" />
-              </LazyLoad>
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
-
-      {/*商品信息*/}
-      <div className="aui-content aui-padded-10 aui-bg-white">
-        <h1 className="aui-text-price">
-          {/* <span className="aui-font-size-14">$</span> */}
-          <span>
-            <MoneyValueUnitRender>{sell_price}</MoneyValueUnitRender>
-          </span>
-          {isShare && (
-            <div
-              style={{ float: "right", fontSize: "24px" }}
-              onClick={toggleShareLayout}
-            >
-              Compartir
-            </div>
-          )}
-          {/*facebook share*/}
-          {isShare && (
-            <div
-              className="fb-share-button"
-              data-href={shareAddress}
-              data-layout="button_count"
-              data-size="small"
-            >
-              <a
-                target="_blank"
-                href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&src=sdkpreparse"
-                className="fb-xfbml-parse-ignore"
-                rel="noreferrer"
-              />
-            </div>
-          )}
-        </h1>
-        <h3 className="aui-padded-t-5">
-          {name}-"{id}"
-        </h3>
-
-        {/*<div></div>*/}
-        <p className="aui-font-size-12 aui-padded-t-5">{intro}</p>
-        <p
-          className="aui-font-size-12 aui-padded-t-5"
-          style={{ color: "#b3b3b3" }}
-        >
-          <span className="aui-pull-left">Existencias{stock}</span>
-
-          <span className="aui-pull-right">Ventas{sell_num}</span>
-        </p>
-      </div>
-      {showAttr && (
-        <div
-          onClick={() => setShowAttr(false)}
-          style={{
-            position: "fixed",
-            bottom: "0",
-            top: 0,
-            backgroundColor: "rgba(0,0,0,.3)",
-            left: "0",
-            right: "0",
-            zIndex: 100,
+    <>
+      <LaunchApp />
+      <div className="goodsDetail">
+        {/*返回按钮*/}
+        <i
+          className="aui-iconfont aui-icon-left returni"
+          onClick={() => {
+            history.goBack();
           }}
+          id="header"
+        />
+        {/*轮播*/}
+        <Swiper
+          modules={[Pagination, Autoplay]}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          loop={true}
+          pagination={{ clickable: true }}
         >
-          <ul
-            className="aui-list aui-list-in"
+          {imgs.map((src, index) => {
+            return (
+              <SwiperSlide key={index}>
+                <LazyLoad once>
+                  <img loading="lazy" src={src} alt="" />
+                </LazyLoad>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+
+        {/*商品信息*/}
+        <div className="aui-content aui-padded-10 aui-bg-white">
+          <h1 className="aui-text-price">
+            {/* <span className="aui-font-size-14">$</span> */}
+            <span>
+              <MoneyValueUnitRender>{sell_price}</MoneyValueUnitRender>
+            </span>
+            {isShare && (
+              <div
+                style={{ float: "right", fontSize: "24px" }}
+                onClick={toggleShareLayout}
+              >
+                Compartir
+              </div>
+            )}
+            {/*facebook share*/}
+            {isShare && (
+              <div
+                className="fb-share-button"
+                data-href={shareAddress}
+                data-layout="button_count"
+                data-size="small"
+              >
+                <a
+                  target="_blank"
+                  href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&src=sdkpreparse"
+                  className="fb-xfbml-parse-ignore"
+                  rel="noreferrer"
+                />
+              </div>
+            )}
+          </h1>
+          <h3 className="aui-padded-t-5">
+            {name}-"{id}"
+          </h3>
+
+          {/*<div></div>*/}
+          <p className="aui-font-size-12 aui-padded-t-5">{intro}</p>
+          <p
+            className="aui-font-size-12 aui-padded-t-5"
+            style={{ color: "#b3b3b3" }}
+          >
+            <span className="aui-pull-left">Existencias{stock}</span>
+
+            <span className="aui-pull-right">Ventas{sell_num}</span>
+          </p>
+        </div>
+        {showAttr && (
+          <div
+            onClick={() => setShowAttr(false)}
             style={{
               position: "fixed",
               bottom: "0",
+              top: 0,
+              backgroundColor: "rgba(0,0,0,.3)",
               left: "0",
               right: "0",
               zIndex: 100,
-              marginBottom: 0,
             }}
           >
-            {goods &&
-              goods.attr_info.map((attr, index) => {
-                return (
-                  <li className="aui-list-item" key={index}>
-                    <div className="aui-list-item-inner">
-                      <div className="aui-list-item-title aui-font-size-14">
-                        {attr.name}
-                      </div>
-                      <div className="aui-list-item-right">{attr.value}</div>
-                    </div>
-                  </li>
-                );
-              })}
-          </ul>
-        </div>
-      )}
-      {attr_info.length > 0 && (
-        <div className="aui-content aui-margin-b-10">
-          {/* 规格 */}
-          <ul className="aui-list aui-list-in">
-            {/* 属性 */}
-            <li className="aui-list-item" onClick={() => setShowAttr(true)}>
-              <div className="aui-list-item-inner aui-list-item-arrow">
-                <div className="aui-list-item-title aui-font-size-14">
-                  Propiedades
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      )}
-      {/* 选项卡切换 */}
-
-      <div className="aui-tab" id="tab">
-        <div
-          className={`aui-tab-item ${tab === Tab.Details ? "aui-active" : ""}`}
-          onClick={() => {
-            setTab(Tab.Details);
-          }}
-        >
-          Detalles
-        </div>
-        <div
-          className={`aui-tab-item ${tab === Tab.Comment ? "aui-active" : ""}`}
-          onClick={() => {
-            setTab(Tab.Comment);
-          }}
-        >
-          Comentarios
-        </div>
-      </div>
-      {/*详情*/}
-      <LazyLoad once>{getTabDetails()}</LazyLoad>
-
-      {/* 评价 */}
-      {getTabComment()}
-
-      {openShareLayout && (
-        <div className="layout">
-          <div className="layoutContainer">
-            <h3 className="layout-tc">
-              Para copiar este sitio web, mantener el enlace presionado
-            </h3>
-            <p
-              className="layout-tc layout-url"
-              onClick={() => {
-                if (navigator.clipboard) {
-                  navigator.clipboard.writeText(shareAddress).then(() => {
-                    Notify.success("复制成功!");
-                  });
-                }
+            <ul
+              className="aui-list aui-list-in"
+              style={{
+                position: "fixed",
+                bottom: "0",
+                left: "0",
+                right: "0",
+                zIndex: 100,
+                marginBottom: 0,
               }}
             >
-              {shareAddress}
-            </p>
-            <div
-              className="layout-tc"
-              style={{ marginTop: "10px" }}
-              onClick={toggleShareLayout}
-            >
-              Cerrar
-            </div>
+              {goods &&
+                goods.attr_info.map((attr, index) => {
+                  return (
+                    <li className="aui-list-item" key={index}>
+                      <div className="aui-list-item-inner">
+                        <div className="aui-list-item-title aui-font-size-14">
+                          {attr.name}
+                        </div>
+                        <div className="aui-list-item-right">{attr.value}</div>
+                      </div>
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        )}
+        {attr_info.length > 0 && (
+          <div className="aui-content aui-margin-b-10">
+            {/* 规格 */}
+            <ul className="aui-list aui-list-in">
+              {/* 属性 */}
+              <li className="aui-list-item" onClick={() => setShowAttr(true)}>
+                <div className="aui-list-item-inner aui-list-item-arrow">
+                  <div className="aui-list-item-title aui-font-size-14">
+                    Propiedades
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        )}
+        {/* 选项卡切换 */}
+
+        <div className="aui-tab" id="tab">
+          <div
+            className={`aui-tab-item ${
+              tab === Tab.Details ? "aui-active" : ""
+            }`}
+            onClick={() => {
+              setTab(Tab.Details);
+            }}
+          >
+            Detalles
+          </div>
+          <div
+            className={`aui-tab-item ${
+              tab === Tab.Comment ? "aui-active" : ""
+            }`}
+            onClick={() => {
+              setTab(Tab.Comment);
+            }}
+          >
+            Comentarios
           </div>
         </div>
-      )}
+        {/*详情*/}
+        <LazyLoad once>{getTabDetails()}</LazyLoad>
 
-      <div style={{ height: "2.25rem" }} />
-      <footer className="aui-bar aui-bar-tab aui-margin-t-15" id="footer">
-        {shoper_id === 0 && (
-          <div
-            className="aui-bar-tab-item"
-            style={{ width: "3rem" }}
-            onClick={toggleCollect}
-          >
-            {/*@click="addCollection()"*/}
-            <span
-              className={`aui-iconfont iconfont icon-shoucang`}
-              style={{ color: isCollect ? "#ffc640" : "" }}
-            />
-            <div className="aui-bar-tab-label" style={{ color: "#777" }}>
-              Favorito
+        {/* 评价 */}
+        {getTabComment()}
+
+        {openShareLayout && (
+          <div className="layout">
+            <div className="layoutContainer">
+              <h3 className="layout-tc">
+                Para copiar este sitio web, mantener el enlace presionado
+              </h3>
+              <p
+                className="layout-tc layout-url"
+                onClick={() => {
+                  copy(shareAddress);
+                  Notify.success("copy success!");
+                  // if (navigator.clipboard) {
+                  //   navigator.clipboard.writeText(shareAddress).then(() => {
+                  //   });
+                  // }
+                }}
+              >
+                {shareAddress}
+              </p>
+              <div
+                className="layout-tc"
+                style={{ marginTop: "10px" }}
+                onClick={toggleShareLayout}
+              >
+                Cerrar
+              </div>
             </div>
           </div>
         )}
-        {(shoper_id === 0 || addCardShow === "false") && (
+
+        <div style={{ height: "2.25rem" }} />
+        <footer className="aui-bar aui-bar-tab aui-margin-t-15" id="footer">
+          {shoper_id === 0 && (
+            <div
+              className="aui-bar-tab-item"
+              style={{ width: "3rem" }}
+              onClick={toggleCollect}
+            >
+              {/*@click="addCollection()"*/}
+              <span
+                className={`aui-iconfont iconfont icon-shoucang`}
+                style={{ color: isCollect ? "#ffc640" : "" }}
+              />
+              <div className="aui-bar-tab-label" style={{ color: "#777" }}>
+                Favorito
+              </div>
+            </div>
+          )}
+          {(shoper_id === 0 || addCardShow === "false") && (
+            <div
+              className="aui-bar-tab-item aui-text-white"
+              onClick={() => addCart(LayoutType.AddCart)}
+              style={{
+                width: "auto",
+                backgroundColor: "#6bcfc4",
+                fontSize: "0.8rem",
+              }}
+            >
+              Añadir a carro
+            </div>
+          )}
           <div
             className="aui-bar-tab-item aui-text-white"
-            onClick={() => addCart(LayoutType.AddCart)}
             style={{
               width: "auto",
-              backgroundColor: "#6bcfc4",
+              backgroundColor: "#06a995",
               fontSize: "0.8rem",
             }}
+            onClick={() => buy(LayoutType.Shop)}
           >
-            Añadir a carro
+            Compra
           </div>
-        )}
-        <div
-          className="aui-bar-tab-item aui-text-white"
-          style={{
-            width: "auto",
-            backgroundColor: "#06a995",
-            fontSize: "0.8rem",
-          }}
-          onClick={() => buy(LayoutType.Shop)}
-        >
-          Compra
-        </div>
-      </footer>
+        </footer>
 
-      {showLayout !== LayoutType.None ? (
-        goods ? (
-          <SpecInfoSelect
-            goods={goods}
-            type={showLayout}
-            handleCloseLayout={() => {
-              setShowLayout(LayoutType.None);
-            }}
-          />
+        {showLayout !== LayoutType.None ? (
+          goods ? (
+            <SpecInfoSelect
+              goods={goods}
+              type={showLayout}
+              handleCloseLayout={() => {
+                setShowLayout(LayoutType.None);
+              }}
+            />
+          ) : (
+            <></>
+          )
         ) : (
           <></>
-        )
-      ) : (
-        <></>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 

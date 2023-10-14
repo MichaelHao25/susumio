@@ -1467,15 +1467,9 @@ export const postLong2dwz = (data: IPostLong2dwz) => {
   if (url === undefined || url === null || url === "") {
     return Promise.reject(false);
   }
-  return fetch(`https://www.urlc.cn/api/url/add`, {
-    method: "POST",
-    headers: {
-      Authorization: "Token pj5entjpXjzPgIdEcTRf",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  return request.post(`/api_articles/banners/long2dwz`, {
+    data: {
       url,
-    }),
-    mode: "cors",
-  }).then((res) => res.json());
+    },
+  });
 };

@@ -15,12 +15,12 @@ import "swiper/modules/pagination/pagination.less";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
 import "swiper/swiper.less";
 import {
-  connect,
   ConnectProps,
   Dispatch,
-  history,
   Link,
   UserinfoState,
+  connect,
+  history,
   useSelector,
 } from "umi";
 import "./index.less";

@@ -10,6 +10,9 @@ import "./index.less";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 
+// import VConsole from "vconsole";
+// const vConsole = new VConsole();
+
 if (process.env.NODE_ENV === "production") {
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
