@@ -60,7 +60,7 @@ export default () => {
           }
         }}
       >
-        LaunchApp
+        Iniciar APP
       </div>
     </div>
   );

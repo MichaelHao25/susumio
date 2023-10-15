@@ -487,7 +487,11 @@ const index = (props: Props) => {
         <i
           className="aui-iconfont aui-icon-left returni"
           onClick={() => {
-            history.goBack();
+            if (window.location.search.includes("shareCode")) {
+              history.push("/");
+            } else {
+              history.goBack();
+            }
           }}
           id="header"
         />
@@ -654,7 +658,7 @@ const index = (props: Props) => {
                 className="layout-tc layout-url"
                 onClick={() => {
                   copy(shareAddress);
-                  Notify.success("copy success!");
+                  Notify.success("La copia está completada!");
                   // if (navigator.clipboard) {
                   //   navigator.clipboard.writeText(shareAddress).then(() => {
                   //   });
